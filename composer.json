@@ -1,4 +1,16 @@
 {
+	"name": "netherphp/atlantis",
+	"description": "Web Framework STuff",
+	"keywords": [ ],
+	"license": "BSD-2-Clause",
+	"authors":[
+		{
+			"name": "Bob Majdak Jr",
+			"email": "bob@majdak.net",
+			"homepage": "http://pegasusgate.net/+bob",
+			"role": "developer"
+		}
+	],
 	"config": {
 		"preferred-install": {
 			"netherphp/*": "source",
