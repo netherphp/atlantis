@@ -1,0 +1,7 @@
+{
+	"Project.Name": "Web App",
+	"Project.InitWithConfig": [
+		"Nether\\Avenue\\Library",
+		"Nether\\Surface\\Library"
+	]
+}
