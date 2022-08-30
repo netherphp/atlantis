@@ -1,0 +1,30 @@
+{
+	"config": {
+		"preferred-install": {
+			"netherphp/*": "source",
+			"*": "dist"
+		},
+		"allow-plugins": {
+			"netherphp/composer-plugin": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"minimum-stability": "dev",
+	"require": {
+		"netherphp/object": "dev-redux",
+		"netherphp/ki": "dev-redux",
+		"netherphp/avenue": "dev-redux",
+		"netherphp/surface": "dev-redux"
+	},
+	"bin": [
+		"bin/atlantis"
+	],
+	"autoload": {
+		"psr-0": {
+			"Local\\": "core/"
+		},
+		"psr-4": {
+			"Routes\\": "routes/"
+		}
+	}
+}
