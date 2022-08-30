@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9fcd0e5de4fec26fa3b766a1723629ad",
+    "content-hash": "47c0c0717baf4a6fd9471f01df512e45",
     "packages": [
         {
             "name": "brick/math",
@@ -1696,9 +1696,10 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "netherphp/object": 20,
+        "netherphp/ki": 20,
         "netherphp/avenue": 20,
         "netherphp/surface": 20,
-        "netherphp/ki": 20
+        "netherphp/console": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -3,5 +3,8 @@
 		"activityBar.background": "#28244c",
 		"titleBar.activeBackground": "#33376a",
 		"titleBar.activeForeground": "#FCFAFD"
-	}
+	},
+	"intelephense.environment.includePaths": [
+		"../../../"
+	]
 }

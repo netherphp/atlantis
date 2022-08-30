@@ -26,14 +26,15 @@
 		"netherphp/object": "dev-redux",
 		"netherphp/ki": "dev-redux",
 		"netherphp/avenue": "dev-redux",
-		"netherphp/surface": "dev-redux"
+		"netherphp/surface": "dev-redux",
+		"netherphp/console": "dev-redux"
 	},
 	"bin": [
 		"bin/atlantis"
 	],
 	"autoload": {
 		"psr-0": {
-			"Local\\": "core/"
+			"Nether\\": "src/"
 		},
 		"psr-4": {
 			"Routes\\": "routes/"

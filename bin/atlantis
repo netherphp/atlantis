@@ -1,3 +1,37 @@
 <?php
 
+use Nether\Console\Meta as MetaCLI;
 
+(function(){
+
+	$CWD = getcwd();
+	$Autoloader = sprintf('%s/autoload.php', dirname(__DIR__, 3));
+
+	if(file_exists("{$CWD}/dev.lock"))
+	$Autoloader = sprintf('%s/vendor/autoload.php', dirname(__DIR__, 1));
+
+	require($Autoloader);
+	return;
+})();
+
+class Atlantis
+extends Nether\Console\Client {
+
+	#[MetaCLI\Subcommand]
+	#[MetaCLI\Info('Setup the current working directory as a fresh project.')]
+	public function
+	HandleInit():
+	void {
+
+		$Env = $this->GetOption('env') ?? 'dev';
+		$Ignores = [ '/env.lock' ];
+		$Dirs = [ '/conf', '/core', '/routes', '/www' ];
+
+		Nether\Atlantis\Util::WriteToGitIgnore($Ignores);
+
+		return;
+	}
+
+}
+
+(new Atlantis)->Run();
