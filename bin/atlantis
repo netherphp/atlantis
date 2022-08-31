@@ -69,8 +69,13 @@ extends Nether\Console\Client {
 		$Path = NULL;
 
 		$Dirs = [
-			'conf', 'core', 'data', 'routes',
-			'www', 'www/themes'
+			'conf',
+			'conf/env/dev',
+			'core',
+			'core/Local',
+			'routes',
+			'www',
+			'www/themes'
 		];
 
 		foreach($Dirs as $Dir) {
@@ -112,11 +117,10 @@ extends Nether\Console\Client {
 		$Confirm = NULL;
 
 		$Files = [
-			'env.lock',
-			'conf/start.php',
 			'conf/config.json',
-			'conf/env/dev',
+			'conf/env/dev/config.json',
 			'routes/Home.php',
+			'www/.htaccess',
 			'www/index.php',
 			'www/themes/default',
 			'www/themes/local'

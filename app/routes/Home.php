@@ -20,4 +20,17 @@ extends Web {
 		return;
 	}
 
+	#[RouteHandler('/dump')]
+	public function
+	Dump():
+	void {
+
+		if(!$this->App->IsDev())
+		return;
+
+		Nether\Avenue\Util::VarDumpPre($this->App);
+
+		return;
+	}
+
 }
