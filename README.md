@@ -5,6 +5,9 @@ A project bootstrapper using Nether components.
 1. `composer require netherphp/atlantis`
 2. `vendor/bin/atlantis init`
 
+**Note:** Currently requires `minimum-stability: 'dev'` this project and its
+libraries are quite early on in their refresh.
+
 # Default Project Structure
 
 Running the `init` command will generate a project in the current directory
@@ -16,7 +19,7 @@ Global project configuration.
 
 ## `/conf/env/dev/config.json`
 
-Environment specific configuration. The environment defined by an `env.lock`
+Environment specific configuration. The environment is defined by an `env.lock`
 file in the `ProjectRoot`. The default value is `dev` which will then cause
 this config file to be applied after loading the global config.
 
