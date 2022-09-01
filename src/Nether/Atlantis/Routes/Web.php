@@ -50,9 +50,9 @@ extends Nether\Avenue\Route {
 	BuildGlobalScope(array &$Dataset):
 	void {
 
-		//$Dataset['App'] = $this->App;
-		//$Dataset['Router'] = $this->App->Router;
-		//$Dataset['Surface'] = $this->App->Surface;
+		$Dataset['App'] = $this->App;
+		$Dataset['Router'] = $this->App->Router;
+		$Dataset['Route'] = $this;
 
 		return;
 	}
