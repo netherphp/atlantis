@@ -3,7 +3,8 @@
 A project bootstrapper using Nether components.
 
 1. `composer require netherphp/atlantis`
-2. `vendor/bin/atlantis init`
+2. `vendor/bin/atlantis init -y`
+3. `composer dump-autoload`
 
 **Note:** Currently requires `minimum-stability: 'dev'` this project and its
 libraries are quite early on in their refresh.
