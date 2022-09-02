@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Avenue\Router $Router
+ * @var Nether\Avenue\Route $Route
+ * @var Nether\Surface\Engine $Surface
+ */
+
+?>
+<footer id="PageFooter">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-12 col-lg-3 mb-4 mb-lg-0">
+				<h4 class="PrettyBrandText">Nether</h4>
+				<div class="text-muted font-size-smaller fst-italic">
+					A PHP 8 Framework.
+				</div>
+				<hr />
+				<div class="row text-muted font-size-smallerer fw-bold text-uppercase letter-space-some PrettyFooterLinkGrid">
+					<div class="col-4 mb-4">
+						<a href="https://github.com/netherphp/atlantis" class="d-block text-underline-none text-tertiary-accent">Atlantis</a>
+					</div>
+					<div class="col-4 mb-4">
+						<a href="https://github.com/netherphp/avenue" class="d-block text-underline-none text-primary-accent">Avenue</a>
+					</div>
+					<div class="col-4 mb-4">
+						<a href="https://github.com/netherphp/console" class="d-block text-underline-none text-primary-accent">Console</a>
+					</div>
+					<div class="col-4 mb-4">
+						<a href="https://github.com/netherphp/ki" class="d-block text-underline-none text-primary-accent">Ki</a>
+					</div>
+					<div class="col-4 mb-4">
+						<a href="https://github.com/netherphp/object" class="d-block text-underline-none text-primary-accent">Object</a>
+					</div>
+					<div class="col-4 mb-4">
+						<a href="https://github.com/netherphp/surface" class="d-block text-underline-none text-primary-accent">Surface</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-lg mb-0 mb-lg-0 text-align-right">
+				<div class="text-uppercase opacity-50 font-size-smaller fw-bold mb-2">
+					<a class="text-underline-none" href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Back To Top 💦</a>
+				</div>
+				<?php if($App->IsDev()): ?>
+				<div class="white-space-nowrap opacity-20">
+					<div><code class="text-white">t[ <?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?> ]</code></div>
+					<div><code class="text-white">req[ <?php $Printer($Router->Request->Domain) ?> / <?php $Printer(ltrim($Router->Request->Path, '/')) ?> ]</code></div>
+					<div><code class="text-white">rt[ <?php $Printer($Route->Handler->Class) ?> :: <?php $Printer($Route->Handler->Method) ?> ]</code></div>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</footer>

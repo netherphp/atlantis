@@ -1,0 +1,264 @@
+/*******************************************************************************
+**** font stuff using global vars *********************************************/
+
+.font-family-monotype { font-family: var(--FontFamilyMonotype); }
+.font-family-normal { font-family: var(--FontFamilyNormal); }
+
+.text-primary-accent,
+.text-primary-accent:link,
+.text-primary-accent:visited,
+.text-primary-accent:hover {
+	color: var(--ColourPrimaryAccent);
+}
+
+.text-secondary-accent,
+.text-secondary-accent:link,
+.text-secondary-accent:visited,
+.text-secondary-accent:hover {
+	color: var(--ColourSecondaryAccent);
+}
+
+.text-tertiary-accent,
+.text-tertiary-accent:link,
+.text-tertiary-accent:visited,
+.text-tertiary-accent:hover {
+	color: var(--ColourTertiaryAccent);
+}
+
+/*******************************************************************************
+**** font stuff ***************************************************************/
+
+.font-size-normal { font-size: 1.0rem; }
+.font-size-small { font-size: 0.9rem; }
+.font-size-smaller { font-size: 0.8rem; }
+.font-size-smallest { font-size: 0.7rem; }
+.font-size-smallerer { font-size: 0.6rem; }
+.font-size-smallerest { font-size: 0.5rem; }
+.font-size-most-small { font-size: 0.4rem; }
+.font-size-mostest-small { font-size: 0.3rem; }
+
+.font-size-large { font-size: 1.10rem; }
+.font-size-larger { font-size: 1.20rem; }
+.font-size-largest { font-size: 1.30rem; }
+.font-size-largerer { font-size: 1.40rem; }
+.font-size-largerest { font-size: 1.50rem; }
+.font-size-most-large { font-size: 2.00rem; }
+.font-size-mostest-large { font-size: 3.00rem; }
+
+.letter-space-normal { letter-spacing: 0.0rem; }
+.letter-space-loose { letter-spacing: 0.04rem; }
+.letter-space-looser { letter-spacing: 0.08rem; }
+.letter-space-loosest { letter-spacing: 0.12rem; }
+.letter-space-looserer { letter-spacing: 0.16rem; }
+.letter-space-looserest { letter-spacing: 0.20rem; }
+.letter-space-most-loose { letter-spacing: 0.24rem; }
+.letter-space-mostest-loose { letter-spacing: 0.28rem; }
+.letter-space-literally-space { letter-spacing: 0.8rem; }
+
+.letter-space-tight { letter-spacing: -0.04rem; }
+.letter-space-tighter { letter-spacing: -0.08rem; }
+.letter-space-tightest { letter-spacing: -0.12rem; }
+.letter-space-tighterer { letter-spacing: -0.16rem; }
+.letter-space-tighterest { letter-spacing: -0.20rem; }
+.letter-space-most-tight { letter-spacing: -0.24rem; }
+.letter-space-mostest-tight { letter-spacing: -0.28rem; }
+.letter-space-literally-nothing { letter-spacing: -0.47rem; }
+
+.line-height-normal { line-height: 1em; }
+
+.text-align-right { text-align: right; }
+.text-align-left { text-align: left; }
+.text-align-center { text-align: center; }
+
+.text-overline { text-decoration: underline; }
+.text-underline { text-decoration: underline; }
+.text-underline-none { text-decoration: none; }
+
+.white-space-nowrap { white-space: nowrap; }
+.white-space-lines { white-space: pre-line; }
+
+.user-select-none { user-select: none; }
+.user-select-normal { user-select: all; }
+
+/*******************************************************************************
+**** opacity stuff ************************************************************/
+
+.opacity-0 { opacity: 0.0; }
+.opacity-10 { opacity: 0.10; }
+.opacity-25 { opacity: 0.25; }
+.opacity-20 { opacity: 0.20; }
+.opacity-30 { opacity: 0.30; }
+.opacity-40 { opacity: 0.40; }
+.opacity-50 { opacity: 0.50; }
+.opacity-60 { opacity: 0.60; }
+.opacity-70 { opacity: 0.70; }
+.opacity-75 { opacity: 0.75; }
+.opacity-80 { opacity: 0.80; }
+.opacity-90 { opacity: 0.90; }
+.opacity-100 { opacity: 1.0; }
+
+.opacity-hover-0:hover { opacity: 0.0; }
+.opacity-hover-10:hover { opacity: 0.10; }
+.opacity-hover-25:hover { opacity: 0.25; }
+.opacity-hover-20:hover { opacity: 0.20; }
+.opacity-hover-30:hover { opacity: 0.30; }
+.opacity-hover-40:hover { opacity: 0.40; }
+.opacity-hover-50:hover { opacity: 0.50; }
+.opacity-hover-60:hover { opacity: 0.60; }
+.opacity-hover-70:hover { opacity: 0.70; }
+.opacity-hover-75:hover { opacity: 0.75; }
+.opacity-hover-80:hover { opacity: 0.80; }
+.opacity-hover-90:hover { opacity: 0.90; }
+.opacity-hover-100:hover { opacity: 1.0; }
+
+/*******************************************************************************
+**** positioning stuff ********************************************************/
+
+.position-absolute { position: absolute; }
+.position-absolutely { position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; }
+.position-relative { position: relative; }
+.position-sticky { position: sticky; }
+
+.position-top-left { top: 0px; left: 0px; }
+.position-top-right { top: 0px; right: 0px; }
+.position-bottom-left { bottom: 0px; left: 0px; }
+.position-bottom-right { bottom: 0px; right: 0px; }
+
+.position-bottom { bottom: 0px; }
+.position-top { top: 0px; }
+.position-left { left: 0px; }
+.position-right { right: 0px; }
+
+.zindex-high { z-index: 9001; }
+.zindex-normal { z-index: 0; }
+.zindex-low { z-index: -9001; }
+
+.vh-100 { height: 100vh !important; }
+.vh-75 { height: 75vh !important; }
+.vh-50 { height: 50vh !important; }
+.vh-25 { height: 25vh !important; }
+.vh-0 { height: 0vh !important; }
+
+.vw-100 { width: 100vw !important; }
+.vw-75 { width: 75vw !important; }
+.vw-50 { width: 50vw !important; }
+.vw-25 { width: 25vw !important; }
+.vw-0 { width: 0vw !important; }
+
+/*******************************************************************************
+**** animating stuff **********************************************************/
+
+.opacity-fade { transition: opacity 250ms; }
+
+.transition-none { transition: none !important; }
+.transition-timing-linear { transition-timing-function: linear; }
+.transition-timing-inout { transition-timing-function: ease-in-out; }
+
+/*******************************************************************************
+**** table stuff **************************************************************/
+
+.td-normal { white-space: nowrap; }
+.td-shrink { white-space: nowrap; width: 1%; }
+.td-valign-middle { vertical-align: middle !important; }
+
+/*******************************************************************************
+**** ratiobox stuff************************************************************/
+
+.ratiobox {
+	position: relative;
+	padding-top: 100%;
+	overflow: hidden;
+}
+
+.ratiobox.one-x-one,
+.ratiobox.square {
+	padding-top: 100%;
+}
+
+.ratiobox.four-x-three,
+.ratiobox.tv,
+.ratiobox.photo {
+	padding-top: 75%;
+}
+
+.ratiobox.sixteen-x-ten,
+.ratiobox.widemeh {
+	padding-top: 62.5%;
+}
+
+.ratiobox.photo2 {
+	padding-top: 66.65%;
+}
+
+.ratiobox.sixteen-x-nine,
+.ratiobox.widescreen {
+	padding-top: 56.25%;
+}
+
+.ratiobox.onenine-x-one,
+.ratiobox.imax {
+	padding-top: 52.63%;
+}
+
+.ratiobox.two-x-one,
+.ratiobox.univisium {
+	padding-top: 50%;
+}
+
+.ratiobox.twentyone-x-nine,
+.ratiobox.ultrawide {
+	padding-top: 42.85%;
+}
+
+.ratiobox.one-x-two
+.ratiobox.book {
+	padding-top: 150%;
+}
+
+.ratiobox.hoverzoom .wallpapered {
+	transform: scale(1.0);
+	transition: transform 350ms;
+}
+
+.ratiobox.hoverzoom:hover .wallpapered {
+	transform: scale(1.15);
+	transition: transform 350ms;
+}
+
+/*******************************************************************************
+**** background image stuff ***************************************************/
+
+.accented,
+.accented-top {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: top center;
+}
+
+.accented-bottom {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: bottom center;
+}
+
+.wallpapered {
+	background: #000;
+	background-repeat: no-repeat;
+	background-position: center center;
+	color: #fff;
+	text-shadow: 0px 0px 4px #000a;
+}
+
+.wallpapered,
+.wallpapered.covered {
+	background-size: cover;
+}
+
+.wallpapered.contained {
+	background-size: contain;
+}
+
+/*******************************************************************************
+**** misc stuff ***************************************************************/
+
+.rounded-extra { border-radius: 10px; }

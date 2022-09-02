@@ -117,8 +117,8 @@ extends Nether\Console\Client {
 		$Confirm = NULL;
 
 		$Files = [
-			'conf/config.json',
-			'conf/env/dev/config.json',
+			'conf/config.php',
+			'conf/env/dev/config.php',
 			'routes/Home.php',
 			'www/.htaccess',
 			'www/index.php',
@@ -140,16 +140,6 @@ extends Nether\Console\Client {
 
 				if(!$Confirm)
 				continue;
-
-				if(str_ends_with($File, '.json')) {
-					$Confirm = $this->PromptEquals(
-						'   This is a config file. Are you sure?',
-						'   (y/n):', 'y'
-					);
-
-					if(!$Confirm)
-					continue;
-				}
 			}
 
 			Nether\Atlantis\Util::Copy($Local, $Remote);

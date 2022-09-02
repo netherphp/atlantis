@@ -1,19 +1,29 @@
+<?php
+
+/**
+ * @var Nether\Surface\Engine $Surface
+ */
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>derp</title>
+	<title><?php $Surface->Show('Page.Title') ?></title>
+
+	<link rel="stylesheet" type="text/css" href="/themes/default/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-bootstrap-ext.css" />
+	<link rel="stylesheet" type="text/css" href="/themes/default/css/main.css" />
+	<script type="text/javascript" src="/themes/default/js/jquery.min.js"></script>
 </head>
 <body>
 
-<div>This is my fancy web design.</div>
+<?php $Surface->Area('design/header') ?>
 
-<div>
+<?php $Surface->Area('design/main', [ 'Output'=> $Output ]) ?>
 
-	<?php echo $Output ?>
-
-</div>
+<?php $Surface->Area('design/footer') ?>
 
 </body>
 </html>

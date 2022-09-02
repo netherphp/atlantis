@@ -7,6 +7,34 @@ use FilesystemIterator;
 class Util {
 
 	static public function
+	GetSelectedHTML(bool $Cond):
+	string {
+
+		if($Cond)
+		return 'selected="selected"';
+
+		return '';
+	}
+
+	static public function
+	GetCheckedHTML(bool $Cond):
+	string {
+
+		if($Cond)
+		return 'selected="selected"';
+
+		return '';
+	}
+
+	static public function
+	PrintHTML(string $Input):
+	void {
+
+		echo Filter::EncodeHTML($Input);
+		return;
+	}
+
+	static public function
 	ReadFromGitIgnore(string $Filename='.gitignore'):
 	?array {
 
@@ -60,26 +88,25 @@ class Util {
 
 		if(is_file($Source)) {
 			copy($Source, $Dest);
+			return file_exists($Dest);
 		}
 
 		// if we are talking about a directory then recursively dive it.
 
-		else {
-			Util::MkDir($Dest);
+		Util::MkDir($Dest);
 
-			$Iter = new FilesystemIterator($Source, (
-				FilesystemIterator::CURRENT_AS_FILEINFO |
-				FilesystemIterator::SKIP_DOTS
-			));
+		$Iter = new FilesystemIterator($Source, (
+			FilesystemIterator::CURRENT_AS_FILEINFO |
+			FilesystemIterator::SKIP_DOTS
+		));
 
-			foreach($Iter as $File) {
-				$Suffix = str_replace(
-					"{$Source}/", '',
-					$File->GetPathname()
-				);
+		foreach($Iter as $File) {
+			$Suffix = str_replace(
+				"{$Source}/", '',
+				$File->GetPathname()
+			);
 
-				Util::Copy($File, "{$Dest}/{$Suffix}");
-			}
+			Util::Copy($File, "{$Dest}/{$Suffix}");
 		}
 
 		return file_exists($Dest);

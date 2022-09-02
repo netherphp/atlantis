@@ -37,6 +37,7 @@ class Engine {
 		$this->ProjectTime = microtime(TRUE);
 		$this->ProjectRoot = $ProjectRoot;
 		$this->ProjectEnv = 'dev';
+		$this->Config = new Nether\Object\Datastore;
 
 		// load in configuration.
 
@@ -162,12 +163,16 @@ class Engine {
 	LoadProjectConfig():
 	static {
 
-		$this->Config = new Nether\Object\Datastore;
-
-		$this->Config->Read(sprintf(
-			'%s/conf/config.json',
+		$File = sprintf(
+			'%s/conf/config.php',
 			$this->ProjectRoot
-		));
+		);
+
+		if(is_readable($File))
+		(function(string $__FILENAME, Nether\Object\Datastore $Config){
+			require($__FILENAME);
+			return;
+		})($File, $this->Config);
 
 		return $this;
 	}
@@ -176,23 +181,17 @@ class Engine {
 	LoadEnvironmentConfig():
 	static {
 
-		$EnvFile = sprintf(
-			'%s/conf/env/%s/config.json',
+		$File = sprintf(
+			'%s/conf/env/%s/config.php',
 			$this->ProjectRoot,
 			$this->ProjectEnv
 		);
 
-		////////
-
-		if(!file_exists($EnvFile))
-		return $this;
-
-		if(!is_readable($EnvFile))
-		return $this;
-
-		////////
-
-		$this->Config->Read($EnvFile, TRUE);
+		if(is_readable($File))
+		(function(string $__FILENAME, Nether\Object\Datastore $Config){
+			require($__FILENAME);
+			return;
+		})($File, $this->Config);
 
 		return $this;
 	}
