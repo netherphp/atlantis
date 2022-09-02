@@ -119,6 +119,7 @@ extends Nether\Console\Client {
 		$Files = [
 			'conf/config.php',
 			'conf/env/dev/config.php',
+			'conf/env/dev/apache24.conf',
 			'routes/Home.php',
 			'www/.htaccess',
 			'www/index.php',
