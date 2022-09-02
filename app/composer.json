@@ -1,0 +1,14 @@
+{
+	"minimum-stability": "dev",
+	"require": {
+		"netherphp/atlantis": "dev-master"
+	},
+	"autoload": {
+		"psr-0": {
+			"Local\\": "core"
+		},
+		"psr-4": {
+			"Routes\\": "routes"
+		}
+	}
+}

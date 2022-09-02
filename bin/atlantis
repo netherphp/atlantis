@@ -117,6 +117,7 @@ extends Nether\Console\Client {
 		$Confirm = NULL;
 
 		$Files = [
+			'composer.json',
 			'conf/config.php',
 			'conf/env/dev/config.php',
 			'conf/env/dev/apache24.conf',
