@@ -18,7 +18,7 @@ extends Nether\Console\Client {
 	#[MetaCLI\Command]
 	#[MetaCLI\Info('Setup the current working directory as a fresh project.')]
 	public function
-	HandleInit():
+	Init():
 	int {
 
 		$this->PrintLn('Setup Git Ignore...');
@@ -38,7 +38,7 @@ extends Nether\Console\Client {
 	#[MetaCLI\Command]
 	#[MetaCLI\Info('Add things this framework knows you need to .gitignore')]
 	public function
-	HandleInitGitIgnore():
+	InitGitIgnore():
 	int {
 
 		$CWD = getcwd();
@@ -61,7 +61,7 @@ extends Nether\Console\Client {
 	#[MetaCLI\Info('Build up the common directory structure.')]
 	#[MetaCLI\Error(1, 'unable to create directory: file exists')]
 	public function
-	HandleInitCommonDirs():
+	InitCommonDirs():
 	int {
 
 		$CWD = getcwd();
@@ -105,7 +105,7 @@ extends Nether\Console\Client {
 	#[MetaCLI\Toggle('-y', 'Say yes to everything. This WILL OVERWRITE core files with stock versions!')]
 	#[MetaCLI\Error(1, 'failed to copy file')]
 	public function
-	HandleInitCommonFiles():
+	InitCommonFiles():
 	int {
 
 		$Force = $this->GetOption('y');
