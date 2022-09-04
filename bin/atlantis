@@ -22,13 +22,13 @@ extends Nether\Console\Client {
 	int {
 
 		$this->PrintLn('Setup Git Ignore...');
-		$this->HandleInitGitIgnore();
+		$this->InitGitIgnore();
 
 		$this->PrintLn('Setup Common Directories...');
-		$this->HandleInitCommonDirs();
+		$this->InitCommonDirs();
 
 		$this->PrintLn('Setup Common Files...');
-		$this->HandleInitCommonFiles();
+		$this->InitCommonFiles();
 
 		$this->PrintLn('Done.');
 
