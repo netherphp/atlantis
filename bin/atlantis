@@ -299,7 +299,7 @@ extends Nether\Console\Client {
 			case 'apache':
 			case 'apache24':
 				$Source = $Filename ?? $App->GetEnvConfigRoot('apache24.conf');
-				$Dest = $Dest ?? '/etc/apache2/sites-enabled';
+				$DestDir = $DestDir ?? '/etc/apache2/sites-enabled';
 
 				if(!$DestName)
 				$DestName = sprintf(
