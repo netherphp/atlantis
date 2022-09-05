@@ -310,11 +310,11 @@ extends Nether\Console\Client {
 						default => 500
 					}),
 					Nether\Avenue\Util::MakeKey($App->GetProjectEnv()),
-					Nether\Avenue\Util::MakeKey($App->Config['Project.Name'])
+					Nether\Avenue\Util::MakeKey($App->Config['Project.Key'])
 				);
 			break;
 			default:
-				$this->Quit(1, $App->Config['Project.WebServerType'] ?? 'NULL');
+				$this->Quit(1, $App->Config['Project.WebServerType'] ?: 'NULL');
 			break;
 		}
 

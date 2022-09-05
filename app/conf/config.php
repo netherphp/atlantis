@@ -5,14 +5,17 @@
  */
 
 $Config
-->Set('Project.Name', 'Web App');
+->Set('Project.Name', 'Atlantis WebApp')
+->Set('Project.Key', 'atlantis')
+->Set('Project.WebServerType', '');
 
 $Config
 ->Set('AcmePHP.Phar', '')
+->Set('AcmePHP.CertRoot', '')
 ->Set('AcmePHP.Domain', '')
 ->Set('AcmePHP.Email', '')
 ->Set('AcmePHP.AltDomains', [])
 ->Set('AcmePHP.Country', '')
 ->Set('AcmePHP.City', '')
-->Set('AcmePHP.OrgName', '')
-->Set('AcmePHP.Root', '');
+->Set('AcmePHP.OrgName', '');
+
