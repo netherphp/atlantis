@@ -1,6 +1,14 @@
-
 RewriteEngine On
 RewriteBase /
+
+# force https unless we're trying to validate via well-known. this prevents
+# the renewals from breaking later.
+
+#RewriteCond %{HTTPS} !=on
+#RewriteCond %{REQUEST_URI} !^/\.well-known
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# redirect all unclaimed or virtual requests to the application router.
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f

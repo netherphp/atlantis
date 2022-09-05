@@ -18,13 +18,13 @@ class Engine {
 	////////////////////////////////////////////////////////////////
 
 	protected string
+	$ProjectEnv;
+
+	protected string
 	$ProjectRoot;
 
 	protected float
 	$ProjectTime;
-
-	protected string
-	$ProjectEnv;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -43,6 +43,7 @@ class Engine {
 
 		$this
 		->DetermineEnvironment()
+		->LoadDefaultConfig()
 		->LoadProjectConfig()
 		->LoadEnvironmentConfig();
 
@@ -111,6 +112,63 @@ class Engine {
 		return !$this->IsEnv('dev');
 	}
 
+	public function
+	GetProjectEnv():
+	string {
+
+		return $this->ProjectEnv;
+	}
+
+	public function
+	GetProjectRoot():
+	string {
+
+		return $this->ProjectRoot;
+	}
+
+	public function
+	GetProjectTime():
+	float {
+
+		return $this->ProjectTime;
+	}
+
+	public function
+	GetConfigRoot(?string $File=NULL):
+	string {
+
+		return sprintf(
+			'%s/conf%s',
+			$this->ProjectRoot,
+			($File ? "/{$File}" : '')
+		);
+	}
+
+	public function
+	GetEnvConfigRoot(?string $File=NULL):
+	string {
+
+		return sprintf(
+			'%s/conf/env/%s%s',
+			$this->ProjectRoot,
+			$this->ProjectEnv,
+			($File ? "/{$File}" : '')
+		);
+	}
+
+	public function
+	GetWebRoot():
+	string {
+
+		$WebRoot = sprintf(
+			'%s/%s',
+			$this->ProjectRoot,
+			$this->Config['Project.WebRoot']
+		);
+
+		return $WebRoot;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -155,6 +213,17 @@ class Engine {
 
 		if(!defined('ProjectEnv'))
 		define('ProjectEnv', $this->ProjectEnv);
+
+		return $this;
+	}
+
+	protected function
+	LoadDefaultConfig():
+	static {
+
+		($this->Config)
+		->Define('Project.WebRoot', 'www')
+		->Define('Project.WebServerType', NULL);
 
 		return $this;
 	}

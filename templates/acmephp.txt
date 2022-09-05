@@ -1,0 +1,17 @@
+contact_email: '{Email}'
+certificates:
+  - domain: '{Domain}'
+    subject_alternative_names:
+      {AltDomains}
+    distinguished_name:
+      country: '{Country}'
+      locality: '{City}'
+      organization_name: '{OrgName}'
+    solver:
+      name: 'http-file'
+      adapter: 'local'
+      root: '{WebRoot}'
+    install:
+      - action: 'mirror_file'
+        adapter: 'local'
+        root: '{CertRoot}'

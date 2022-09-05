@@ -1,6 +1,6 @@
 <?php
 
-use Nether\Console\Meta as MetaCLI;
+use Nether\Atlantis\Library;
 
 (function(){
 
@@ -15,8 +15,8 @@ use Nether\Console\Meta as MetaCLI;
 class Atlantis
 extends Nether\Console\Client {
 
-	#[MetaCLI\Command]
-	#[MetaCLI\Info('Setup the current working directory as a fresh project.')]
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Info('Start a fresh project from scratch.')]
 	public function
 	Init():
 	int {
@@ -35,8 +35,8 @@ extends Nether\Console\Client {
 		return 0;
 	}
 
-	#[MetaCLI\Command]
-	#[MetaCLI\Info('Add things this framework knows you need to .gitignore')]
+	#[Nether\Console\Meta\Command(Hide: TRUE)]
+	#[Nether\Console\Meta\Info('Add things this framework knows you need to .gitignore')]
 	public function
 	InitGitIgnore():
 	int {
@@ -57,9 +57,9 @@ extends Nether\Console\Client {
 		return 0;
 	}
 
-	#[MetaCLI\Command]
-	#[MetaCLI\Info('Build up the common directory structure.')]
-	#[MetaCLI\Error(1, 'unable to create directory: file exists')]
+	#[Nether\Console\Meta\Command(Hide: TRUE)]
+	#[Nether\Console\Meta\Info('Build up the common directory structure.')]
+	#[Nether\Console\Meta\Error(1, 'unable to create directory: file exists')]
 	public function
 	InitCommonDirs():
 	int {
@@ -100,10 +100,10 @@ extends Nether\Console\Client {
 		return 0;
 	}
 
-	#[MetaCLI\Command]
-	#[MetaCLI\Info('Copy in core files for reference by local app.')]
-	#[MetaCLI\Toggle('-y', 'Say yes to everything. This WILL OVERWRITE core files with stock versions!')]
-	#[MetaCLI\Error(1, 'failed to copy file')]
+	#[Nether\Console\Meta\Command(Hide: TRUE)]
+	#[Nether\Console\Meta\Info('Copy in core files for reference by local app.')]
+	#[Nether\Console\Meta\Toggle('-y', 'Say yes to everything. This WILL OVERWRITE core files with stock versions!')]
+	#[Nether\Console\Meta\Error(1, 'failed to copy file')]
 	public function
 	InitCommonFiles():
 	int {
@@ -151,6 +151,254 @@ extends Nether\Console\Client {
 		}
 
 		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('acmephp-config')]
+	#[Nether\Console\Meta\Info('Generate a new acmephp.yml file for SSL reg.')]
+	#[Nether\Console\Meta\Value('--filename', 'Filename of config file (default: acmephp.yml)')]
+	#[Nether\Console\Meta\Toggle('--raw', 'Only print the config contents.')]
+	#[Nether\Console\Meta\Toggle('--verbose', 'Show the contents of the file too.')]
+	#[Nether\Console\Meta\Error(1, 'missing ssl config: %s')]
+	#[Nether\Console\Meta\Error(2, 'conf not writable: %s')]
+	public function
+	AcmePhpGenerate():
+	int {
+
+		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
+		$Raw = $this->GetOption('raw') ?? FALSE;
+		$Verbose = $Raw ?: ($this->GetOption('verbose') ?? FALSE);
+		$App = new Nether\Atlantis\Engine(getcwd());
+		$Acme = new Nether\Atlantis\Struct\AcmeConfig($App);
+		$TemplatePath = sprintf(
+			'%s/templates/acmephp.txt',
+			dirname(__FILE__, 2)
+		);
+
+		////////
+
+		$MissingConf = $Acme->GetMissingConfig();
+
+		if(count($MissingConf))
+		$this->Quit(1, join(', ', $MissingConf));
+
+		////////
+
+		$Data = $Acme->GenerateConfigData($TemplatePath);
+
+		if($Verbose && !$Raw) {
+			$this->PrintLn($this->Formatter->{$this->ColourPrimary}('Generated acmephp.yml:'));
+			$this->PrintLn();
+		}
+
+		if($Verbose)
+		$this->PrintLn($Data);
+
+		if($Raw)
+		return 0;
+
+		////////
+
+		if($Filename) {
+			$Outfile = sprintf('%s/%s', $App->GetEnvConfigRoot(), $Filename);
+
+			// do not overwrite existing file unless user says so.
+
+			if(file_exists($Outfile))
+			if($this->PromptEquals("Overwrite {$Outfile}?", '(y/n)>', 'n'))
+			$this->Quit(0);
+
+			// check for write fail on existing file.
+
+			if(file_exists($Outfile) && !is_writable($Outfile))
+			$this->Quit(2, $Outfile);
+
+			// write file to disk.
+
+			$this->PrintLn("Writing AcmePHP Config: {$Outfile}");
+			file_put_contents($Outfile, $Data);
+		}
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('acmephp-run')]
+	#[Nether\Console\Meta\Info('Run the AcmePHP for the current env.')]
+	#[Nether\Console\Meta\Value('--filename', 'Filename of config file in environment config (default: acmephp.yml).')]
+	#[Nether\Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
+	#[Nether\Console\Meta\Toggle('--rehash', 'Automatically rehash the webserver after.')]
+	public function
+	AcmePhpRun():
+	int {
+
+		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
+		$UseSudo = $this->GetOption('sudo') ?? FALSE;
+		$UseRehash = $this->GetOption('rehash') ?? FALSE;
+		$Command = NULL;
+		$Output = NULL;
+		$Error = NULL;
+
+		if($UseSudo && $this->Sudo())
+		return 0;
+
+		$App = new Nether\Atlantis\Engine(getcwd());
+		$Acme = new Nether\Atlantis\Struct\AcmeConfig($App);
+
+		////////
+
+		$Command = sprintf(
+			'%s run %s 2>&1',
+			$Acme->Phar,
+			$App->GetEnvConfigRoot($Filename)
+		);
+
+		////////
+
+		$this->ExecuteCommandLine($Command, $Output, $Error);
+
+		if($Error) {
+			$this->PrintLn($this->FormatPrimary('Command Output:'));
+			echo '> ', join(sprintf('%s> ', PHP_EOL), $Output), PHP_EOL;
+			return $Error;
+		}
+
+		if($UseRehash)
+		$this->WebserverRehash();
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('webserver-link')]
+	#[Nether\Console\Meta\Info('Symlink our web config into the webserver config system.')]
+	#[Nether\Console\Meta\Value('--filename', 'Config file to link in. (ex. conf/env/dev/apache24.conf).')]
+	#[Nether\Console\Meta\Value('--destdir', 'Directory to link into (ex. /etc/apache2/sites-enabled).')]
+	#[Nether\Console\Meta\Value('--destname', 'Name to link as (ex. 100-dev-app.conf).')]
+	#[Nether\Console\Meta\Toggle('--copy', 'Copy instead of symlinking.')]
+	#[Nether\Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
+	#[Nether\Console\Meta\Error(1, 'unsupported Project.WebServerType (%s)')]
+	#[Nether\Console\Meta\Error(2, 'directory unwritable - maybe run with sudo')]
+	public function
+	WebserverLink():
+	int {
+
+		$Filename = $this->GetOption('filename');
+		$DestDir = $this->GetOption('destdir');
+		$DestName = $this->GetOption('destname');
+		$UseCopy = $this->GetOption('copy') ?? FALSE;
+		$UseSudo = $this->GetOption('sudo') ?? FALSE;
+
+		if($UseSudo && $this->Sudo())
+		return 0;
+
+		$App = new Nether\Atlantis\Engine(getcwd());
+		$Source = NULL;
+		$DestPath = NULL;
+
+		////////
+
+		switch($App->Config['Project.WebServerType']) {
+			case 'apache':
+			case 'apache24':
+				$Source = $Filename ?? $App->GetEnvConfigRoot('apache24.conf');
+				$Dest = $Dest ?? '/etc/apache2/sites-enabled';
+
+				if(!$DestName)
+				$DestName = sprintf(
+					'%s-%s-%s.conf',
+					(match($App->GetProjectEnv()){
+						'dev'   => 100,
+						'prod'  => 900,
+						default => 500
+					}),
+					Nether\Avenue\Util::MakeKey($App->GetProjectEnv()),
+					Nether\Avenue\Util::MakeKey($App->Config['Project.Name'])
+				);
+			break;
+			default:
+				$this->Quit(1, $App->Config['Project.WebServerType'] ?? 'NULL');
+			break;
+		}
+
+		////////
+
+		$DestPath = "{$DestDir}/{$DestName}";
+
+		$this->PrintLn(sprintf(
+			'%s %s',
+			$this->FormatPrimary('Config:'),
+			$Source
+		));
+
+		$this->PrintLn(sprintf(
+			'%s %s',
+			$this->FormatPrimary('Dest:'),
+			$DestPath
+		));
+
+		if(file_exists($DestPath))
+		if($this->PromptEquals("Overwrite {$DestPath}? ", '(y/n)>', 'n'))
+		$this->Quit(0);
+
+		if(!is_writable(dirname($DestPath)))
+		$this->Quit(2);
+
+		////////
+
+		// clean up the old file.
+
+		if(file_exists($DestPath))
+		unlink($DestPath);
+
+		// source in the new file.
+
+		if($UseCopy)
+		copy($Source, $DestPath);
+
+		else
+		symlink($Source, $DestPath);
+
+		////////
+
+		return 0;
+	}
+
+	#[Nether\Console\Meta\Command('webserver-rehash')]
+	#[Nether\Console\Meta\Info('Get the web server to reload its config files.')]
+	#[Nether\Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
+	#[Nether\Console\Meta\Error(1, 'unsupported Project.WebServerType (%s)')]
+	public function
+	WebserverRehash():
+	int {
+
+		$UseSudo = $this->GetOption('sudo') ?? FALSE;
+
+		if($UseSudo && $this->Sudo())
+		return 0;
+
+		$App = new Nether\Atlantis\Engine(getcwd());
+		$Command = NULL;
+		$Output = NULL;
+		$Error = NULL;
+
+		////////
+
+		switch($App->Config['Project.WebServerType']) {
+			case 'apache':
+			case 'apache24':
+				$Command = 'apachectl graceful 2>&1';
+			break;
+			default:
+				$this->Quit(1, $App->Config['Project.WebServerType'] ?? 'NULL');
+			break;
+		}
+
+		$this->ExecuteCommandLine($Command, $Output, $Error);
+
+		if($Error) {
+			$this->PrintLn($this->FormatPrimary('Command Output:'));
+			echo '> ', join(sprintf('%s> ', PHP_EOL), $Output), PHP_EOL;
+		}
+
+		return $Error;
 	}
 
 }
