@@ -116,6 +116,8 @@ class Util {
 	MkDir(string $Path):
 	bool {
 
+		$Path = str_replace('\\', '/', $Path);
+
 		if(!file_exists($Path)) {
 			$UMask = umask(0);
 			mkdir($Path, 0777, TRUE);
