@@ -103,7 +103,7 @@ class Util {
 		foreach($Iter as $File) {
 			$Suffix = str_replace(
 				"{$Source}/", '',
-				$File->GetPathname()
+				str_replace('\\', '/', $File->GetPathname())
 			);
 
 			Util::Copy($File, "{$Dest}/{$Suffix}");
