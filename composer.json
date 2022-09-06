@@ -6,7 +6,7 @@
 	"authors":[
 		{
 			"name": "Bob Majdak Jr",
-			"email": "bob@majdak.net",
+			"email": "bmajdak@php.net",
 			"homepage": "http://pegasusgate.net/+bob",
 			"role": "developer"
 		}
@@ -27,7 +27,8 @@
 		"netherphp/ki": "dev-redux",
 		"netherphp/avenue": "dev-redux",
 		"netherphp/surface": "dev-redux",
-		"netherphp/console": "dev-redux"
+		"netherphp/console": "dev-redux",
+		"netherphp/sensei": "dev-redux"
 	},
 	"bin": [
 		"bin/atlantis"
