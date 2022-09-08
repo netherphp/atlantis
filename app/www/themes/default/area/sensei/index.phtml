@@ -1,0 +1,146 @@
+<?php
+
+use Nether\Sensei\Codebase;
+use Nether\Sensei\Inspectors\NamespaceInspector;
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Inspectors\ConstantInspector;
+use Nether\Sensei\Inspectors\PropertyInspector;
+use Nether\Sensei\Inspectors\MethodInspector;
+use nether\Sensei\Inspectors\ArgumentInspector;
+
+/**
+ * @var Codebase $Codebase
+ */
+
+$FilterNS = function(NamespaceInspector $NS) {
+	return (
+		TRUE
+		&& ($NS->Classes->Count() > 0)
+	);
+};
+
+$SortClass = function(ClassInspector $A, ClassInspector $B) {
+
+	if($A->GetTypeWord() !== $B->GetTypeWord())
+	return $A->GetTypeWord() <=> $B->GetTypeWord();
+
+	return $A->Name <=> $B->Name;
+};
+
+$CountNamespaces = $Codebase->Namespaces->Count();
+
+$CountClasses = (
+	($Codebase->Namespaces)
+	->Accumulate(0, (
+		fn($Carry, $Namespace)
+		=> ($Carry + (
+			($Namespace->Classes)
+			->Distill(
+				fn($Class)
+				=> ($Class->GetTypeWord() === 'class')
+			)
+			->Count()
+		))
+	))
+);
+
+$CountInterfaces = (
+	($Codebase->Namespaces)
+	->Accumulate(0, (
+		fn($Carry, $Namespace)
+		=> ($Carry + (
+			($Namespace->Classes)
+			->Distill(
+				fn($Class)
+				=> ($Class->GetTypeWord() === 'interface')
+			)
+			->Count()
+		))
+	))
+);
+
+$CountTraits = (
+	($Codebase->Namespaces)
+	->Accumulate(0, (
+		fn(int $Carry, NamespaceInspector $Namespace): int
+		=> ($Carry + (
+			($Namespace->Classes)
+			->Distill(
+				fn(ClassInspector $Class): bool
+				=> ($Class->GetTypeWord() === 'trait')
+			)
+			->Count()
+		))
+	))
+);
+
+$CKey = NULL;
+
+$Names = [
+	'namespace' => 'Namespaces',
+	'class'     => 'Classes',
+	'interface' => 'Interfaces',
+	'trait'     => 'Traits',
+	'attribute' => 'Attributes'
+];
+
+$Counts = [
+	'namespace'=> $Codebase->Namespaces->Count()
+];
+
+foreach(['class', 'interface', 'trait', 'attribute'] as $CKey)
+$Counts[$CKey] = ($Codebase->Namespaces)->Accumulate(0, (
+	fn(int $Carry, NamespaceInspector $Namespace): int
+	=> ($Carry + (
+		($Namespace->Classes)
+		->Distill(
+			fn(ClassInspector $Class): bool
+			=> ($Class->GetTypeWord() === $CKey)
+		)
+		->Count()
+	))
+));
+
+?>
+
+<div class="container pt-6 pb-6">
+
+	<div class="mb-6 text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
+		<a href="/docs" class="Block Primary">docs</a> \
+	</div>
+
+	<div class="SenseiClassHighlights mb-6">
+		<div class="row">
+			<?php foreach($Names as $Key => $Name): ?>
+			<div class="col-6 col-md-4 mb-4">
+				<div class="jumbotron rounded">
+					<div class="font-size-largerer fw-light letter-space-looserer text-uppercase mb-1">
+						<?php $Printer($Name) ?>
+					</div>
+					<div class="font-size-most-large">
+						<blockquote class="fw-light blockquote-edged letter-space-looser line-height-normal mb-0 pt-0 pb-0 border-colour-<?php $Printer($Key) ?>">
+							<?php $Printer($Counts[$Key]) ?>
+						</blockquote>
+					</div>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
+	<?php foreach($Codebase->Namespaces->Distill($FilterNS) as $Namespace): ?>
+	<div class="mb-6">
+		<div class="text-muted fw-bold font-size-largerest font-family-monotype letter-space-loose line-height-normal mb-3">
+			<span class="font-family-monotype Block Namespace">namespace</span>
+			<?php echo Nether\Sensei\Util::GenerateNamespaceLinkChainHTML($Namespace->Name) ?>
+		</div>
+		<?php foreach($Namespace->Classes->Sort($SortClass) as $Class): ?>
+			<div class="font-family-monotype letter-space-loose line-height-normal mb-3">
+				<span class="font-family-monotype Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
+				<a href="/docs/<?php $Printer($Class->GetURI('.class')) ?>"><?php $Printer($Class->GetBaseName()) ?></a>
+			</div>
+		<?php endforeach; ?>
+	</div>
+	<?php endforeach; ?>
+
+</div>

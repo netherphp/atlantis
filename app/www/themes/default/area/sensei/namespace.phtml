@@ -1,0 +1,53 @@
+<?php
+
+use Nether\Sensei\Codebase;
+use Nether\Sensei\Inspectors\NamespaceInspector;
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Inspectors\ConstantInspector;
+use Nether\Sensei\Inspectors\PropertyInspector;
+use Nether\Sensei\Inspectors\MethodInspector;
+use nether\Sensei\Inspectors\ArgumentInspector;
+
+/**
+ * @var NamespaceInspector $Namespace
+ */
+
+?>
+
+<div class="container pt-6 pb-6">
+
+	<div class="text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
+		<a href="/docs" class="Block Primary">docs</a> \
+		<?php echo (
+			$Namespace->GetNamespaceName()
+			? Nether\Sensei\Util::GenerateNamespaceLinkChainHTML($Namespace->GetNamespaceName())
+			: ''
+		); ?>
+	</div>
+	<h1 class="font-size-most-large fw-bold font-family-monotype letter-space-loose line-height-normal mb-3">
+		<span class="Block Namespace">namespace</span>
+		<?php $Printer($Namespace->GetBaseName()) ?>
+	</h1>
+
+	<div class="mb-8">
+	</div>
+
+	<?php if($Namespace->Namespaces->Count()): ?>
+	<h2 class="fw-bold text-uppercase mb-4">Namespaces</h2>
+	<div class="mb-8">
+		<?php foreach($Namespace->Namespaces as $NS): /** @var ClassInspector $Class */ ?>
+		<?php $Surface->Area('sensei/namespace-child', [ 'Namespace'=> $NS ]); ?>
+		<?php endforeach; ?>
+	</div>
+	<?php endif; ?>
+
+	<?php if($Namespace->Classes->Count()): ?>
+	<h2 class="fw-bold text-uppercase mb-4">Classes</h2>
+	<div class="mb-8">
+		<?php foreach($Namespace->Classes as $Class): /** @var ClassInspector $Class */ ?>
+		<?php $Surface->Area('sensei/namespace-class', [ 'Namespace'=> $Namespace, 'Class'=> $Class ]); ?>
+		<?php endforeach; ?>
+	</div>
+	<?php endif; ?>
+
+</div>

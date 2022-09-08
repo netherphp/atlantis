@@ -1,0 +1,25 @@
+<?php
+
+use Nether\Sensei\Codebase;
+use Nether\Sensei\Inspectors\NamespaceInspector;
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Inspectors\ConstantInspector;
+use Nether\Sensei\Inspectors\PropertyInspector;
+use Nether\Sensei\Inspectors\MethodInspector;
+use nether\Sensei\Inspectors\ArgumentInspector;
+
+/**
+ * @var NamespaceInspector $Namespace
+ * @var ClassInspector $Class
+ */
+
+?>
+
+<div class="mb-2">
+	<span class="font-family-monotype Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer(ucfirst($Class->GetTypeWord())) ?></span>
+	<span class="font-family-monotype text-underline">
+		<a href="/docs/<?php $Printer($Class->GetURI('.class')) ?>">
+			<?php $Printer($Class->GetBaseName()) ?>
+		</a>
+	</span>
+</div>

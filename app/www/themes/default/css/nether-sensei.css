@@ -1,0 +1,94 @@
+:root {
+	--SenseiGreen: #9ddd4f;
+	--SenseiPurple: #b991d9;
+	--SenseiGrey: #c0c0c0;
+	--SenseiBlue: #51b6dd;
+
+	--SenseiNamespace: #5a74bb;
+	--SenseiClass: #51b6dd;
+	--SenseiInterface: #c26ebe;
+	--SenseiTrait: #845dcc;
+	--SenseiAttribute: #8ac3da;
+
+	--SenseiFinal: #dd4f4f;
+	--SenseiAbstract: #b14141;
+	--SenseiStatic: #dd774f;
+	--SenseiAccess: #81b146;
+	--SenseiType: #3875af;
+
+	--TextLight: #eeeeee;
+	--TextDark: #222222;
+	--ColourDark: #222222;
+	--ColourLight: #eeeeee;
+}
+
+.border-colour-namespace { border-color: var(--SenseiNamespace); }
+.border-colour-class { border-color: var(--SenseiClass); }
+.border-colour-interface { border-color: var(--SenseiInterface); }
+.border-colour-trait { border-color: var(--SenseiTrait); }
+.border-colour-attribute { border-color: var(--SenseiAttribute); }
+
+.Tag {
+	border-top: 2px solid var(--SenseiGrey);
+	padding-top: 2px;
+}
+
+.Tag.Primary { border-color: var(--SenseiGreen); }
+.Tag.Secondary { border-color: var(--SenseiPurple); }
+.Tag.Type { border-color: var(--SenseiType); }
+.Tag.Class { border-color: var(--SenseiClass); }
+.Tag.Interface { border-color: var(--SenseiInterface); }
+.Tag.Trait { border-color: var(--SenseiTrait); }
+.Tag.Namespace { border-color: var(--SenseiNamespace); }
+.Tag.Final { border-color: var(--SenseiFinal); }
+.Tag.Static { border-color: var(--SenseiStatic); }
+.Tag.Access { border-color: var(--SenseiAccess); }
+.Tag.Abstract { border-color: var(--SenseiFinal); }
+.Tag.Attribute { border-color: var(--SenseiAttribute); }
+
+.TagText {
+	color: var(--SenseiGrey);
+}
+
+.TagText.Primary { color: var(--SenseiGreen); }
+.TagText.Secondary { color: var(--SenseiPurple); }
+.TagText.Type { color: var(--SenseiBlue); }
+
+.Tag > a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom-color: inherit;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.Block {
+	background-color: var(--SenseiGrey);
+	color: var(--ColourDark);
+	border-radius: 2px;
+	font-weight: bold;
+	line-height: 1em;
+	padding: 1px 6px;
+	text-decoration: none;
+	vertical-align: middle;
+}
+
+.Block:link,
+.Block:visited {
+	color: var(--ColourDark);
+}
+
+.Block.Primary { background-color: var(--ColourPrimaryAccent); }
+.Block.Secondary { background-color: var(--ColourSecondaryAccent); }
+.Block.Access { background-color: var(--SenseiPurple); }
+.Block.Type { background-color: var(--SenseiType); }
+.Block.Class { background-color: var(--SenseiClass); }
+.Block.Interface { background-color: var(--SenseiInterface); }
+.Block.Trait { background-color: var(--SenseiTrait); }
+.Block.Namespace { background-color: var(--SenseiNamespace); }
+.Block.Final { background-color: var(--SenseiFinal); }
+.Block.Static { background-color: var(--SenseiStatic); }
+.Block.Access { background-color: var(--SenseiAccess); }
+.Block.Abstract { background-color: var(--SenseiAbstract); }
+.Block.Attribute { background-color: var(--SenseiAttribute); }

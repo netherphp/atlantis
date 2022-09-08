@@ -1,0 +1,59 @@
+<?php
+
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Inspectors\MethodInspector;
+use nether\Sensei\Inspectors\ArgumentInspector;
+
+/**
+ * @var ClassInspector $Class
+ * @var MethodInspector $Method
+ */
+
+?>
+
+<div class="row fw-light letter-space-loose font-family-monotype mb-2">
+	<?php if($Method->Final): ?>
+	<div class="col-auto">
+		<span class="Tag Access">final</span>
+	</div>
+	<?php endif; ?>
+	<?php if($Method->Static): ?>
+	<div class="col-auto">
+		<span class="Tag Static">static</span>
+	</div>
+	<?php endif; ?>
+	<div class="col-auto">
+		<span class="Tag Access"><?php $Printer($Method->GetAccessWord()) ?></span>
+	</div>
+	<div class="col-auto">
+		<span class="Tag Type"><?php $Printer($Method->GetTypeWord()) ?></span>
+	</div>
+</div>
+
+<div class="fw-bold font-size-larger <?php $Printer($Method->Info ? 'mb-4' : 'mb-0') ?>">
+	<div class="row tight align-items-center font-family-monotype">
+		<div class="col-auto">
+			<?php $Printer($Method->GetName()) ?>(
+		</div>
+
+		<?php foreach($Method->Args as $Key => $Arg): /** @var ArgumentInspector $Arg */ ?>
+		<div class="col-auto">
+			<span class="Tag Type font-size-smaller letter-space-loose"><?php $Printer($Arg->Type) ?></span>
+			$<span class="opacity-75"><?php $Printer($Arg->Name) ?><?php if(!$Method->Args->IsLastKey($Key)) echo ','; ?></span>
+		</div>
+		<?php endforeach; ?>
+
+		<?php if($Method->Args->Count() === 0): ?>
+		<div class="col-auto opacity-25">
+			void
+		</div>
+		<?php endif; ?>
+
+		<div class="col-auto">);</div>
+	</div>
+</div>
+
+<?php if($Method->Info): ?>
+<blockquote class="blockquote blockquote-edged text-muted fs-italic mb-0"><?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Method->Info)) ?></blockquote>
+<?php endif; ?>
+

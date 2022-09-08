@@ -1,0 +1,126 @@
+<?php
+
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Inspectors\ConstantInspector;
+use Nether\Sensei\Inspectors\PropertyInspector;
+use Nether\Sensei\Inspectors\MethodInspector;
+use nether\Sensei\Inspectors\ArgumentInspector;
+
+/**
+ * @var ClassInspector $Class
+ */
+
+$MethodsLocal = $Class->GetMethodsLocal();
+$PropsLocal = $Class->GetPropertiesLocal();
+$ConstsLocal = $Class->GetConstantsLocal();
+
+$MethodsRemote = $Class->GetMethodsInherited();
+$PropsRemote = $Class->GetPropertiesInherited();
+$ConstsRemote = $Class->GetConstantsInherited();
+
+?>
+
+<div class="container pt-6 pb-6">
+
+	<div class="SenseiClassHeader">
+		<div class="text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
+			<a href="/docs" class="Block Primary">docs</a> \
+			<?php echo (
+				$Class->GetNamespaceName()
+				? Nether\Sensei\Util::GenerateNamespaceLinkChainHTML($Class->GetNamespaceName())
+				: ''
+			); ?>
+		</div>
+		<h1 class="font-size-most-large fw-bold font-family-monotype letter-space-loose line-height-normal mb-3">
+			<?php if($Class->Final): ?>
+			<span class="Block Final">final</span>
+			<?php endif; ?>
+			<?php if($Class->Abstract): ?>
+			<span class="Block Abstract">abstract</span>
+			<?php endif; ?>
+			<span class="Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
+			<?php $Printer($Class->GetBaseName()) ?>
+		</h1>
+		<?php foreach($Class->Interfaces as $Key => $Interface): ?>
+		<div class="text-muted font-family-monotype letter-space-loose line-height-normal mb-3">
+			<span class="font-family-monotype Block Interface">interface</span>
+			<?php echo (
+				Nether\Sensei\Util::IsBuiltInInterface($Interface)
+				? sprintf(
+					'<a href="%s" title="PHP Manual" target="_blank">%s <i class="im im-external-link font-size-smaller"></i></a>',
+					Nether\Sensei\Util::GetClassManualURL($Interface),
+					$Interface
+				)
+				: Nether\Sensei\Util::GenerateClassLinkChainHTML($Interface)
+			) ?>
+		</div>
+		<?php endforeach; ?>
+	</div>
+
+	<div class="SenseiClassInfo mb-8">
+		<?php if($Class->Info): ?>
+		<blockquote class="blockquote blockquote-edged"><?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Class->Info)) ?></blockquote>
+		<?php endif; ?>
+	</div>
+
+	<div class="SenseiClassHighlights mb-6">
+		<div class="row">
+			<div class="col-6 col-md-4 mb-4">
+				<div class="jumbotron rounded">
+				<div class="font-size-largerer fw-bold text-uppercase">Constants</div>
+				<div class="font-size-largerer">
+					<?php $Printer($ConstsLocal->Count()) ?>
+					<?php if($ConstsRemote->Count()): ?>
+					<span class="text-muted fs-italic">(+<?php $Printer($ConstsRemote->Count()) ?>)</span>
+					<?php endif; ?>
+				</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-4 mb-4">
+				<div class="jumbotron rounded">
+				<div class="font-size-largerer fw-bold text-uppercase">Properties</div>
+				<div class="font-size-largerer">
+					<?php $Printer($PropsLocal->Count()) ?>
+					<?php if($PropsRemote->Count()): ?>
+					<span class="text-muted fs-italic">(+<?php $Printer($PropsRemote->Count()) ?>)</span>
+					<?php endif; ?>
+				</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-4 mb-4">
+				<div class="jumbotron rounded">
+				<div class="font-size-largerer fw-bold text-uppercase">Methods</div>
+				<div class="font-size-largerer">
+					<?php $Printer($MethodsLocal->Count()) ?>
+					<?php if($MethodsRemote->Count()): ?>
+					<span class="text-muted fs-italic">(+<?php $Printer($MethodsRemote->Count()) ?>)</span>
+					<?php endif; ?>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<?php if($MethodsLocal->Count()): ?>
+	<h2 class="fw-bold text-uppercase opacity-75 mb-4">Local Methods</h2>
+		<?php foreach($MethodsLocal as $Key => $Method): /** @var MethodInspector $Method */ ?>
+		<div class="jumbotron rounded mb-4">
+		<div class="SenseiClassMethod <?php $Printer($MethodsLocal->IsLastKey($Key) ? 'mb-0' : 'mb-0') ?>">
+		<?php $Surface->Area('sensei/class-method', [ 'Class'=> $Class, 'Method'=> $Method ]); ?>
+		</div>
+		</div>
+		<?php endforeach; ?>
+	<?php endif; ?>
+
+	<?php if($MethodsRemote->Count()): ?>
+	<h2 class="fw-bold text-uppercase opacity-75 mb-4">Inherited Methods</h2>
+		<?php foreach($MethodsRemote as $Key => $Method): /** @var MethodInspector $Method */ ?>
+		<div class="jumbotron rounded mb-4">
+		<div class="SenseiClassMethod <?php $Printer($MethodsRemote->IsLastKey($Key) ? 'mb-0' : 'mb-4') ?>">
+		<?php $Surface->Area('sensei/class-method', [ 'Class'=> $Class, 'Method'=> $Method ]); ?>
+		</div>
+		</div>
+		<?php endforeach; ?>
+	<?php endif; ?>
+
+</div>

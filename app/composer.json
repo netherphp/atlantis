@@ -1,5 +1,11 @@
 {
 	"minimum-stability": "dev",
+	"config": {
+		"preferred-install": {
+			"netherphp/*": "source",
+			"*": "dist"
+		}
+	},
 	"require": {
 		"netherphp/atlantis": "dev-master"
 	},

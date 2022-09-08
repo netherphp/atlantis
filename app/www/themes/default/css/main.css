@@ -3,23 +3,25 @@
 	--ColourPrimaryAccent: #1a65bb;
 	--ColourSecondaryAccent: #104a8d;
 	--ColourTertiaryAccent: #5e86b4;
-	--ColourTextAccent: #FFFFFF;
-
-	--ColourForegroundRoot: #F4F4F4;
-	--ColourBackgroundRoot: #111111;
-
-	--ColourForegroundPage: #FDFDFD;
-	--ColourBackgroundPage: #222222;
+	--ColourTextAccent: #666666;
 
 	--ColourHeaderBackground: #000000;
 
 	--FontFamilyNormal: 'Segoe UI';
 	--FontWeightNormal: 300;
 
-	--FontFamilyMonotype: 'Consolas';
+	--FontFamilyMonotype: 'Consolas', 'Menlo', monospace;
 	--FontWeightMonotype: 300;
 
 	--ThemeHeaderHeight: 100px;
+
+	/* html layer */
+	--ColourForegroundRoot: #F4F4F4;
+	--ColourBackgroundRoot: #111111;
+
+	/* body layer */
+	--ColourForegroundPage: #FDFDFD;
+	--ColourBackgroundPage: #222222;
 }
 
 html, body {
@@ -27,10 +29,7 @@ html, body {
 	color: var(--ColourForegroundRoot);
 }
 
-a:link,
-a:visited {
-	color: var(--ColourForegroundRoot);
-}
+
 
 code {
 	font-family: var(--FontFamilyMonotype);
@@ -75,9 +74,27 @@ img {
 	color: var(--ColourForegroundPage);
 }
 
+#PageMain a:link:not(.Block):not(.Tag),
+#PageMain a:visited:not(.Block):not(.Tag) {
+	color: var(--ColourForegroundRoot);
+	border-bottom: 1px dotted;
+	border-bottom-color: var(--ColourForegroundRoot);
+	text-decoration: none;
+	transition: border-bottom-color 200ms;
+}
+
+#PageMain a:active:not(.Block):not(.Tag),
+#PageMain a:hover:not(.Block):not(.Tag) {
+	border-bottom-color: var(--ColourTertiaryAccent);
+}
+
 #PageFooter {
 	background: var(--ColourBackgroundRoot);
 	padding: 64px 0px;
+}
+
+.im {
+
 }
 
 .ArticlePrelabel {
@@ -90,7 +107,7 @@ img {
 
 .PrettyBrandText {
 	font-weight: bold;
-	text-decoration: overline 0.15em var(--ColourPrimaryAccent);
+	text-decoration: overline 0.15em var(--ColourPrimaryAccent) !important;
 	text-transform: uppercase;
 }
 

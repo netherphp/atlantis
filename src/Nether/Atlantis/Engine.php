@@ -4,6 +4,12 @@ namespace Nether\Atlantis;
 use Nether;
 
 class Engine {
+/*//
+provides the core application instance and api for bringing all the components
+to drive the app together. it will manage instances for cases where like the
+theme engine and routers it makes sense where you would only ever have one for
+the entire application scope.
+//*/
 
 	public Nether\Object\Datastore
 	$Config;
@@ -94,6 +100,9 @@ class Engine {
 	public function
 	IsEnv(string $Env):
 	bool {
+	/*//
+	return if the ProjectEnv matches what was asked for.
+	//*/
 
 		return ($this->ProjectEnv === $Env);
 	}
@@ -101,6 +110,9 @@ class Engine {
 	public function
 	IsDev():
 	bool {
+	/*//
+	return if the ProjectEnv is 'dev'.
+	//*/
 
 		return $this->IsEnv('dev');
 	}
@@ -108,6 +120,9 @@ class Engine {
 	public function
 	IsProd():
 	bool {
+	/*//
+	return if the ProjectEnv is anything other than 'dev'.
+	//*/
 
 		return !$this->IsEnv('dev');
 	}

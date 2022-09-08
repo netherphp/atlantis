@@ -28,6 +28,16 @@
 /*******************************************************************************
 **** font stuff ***************************************************************/
 
+.blockquote-edged {
+	border-left: 4px solid;
+	border-left-color: var(--ColourTextAccent);
+	padding-left: 16px;
+}
+
+.blockquote-edged-primary {
+	border-left-color: var(--ColourPrimaryAccent);
+}
+
 .font-size-normal { font-size: 1.0rem; }
 .font-size-small { font-size: 0.9rem; }
 .font-size-smaller { font-size: 0.8rem; }
@@ -145,6 +155,9 @@
 .vw-25 { width: 25vw !important; }
 .vw-0 { width: 0vw !important; }
 
+.row.tight { margin-left: -0.25rem; margin-right: -0.25rem; }
+.row.tight > *[class^='col'] { padding-left: .25rem; padding-right: .25rem; }
+
 /*******************************************************************************
 **** animating stuff **********************************************************/
 
@@ -260,5 +273,10 @@
 
 /*******************************************************************************
 **** misc stuff ***************************************************************/
+
+.jumbotron {
+	background: #1A1A1A;
+	padding: 1em;
+}
 
 .rounded-extra { border-radius: 10px; }
