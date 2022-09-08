@@ -7,7 +7,7 @@
 $Config
 ->Set('Project.Name', 'Atlantis WebApp')
 ->Set('Project.Key', 'atlantis')
-->Set('Project.WebServerType', '');
+->Set('Project.WebServerType', NULL);
 
 $Config
 ->Set('AcmePHP.Phar', '')

@@ -247,11 +247,12 @@ the entire application scope.
 	LoadProjectConfig():
 	static {
 
-		$File = sprintf(
-			'%s/conf/config.php',
-			$this->ProjectRoot
-		);
+		$Files = [
+			sprintf('%s/conf/config.php', $this->ProjectRoot),
+			sprintf('%s/conf/local.php', $this->ProjectRoot)
+		];
 
+		foreach($Files as $File)
 		if(is_readable($File))
 		(function(string $__FILENAME, Nether\Object\Datastore $Config){
 			require($__FILENAME);

@@ -42,6 +42,10 @@ img {
 	object-fit: contain;
 }
 
+hr {
+	opacity: 1.0;
+}
+
 #PageHeader {
 	position: relative;
 	z-index: 9001;
@@ -93,9 +97,9 @@ img {
 	padding: 64px 0px;
 }
 
-.im {
-
-}
+.border-colour-primary { border-color: var(--ColourPrimaryAccent) !important; }
+.border-colour-secondary { border-color: var(--ColourSecondaryAccent) !important; }
+.border-colour-tertiary { border-color: var(--ColourTertiaryAccent) !important; }
 
 .ArticlePrelabel {
 	color: var(--ColourTertiaryAccent);
@@ -106,8 +110,11 @@ img {
 }
 
 .PrettyBrandText {
+	display: inline-block;
 	font-weight: bold;
-	text-decoration: overline 0.15em var(--ColourPrimaryAccent) !important;
+	/*text-decoration: overline 0.15em var(--ColourPrimaryAccent) !important;*/
+	border-top: 0.15em solid;
+	border-color: var(--ColourPrimaryAccent);
 	text-transform: uppercase;
 }
 
@@ -118,5 +125,61 @@ img {
 
 .PrettyFooterLinkGrid a:hover {
 	border-top: 2px solid #FFFFFF;
+}
+
+.PrettyModernBox {
+	background-color: #1A1A1A;
+	border-radius: 5px;
+	padding: 1.0em;
+}
+
+.PrettyModernBox h3 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	letter-spacing: 0.12em;
+	margin-bottom: 0.5em;
+	font-size: 1.4em;
+	font-weight: 200;
+	text-transform: uppercase;
+}
+
+.PrettyModernBox h3 a,
+.PrettyModernBox h3 span {
+	flex-grow: 0;
+}
+
+.PrettyModernBox h3 hr {
+	flex-grow: 1;
+	margin: 0px;
+	padding: 0px
+}
+
+.PrettyModernBox h3 hr:first-child {
+	margin: 0px 0.5em 0px 0px;
+}
+
+.PrettyModernBox h3 hr:last-child {
+	margin: 0px 0px 0px 0.5em;
+}
+
+.PrettyModernBox a:link,
+.PrettyModernBox a:visited {
+	border-bottom: 0px !important;
+}
+
+.PrettyModernBox blockquote {
+	letter-spacing: 0.12em;
+	line-height: 1em;
+	font-size: 2em;
+	font-weight: 200;
+	margin-bottom: 0px;
+	text-align: right;
+}
+
+.PrettyModernBox .PrettyBrandText {
+	border-top: 0.10em solid;
+	font-weight: 200;
 }
 

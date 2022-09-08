@@ -1,0 +1,39 @@
+<?php
+
+use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Sensei\Inspectors\ConstantInspector;
+use nether\Sensei\Inspectors\ArgumentInspector;
+
+/**
+ * @var ClassInspector $Class
+ * @var ConstantInspector $Constant
+ */
+
+?>
+
+<div class="row fw-light letter-space-loose font-family-monotype mb-2">
+	<div class="col-auto">
+		<span class="Tag Access"><?php $Printer($Constant->GetAccessWord()) ?></span>
+	</div>
+	<div class="col-auto">
+		<span class="Tag Type"><?php $Printer($Constant->GetTypeWord()) ?></span>
+	</div>
+</div>
+
+<div class="fw-bold font-size-larger letter-space-loose <?php $Printer($Constant->Info ? 'mb-4' : 'mb-0') ?>">
+	<div class="row tight align-items-center font-family-monotype">
+		<div class="col-12">
+			<?php $Printer($Constant->GetName()) ?>
+		</div>
+		<div class="col-12 font-size-normal fw-normal fst-italic opacity-50">
+			<?php $Printer($Constant->Value) ?>
+		</div>
+	</div>
+</div>
+
+<?php if($Constant->Info): ?>
+<blockquote class="blockquote blockquote-edged text-muted fs-italic mb-0">
+	<?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Constant->Info)) ?>
+</blockquote>
+<?php endif; ?>
+

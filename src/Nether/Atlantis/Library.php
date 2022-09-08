@@ -21,4 +21,9 @@ class Library {
 	ConfAcmeCity       = 'AcmePHP.City',
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
 
+	const
+	WebServerTypeNone     = NULL,
+	WebServerTypeApache24 = 'apache24';
+
 }
+

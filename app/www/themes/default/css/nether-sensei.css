@@ -13,8 +13,12 @@
 	--SenseiFinal: #dd4f4f;
 	--SenseiAbstract: #b14141;
 	--SenseiStatic: #dd774f;
-	--SenseiAccess: #81b146;
+	--SenseiAccess: #c4a85d;
+
 	--SenseiType: #3875af;
+	--SenseiConstant: #38af6a;
+	--SenseiProperty: #3da87f;
+	--SenseiMethod: #55ad61;
 
 	--TextLight: #eeeeee;
 	--TextDark: #222222;
@@ -22,11 +26,15 @@
 	--ColourLight: #eeeeee;
 }
 
-.border-colour-namespace { border-color: var(--SenseiNamespace); }
-.border-colour-class { border-color: var(--SenseiClass); }
-.border-colour-interface { border-color: var(--SenseiInterface); }
-.border-colour-trait { border-color: var(--SenseiTrait); }
-.border-colour-attribute { border-color: var(--SenseiAttribute); }
+.border-colour-namespace { border-color: var(--SenseiNamespace) !important; }
+.border-colour-class { border-color: var(--SenseiClass) !important; }
+.border-colour-interface { border-color: var(--SenseiInterface) !important; }
+.border-colour-trait { border-color: var(--SenseiTrait) !important; }
+.border-colour-attribute { border-color: var(--SenseiAttribute) !important; }
+.border-colour-constant { border-color: var(--SenseiConstant) !important; }
+.border-colour-property { border-color: var(--SenseiProperty) !important; }
+.border-colour-method { border-color: var(--SenseiMethod) !important; }
+
 
 .Tag {
 	border-top: 2px solid var(--SenseiGrey);

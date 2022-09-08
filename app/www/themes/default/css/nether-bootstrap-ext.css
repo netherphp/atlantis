@@ -28,10 +28,17 @@
 /*******************************************************************************
 **** font stuff ***************************************************************/
 
-.blockquote-edged {
+.blockquote-edged,
+.edged-left {
 	border-left: 4px solid;
 	border-left-color: var(--ColourTextAccent);
-	padding-left: 16px;
+	padding-left: 0.75em;
+}
+
+.blockquote-edged-thicc,
+.edged-left-thicc {
+	border-left: 0.5em solid;
+	padding-left: 0.75em;
 }
 
 .blockquote-edged-primary {

@@ -22,7 +22,7 @@ $ConstsRemote = $Class->GetConstantsInherited();
 
 <div class="container pt-6 pb-6">
 
-	<div class="SenseiClassHeader">
+	<div class="SenseiClassHeader <?php $Printer($Class->Info ? 'mb-4' : 'mb-0') ?>">
 		<div class="text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
 			<a href="/docs" class="Block Primary">docs</a> \
 			<?php echo (
@@ -59,68 +59,116 @@ $ConstsRemote = $Class->GetConstantsInherited();
 
 	<div class="SenseiClassInfo mb-8">
 		<?php if($Class->Info): ?>
-		<blockquote class="blockquote blockquote-edged"><?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Class->Info)) ?></blockquote>
+		<blockquote class="blockquote pt-0 pb-0 opacity-50 font-family-monotype edged-left"><?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Class->Info)) ?></blockquote>
 		<?php endif; ?>
 	</div>
 
-	<div class="SenseiClassHighlights mb-6">
+	<div class="SenseiClassHighlights mb-8">
 		<div class="row">
 			<div class="col-6 col-md-4 mb-4">
-				<div class="jumbotron rounded">
-				<div class="font-size-largerer fw-bold text-uppercase">Constants</div>
-				<div class="font-size-largerer">
-					<?php $Printer($ConstsLocal->Count()) ?>
-					<?php if($ConstsRemote->Count()): ?>
-					<span class="text-muted fs-italic">(+<?php $Printer($ConstsRemote->Count()) ?>)</span>
-					<?php endif; ?>
-				</div>
-				</div>
-			</div>
-			<div class="col-6 col-md-4 mb-4">
-				<div class="jumbotron rounded">
-				<div class="font-size-largerer fw-bold text-uppercase">Properties</div>
-				<div class="font-size-largerer">
-					<?php $Printer($PropsLocal->Count()) ?>
-					<?php if($PropsRemote->Count()): ?>
-					<span class="text-muted fs-italic">(+<?php $Printer($PropsRemote->Count()) ?>)</span>
-					<?php endif; ?>
-				</div>
+				<div class="PrettyModernBox">
+					<h3>
+						<a href="#constants-local">Constants</a>
+						<hr class="border-colour-constant" />
+					</h3>
+					<blockquote>
+						<a href="#constants-local"><?php $Printer($ConstsLocal->Count()) ?></a>
+						<?php if($ConstsRemote->Count()): ?>
+						<a href="#constants-inherited" class="text-muted fs-italic">(+<?php $Printer($ConstsRemote->Count()) ?>)</a>
+						<?php endif; ?>
+					</blockquote>
 				</div>
 			</div>
 			<div class="col-6 col-md-4 mb-4">
-				<div class="jumbotron rounded">
-				<div class="font-size-largerer fw-bold text-uppercase">Methods</div>
-				<div class="font-size-largerer">
-					<?php $Printer($MethodsLocal->Count()) ?>
-					<?php if($MethodsRemote->Count()): ?>
-					<span class="text-muted fs-italic">(+<?php $Printer($MethodsRemote->Count()) ?>)</span>
-					<?php endif; ?>
-				</div>
+				<div class="PrettyModernBox">
+					<h3>
+						<a href="#properties-local">Properties</a>
+						<hr class="border-colour-property" />
+					</h3>
+					<blockquote>
+						<a href="#properties-local"><?php $Printer($PropsLocal->Count()) ?></a>
+						<?php if($PropsRemote->Count()): ?>
+						<a href="#properties-inherited" class="text-muted fs-italic">(+<?php $Printer($PropsRemote->Count()) ?>)</a>
+						<?php endif; ?>
+					</blockquote>
 				</div>
 			</div>
+			<div class="col-6 col-md-4 mb-4">
+				<div class="PrettyModernBox">
+					<h3>
+						<a href="#methods-local">Methods</a>
+						<hr class="border-colour-method" />
+					</h3>
+					<blockquote>
+						<a href="#methods-local"><?php $Printer($MethodsLocal->Count()) ?></a>
+						<?php if($MethodsRemote->Count()): ?>
+						<a href="#methods-inherited" class="text-muted fs-italic">(+<?php $Printer($MethodsRemote->Count()) ?>)</a>
+						<?php endif; ?>
+					</blockquote>
+				</div>
+			</div>
+
 		</div>
 	</div>
 
+	<?php if($ConstsLocal->Count()): ?>
+		<div class="pb-4 mb-8">
+			<h2 id="constants-local" class="PrettyBrandText border-colour-constant mb-6">Local Constants</h2>
+			<div class="row">
+				<?php foreach($ConstsLocal as $Key => $Constant): /** @var ConstantInpector $Method */ ?>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="jumbotron rounded mb-4">
+						<div class="SenseiClassMethod <?php $Printer($ConstsLocal->IsLastKey($Key) ? 'mb-0' : 'mb-0') ?>">
+						<?php $Surface->Area('sensei/class-constant', [ 'Class'=> $Class, 'Constant'=> $Constant ]); ?>
+						</div>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+
+	<?php if($ConstsRemote->Count()): ?>
+		<div class="pb-4 mb-8">
+			<h2 id="constants-local" class="PrettyBrandText border-colour-constant mb-6">Inherited Constants</h2>
+			<div class="row">
+				<?php foreach($ConstsRemote as $Key => $Constant): /** @var ConstantInpector $Method */ ?>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="jumbotron rounded mb-4">
+						<div class="SenseiClassMethod <?php $Printer($ConstsRemote->IsLastKey($Key) ? 'mb-0' : 'mb-0') ?>">
+						<?php $Surface->Area('sensei/class-constant', [ 'Class'=> $Class, 'Constant'=> $Constant ]); ?>
+						</div>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+
 	<?php if($MethodsLocal->Count()): ?>
-	<h2 class="fw-bold text-uppercase opacity-75 mb-4">Local Methods</h2>
-		<?php foreach($MethodsLocal as $Key => $Method): /** @var MethodInspector $Method */ ?>
-		<div class="jumbotron rounded mb-4">
-		<div class="SenseiClassMethod <?php $Printer($MethodsLocal->IsLastKey($Key) ? 'mb-0' : 'mb-0') ?>">
-		<?php $Surface->Area('sensei/class-method', [ 'Class'=> $Class, 'Method'=> $Method ]); ?>
+		<div class="pb-4 mb-8">
+			<h2 id="methods-local" class="PrettyBrandText border-colour-method mb-6">Local Methods</h2>
+			<?php foreach($MethodsLocal as $Key => $Method): /** @var MethodInspector $Method */ ?>
+			<div class="jumbotron rounded mb-4">
+				<div class="SenseiClassMethod <?php $Printer($MethodsLocal->IsLastKey($Key) ? 'mb-0' : 'mb-0') ?>">
+				<?php $Surface->Area('sensei/class-method', [ 'Class'=> $Class, 'Method'=> $Method ]); ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
 		</div>
-		</div>
-		<?php endforeach; ?>
 	<?php endif; ?>
 
 	<?php if($MethodsRemote->Count()): ?>
-	<h2 class="fw-bold text-uppercase opacity-75 mb-4">Inherited Methods</h2>
-		<?php foreach($MethodsRemote as $Key => $Method): /** @var MethodInspector $Method */ ?>
-		<div class="jumbotron rounded mb-4">
-		<div class="SenseiClassMethod <?php $Printer($MethodsRemote->IsLastKey($Key) ? 'mb-0' : 'mb-4') ?>">
-		<?php $Surface->Area('sensei/class-method', [ 'Class'=> $Class, 'Method'=> $Method ]); ?>
+		<div class="pb-4 mb-8">
+			<h2 id="methods-inherited" class="PrettyBrandText border-colour-method mb-6">Inherited Methods</h2>
+			<?php foreach($MethodsRemote as $Key => $Method): /** @var MethodInspector $Method */ ?>
+			<div class="jumbotron rounded mb-4">
+				<div class="SenseiClassMethod <?php $Printer($MethodsRemote->IsLastKey($Key) ? 'mb-0' : 'mb-4') ?>">
+				<?php $Surface->Area('sensei/class-method', [ 'Class'=> $Class, 'Method'=> $Method ]); ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
 		</div>
-		</div>
-		<?php endforeach; ?>
 	<?php endif; ?>
 
 </div>
