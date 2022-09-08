@@ -111,8 +111,11 @@ the entire application scope.
 	IsDev():
 	bool {
 	/*//
-	return if the ProjectEnv is 'dev'.
+	return if this environment is a development one.
 	//*/
+
+		if(str_starts_with($this->ProjectEnv, 'dev-'))
+		return TRUE;
 
 		return $this->IsEnv('dev');
 	}
@@ -121,10 +124,13 @@ the entire application scope.
 	IsProd():
 	bool {
 	/*//
-	return if the ProjectEnv is anything other than 'dev'.
+	return if this environment is a production one.
 	//*/
 
-		return !$this->IsEnv('dev');
+		if(str_starts_with($this->ProjectEnv, 'prod-'))
+		return TRUE;
+
+		return $this->IsEnv('prod');
 	}
 
 	public function
@@ -132,6 +138,22 @@ the entire application scope.
 	string {
 
 		return $this->ProjectEnv;
+	}
+
+	public function
+	GetProjectEnvType():
+	string {
+
+		//if($this->IsDev())
+		//return 'dev';
+
+		//if($this->IsProd())
+		//return 'prod';
+
+		if(str_contains($this->ProjectEnv, '-'))
+		return explode('-', $this->ProjectEnv, 2)[0];
+
+		return 'unknown';
 	}
 
 	public function

@@ -295,19 +295,37 @@ extends Nether\Console\Client {
 
 		////////
 
+		// @todo 2022-09-08 move this to a dedicated server configuration
+		// class structure where it will be cleaner to go even deeper like
+		// trying to make things easy based on detecte distro config. my
+		// defaults atm are all expecting debian styled systems.
+
 		switch($App->Config['Project.WebServerType']) {
 			case 'apache':
 			case 'apache24':
 				$Source = $Filename ?? $App->GetEnvConfigRoot('apache24.conf');
 				$DestDir = $DestDir ?? '/etc/apache2/sites-enabled';
 
+				// apache decides which vhost to execute based on the
+				// first match it finds that is willing where the
+				// config files are sorted alphabetically. you should
+				// not typically run dev, demo, and prod, all on the
+				// same server but its a lot cheaper to do so when you
+				// are just a project.
+
+				// prod envs typically are going to respond to:
+				// domain.tld & *.domain.tld
+
+				// so we want our dev.domain.tld and demo.domain.tld
+				// to respond before the wildcards do.
+
 				if(!$DestName)
 				$DestName = sprintf(
 					'%s-%s-%s.conf',
-					(match($App->GetProjectEnv()){
-						'dev'   => 100,
-						'prod'  => 900,
-						default => 500
+					(match(TRUE){
+						$App->IsDev()  => 100,
+						$App->IsProd() => 900,
+						default        => 500
 					}),
 					Nether\Avenue\Util::MakeKey($App->GetProjectEnv()),
 					Nether\Avenue\Util::MakeKey($App->Config['Project.Key'])
@@ -351,10 +369,10 @@ extends Nether\Console\Client {
 		// source in the new file.
 
 		if($UseCopy)
-		copy($Source, $DestPath);
+		copy(realpath($Source), $DestPath);
 
 		else
-		symlink($Source, $DestPath);
+		symlink(realpath($Source), $DestPath);
 
 		////////
 
@@ -399,6 +417,40 @@ extends Nether\Console\Client {
 		}
 
 		return $Error;
+	}
+
+	#[Nether\Console\Meta\Command('env')]
+	#[Nether\Console\Meta\Info('Show what the configured Env is.')]
+	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
+	public function
+	GetProjectEnv():
+	int {
+
+		$App = new Nether\Atlantis\Engine(getcwd());
+		$UseInfo = $this->GetOption('verbose');
+		$EnvName = $App->GetProjectEnv();
+		$EnvType = $App->GetProjectEnvType();
+
+		if(!$UseInfo) {
+			echo $EnvName, PHP_EOL;
+			return 0;
+		}
+
+		////////
+
+		$this->PrintLn(sprintf(
+			'%s %s',
+			$this->FormatPrimary('Env:'),
+			$EnvName
+		));
+
+		$this->PrintLn(sprintf(
+			'%s %s',
+			$this->FormatPrimary('Type:'),
+			$EnvType
+		));
+
+		return 0;
 	}
 
 }
