@@ -16,17 +16,22 @@ use nether\Sensei\Inspectors\ArgumentInspector;
 
 <div class="container pt-6 pb-6">
 
-	<div class="mb-6 text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
-		<a href="/docs" class="Block Primary">docs</a> \
+	<?php $Surface->Area('sensei/breadcrumbs') ?>
+
+	<div class="row">
+		<div class="col">
+			<?php
+			if($Codebase instanceof Codebase)
+			$Surface->Area('sensei/index-codebase', $__SCOPE);
+			else
+			$Surface->Area('sensei/index-codebase-gen', $__SCOPE);
+			?>
+		</div>
+
+		<div class="col-12 col-lg-4">
+			<?php $Surface->Area('sensei/index-guides') ?>
+		</div>
 	</div>
 
-	<?php
-
-	if($Codebase instanceof Codebase)
-	$Surface->Area('sensei/codebase-index', $__SCOPE);
-	else
-	$Surface->Area('sensei/codebase-gen', $__SCOPE);
-
-	?>
 
 </div>

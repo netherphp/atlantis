@@ -5,10 +5,10 @@ use Nether;
 
 class Engine {
 /*//
-provides the core application instance and api for bringing all the components
-to drive the app together. it will manage instances for cases where like the
-theme engine and routers it makes sense where you would only ever have one for
-the entire application scope.
+Provides a core application instance and API to bring all the framework
+components together to drive the app. It will manage instances for cases
+such as Theme Engines and Routers where it only makes sense to have one per
+application instance.
 //*/
 
 	public Nether\Object\Datastore
@@ -101,7 +101,7 @@ the entire application scope.
 	IsEnv(string $Env):
 	bool {
 	/*//
-	return if the ProjectEnv matches what was asked for.
+	Return if this environment is indeed the one that was asked about.
 	//*/
 
 		return ($this->ProjectEnv === $Env);
@@ -111,7 +111,8 @@ the entire application scope.
 	IsDev():
 	bool {
 	/*//
-	return if this environment is a development one.
+	Return if this environment smells like a development one. This includes
+	both the literal 'dev' env and any env prefixed with 'dev-'.
 	//*/
 
 		if(str_starts_with($this->ProjectEnv, 'dev-'))
@@ -124,7 +125,8 @@ the entire application scope.
 	IsProd():
 	bool {
 	/*//
-	return if this environment is a production one.
+	Return if this environment smells like a production one. This includes
+	both the literal 'prod' env and any env prefixed with 'prod-'.
 	//*/
 
 		if(str_starts_with($this->ProjectEnv, 'prod-'))
@@ -136,6 +138,9 @@ the entire application scope.
 	public function
 	GetProjectEnv():
 	string {
+	/*//
+	Returns whatever the currently active environment is named.
+	//*/
 
 		return $this->ProjectEnv;
 	}
@@ -143,12 +148,18 @@ the entire application scope.
 	public function
 	GetProjectEnvType():
 	string {
+	/*//
+	Returns whatever the current environment is classified as. Environments
+	are classified by whatever their prefix is. 'dev-local' for example will
+	return 'dev' while 'prod-websrv9' will return 'prod'. Without a prefix
+	and not one of the literals, it will return 'unknown'.
+	//*/
 
-		//if($this->IsDev())
-		//return 'dev';
+		if($this->IsDev())
+		return 'dev';
 
-		//if($this->IsProd())
-		//return 'prod';
+		if($this->IsProd())
+		return 'prod';
 
 		if(str_contains($this->ProjectEnv, '-'))
 		return explode('-', $this->ProjectEnv, 2)[0];

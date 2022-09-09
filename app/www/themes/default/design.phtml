@@ -4,6 +4,8 @@
  * @var Nether\Surface\Engine $Surface
  */
 
+$CacheBuster = microtime(TRUE);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,9 +16,9 @@
 
 	<link rel="stylesheet" type="text/css" href="/themes/default/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="/themes/default/css/iconmonstr.min.css" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-bootstrap-ext.css" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-sensei.css" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-bootstrap-ext.css?v=<?php $Printer($CacheBuster) ?>" />
+	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-sensei.css?v=<?php $Printer($CacheBuster) ?>" />
+	<link rel="stylesheet" type="text/css" href="/themes/default/css/main.css?v=<?php $Printer($CacheBuster) ?>" />
 	<script type="text/javascript" src="/themes/default/js/jquery.min.js"></script>
 </head>
 <body>

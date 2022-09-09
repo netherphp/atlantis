@@ -1,0 +1,258 @@
+<?php
+
+$FontSizes = [
+	'mostest-small',
+	'most-small',
+	'smallerest',
+	'smallerer',
+	'smallest',
+	'smaller',
+	'small',
+	'normal',
+	'large',
+	'larger',
+	'largest',
+	'largerer',
+	'largerest',
+	'most-large',
+	'mostest-large'
+];
+
+$LetterSpaces = [
+	'literally-space',
+	'mostest-loose',
+	'most-loose',
+	'looserest',
+	'looserer',
+	'loosest',
+	'looser',
+	'loose',
+	'normal',
+	'tight',
+	'tighter',
+	'tightest',
+	'tighterer',
+	'tighterest',
+	'most-tight',
+	'mostest-tight',
+	'literally-nothing'
+];
+
+$Ratioboxes = [
+	'one-x-one' => 'square',
+	'four-x-three' => 'tv',
+	'sixteen-x-ten' => 'widemeh',
+	'sixteen-x-nine' => 'widescreen',
+	'nineteen-x-one' => 'imax',
+	'two-x-one' => 'univisium',
+	'twentyone-x-nine' => 'ultrawide'
+];
+
+?>
+
+<div class="container pt-6 pb-6">
+	<h1 class="mb-0">nether-bootstrap-ext.css</h1>
+	<p class="mb-0">Adds more CSS utilities following Bootstrap's style of small additive classes.</p>
+	<p>Not trying to sell you, literally just testing my CSS.</p>
+</div>
+
+<div class="bg-alt1">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 col-lg-6 mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Relative Font Sizes</h2>
+				<div class="font-size-largerer fw-light mb-2">font-size-<em>&lt;key&gt;</em></div>
+				<p class="mb-4">
+					These font size classes help adjust font sizes relative to their current size.
+					The larger end of the scale dampens itself in smaller viewports.
+					Naming is derived from arguments with designers who could never be satisified.
+					There are more sizes than you really need, until you start stacking them and need the most small one as a subtext in a most large one.
+				</p>
+				<div class="row tight align-items-center">
+					<?php foreach(['font-size-normal', 'font-size-most-small', 'font-size-most-large'] as $FontSizeBase): ?>
+					<div class="col-12 mb-4">
+						<div class="text-center"><?php $Printer($FontSizeBase) ?></div>
+						<div class="<?php $Printer($FontSizeBase) ?> fw-bold text-center">
+							<span class="font-size-largererr">H</span><span class="font-size-smallerer align-bottom fg-tertiary">2</span><span class="font-size-largererr">O</span>
+						</div>
+					</div>
+					<?php endforeach; unset($FontSizeBase); ?>
+				</div>
+			</div>
+			<div class="col-12 col-lg-6 mb-0 mb-lg-0">
+				<div class="font-size-reset text-center">
+					<?php foreach($FontSizes as $FontSize): ?>
+					<div class="font-size-<?php $Printer($FontSize) ?>"><?php $Printer($FontSize) ?></div>
+					<?php endforeach; unset($FontSize); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bg-alt2">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 col-lg-6 mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Relative Letter Spacing</h2>
+				<div class="font-size-largerer fw-light mb-2">letter-space-<em>&lt;key&gt;</em></div>
+				<p class="mb-4">
+					A little letter space often makes large blobs of text easier to read.
+					Adding lots of space make it artistic or something.
+					The larger end of the scale dampens itself in smaller viewports.
+
+				</p>
+			</div>
+			<div class="col-12 col-lg-6 mb-0 mb-lg-0">
+				<div class="text-center">
+					<?php foreach($LetterSpaces as $LetterSpace): ?>
+					<div class="letter-space-<?php $Printer($LetterSpace) ?>"><?php $Printer($LetterSpace) ?></div>
+					<?php endforeach; unset($LetterSpace); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bg-alt0">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 col-lg-6 mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Line Clamping</h2>
+				<div class="font-size-largerer fw-light mb-2">line-clamp line-clamp-<em>&lt;key&gt;</em></div>
+				<p class="mb-4">
+					Uses that weird line clamping stuff that somehow made it into the standard and implemented
+					by all browsers with the <code>-webkit</code> prefix intact. The line clamp terminator by
+					default always positions itself at the end of the last line. The fade effect here has to be
+					customised a little for your use, in this case a background gradient that is covering the
+					last third of the last line using the background colour of the box it is in.
+				</p>
+			</div>
+			<div class="col-12 col-lg-6 mb-0 mb-lg-0">
+				<?php foreach([1, 2, 4] as $LineClamp): ?>
+				<div class="PrettyModernBox mb-4">
+					<h3 class="font-size-larger">
+						<span><?php $Printer($LineClamp) ?> <?php $Printer($LineClamp === 1 ? 'line' : 'lines') ?></span>
+						<hr />
+					</h3>
+					<div class="line-clamp line-clamp-<?php $Printer($LineClamp) ?>">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui. Adipiscing tristique risus nec feugiat in fermentum posuere. Vitae congue eu consequat ac felis donec. Cursus sit amet dictum sit. Et netus et malesuada fames ac turpis egestas. Dignissim suspendisse in est ante. Egestas pretium aenean pharetra magna ac placerat. Nullam vehicula ipsum a arcu cursus vitae congue. Augue lacus viverra vitae congue. Adipiscing diam donec adipiscing tristique risus nec feugiat in fermentum. Tellus in hac habitasse platea dictumst vestibulum rhoncus est. Est lorem ipsum dolor sit.
+						<div class="line-clamp-terminator">&nbsp;</div>
+					</div>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bg-alt1">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 col-lg-6 mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Opacity</h2>
+				<div class="font-size-largerer fw-light mb-2">opacity-<em>&lt;key&gt;</em></div>
+				<p class="mb-4">
+					I like to use opacity as a way to mute things and I needed better opacity classes with values that made sense.
+				</p>
+			</div>
+			<div class="col-12 col-lg-6 mb-0 mb-lg-0">
+				<div class="font-size-most-large fw-bold text-center">
+					<div class="row">
+						<?php foreach([10,20,25,30,40,50,60,70,75,80,90,100] as $Opacity): ?>
+						<div class="col-6">
+							<div class="opacity-<?php $Printer($Opacity) ?>"><?php $Printer($Opacity) ?></div>
+						</div>
+						<?php endforeach; unset($Opacity); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bg-alt2">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 col-lg mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Ratioboxes</h2>
+				<div class="font-size-largerer fw-light mb-2">ratiobox <em>&lt;size&gt;</em></div>
+				<p class="mb-4">
+					Boxes that keep their ratios while scaling to fit their parent.
+				</p>
+			</div>
+			<div class="col-12 col-lg-12 mb-0 mb-lg-0">
+				<div class="row justify-content-center">
+					<?php foreach(array_reverse($Ratioboxes) as $Ratio => $RatioAlt): ?>
+					<div class="col-6 col-md-4 col-lg-3">
+						<div class="PrettyModernBox ratiobox <?php $Printer($Ratio) ?> mb-4">
+							<div class="position-absolutely">
+								<div class="row h-100 align-items-center justify-content-center">
+									<div class="col-auto text-center">
+										<div><?php $Printer($Ratio) ?></div>
+										<div class="opacity-50">(<?php $Printer($RatioAlt) ?>)</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php endforeach; unset($LetterSpace); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="bg-alt0">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Positioning</h2>
+				<div class="font-size-largerer fw-light mb-2">position-<em>&lt;key&gt;</em></div>
+				<p class="mb-4">
+					Throw things around quickly without them exploding into weird places on the page.
+				</p>
+			</div>
+			<div class="col-12 mb-0 mb-lg-0">
+				<div class="PrettyModernBox mb-4">
+					<h3 class="font-size-larger">
+						<span>Docked Absolute</span>
+						<hr />
+					</h3>
+					<div class="position-relative font-size-small ratiobox ultrawide">
+						<div class="position-absolutely">
+							<div class="position-absolute position-top position-h-center">top<br />h-center</div>
+							<div class="position-absolute position-bottom position-h-center">bottom<br />h-center</div>
+							<div class="position-absolute position-left position-v-center">left<br />v-center</div>
+							<div class="position-absolute position-right position-v-center">right<br />v-center</div>
+							<div class="position-absolute position-top-left">top-left</div>
+							<div class="position-absolute position-bottom-left">bottom-left</div>
+							<div class="position-absolute position-top-right">top-right</div>
+							<div class="position-absolute position-bottom-right">bottom-right</div>
+							<div class="position-absolute position-v-center position-h-center">h-center<br />v-center</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="PrettyModernBox mb-4">
+					<h3 class="font-size-larger">
+						<span>As An Overlay</span>
+						<hr />
+					</h3>
+					<div class="position-relative font-size-small ratiobox ultrawide">
+						<div class="position-absolutely wallpapered" style="background-image:url(/themes/default/gfx/bob.jpg);"></div>
+						<div class="position-absolutely bg-black opacity-90">
+							<div class="row h-100 align-items-center justify-content-center">
+								<div class="col-auto text-center font-size-largerer letter-space-most-loose text-uppercase">
+									<div class="mr-8">HERP</div>
+									<div class="ml-8">DERP</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

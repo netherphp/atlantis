@@ -4,17 +4,9 @@ $Items = new Nether\Object\Datastore($Surface->Get('Sensei.Breadcrumbs'));
 
 ?>
 
-<ol class="breadcrumb bg-black p-2 rounded fw-bold mb-6">
-	<li class="breadcrumb-item"><a href="/docs/">Documentation</a></li>
-	<?php foreach($Items as $Key => $Item): ?>
-	<?php if($Item): ?>
-	<li class="breadcrumb-item <?php $Printer($Items->IsLastKey($Key) ? 'active' : '') ?>">
-		<a href="<?php $Printer($Item) ?>">
-			<?php $Printer($Key) ?>
-		</a>
-	</li>
-	<?php else: ?>
-	<li class="breadcrumb-item <?php $Printer($Items->IsLastKey($Key) ? 'active' : '') ?>"><?php $Printer($Key) ?></li>
-	<?php endif; ?>
-	<?php endforeach; ?>
-</ol>
+<div class="mb-6 text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
+	<a href="/docs" class="Block Primary">docs</a> \
+	<?php foreach($Items as $Title => $URL): ?>
+	<a href="<?php $Printer($URL) ?>"><?php $Printer($Title) ?></a>
+	<?php endforeach; unset($Item); ?>
+</div>

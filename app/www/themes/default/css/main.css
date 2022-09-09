@@ -7,7 +7,7 @@
 
 	--ColourHeaderBackground: #000000;
 
-	--FontFamilyNormal: 'Segoe UI';
+	--FontFamilyNormal: 'Segoe UI', 'Helvetica', sans-serif;
 	--FontWeightNormal: 300;
 
 	--FontFamilyMonotype: 'Consolas', 'Menlo', monospace;
@@ -22,6 +22,10 @@
 	/* body layer */
 	--ColourForegroundPage: #FDFDFD;
 	--ColourBackgroundPage: #222222;
+
+	--ColourBackgroundPageAlt0: var(--ColourBackgroundPage);
+	--ColourBackgroundPageAlt1: #1A1A1A;
+	--ColourBackgroundPageAlt2: #151515;
 }
 
 html, body {
@@ -32,6 +36,7 @@ html, body {
 
 
 code {
+	color: var(--ColourTertiaryAccent);
 	font-family: var(--FontFamilyMonotype);
 	font-weight: var(--FontWeightMonotype);
 }
@@ -97,9 +102,45 @@ hr {
 	padding: 64px 0px;
 }
 
-.border-colour-primary { border-color: var(--ColourPrimaryAccent) !important; }
-.border-colour-secondary { border-color: var(--ColourSecondaryAccent) !important; }
-.border-colour-tertiary { border-color: var(--ColourTertiaryAccent) !important; }
+/*******************************************************************************
+**** themed items in the style of bootstrap ***********************************/
+
+.font-family-monotype { font-family: var(--FontFamilyMonotype); }
+.font-family-normal { font-family: var(--FontFamilyNormal); }
+
+.fg-primary,
+.fg-primary:link,
+.fg-primary:visited,
+.fg-primary:hover {
+	color: var(--ColourPrimaryAccent);
+}
+
+.fg-secondary,
+.fg-secondary:link,
+.fg-secondary:visited,
+.fg-secondary:hover {
+	color: var(--ColourSecondaryAccent);
+}
+
+.fg-tertiary,
+.fg-tertiary:link,
+.fg-tertiary:visited,
+.fg-tertiary:hover {
+	color: var(--ColourTertiaryAccent);
+}
+
+.bg-primary { background-color: var(--ColourPrimaryAccent); }
+.bg-secondary { background-color: var(--ColourPrimarySecondary); }
+.bg-tertiary { background-color: var(--ColourPrimaryTertiary); }
+.bg-alt1 { background-color: var(--ColourBackgroundPageAlt1); }
+.bg-alt2 { background-color: var(--ColourBackgroundPageAlt2); }
+
+.border-primary { border-color: var(--ColourPrimaryAccent) !important; }
+.border-secondary { border-color: var(--ColourSecondaryAccent) !important; }
+.border-tertiary { border-color: var(--ColourTertiaryAccent) !important; }
+
+/*******************************************************************************
+**** structured widget stuff **************************************************/
 
 .ArticlePrelabel {
 	color: var(--ColourTertiaryAccent);
@@ -112,7 +153,6 @@ hr {
 .PrettyBrandText {
 	display: inline-block;
 	font-weight: bold;
-	/*text-decoration: overline 0.15em var(--ColourPrimaryAccent) !important;*/
 	border-top: 0.15em solid;
 	border-color: var(--ColourPrimaryAccent);
 	text-transform: uppercase;
@@ -140,7 +180,6 @@ hr {
 
 	letter-spacing: 0.12em;
 	margin-bottom: 0.5em;
-	font-size: 1.4em;
 	font-weight: 200;
 	text-transform: uppercase;
 }
@@ -183,3 +222,6 @@ hr {
 	font-weight: 200;
 }
 
+.PrettyModernBox .line-clamp-terminator {
+	background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
+}

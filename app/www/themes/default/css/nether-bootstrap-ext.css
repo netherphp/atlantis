@@ -1,85 +1,44 @@
 /*******************************************************************************
-**** font stuff using global vars *********************************************/
-
-.font-family-monotype { font-family: var(--FontFamilyMonotype); }
-.font-family-normal { font-family: var(--FontFamilyNormal); }
-
-.text-primary-accent,
-.text-primary-accent:link,
-.text-primary-accent:visited,
-.text-primary-accent:hover {
-	color: var(--ColourPrimaryAccent);
-}
-
-.text-secondary-accent,
-.text-secondary-accent:link,
-.text-secondary-accent:visited,
-.text-secondary-accent:hover {
-	color: var(--ColourSecondaryAccent);
-}
-
-.text-tertiary-accent,
-.text-tertiary-accent:link,
-.text-tertiary-accent:visited,
-.text-tertiary-accent:hover {
-	color: var(--ColourTertiaryAccent);
-}
-
-/*******************************************************************************
 **** font stuff ***************************************************************/
 
-.blockquote-edged,
-.edged-left {
-	border-left: 4px solid;
-	border-left-color: var(--ColourTextAccent);
-	padding-left: 0.75em;
-}
+.font-family-monotype { font-family: monospace; }
+.font-family-normal { font-family: 'Segoe UI', 'Helvetica', sans-serif; }
 
-.blockquote-edged-thicc,
-.edged-left-thicc {
-	border-left: 0.5em solid;
-	padding-left: 0.75em;
-}
+.font-size-reset         { font-size: 1.0rem; }
+.font-size-mostest-small { font-size: 0.44em; }
+.font-size-most-small    { font-size: 0.52em; }
+.font-size-smallerest    { font-size: 0.60em; }
+.font-size-smallerer     { font-size: 0.68em; }
+.font-size-smallest      { font-size: 0.76em; }
+.font-size-smaller       { font-size: 0.84em; }
+.font-size-small         { font-size: 0.92em; }
+.font-size-normal        { font-size: 1.00em; }
+.font-size-large         { font-size: 1.20em; }
+.font-size-larger        { font-size: 1.40em; }
+.font-size-largest       { font-size: 1.60em; }
+.font-size-largerer      { font-size: 1.80em; }
+.font-size-largerest     { font-size: 2.00em; }
+.font-size-most-large    { font-size: 2.40em; }
+.font-size-mostest-large { font-size: 2.80em; }
 
-.blockquote-edged-primary {
-	border-left-color: var(--ColourPrimaryAccent);
-}
-
-.font-size-normal { font-size: 1.0rem; }
-.font-size-small { font-size: 0.9rem; }
-.font-size-smaller { font-size: 0.8rem; }
-.font-size-smallest { font-size: 0.7rem; }
-.font-size-smallerer { font-size: 0.6rem; }
-.font-size-smallerest { font-size: 0.5rem; }
-.font-size-most-small { font-size: 0.4rem; }
-.font-size-mostest-small { font-size: 0.3rem; }
-
-.font-size-large { font-size: 1.10rem; }
-.font-size-larger { font-size: 1.20rem; }
-.font-size-largest { font-size: 1.30rem; }
-.font-size-largerer { font-size: 1.40rem; }
-.font-size-largerest { font-size: 1.50rem; }
-.font-size-most-large { font-size: 2.00rem; }
-.font-size-mostest-large { font-size: 3.00rem; }
-
-.letter-space-normal { letter-spacing: 0.0rem; }
-.letter-space-loose { letter-spacing: 0.04rem; }
-.letter-space-looser { letter-spacing: 0.08rem; }
-.letter-space-loosest { letter-spacing: 0.12rem; }
-.letter-space-looserer { letter-spacing: 0.16rem; }
-.letter-space-looserest { letter-spacing: 0.20rem; }
-.letter-space-most-loose { letter-spacing: 0.24rem; }
-.letter-space-mostest-loose { letter-spacing: 0.28rem; }
-.letter-space-literally-space { letter-spacing: 0.8rem; }
-
-.letter-space-tight { letter-spacing: -0.04rem; }
-.letter-space-tighter { letter-spacing: -0.08rem; }
-.letter-space-tightest { letter-spacing: -0.12rem; }
-.letter-space-tighterer { letter-spacing: -0.16rem; }
-.letter-space-tighterest { letter-spacing: -0.20rem; }
-.letter-space-most-tight { letter-spacing: -0.24rem; }
-.letter-space-mostest-tight { letter-spacing: -0.28rem; }
-.letter-space-literally-nothing { letter-spacing: -0.47rem; }
+.letter-space-reset             { letter-spacing:  0.0rem; }
+.letter-space-literally-space   { letter-spacing:  0.80em; }
+.letter-space-mostest-loose     { letter-spacing:  0.54em; }
+.letter-space-most-loose        { letter-spacing:  0.48em; }
+.letter-space-looserest         { letter-spacing:  0.40em; }
+.letter-space-looserer          { letter-spacing:  0.32em; }
+.letter-space-loosest           { letter-spacing:  0.24em; }
+.letter-space-looser            { letter-spacing:  0.16em; }
+.letter-space-loose             { letter-spacing:  0.08em; }
+.letter-space-normal            { letter-spacing:  0.00em; }
+.letter-space-tight             { letter-spacing: -0.04em; }
+.letter-space-tighter           { letter-spacing: -0.08em; }
+.letter-space-tightest          { letter-spacing: -0.12em; }
+.letter-space-tighterer         { letter-spacing: -0.16em; }
+.letter-space-tighterest        { letter-spacing: -0.20em; }
+.letter-space-most-tight        { letter-spacing: -0.24em; }
+.letter-space-mostest-tight     { letter-spacing: -0.28em; }
+.letter-space-literally-nothing { letter-spacing: -0.42em; }
 
 .line-height-normal { line-height: 1em; }
 
@@ -96,6 +55,69 @@
 
 .user-select-none { user-select: none; }
 .user-select-normal { user-select: all; }
+
+@media (max-width: 991.9px) {
+	.font-size-mostest-small { font-size: 0.44em; }
+	.font-size-most-small    { font-size: 0.52em; }
+	.font-size-smallerest    { font-size: 0.60em; }
+	.font-size-smallerer     { font-size: 0.68em; }
+	.font-size-smallest      { font-size: 0.76em; }
+	.font-size-smaller       { font-size: 0.84em; }
+	.font-size-small         { font-size: 0.92em; }
+	.font-size-normal        { font-size: 1.00em; }
+	.font-size-large         { font-size: 1.10em; }
+	.font-size-larger        { font-size: 1.20em; }
+	.font-size-largest       { font-size: 1.30em; }
+	.font-size-largerer      { font-size: 1.40em; }
+	.font-size-largerest     { font-size: 1.50em; }
+	.font-size-most-large    { font-size: 1.60em; }
+	.font-size-mostest-large { font-size: 1.70em; }
+
+	.letter-space-literally-space   { letter-spacing:  0.60em; }
+	.letter-space-mostest-loose     { letter-spacing:  0.42em; }
+	.letter-space-most-loose        { letter-spacing:  0.36em; }
+	.letter-space-looserest         { letter-spacing:  0.32em; }
+	.letter-space-looserer          { letter-spacing:  0.24em; }
+	.letter-space-loosest           { letter-spacing:  0.18em; }
+	.letter-space-looser            { letter-spacing:  0.12em; }
+	.letter-space-loose             { letter-spacing:  0.06em; }
+	.letter-space-normal            { letter-spacing:  0.00em; }
+	.letter-space-tight             { letter-spacing: -0.04em; }
+	.letter-space-tighter           { letter-spacing: -0.08em; }
+	.letter-space-tightest          { letter-spacing: -0.12em; }
+	.letter-space-tighterer         { letter-spacing: -0.16em; }
+	.letter-space-tighterest        { letter-spacing: -0.20em; }
+	.letter-space-most-tight        { letter-spacing: -0.24em; }
+	.letter-space-mostest-tight     { letter-spacing: -0.28em; }
+	.letter-space-literally-nothing { letter-spacing: -0.42em; }
+}
+
+/*******************************************************************************
+**** give em the clamps *******************************************************/
+
+.line-clamp {
+	--LocalLineHeight: 1.4em;
+	position: relative;
+	line-height: var(--LocalLineHeight);
+	overflow: hidden;
+}
+
+.line-clamp-terminator {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	width: 33%;
+	text-align: right;
+}
+
+.line-clamp-1 { height: calc(var(--LocalLineHeight) * 1); }
+.line-clamp-2 { height: calc(var(--LocalLineHeight) * 2); }
+.line-clamp-3 { height: calc(var(--LocalLineHeight) * 3); }
+.line-clamp-4 { height: calc(var(--LocalLineHeight) * 4); }
+.line-clamp-5 { height: calc(var(--LocalLineHeight) * 5); }
+.line-clamp-6 { height: calc(var(--LocalLineHeight) * 6); }
+.line-clamp-7 { height: calc(var(--LocalLineHeight) * 7); }
+.line-clamp-8 { height: calc(var(--LocalLineHeight) * 8); }
 
 /*******************************************************************************
 **** opacity stuff ************************************************************/
@@ -145,6 +167,9 @@
 .position-top { top: 0px; }
 .position-left { left: 0px; }
 .position-right { right: 0px; }
+.position-h-center { left: 50%; transform: translateX(-50%); }
+.position-v-center { top: 50%; transform: translateY(-50%); }
+.position-h-center.position-v-center { transform: translateX(-50%) translateY(-50%); }
 
 .zindex-high { z-index: 9001; }
 .zindex-normal { z-index: 0; }
@@ -215,7 +240,7 @@
 	padding-top: 56.25%;
 }
 
-.ratiobox.onenine-x-one,
+.ratiobox.nineteen-x-one,
 .ratiobox.imax {
 	padding-top: 52.63%;
 }
@@ -280,6 +305,23 @@
 
 /*******************************************************************************
 **** misc stuff ***************************************************************/
+
+.blockquote-edged,
+.edged-left {
+	border-left: 4px solid;
+	border-left-color: var(--ColourTextAccent);
+	padding-left: 0.75em;
+}
+
+.blockquote-edged-thicc,
+.edged-left-thicc {
+	border-left: 0.5em solid;
+	padding-left: 0.75em;
+}
+
+.blockquote-edged-primary {
+	border-left-color: var(--ColourPrimaryAccent);
+}
 
 .jumbotron {
 	background: #1A1A1A;
