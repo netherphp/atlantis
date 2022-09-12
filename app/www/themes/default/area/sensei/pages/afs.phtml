@@ -1,0 +1,231 @@
+<?php
+
+?>
+
+<div class="container pt-6 pb-6">
+	<?php
+	$Surface->Area('sensei/breadcrumbs', [
+		'Items'=> [
+			'Guides'                => NULL,
+			'Atlantis From Scratch' => NULL
+		]
+	])
+	?>
+
+	<h1 class="mb-0">Atlantis From Scratch.</h1>
+
+	<div class="row">
+		<div class="col-12 col-lg">
+			<p class="mb-4">This guide will walk through the process of starting with an empty directory and ending with a working website with SSL. The following assumptions in this guide are just reasonable defaults not requirements. You may need to adjust commands based on your environment.</p>
+			<div class="edged-left opacity-75 mb-4">
+				<div class="fw-bold">Assumptions:</div>
+				<ul>
+					<li>Composer for PHP is installed system wide.</li>
+					<li>User is setup to be able to use sudo.</li>
+					<li>Server is Debian flavoured with Apache 2.4.</li>
+					<li>AcmePHP is setup in /opt/ssl (there are instructions below).</li>
+				</ul>
+			</div>
+			<p>It is mentioned and referenced against that the project is running on Apache. Support for other servers will be added over time to the nice easy command wrappers. That is just what we use here for now.</p>
+		</div>
+		<div class="col-12 col-lg-4">
+			<div class="PrettyModernBox">
+				<h3>
+					<hr />
+					<span>Contents</span>
+				</h3>
+				<div>
+					<ul class="list-unstyled">
+						<li class="mb-2"><a class="underdot" href="#summary">0) Overview</a></li>
+						<li class="mb-2"><a class="underdot" href="#step1">1) Bootstrap The Project</a></li>
+						<li class="mb-2"><a class="underdot" href="#step2">2) Configure Server</a></li>
+						<li class="mb-2"><a class="underdot" href="#step3">3) AcmePHP &amp; SSL Cert</a></li>
+						<li class="mb-2"><a class="underdot" href="#step4">4) Automatic SSL Renew</a></li>
+						<li class="mb-2"><a class="underdot" href="#step5">5) Environment Config</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- SUMMARY -->
+<div class="bg-alt1">
+	<div class="container pt-8 pb-8">
+		<h2 id="summary" class="font-family-monotype">0) Unapologetic Overview.</h2>
+		<p class="mb-4">
+			A basic technical summary of the process.
+			Assuming everything just works this will take you from an empty directory to a running project.
+		</p>
+		<div>
+			<button id="summaryshow" class="btn btn-primary font-size-larger" onclick="jQuery('#summarybox, #summaryshow').toggleClass('d-none'); return false;">
+				<span class="mdi mdi-chevron-right"></span>
+				Just The Bits, Please
+			</button>
+		</div>
+
+		<div id="summarybox" class="d-none">
+			<div class="fw-bold mb-4">Basic Project Setup (3 Commands):</div>
+			<ul class="mb-8">
+				<li class="mb-2"><code class="cli">$ composer require netherphp/atlantis</code></li>
+				<li class="mb-2"><code class="cli">$ atlantis init -y</code></li>
+				<li class="mb-2"><code class="cli">$ composer dump-autoload</code></li>
+				<li class="mb-0">It now is "working" in that it can serve the page over plain HTTP from any server you point at the <code class="file">www</code> directory.</li>
+				<ul>
+					<li class="mb-2"><code class="cli">$ php -S localhost:8080 -t www</code></li>
+					<li class="mb-0"><a href="http://localhost:8080" rel="nofollow">http://localhost:8080</a></li>
+				</ul>
+			</ul>
+
+			<div class="fw-bold mb-4">Apache Config (2 Edits, 2 Commands):</div>
+			<ul class="mb-8">
+				<li class="mb-2">Edit <code class="file">conf/config.php</code> to fill in <code class="file">Project.WebServerType</code></li>
+				<li class="mb-2">Edit <code class="file">conf/env/dev/apache24.conf</code> using the HTTP macro for now.</li>
+				<li class="mb-2">Link <code class="file">conf/env/dev/apache24.conf</code> into Apache's config file location:</li>
+				<ul class="mb-4">
+					<li class="mb-2"><code class="cli">atlantis webserver-link --sudo</code></li>
+					<li class="mb-0">See <code class="cli">atlantis help webserver-link</code> for customisation options if needed.</li>
+				</ul>
+				<li class="mb-2">Have Apache rehash its config files.</li>
+				<ul class="mb-4">
+					<li class="mb-0"><code class="cli">atlantis webserver-rehash --sudo</code></li>
+				</ul>
+				<li class="mb-2">Apache should now be serving the project over basic HTTP.</li>
+			</ul>
+
+			<div class="fw-bold mb-0">SSL Config (2 Edits, 3 Commands):</div>
+			<ul>
+				<li class="mb-2">Edit <code class="file">conf/config.php</code> to fill in <code class="file">AcmePHP</code> values.</li>
+				<li class="mb-2">Generate a <code class="file">acmephp.yml</code> file:</li>
+				<ul class="mb-4">
+					<li class="mb-2"><code class="cli">atlantis acmephp-config</code></li>
+				</ul>
+				<li class="mb-2">Have AcmePHP do what it does:</li>
+				<ul class="mb-4">
+					<li class="mb-2"><code class="cli">atlantis acmephp-run --sudo</code></li>
+				</ul>
+				<li class="mb-2">Edit <code class="file">conf/env/dev/apache24.conf</code> to use the HTTPS macro instead.</li>
+				<li class="mb-2">Have Apache rehash its config files.</li>
+				<ul class="mb-4">
+					<li class="mb-0"><code class="cli">atlantis webserver-rehash --sudo</code></li>
+				</ul>
+				<li class="mb-0">Apache should now be serving the project over both HTTP and HTTPS.</li>
+			</ul>
+		</div>
+
+	</div>
+</div>
+
+<!-- PART 1: BOOTSTRAPPING -->
+<div class="bg-alt2">
+	<div class="container pt-8 pb-8">
+		<h2 class="font-family-monotype mb-4">1) Bootstrapping The Project</h2>
+
+		<p class="mb-4">
+			The goal here is to start with an empty directory finish with a working project.
+			The first step is to add <code class="file">netherphp/atlantis</code> as a, and technically the only, project requirement so far.
+		</p>
+		<blockquote class="edged-left opacity-50 mb-4">
+			<div class="fw-bold">NOTE:</div>
+			<ul>
+				<li>While project is in testing phase you will need minimum-stability: "dev" in your composer.json before any of this will work. Before continuing you should make a new <code class="file">composer.json</code> that only contains the following:</li>
+				<li><code>{ "minimum-stability": "dev" }</code></li>
+			</ul>
+		</blockquote>
+		<div class="mb-8">
+			<code class="cli edged-left mb-4">$ composer require netherphp/atlantis</code>
+		</div>
+
+		<p class="mb-4">
+			After Composer finishes installing things we can ask Atlantis to configure itself and setup a basic project structure.
+			We use the -y option to force all overwrites knowing that this is also going to overwrite the currently spartan <code class="file">composer.json</code> we just created with the command above.
+			Then ask Composer to refresh its autoloader stuff.
+		</p>
+		<div class="mb-8">
+			<code class="cli edged-left">$ atlantis init -y</code><br />
+			<code class="cli edged-left">$ composer dump-autoload</code>
+		</div>
+
+		<p class="mb-4">
+			There is still a bit to do to get to a full production environment, but at this stage the project is actually ready to serve itself over basic HTTP from any type of web server you point at the <code class="file">www</code> directory.
+			You may add your own routes to the <code class="file">Routes</code> namespace autoloaded from the <code class="file">routes</code> directory.
+			Local project classes can be created and autoloaded with the provided <code class="file">Local</code> namespace already configured to autoload from the <code class="file">core/Local</code> directory.
+		</p>
+		<p class="mb-4">
+			Want to quick test? Spin up the PHP dev server and hit it in your browser.
+		</p>
+		<div class="mb-6">
+			<code class="cli edged-left">$ php -S localhost:80 -t www</code><br />
+		</div>
+		<div>
+			<img class="rounded" src="/themes/default/gfx/test-server-demo.png" />
+		</div>
+
+	</div>
+</div>
+
+<!-- PART 2: SERVER CONF -->
+<div class="bg-alt0">
+	<div class="container pt-8 pb-8">
+
+		<h2 class="font-family-monotype mb-4">2) Configure Web Server</h2>
+		<p class="mb-8">
+			This project currently contains tools to make setting up Apache web servers easier.
+			If you are not using Apache you will need to use some brainthink to translate what this section does to be applicable to you.
+		</p>
+
+		<div class="fw-bold font-size-large mb-0">conf/env/dev/apache24.conf</div>
+		<p class="mb-4">
+			This config file has some frameworking to ease configuration including two Macros for enabling both HTTP and HTTPS service from the server.
+			You want to scroll down towards the bottom where there is commenting and example use of the macros.
+			Being a fresh project you do not have the SSL yet so you should be using the HTTP macro.
+		</p>
+
+		<p class="mb-8">
+			Edit the config file to fit your needs then it can be linked into the server configuration directory.
+		</p>
+
+		<div class="fw-bold font-size-large mb-0">Toolchain Method</div>
+		<ul>
+			<li><code class="cli">$ atlantis webserver-link --sudo</code></li>
+			<li><code class="cli">$ atlantis webserver-rehash --sudo</code></li>
+		</ul>
+		<blockquote class="edged-left mb-8">
+			<div class="fw-bold">Note:</div>
+			These commands are expecting Debian flavoured Linux distros currently.
+			Use <code class="cli">$ atlantis help webserver-link</code> to see all the options for deciding where to link the config file.
+			Typically Apache is setup to read any config file it finds in a specified directory so the CLI utility should have enough choices to get you through.
+		</blockquote>
+
+		<div class="fw-bold font-size-large mb-0">Manual Method</div>
+		<ul class="mb-8">
+			<li><code class="cli">sudo ln -s /path/to/project/conf/env/dev/apache24.conf /etc/apache2/sites-enabled/100-dev-project.conf</code></li>
+			<li><code class="cli">sudo apachectl graceful</code></li>
+		</ul>
+
+		<p class="mb-0">At this stage you should be able to serve your project as configured over HTTP.</p>
+
+	</div>
+</div>
+
+<!-- PART 3: SSL CONF -->
+<div class="bg-alt1">
+	<div class="container pt-8 pb-8">
+		<h2>3) AcmePHP &amp; SSL Cert</h2>
+	</div>
+</div>
+
+<!-- PART 4: SSL RENEW -->
+<div class="bg-alt2">
+	<div class="container pt-8 pb-8">
+		<h2>4) Automatic SSL Renewal</h2>
+	</div>
+</div>
+
+<!-- PART 5: ENV CONF -->
+<div class="bg-alt0">
+	<div class="container pt-8 pb-8">
+		<h2>5) Environment Config</h2>
+	</div>
+</div>

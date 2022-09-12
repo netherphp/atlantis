@@ -1,56 +1,41 @@
 <?php
 
 $FontSizes = [
-	'mostest-small',
-	'most-small',
-	'smallerest',
-	'smallerer',
-	'smallest',
-	'smaller',
-	'small',
-	'normal',
-	'large',
-	'larger',
-	'largest',
-	'largerer',
-	'largerest',
-	'most-large',
-	'mostest-large'
+	'mostest-small', 'most-small', 'smallerest', 'smallerer', 'smallest',
+	'smaller', 'small', 'normal', 'large', 'larger',
+	'largest', 'largerer', 'largerest', 'most-large', 'mostest-large'
 ];
 
 $LetterSpaces = [
 	'literally-space',
-	'mostest-loose',
-	'most-loose',
-	'looserest',
-	'looserer',
-	'loosest',
-	'looser',
-	'loose',
-	'normal',
-	'tight',
-	'tighter',
-	'tightest',
-	'tighterer',
-	'tighterest',
-	'most-tight',
-	'mostest-tight',
+	'mostest-loose', 'most-loose', 'looserest', 'looserer', 'loosest',
+	'looser', 'loose', 'normal', 'tight', 'tighter',
+	'tightest', 'tighterer', 'tighterest', 'most-tight', 'mostest-tight',
 	'literally-nothing'
 ];
 
 $Ratioboxes = [
-	'one-x-one' => 'square',
-	'four-x-three' => 'tv',
-	'sixteen-x-ten' => 'widemeh',
-	'sixteen-x-nine' => 'widescreen',
-	'nineteen-x-one' => 'imax',
-	'two-x-one' => 'univisium',
+	'one-x-one'        => 'square',
+	'four-x-three'     => 'tv',
+	'sixteen-x-ten'    => 'widemeh',
+	'sixteen-x-nine'   => 'widescreen',
+	'nineteen-x-one'   => 'imax',
+	'two-x-one'        => 'univisium',
 	'twentyone-x-nine' => 'ultrawide'
 ];
 
 ?>
 
 <div class="container pt-6 pb-6">
+	<?php
+	$Surface->Area('sensei/breadcrumbs', [
+		'Items'=> [
+			'Guides'        => NULL,
+			'CSS Reference' => NULL
+		]
+	])
+	?>
+
 	<h1 class="mb-0">nether-bootstrap-ext.css</h1>
 	<p class="mb-0">Adds more CSS utilities following Bootstrap's style of small additive classes.</p>
 	<p>Not trying to sell you, literally just testing my CSS.</p>
@@ -71,9 +56,9 @@ $Ratioboxes = [
 				<div class="row tight align-items-center">
 					<?php foreach(['font-size-normal', 'font-size-most-small', 'font-size-most-large'] as $FontSizeBase): ?>
 					<div class="col-12 mb-4">
-						<div class="text-center"><?php $Printer($FontSizeBase) ?></div>
+						<div class="font-family-monotype text-center"><?php $Printer($FontSizeBase) ?></div>
 						<div class="<?php $Printer($FontSizeBase) ?> fw-bold text-center">
-							<span class="font-size-largererr">H</span><span class="font-size-smallerer align-bottom fg-tertiary">2</span><span class="font-size-largererr">O</span>
+							C<span class="font-size-smallerer align-bottom fg-tertiary">22</span>H<span class="font-size-smallerer align-bottom fg-tertiary">30</span>O<span class="font-size-smallerer align-bottom fg-tertiary">4</span>
 						</div>
 					</div>
 					<?php endforeach; unset($FontSizeBase); ?>
@@ -105,7 +90,7 @@ $Ratioboxes = [
 			</div>
 			<div class="col-12 col-lg-6 mb-0 mb-lg-0">
 				<div class="text-center">
-					<?php foreach($LetterSpaces as $LetterSpace): ?>
+					<?php foreach(array_reverse($LetterSpaces) as $LetterSpace): ?>
 					<div class="letter-space-<?php $Printer($LetterSpace) ?>"><?php $Printer($LetterSpace) ?></div>
 					<?php endforeach; unset($LetterSpace); ?>
 				</div>

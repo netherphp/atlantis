@@ -39,14 +39,14 @@
 				</div>
 			</div>
 			<div class="col-12 col-lg mb-0 mb-lg-0 text-align-right">
-				<div class="text-uppercase opacity-50 font-size-smaller fw-bold mb-2">
+				<div class="text-uppercase opacity-70 font-size-smaller fw-bold mb-2">
 					<a class="text-underline-none" href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Back To Top 💦</a>
 				</div>
 				<?php if($App->IsDev()): ?>
-				<div class="white-space-nowrap opacity-20">
-					<div><code class="text-white">t[ <?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?> ]</code></div>
-					<div><code class="text-white">req[ <?php $Printer($Router->Request->Domain) ?> / <?php $Printer(ltrim($Router->Request->Path, '/')) ?> ]</code></div>
-					<div><code class="text-white">rt[ <?php $Printer($Route->Handler->Class) ?> :: <?php $Printer($Route->Handler->Method) ?> ]</code></div>
+				<div class="white-space-nowrap opacity-40">
+					<div><code class="text-white"><span class="opacity-70">t[</span> <?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?> <span class="opacity-70">]</span></code></div>
+					<div><code class="text-white"><span class="opacity-70">req[</span> <?php $Printer($Router->Request->Domain) ?> <span class="opacity-70">/</span> <?php $Printer(ltrim($Router->Request->Path, '/')) ?> <span class="opacity-70">]</span></code></div>
+					<div><code class="text-white"><span class="opacity-70">rt[</span> <?php $Printer($Route->Handler->Class) ?> <span class="opacity-70">::</span> <?php $Printer($Route->Handler->Method) ?> <span class="opacity-70">]</span></code></div>
 				</div>
 				<?php endif; ?>
 			</div>

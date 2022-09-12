@@ -127,4 +127,11 @@ class Util {
 		return is_dir($Path);
 	}
 
+	static public function
+	Repath(string $Input):
+	string {
+
+		return str_replace('\\', '/', $Input);
+	}
+
 }

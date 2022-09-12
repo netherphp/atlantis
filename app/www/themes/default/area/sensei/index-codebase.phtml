@@ -12,7 +12,7 @@ use Nether\Sensei\Util;
 <div class="SenseiClassHighlights mb-6">
 	<div class="row">
 		<?php foreach($CodebaseStats->Titles as $Key => $Title): ?>
-		<div class="col-6 mb-4">
+		<div class="col-6 col-md-6 col-lg-4 mb-4">
 			<div class="PrettyModernBox">
 				<h3 class="font-size-larger">
 					<span><?php $Printer($Title) ?></span>
@@ -31,15 +31,15 @@ use Nether\Sensei\Util;
 
 <?php foreach($Codebase->Namespaces as $Namespace): ?>
 <div class="mb-8">
-	<div class="text-muted fw-bold font-size-largerest font-family-monotype letter-space-loose line-height-normal mb-3">
+	<div class="text-muted fw-bold font-size-largest font-family-monotype letter-space-loose mb-1">
 		<span class="font-family-monotype Block Namespace">namespace</span>
 		<?php echo Nether\Sensei\Util::GenerateNamespaceLinkChainHTML($Namespace->Name) ?>
 	</div>
 	<?php foreach($Namespace->Classes as $Class): ?>
-		<div class="font-family-monotype letter-space-loose line-height-normal mb-3">
-			<span class="font-family-monotype Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
-			<a href="/docs/<?php $Printer($Class->GetURI('.class')) ?>"><?php $Printer($Class->GetBaseName()) ?></a>
-		</div>
+	<div class="font-family-monotype letter-space-loose mb-1">
+		<span class="font-family-monotype Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
+		<a href="/docs/<?php $Printer($Class->GetURI('.class')) ?>"><?php $Printer($Class->GetBaseName()) ?></a>
+	</div>
 	<?php endforeach; ?>
 </div>
 <?php endforeach; unset($Namespace, $Class); ?>

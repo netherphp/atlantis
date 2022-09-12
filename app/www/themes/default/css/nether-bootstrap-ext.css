@@ -329,3 +329,8 @@
 }
 
 .rounded-extra { border-radius: 10px; }
+
+.mdi-fw {
+	text-align: center;
+	width: 1.25em;
+}

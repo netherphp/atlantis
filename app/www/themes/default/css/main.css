@@ -1,50 +1,79 @@
 :root {
 
-	--ColourPrimaryAccent: #1a65bb;
-	--ColourSecondaryAccent: #104a8d;
-	--ColourTertiaryAccent: #5e86b4;
-	--ColourTextAccent: #666666;
+	/* page colours */
 
-	--ColourHeaderBackground: #000000;
+	--ColourPrimaryHue: 212;
+	--ColourPrimarySat: 76%;
+	--ColourPrimaryLvl: 42%;
+
+	--ColourSecondaryHue: 212;
+	--ColourSecondarySat: 80%;
+	--ColourSecondaryLvl: 31%;
+
+	--ColourTertiaryHue: 212;
+	--ColourTertiarySat: 36%;
+	--ColourTertiaryLvl: 54%;
+
+	--ColourPrimaryAccent: hsl(var(--ColourPrimaryHue), var(--ColourPrimarySat), var(--ColourPrimaryLvl));
+	--ColourSecondaryAccent: hsl(var(--ColourSecondaryHue), var(--ColourSecondarySat), var(--ColourSecondaryLvl));
+	--ColourTertiaryAccent: hsl(var(--ColourTertiaryHue), var(--ColourTertiarySat), var(--ColourTertiaryLvl));
+
+	/* page fonts */
 
 	--FontFamilyNormal: 'Segoe UI', 'Helvetica', sans-serif;
 	--FontWeightNormal: 300;
+	--FontSpacingNormal: 0.02em;
 
 	--FontFamilyMonotype: 'Consolas', 'Menlo', monospace;
 	--FontWeightMonotype: 300;
-
-	--ThemeHeaderHeight: 100px;
+	--FontSpacingMonotype: 0.02em;
 
 	/* html layer */
+
 	--ColourForegroundRoot: #F4F4F4;
 	--ColourBackgroundRoot: #111111;
 
 	/* body layer */
+
 	--ColourForegroundPage: #FDFDFD;
 	--ColourBackgroundPage: #222222;
+
+	/* misc items */
+
+	--ColourCode: hsl(var(--ColourPrimaryHue), calc(var(--ColourPrimarySat) - 30%), calc(var(--ColourPrimaryLvl) + 30%));
+	--ColourTextAccent: #666666;
 
 	--ColourBackgroundPageAlt0: var(--ColourBackgroundPage);
 	--ColourBackgroundPageAlt1: #1A1A1A;
 	--ColourBackgroundPageAlt2: #151515;
+
+	--ThemeHeaderBackground: #000000;
+	--ThemeHeaderHeight: 100px;
 }
 
 html, body {
 	background-color: var(--ColourBackgroundRoot);
 	color: var(--ColourForegroundRoot);
+	font-family: var(--FontFamilyNormal);
+	font-weight: var(--FontWeightNormal);
+	letter-spacing: var(--FontSpacingNormal);
 }
 
-
-
 code {
-	color: var(--ColourTertiaryAccent);
+	color: var(--ColourCode);
 	font-family: var(--FontFamilyMonotype);
 	font-weight: var(--FontWeightMonotype);
+	letter-spacing: var(--FontSpacingMonotype);
 }
 
 img {
 	max-height: 100%;
 	max-width: 100%;
 	object-fit: contain;
+}
+
+h1, h2, h3, h4 {
+	font-weight: bold;
 }
 
 hr {
@@ -55,7 +84,7 @@ hr {
 	position: relative;
 	z-index: 9001;
 
-	background: var(--ColourHeaderBackground);
+	background: var(--ThemeHeaderBackground);
 	box-shadow: 0px 5px 5px #000000AA;
 	padding: 16px 0px;
 
@@ -105,6 +134,8 @@ hr {
 /*******************************************************************************
 **** themed items in the style of bootstrap ***********************************/
 
+.btn-primary { background-color: var(--ColourPrimaryAccent); border-color: var(--ColourPrimaryAccent); }
+
 .font-family-monotype { font-family: var(--FontFamilyMonotype); }
 .font-family-normal { font-family: var(--FontFamilyNormal); }
 
@@ -132,12 +163,30 @@ hr {
 .bg-primary { background-color: var(--ColourPrimaryAccent); }
 .bg-secondary { background-color: var(--ColourPrimarySecondary); }
 .bg-tertiary { background-color: var(--ColourPrimaryTertiary); }
+.bg-alt0 { background-color: var(--ColourBackgroundPageAlt0); }
 .bg-alt1 { background-color: var(--ColourBackgroundPageAlt1); }
 .bg-alt2 { background-color: var(--ColourBackgroundPageAlt2); }
 
 .border-primary { border-color: var(--ColourPrimaryAccent) !important; }
 .border-secondary { border-color: var(--ColourSecondaryAccent) !important; }
 .border-tertiary { border-color: var(--ColourTertiaryAccent) !important; }
+
+.underdot { border-bottom: 1px solid dotted !important; }
+
+code.cli,
+pre.cli {
+	background-color: var(--ColourBackgroundPage);
+	border-radius: 3px;
+	padding: 2px 10px;
+}
+
+code.file,
+pre.file {
+	background-color: var(--ColourBackgroundPage);
+	border-radius: 3px;
+	color: var(--ColourForegroundPage);
+	padding: 2px 10px;
+}
 
 /*******************************************************************************
 **** structured widget stuff **************************************************/
@@ -203,8 +252,8 @@ hr {
 	margin: 0px 0px 0px 0.5em;
 }
 
-.PrettyModernBox a:link,
-.PrettyModernBox a:visited {
+.PrettyModernBox a:link:not(.underdot),
+.PrettyModernBox a:visited:not(.underdot) {
 	border-bottom: 0px !important;
 }
 

@@ -122,7 +122,6 @@ extends Nether\Console\Client {
 			'conf/env/dev/config.php',
 			'conf/env/dev/apache24.conf',
 			'routes/Home.php',
-			'www/.htaccess',
 			'www/index.php',
 			'www/themes/default',
 			'www/themes/local'
@@ -167,7 +166,7 @@ extends Nether\Console\Client {
 		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
 		$Raw = $this->GetOption('raw') ?? FALSE;
 		$Verbose = $Raw ?: ($this->GetOption('verbose') ?? FALSE);
-		$App = new Nether\Atlantis\Engine(getcwd());
+		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
 		$Acme = new Nether\Atlantis\Struct\AcmeConfig($App);
 		$TemplatePath = sprintf(
 			'%s/templates/acmephp.txt',
@@ -240,7 +239,7 @@ extends Nether\Console\Client {
 		if($UseSudo && $this->Sudo())
 		return 0;
 
-		$App = new Nether\Atlantis\Engine(getcwd());
+		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
 		$Acme = new Nether\Atlantis\Struct\AcmeConfig($App);
 
 		////////
@@ -289,7 +288,7 @@ extends Nether\Console\Client {
 		if($UseSudo && $this->Sudo())
 		return 0;
 
-		$App = new Nether\Atlantis\Engine(getcwd());
+		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
 		$Source = NULL;
 		$DestPath = NULL;
 
@@ -392,7 +391,7 @@ extends Nether\Console\Client {
 		if($UseSudo && $this->Sudo())
 		return 0;
 
-		$App = new Nether\Atlantis\Engine(getcwd());
+		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
 		$Command = NULL;
 		$Output = NULL;
 		$Error = NULL;
@@ -426,7 +425,7 @@ extends Nether\Console\Client {
 	GetProjectEnv():
 	int {
 
-		$App = new Nether\Atlantis\Engine(getcwd());
+		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
 		$UseInfo = $this->GetOption('verbose');
 		$EnvName = $App->GetProjectEnv();
 		$EnvType = $App->GetProjectEnvType();
@@ -451,6 +450,34 @@ extends Nether\Console\Client {
 		));
 
 		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	GetProjectDirectory():
+	string {
+
+		$BinPath = Nether\Atlantis\Util::Repath(dirname(__FILE__));
+		$CurPath = Nether\Atlantis\Util::Repath(getcwd());
+
+		// if it looks like we in a project directory assume we are in
+		// the project directory.
+
+		if(file_exists(sprintf('%s/composer.lock', $CurPath)))
+		if(str_starts_with($BinPath, $CurPath))
+		return $CurPath;
+
+		// if we are elsewhere but calling this installed as a vendor
+		// binary assume that the project directory is up from that.
+
+		if(str_ends_with($BinPath, 'vendor/netherphp/atlantis/bin'))
+		return dirname(__FILE__, 5);
+
+		// else just yolo with the current path again.
+
+		return $CurPath;
 	}
 
 }

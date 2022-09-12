@@ -19,7 +19,7 @@ use nether\Sensei\Inspectors\ArgumentInspector;
 	<?php $Surface->Area('sensei/breadcrumbs') ?>
 
 	<div class="row">
-		<div class="col">
+		<div class="col-12 col-lg">
 			<?php
 			if($Codebase instanceof Codebase)
 			$Surface->Area('sensei/index-codebase', $__SCOPE);
@@ -27,8 +27,7 @@ use nether\Sensei\Inspectors\ArgumentInspector;
 			$Surface->Area('sensei/index-codebase-gen', $__SCOPE);
 			?>
 		</div>
-
-		<div class="col-12 col-lg-4">
+		<div class="col-12 col-lg-4 mb-4">
 			<?php $Surface->Area('sensei/index-guides') ?>
 		</div>
 	</div>

@@ -1,12 +1,36 @@
 <?php
 
-$Items = new Nether\Object\Datastore($Surface->Get('Sensei.Breadcrumbs'));
+use Nether\Object\Datastore;
+
+////////
+
+if(!isset($Items))
+$Items = $Surface->Get('Sensei.Items') ?? [];
+
+if(is_array($Items))
+$Items = new Datastore($Items ?? []);
+
+////////
+
+$PrintItem = function(Datastore $Items, string $Title, mixed $URL){
+
+	if($URL !== NULL)
+	printf('<a href="%s">%s</a>', $URL, $Title);
+
+	else
+	printf('<span>%s</span>', $Title);
+
+	if(!$Items->IsLastKey($Title))
+	echo ' <span>\</span> ';
+
+	return;
+};
+
+////////
 
 ?>
 
 <div class="mb-6 text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
 	<a href="/docs" class="Block Primary">docs</a> \
-	<?php foreach($Items as $Title => $URL): ?>
-	<a href="<?php $Printer($URL) ?>"><?php $Printer($Title) ?></a>
-	<?php endforeach; unset($Item); ?>
+	<?php foreach($Items as $Title => $URL) $PrintItem($Items, $Title, $URL); ?>
 </div>
