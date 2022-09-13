@@ -1,6 +1,7 @@
 <?php
 
 use Nether\Atlantis\Library;
+use Composer\Console\Application;
 
 (function(){
 
@@ -21,15 +22,16 @@ extends Nether\Console\Client {
 	Init():
 	int {
 
-		$this->PrintLn('Setup Git Ignore...');
+		$this->PrintLn($this->Formatter->BoldYellow('Setup Git Ignore...'));
 		$this->InitGitIgnore();
 
-		$this->PrintLn('Setup Common Directories...');
+		$this->PrintLn($this->Formatter->BoldYellow('Setup Common Directories...'));
 		$this->InitCommonDirs();
 
-		$this->PrintLn('Setup Common Files...');
+		$this->PrintLn($this->Formatter->BoldYellow('Setup Common Files...'));
 		$this->InitCommonFiles();
 
+		$this->ComposerDumpAutoload();
 		$this->PrintLn('Done.');
 
 		return 0;
@@ -131,7 +133,7 @@ extends Nether\Console\Client {
 			$Local = "{$Root}/app/{$File}";
 			$Remote = "{$CWD}/{$File}";
 
-			$this->PrintLn(" * {$File} => {$Remote}");
+			$this->PrintLn(" * {$Remote}");
 
 			if(file_exists($Remote) && !$Force) {
 				$Confirm = $this->PromptEquals(
@@ -252,12 +254,12 @@ extends Nether\Console\Client {
 
 		////////
 
-		$this->ExecuteCommandLine($Command, $Output, $Error);
+		$Result = $this->ExecuteCommandLine($Command);
 
-		if($Error) {
+		if($Result->Error) {
 			$this->PrintLn($this->FormatPrimary('Command Output:'));
-			echo '> ', join(sprintf('%s> ', PHP_EOL), $Output), PHP_EOL;
-			return $Error;
+			$Result->Print('> ');
+			return $Result->Error;
 		}
 
 		if($UseRehash)
@@ -393,8 +395,6 @@ extends Nether\Console\Client {
 
 		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
 		$Command = NULL;
-		$Output = NULL;
-		$Error = NULL;
 
 		////////
 
@@ -408,29 +408,54 @@ extends Nether\Console\Client {
 			break;
 		}
 
-		$this->ExecuteCommandLine($Command, $Output, $Error);
+		$Result = $this->ExecuteCommandLine($Command);
 
-		if($Error) {
+		if($Result->Error) {
 			$this->PrintLn($this->FormatPrimary('Command Output:'));
-			echo '> ', join(sprintf('%s> ', PHP_EOL), $Output), PHP_EOL;
+			$Result->Print('> ');
 		}
 
-		return $Error;
+		return $Result->Error;
 	}
 
 	#[Nether\Console\Meta\Command('env')]
 	#[Nether\Console\Meta\Info('Show what the configured Env is.')]
 	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Nether\Console\Meta\Value('--set', 'Set the Environment name.')]
 	public function
 	GetProjectEnv():
 	int {
 
+		$EnvInfo = $this->GetOption('verbose');
+		$EnvSet = trim($this->GetOption('set') ?? '');
+		$App = NULL;
+		$EnvFile = sprintf('%s/env.lock', $this->GetProjectDirectory());
+		$EnvName = NULL;
+		$EnvType = NULL;
+
+		////////
+
+		if($EnvSet) {
+			if(file_exists($EnvFile)) {
+				if(!is_writable($EnvFile))
+				throw new Nether\Atlantis\Error\EnvLockUnwritable($EnvFile);
+			}
+
+			else {
+				if(!is_writable(dirname($EnvFile)))
+				throw new Nether\Atlantis\Error\EnvLockUnwritable($EnvFile);
+			}
+
+			file_put_contents($EnvFile, $EnvSet);
+		}
+
+		////////
+
 		$App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
-		$UseInfo = $this->GetOption('verbose');
 		$EnvName = $App->GetProjectEnv();
 		$EnvType = $App->GetProjectEnvType();
 
-		if(!$UseInfo) {
+		if(!$EnvInfo) {
 			echo $EnvName, PHP_EOL;
 			return 0;
 		}
@@ -454,6 +479,24 @@ extends Nether\Console\Client {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	protected function
+	ComposerDumpAutoload():
+	static {
+
+		// making it so we could load composer up and talk to its api
+		// requires adding composer/composer as a composer requirement.
+		// double composering your system. that sounds bad and annoying
+		// to manage. so we will do it the old fashioned shitty way for
+		// now until someone convinces me otherwise.
+
+		$Result = $this->ExecuteCommandLine('composer dump-autoload');
+
+		$this->PrintLn('Composer said:');
+		$Result->Print('> ');
+
+		return $this;
+	}
 
 	protected function
 	GetProjectDirectory():

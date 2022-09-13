@@ -173,16 +173,49 @@ hr {
 
 .underdot { border-bottom: 1px solid dotted !important; }
 
-code.cli,
-pre.cli {
-	background-color: var(--ColourBackgroundPage);
+.bg-alt0 code.cli, code.cli,
+.bg-alt0 pre.cli, pre.cli {
+	background-color: var(--ColourBackgroundPageAlt1);
 	border-radius: 3px;
+	color: var(--ColourCode);
 	padding: 2px 10px;
 }
 
-code.file,
-pre.file {
-	background-color: var(--ColourBackgroundPage);
+.bg-alt1 code.cli,
+.bg-alt1 pre.cli {
+	background-color: var(--ColourBackgroundPageAlt2);
+	border-radius: 3px;
+	color: var(--ColourCode);
+	padding: 2px 10px;
+}
+
+.bg-alt2 code.cli,
+.bg-alt2 pre.cli {
+	background-color: var(--ColourBackgroundPageAlt0);
+	border-radius: 3px;
+	color: var(--ColourCode);
+	padding: 2px 10px;
+}
+
+.bg-alt0 code.file, code.file,
+.bg-alt0 pre.file, pre.file {
+	background-color: var(--ColourBackgroundPageAlt1);
+	border-radius: 3px;
+	color: var(--ColourForegroundPage);
+	padding: 2px 10px;
+}
+
+.bg-alt1 code.file,
+.bg-alt1 pre.file {
+	background-color: var(--ColourBackgroundPageAlt2);
+	border-radius: 3px;
+	color: var(--ColourForegroundPage);
+	padding: 2px 10px;
+}
+
+.bg-alt2 code.file,
+.bg-alt2 pre.file {
+	background-color: var(--ColourBackgroundPageAlt0);
 	border-radius: 3px;
 	color: var(--ColourForegroundPage);
 	padding: 2px 10px;

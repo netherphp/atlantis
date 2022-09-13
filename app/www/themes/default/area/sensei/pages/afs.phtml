@@ -3,6 +3,7 @@
 ?>
 
 <div class="container pt-6 pb-6">
+
 	<?php
 	$Surface->Area('sensei/breadcrumbs', [
 		'Items'=> [
@@ -13,7 +14,6 @@
 	?>
 
 	<h1 class="mb-0">Atlantis From Scratch.</h1>
-
 	<div class="row">
 		<div class="col-12 col-lg">
 			<p class="mb-4">This guide will walk through the process of starting with an empty directory and ending with a working website with SSL. The following assumptions in this guide are just reasonable defaults not requirements. You may need to adjust commands based on your environment.</p>
@@ -27,6 +27,18 @@
 				</ul>
 			</div>
 			<p>It is mentioned and referenced against that the project is running on Apache. Support for other servers will be added over time to the nice easy command wrappers. That is just what we use here for now.</p>
+
+			<p class="fw-bold mb-2">Notes:</p>
+			<ul>
+				<li class="mb-2">Without <code>./vendor/bin</code> in your <code>$PATH</code> all calls to <code>atlantis</code> will need to be <code>vendor/bin/atlantis</code>.</li>
+				<li class="mb-2">Calls to <code>atlantis</code> that include the <code>--sudo</code> option may also be done via <code>sudo vendor/bin/atlantis</code>.</li>
+				<li class="mb-0">
+					<p class="mb-2">Most <code>atlantis</code> commands have additional options you can see using the help command.</p>
+					<blockquote class="edged-left">
+						<code class="cli">$ atlantis help &lt;command&gt;</code>
+					</blockquote>
+				</li>
+			</ul>
 		</div>
 		<div class="col-12 col-lg-4">
 			<div class="PrettyModernBox">
@@ -58,7 +70,7 @@
 			A basic technical summary of the process.
 			Assuming everything just works this will take you from an empty directory to a running project.
 		</p>
-		<div>
+		<div class="">
 			<button id="summaryshow" class="btn btn-primary font-size-larger" onclick="jQuery('#summarybox, #summaryshow').toggleClass('d-none'); return false;">
 				<span class="mdi mdi-chevron-right"></span>
 				Just The Bits, Please
@@ -66,51 +78,105 @@
 		</div>
 
 		<div id="summarybox" class="d-none">
-			<div class="fw-bold mb-4">Basic Project Setup (3 Commands):</div>
+			<div class="fw-bold mb-4">Basic Project Setup (2 Commands):</div>
 			<ul class="mb-8">
-				<li class="mb-2"><code class="cli">$ composer require netherphp/atlantis</code></li>
-				<li class="mb-2"><code class="cli">$ atlantis init -y</code></li>
-				<li class="mb-2"><code class="cli">$ composer dump-autoload</code></li>
-				<li class="mb-0">It now is "working" in that it can serve the page over plain HTTP from any server you point at the <code class="file">www</code> directory.</li>
-				<ul>
-					<li class="mb-2"><code class="cli">$ php -S localhost:8080 -t www</code></li>
-					<li class="mb-0"><a href="http://localhost:8080" rel="nofollow">http://localhost:8080</a></li>
-				</ul>
+				<li class="mb-2">
+					<p>Begin the process by installing Atlantis and having it initialise itself.</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ composer require netherphp/atlantis</code></div>
+						<div class="mb-0"><code class="cli">$ atlantis init -y</code></div>
+					</blockquote>
+				</li>
+				<li class="mb-0">
+					<p>At this stage it is already &quot;working&quot; in that it will serve the app over basic HTTP with any PHP capable web server you point at the <code class="file">www</code> directory. Here is an example using the built-in PHP test server if you're doing it locally on your workstation.</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ php -S localhost:80 -t www</code></div>
+					</blockquote>
+				</li>
 			</ul>
 
 			<div class="fw-bold mb-4">Apache Config (2 Edits, 2 Commands):</div>
 			<ul class="mb-8">
-				<li class="mb-2">Edit <code class="file">conf/config.php</code> to fill in <code class="file">Project.WebServerType</code></li>
-				<li class="mb-2">Edit <code class="file">conf/env/dev/apache24.conf</code> using the HTTP macro for now.</li>
-				<li class="mb-2">Link <code class="file">conf/env/dev/apache24.conf</code> into Apache's config file location:</li>
-				<ul class="mb-4">
-					<li class="mb-2"><code class="cli">atlantis webserver-link --sudo</code></li>
-					<li class="mb-0">See <code class="cli">atlantis help webserver-link</code> for customisation options if needed.</li>
-				</ul>
-				<li class="mb-2">Have Apache rehash its config files.</li>
-				<ul class="mb-4">
-					<li class="mb-0"><code class="cli">atlantis webserver-rehash --sudo</code></li>
-				</ul>
-				<li class="mb-2">Apache should now be serving the project over basic HTTP.</li>
+				<li class="mb-2">
+					<p>Edit <code class="file">conf/config.php</code> to fill in <code class="file">Project.WebServerType</code></p>
+					<blockquote class="edged-left">
+						<div class="mb-0">Supported server types all have <code>WebServerType</code> constants on the <code>Nether\Atlantis\Library</code> class.</div>
+					</blockquote>
+				</li>
+				<li class="mb-2">
+					<p>Edit <code class="file">conf/env/dev/apache24.conf</code> using the HTTP macro for now.</p>
+					<blockquote class="edged-left">
+						<div class="mb-0">You are looking for the line near the bottom of the file that start with <code>Use HTTP</code>, that is the example to edit.</div>
+					</blockquote>
+				</li>
+				<li class="mb-2">
+					<p>Link <code class="file">conf/env/dev/apache24.conf</code> into Apache's config file location:</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ atlantis webserver-link --sudo</code></div>
+					</blockquote>
+				</li>
+				<li class="mb-2">
+					<p>Have Apache rehash its config files.</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ atlantis webserver-rehash --sudo</code></div>
+					</blockquote>
+				</li>
+				<li class="mb-0">
+					<p>Apache should now be serving the project over basic HTTP.</p>
+				</li>
 			</ul>
 
-			<div class="fw-bold mb-0">SSL Config (2 Edits, 3 Commands):</div>
-			<ul>
-				<li class="mb-2">Edit <code class="file">conf/config.php</code> to fill in <code class="file">AcmePHP</code> values.</li>
-				<li class="mb-2">Generate a <code class="file">acmephp.yml</code> file:</li>
-				<ul class="mb-4">
-					<li class="mb-2"><code class="cli">atlantis acmephp-config</code></li>
-				</ul>
-				<li class="mb-2">Have AcmePHP do what it does:</li>
-				<ul class="mb-4">
-					<li class="mb-2"><code class="cli">atlantis acmephp-run --sudo</code></li>
-				</ul>
-				<li class="mb-2">Edit <code class="file">conf/env/dev/apache24.conf</code> to use the HTTPS macro instead.</li>
-				<li class="mb-2">Have Apache rehash its config files.</li>
-				<ul class="mb-4">
-					<li class="mb-0"><code class="cli">atlantis webserver-rehash --sudo</code></li>
-				</ul>
+			<div class="fw-bold mb-4">SSL Config (2 Edits, 3 Commands):</div>
+			<ul class="mb-8">
+				<li class="mb-2">
+					<p>Edit <code class="file">conf/env/dev/config.php</code> to fill in <code class="file">AcmePHP</code> values.</p>
+				</li>
+				<li class="mb-2">
+					<p>Generate a <code class="file">conf/env/dev/acmephp.yml</code> file:</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ atlantis acmephp-config</code></div>
+					</blockquote>
+				</li>
+				<li class="mb-2">
+					<p>Have AcmePHP get your SSL cert:</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ atlantis acmephp-run --sudo</code></div>
+					</blockquote>
+				</li>
+
+				<li class="mb-2">
+					<p>Edit <code class="file">conf/env/dev/apache24.conf</code> to use the HTTPS macro instead. Literally change it from <code>HTTP</code> to <code>HTTPS</code> and rehash the configuration.</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ atlantis webserver-rehash --sudo</code></div>
+					</blockquote>
+				</li>
+
 				<li class="mb-0">Apache should now be serving the project over both HTTP and HTTPS.</li>
+			</ul>
+
+			<div class="fw-bold mb-4">Auto Renew SSL (1 Command, 1 Edit):</div>
+			<ul class="mb-8">
+				<li class="mb-0">
+					<p>Add an item to cron. This example checks every Monday morning at 4:20am.</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ crontab -e</code></div>
+						<div class="mb-0"><code class="file">20 4 * * 1 /path/to/project/vendor/bin/atlantis acmephp-run --sudo --rehash</code></div>
+					</blockquote>
+				</li>
+			</ul>
+
+			<div class="fw-bold mb-4">Environment Config (1 Command):</div>
+			<ul class="mb-0">
+				<li class="mb-0">
+					<p>
+						The default environment is called <code>dev</code> with the matching <code class="file">conf/env/dev</code> config directory.
+						Choosing an env is done with the contents of the <code class="file">env.lock</code> file in the project root.
+						This example will put it in production mode looking for config files in <code class="file">conf/env/prod</code>.
+					</p>
+					<blockquote class="edged-left">
+						<div class="mb-2"><code class="cli">$ atlantis env --set=prod</code></div>
+					</blockquote>
+				</li>
 			</ul>
 		</div>
 
@@ -120,7 +186,7 @@
 <!-- PART 1: BOOTSTRAPPING -->
 <div class="bg-alt2">
 	<div class="container pt-8 pb-8">
-		<h2 class="font-family-monotype mb-4">1) Bootstrapping The Project</h2>
+		<h2 id="step1" class="font-family-monotype mb-4">1) Bootstrapping The Project</h2>
 
 		<p class="mb-4">
 			The goal here is to start with an empty directory finish with a working project.
@@ -140,11 +206,9 @@
 		<p class="mb-4">
 			After Composer finishes installing things we can ask Atlantis to configure itself and setup a basic project structure.
 			We use the -y option to force all overwrites knowing that this is also going to overwrite the currently spartan <code class="file">composer.json</code> we just created with the command above.
-			Then ask Composer to refresh its autoloader stuff.
 		</p>
 		<div class="mb-8">
 			<code class="cli edged-left">$ atlantis init -y</code><br />
-			<code class="cli edged-left">$ composer dump-autoload</code>
 		</div>
 
 		<p class="mb-4">
@@ -153,7 +217,7 @@
 			Local project classes can be created and autoloaded with the provided <code class="file">Local</code> namespace already configured to autoload from the <code class="file">core/Local</code> directory.
 		</p>
 		<p class="mb-4">
-			Want to quick test? Spin up the PHP dev server and hit it in your browser.
+			If you are mucking about locally on your workstation you can spin up the PHP dev server and hit it in a browser.
 		</p>
 		<div class="mb-6">
 			<code class="cli edged-left">$ php -S localhost:80 -t www</code><br />
@@ -169,10 +233,19 @@
 <div class="bg-alt0">
 	<div class="container pt-8 pb-8">
 
-		<h2 class="font-family-monotype mb-4">2) Configure Web Server</h2>
-		<p class="mb-8">
+		<h2 id="step2" class="font-family-monotype mb-4">2) Configure Web Server</h2>
+		<p class="mb-4">
 			This project currently contains tools to make setting up Apache web servers easier.
 			If you are not using Apache you will need to use some brainthink to translate what this section does to be applicable to you.
+			Helper tooling for additional server types will come when we're less greenfield.
+		</p>
+
+		<div class="fw-bold font-size-large mb-0">conf/config.php</div>
+		<p class="mb-4">
+			This is the main configuration file for the app and one of its settings is called <code class="file">Project.WebServerType</code> which defaulted to NULL.
+			All the supported servers have constants on the <code class="file">Nether\Atlantis\Library</code> class.
+			Currently the only supported server is Apache 2.4, <code class="file">Library::WebServerTypeApache24</code>.
+			This must be set for the CLI tools in Atlantis to be able to help you.
 		</p>
 
 		<div class="fw-bold font-size-large mb-0">conf/env/dev/apache24.conf</div>
@@ -180,31 +253,41 @@
 			This config file has some frameworking to ease configuration including two Macros for enabling both HTTP and HTTPS service from the server.
 			You want to scroll down towards the bottom where there is commenting and example use of the macros.
 			Being a fresh project you do not have the SSL yet so you should be using the HTTP macro.
+			Things of note - this Apache config file already has provisions made for routing requests to your <code class="file">www/index.php</code> as well as redirecting HTTP to HTTPS automatically after you get your SSL cert installed. Additionally it has a provision for <code class="file">www/.well-known</code> to ease cert auto-renewals later.
+		</p>
+		<div class="edged-left mb-4">
+			<div class="mb-4">
+				<div class="fw-bold mb-2">Syntax:</div>
+				<code class="file opacity-50">Use $Macro $Domain $SSLDomain $ProjectRoot</code>
+			</div>
+			<div class="mb-0">
+				<div class="fw-bold mb-2">Example:</div>
+				<code class="file">Use HTTP dev.whatever.tld dev.whatever.tld /opt/web-dev/www</code>
+			</div>
+		</div>
+		<p>
+			Edit the config file to fit your needs.
+			The 2nd argument, $SSLDomain, will usually be the same value as $Domain for simple setups. It will only be different if you need to use an SSL cert that encompasses multiple domains. For example if whatever.tld's cert contains dev.whatever.tld within it either explicitly or via Wildcard. Another case where you might specify a different $SSLDomain is if you have typo domains redirect to your normal correct domain.
+		</p>
+		<p>
+			Next is to link or install your configuration into the web server.
+			Typically Apache servers are configured to read any config files within a specific directory. If your webserver is one of the supported ones these two commands will get it done.
 		</p>
 
-		<p class="mb-8">
-			Edit the config file to fit your needs then it can be linked into the server configuration directory.
-		</p>
-
-		<div class="fw-bold font-size-large mb-0">Toolchain Method</div>
-		<ul>
-			<li><code class="cli">$ atlantis webserver-link --sudo</code></li>
-			<li><code class="cli">$ atlantis webserver-rehash --sudo</code></li>
-		</ul>
-		<blockquote class="edged-left mb-8">
-			<div class="fw-bold">Note:</div>
-			These commands are expecting Debian flavoured Linux distros currently.
-			Use <code class="cli">$ atlantis help webserver-link</code> to see all the options for deciding where to link the config file.
-			Typically Apache is setup to read any config file it finds in a specified directory so the CLI utility should have enough choices to get you through.
+		<blockquote class="edged-left">
+			<div class="mb-2"><code class="cli">$ atlantis webserver-link --sudo</code></div>
+			<div class="mb-2"><code class="cli">$ atlantis webserver-rehash --sudo</code></div>
 		</blockquote>
 
-		<div class="fw-bold font-size-large mb-0">Manual Method</div>
-		<ul class="mb-8">
-			<li><code class="cli">sudo ln -s /path/to/project/conf/env/dev/apache24.conf /etc/apache2/sites-enabled/100-dev-project.conf</code></li>
-			<li><code class="cli">sudo apachectl graceful</code></li>
-		</ul>
+		<p>
+			Which is the same as if you had just done this manually:
+		</p>
+		<blockquote class="edged-left">
+			<div class="mb-2"><code class="cli">$ sudo ln -s /path/to/project/conf/env/dev/apache24.conf /etc/apache2/sites-enabled/100-dev-project.conf</code></div>
+			<div class="mb-2"><code class="cli">$ sudo apachectl graceful</code></div>
+		</blockquote>
 
-		<p class="mb-0">At this stage you should be able to serve your project as configured over HTTP.</p>
+		<p class="mb-0">At this stage you should be successfully serving your project over basic HTTP via an actual web server.</p>
 
 	</div>
 </div>
@@ -212,20 +295,93 @@
 <!-- PART 3: SSL CONF -->
 <div class="bg-alt1">
 	<div class="container pt-8 pb-8">
-		<h2>3) AcmePHP &amp; SSL Cert</h2>
+		<h2 id="step3" class="font-family-monotype mb-4">3) AcmePHP &amp; SSL Cert</h2>
+		<p class="mb-4">
+			If this is your first time with AcmePHP, installation is fairly simple.
+			It is fully standalone and Atlantis is configured to expect it and the certificates it manages to be kept within <code class="file">/opt/ssl</code>.
+			If another path is desired you can update your Atlantis <code class="file">config.php</code> and <code class="file">apache24.conf</code> accordingly.
+		</p>
+		<ul class="mb-8">
+			<li><a href="https://github.com/acmephp/acmephp/releases/tag/2.0.0">https://github.com/acmephp/acmephp/releases/tag/2.0.0</a></li>
+			<li>Download <code class="file">acmephp.phar</code>, put it in <code class="file">/opt/ssl</code>.</li>
+			<li>Download <code class="file">acmephp.phar.pubkey</code>, and put it in <code class="file">/opt/ssl</code></li>
+			<li><code class="cli">$ chmod 755 /opt/ssl/acmephp.phar</code></li>
+			<li>Done.</li>
+		</ul>
+
+		<p>
+			Fill in all the <code class="file">AcmePHP</code> values in your main application <code class="file">conf/dev/env/config.php</code>.
+			This config will be used to generate a <code class="file">conf/env/dev/acmephp.yml</code> file that is needed to automate the certificate registration and renewal process.
+		</p>
+		<blockquote class="edged-left">
+			<div class="mb-0"><code class="cli">$ atlantis acmephp-config</code></div>
+		</blockquote>
+
+		<p>
+			Then have AcmePHP grab and install your SSL cert.
+		</p>
+		<blockquote class="edged-left">
+			<div class="mb-0"><code class="cli">$ atlantis acmephp-run --sudo</code></div>
+		</blockquote>
+
+		<p>
+			Any incorrect configuration will cause it to explode gloriously.
+			Fix whatever was wrong and try it again.
+			Changes in your <code class="file">config.php</code> require re-running <code class="cli">acmephp-config</code> to regenerate the <code class="file">acmephp.yml</code>.
+		</p>
+		<p>
+			If for any reason you are fighting AcmePHP and just having a hard time parsing its output you can try running it directly until the cert stuff is working.
+		</p>
+		<blockquote class="edged-left mb-8">
+			<div class="mb-0"><code class="cli">$ sudo /opt/ssl/acmephp.phar run /path/to/project/conf/env/dev/acmephp.yml</code></div>
+		</blockquote>
+
+
+		<p class="mb-4">
+			Once AcmePHP has finished successfully refer back to the previous section about setting up the web server.
+			There is an HTTP macro in the config file, change the line related to your domains to use the HTTPS macro instead to enable both <code>http://</code> and <code>https://</code> service.
+			Literally just change the <code>Use HTTP</code> to <code>Use HTTPS</code>.
+			You likely need to rehash the web server afterwards.
+		</b>
+		<div class="mb-0">
+			<code class="cli edged-left mb-4">$ atlantis webserver-rehash --sudo</code>
+		</div>
+
 	</div>
 </div>
 
 <!-- PART 4: SSL RENEW -->
 <div class="bg-alt2">
 	<div class="container pt-8 pb-8">
-		<h2>4) Automatic SSL Renewal</h2>
+		<h2 id="step4" class="font-family-monotype mb-4">4) Automatic SSL Renewal</h2>
+		<p class="mb-4">The following will cause the server to check at 4:20am every Monday and deal with it if needed.</p>
+		<div class="edged-left mb-0">
+			<code class="cli">$ crontab -e</code><br />
+			<code class="file">20 4 * * 1 /path/to/project/vendor/bin/atlantis acmephp-run --sudo --rehash</code>
+		</div>
 	</div>
 </div>
 
 <!-- PART 5: ENV CONF -->
 <div class="bg-alt0">
 	<div class="container pt-8 pb-8">
-		<h2>5) Environment Config</h2>
+		<h2 id="step5" class="font-family-monotype mb-4">5) Environment Config</h2>
+		<p class="mb-4">
+			The environment is currently selected via the <code class="file">env.lock</code> file in the Project Root.
+			If no lock file is specified the default is <code>dev</code>.
+			To make a production environment copy your <code class="file">conf/env/dev</code> folder to <code class="file">conf/env/prod</code>, change what needs to be changed, and set the <code class="file">env.lock</code> file to the name of the environment.
+			The only thing that matters is you have a <code class="file">conf/env</code> directory matching the contents of the <code class="file">env.lock</code> file.
+		</p>
+
+		<div class="mb-4">
+			<code class="cli edged-left mb-4">$ echo "prod" > env.lock</code>
+		</div>
+
+		<p>
+			Any environments prefixed with <code>dev-</code> will report to the framework as a development environment.
+			Additionally any environments prefixed with <code>prod-</code> will report to the framework as a production environment.
+			Any random prefix such as <code>demo-</code> will report to the framework as a <code>"demo"</code> environment.
+			This will allow things like dumping debugging for only specific classifications of environments.
+		</p>
 	</div>
 </div>
