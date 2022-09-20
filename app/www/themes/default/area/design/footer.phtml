@@ -44,7 +44,11 @@
 				</div>
 				<?php if($App->IsDev()): ?>
 				<div class="white-space-nowrap opacity-40">
-					<div><code class="text-white"><span class="opacity-70">t[</span> <?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?> <span class="opacity-70">]</span></code></div>
+					<div><code class="text-white">
+						<span class="opacity-70">env[</span> <?php printf('%s (%s)', $App->GetProjectEnvType(), $App->GetProjectEnv()); ?> <span class="opacity-70">]</span>
+						<span class="opacity-70">t[</span> <?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?> <span class="opacity-70">]</span>
+					</code>
+					</div>
 					<div><code class="text-white"><span class="opacity-70">req[</span> <?php $Printer($Router->Request->Domain) ?> <span class="opacity-70">/</span> <?php $Printer(ltrim($Router->Request->Path, '/')) ?> <span class="opacity-70">]</span></code></div>
 					<div><code class="text-white"><span class="opacity-70">rt[</span> <?php $Printer($Route->Handler->Class) ?> <span class="opacity-70">::</span> <?php $Printer($Route->Handler->Method) ?> <span class="opacity-70">]</span></code></div>
 				</div>
