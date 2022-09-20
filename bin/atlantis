@@ -1,6 +1,7 @@
 <?php
 
 use Nether\Atlantis\Library;
+use Nether\Atlantis\Util;
 use Composer\Console\Application;
 
 (function(){
@@ -25,8 +26,8 @@ extends Nether\Console\Client {
 		$this->PrintLn($this->Formatter->BoldYellow('Setup Git Ignore...'));
 		$this->InitGitIgnore();
 
-		$this->PrintLn($this->Formatter->BoldYellow('Setup Common Directories...'));
-		$this->InitCommonDirs();
+		//$this->PrintLn($this->Formatter->BoldYellow('Setup Common Directories...'));
+		//$this->InitCommonDirs();
 
 		$this->PrintLn($this->Formatter->BoldYellow('Setup Common Files...'));
 		$this->InitCommonFiles();
@@ -72,12 +73,9 @@ extends Nether\Console\Client {
 
 		$Dirs = [
 			'conf',
-			'conf/env/dev',
 			'core',
-			'core/Local',
 			'routes',
-			'www',
-			'www/themes'
+			'www'
 		];
 
 		foreach($Dirs as $Dir) {
@@ -119,14 +117,10 @@ extends Nether\Console\Client {
 		$Confirm = NULL;
 
 		$Files = [
-			'composer.json',
-			'conf/config.php',
-			'conf/env/dev/config.php',
-			'conf/env/dev/apache24.conf',
-			'routes/Home.php',
-			'www/index.php',
-			'www/themes/default',
-			'www/themes/local'
+			'conf',
+			'routes',
+			'www',
+			'composer.json'
 		];
 
 		foreach($Files as $File) {
@@ -135,17 +129,14 @@ extends Nether\Console\Client {
 
 			$this->PrintLn(" * {$Remote}");
 
-			if(file_exists($Remote) && !$Force) {
-				$Confirm = $this->PromptEquals(
-					'   File Exists. Overwrite?',
-					'   (y/n):', 'y'
-				);
+			$Copy = Util::CopyWithConfirm($Local, $Remote);
 
-				if(!$Confirm)
-				continue;
-			}
-
-			Nether\Atlantis\Util::Copy($Local, $Remote);
+			foreach($Copy as $Confirm)
+			if(is_string($Confirm))
+			$Copy->Send($this->PromptEquals(
+				"   Overwrite {$Confirm}?",
+				'   (y/n):', 'y'
+			));
 
 			if(!file_exists($Remote))
 			$this->Quit(1);

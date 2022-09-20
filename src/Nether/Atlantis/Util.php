@@ -3,6 +3,7 @@
 namespace Nether\Atlantis;
 
 use FilesystemIterator;
+use Generator;
 
 class Util {
 
@@ -79,10 +80,10 @@ class Util {
 	Copy(string $Source, string $Dest):
 	bool {
 
-		// try to avoid breaking on windows.
+		// try to avoid breaking on windows with this one easy trick
 
-		$Source = str_replace('\\', '/', $Source);
-		$Dest = str_replace('\\', '/', $Dest);
+		$Source = static::Repath($Source);
+		$Dest = static::Repath($Dest);
 
 		// if we're talking about a file then just copy it and be done.
 
@@ -107,6 +108,52 @@ class Util {
 			);
 
 			Util::Copy($File, "{$Dest}/{$Suffix}");
+		}
+
+		return file_exists($Dest);
+	}
+
+	static public function
+	CopyWithConfirm(string $Source, string $Dest):
+	Generator {
+
+		$Source = static::Repath($Source);
+		$Dest = static::Repath($Dest);
+		$Keep = NULL;
+
+		if(!file_exists($Source))
+		return FALSE;
+
+		if(is_file($Source)) {
+			$Keep = file_exists($Dest) ? yield $Dest : FALSE;
+
+			if(!$Keep)
+			copy($Source, $Dest);
+
+			return file_exists($Dest);
+		}
+
+		////////
+
+		if(!static::MkDir($Dest))
+		return FALSE;
+
+		$Iter = new FilesystemIterator($Source, (0
+			| FilesystemIterator::CURRENT_AS_FILEINFO
+			| FilesystemIterator::SKIP_DOTS
+		));
+
+		$FileInfo = NULL;
+		$Path = NULL;
+		$Final = NULL;
+		$Result = NULL;
+
+		foreach($Iter as $FileInfo) {
+			$Path = static::Repath($FileInfo->GetPathname());
+			$Final = str_replace("{$Source}/", "{$Dest}/", $Path);
+
+			foreach(static::CopyWithConfirm($Path, $Final) as $Result)
+			yield $Result;
 		}
 
 		return file_exists($Dest);
