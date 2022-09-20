@@ -1,10 +1,11 @@
 <?php
 
 namespace Routes;
-use Nether;
 
-use Nether\Avenue\Meta\RouteHandler;
 use Nether\Atlantis\Routes\Web;
+use Nether\Avenue\Meta\RouteHandler;
+use Nether\Avenue\Meta\ErrorHandler;
+use Nether\Avenue\Response;
 
 class Home
 extends Web {
@@ -20,15 +21,12 @@ extends Web {
 		return;
 	}
 
-	#[RouteHandler('/dump')]
+	#[ErrorHandler(Response::CodeNotFound)]
 	public function
-	Dump():
+	NotFound():
 	void {
 
-		if(!$this->App->IsDev())
-		return;
-
-		Nether\Avenue\Util::VarDumpPre($this->App);
+		echo '<div class="text-center pt-8 pb-8">404 m8</div>';
 
 		return;
 	}
