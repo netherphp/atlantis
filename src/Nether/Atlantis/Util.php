@@ -28,8 +28,11 @@ class Util {
 	}
 
 	static public function
-	PrintHTML(string $Input):
+	PrintHTML(?string $Input):
 	void {
+
+		if($Input === NULL)
+		$Input = '';
 
 		echo Filter::EncodeHTML($Input);
 		return;
