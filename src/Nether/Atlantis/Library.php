@@ -7,6 +7,8 @@ class Library {
 	const
 	ConfProjectName           = 'Project.Name',
 	ConfProjectDesc           = 'Project.Desc',
+	ConfProjectDescShort      = 'Project.DescShort',
+	ConfProjectKeywords       = 'Project.Keywords',
 	ConfProjectDefineConsts   = 'Project.DefineConstants',
 	ConfProjectInitWithConfig = 'Project.InitWithConfig',
 	ConfProjectWebRoot        = 'Project.WebRoot';

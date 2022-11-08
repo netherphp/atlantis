@@ -287,10 +287,10 @@ application instance.
 
 		foreach($Files as $File)
 		if(is_readable($File))
-		(function(string $__FILENAME, Nether\Object\Datastore $Config){
+		(function(string $__FILENAME, Nether\Object\Datastore $Config, Nether\Atlantis\Engine $App){
 			require($__FILENAME);
 			return;
-		})($File, $this->Config);
+		})($File, $this->Config, $this);
 
 		return $this;
 	}
@@ -306,10 +306,10 @@ application instance.
 		);
 
 		if(is_readable($File))
-		(function(string $__FILENAME, Nether\Object\Datastore $Config){
+		(function(string $__FILENAME, Nether\Object\Datastore $Config, Nether\Atlantis\Engine $App){
 			require($__FILENAME);
 			return;
-		})($File, $this->Config);
+		})($File, $this->Config, $this);
 
 		return $this;
 	}

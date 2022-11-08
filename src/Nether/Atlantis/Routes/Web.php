@@ -31,9 +31,9 @@ extends Nether\Avenue\Route {
 
 		($this->App->Surface)
 		->Queue('BuildGlobalScope', $this->BuildGlobalScope(...), TRUE)
-		->Set('Page.Title', FALSE)
-		->Set('Page.Desc', FALSE)
-		->Set('Page.Keywords', FALSE)
+		->Set('Page.Title', NULL)
+		->Set('Page.Desc', NULL)
+		->Set('Page.Keywords', NULL)
 		->CaptureBegin();
 
 		return;
@@ -43,26 +43,10 @@ extends Nether\Avenue\Route {
 	OnDone():
 	void {
 
-		if($this->App->Surface->Get('Page.Title') === FALSE)
-		$this->App->Surface->Set(
-			'Page.Title',
-			$this->App->Config[Library::ConfProjectName]
-			?? ''
-		);
-
-		if($this->App->Surface->Get('Page.Desc') === FALSE)
-		$this->App->Surface->Set(
-			'Page.Desc',
-			$this->App->Config[Library::ConfProjectDesc]
-			?? ''
-		);
-
-		if($this->App->Surface->Get('Page.Desc') === FALSE)
-		$this->App->Surface->Set(
-			'Page.Desc',
-			$this->App->Config[Library::ConfProjectDesc]
-			?? new Datastore
-		);
+		$this
+		->PreparePageTitle()
+		->PreparePageDesc()
+		->PreparePageKeywords();
 
 		($this->App->Surface)
 		->CaptureEnd()
@@ -92,6 +76,77 @@ extends Nether\Avenue\Route {
 		$Dataset['Checked'] = Util::GetCheckedHTML(...);
 
 		return;
+	}
+
+	protected function
+	PreparePageTitle():
+	static {
+
+		$Name = $this->App->Config[Library::ConfProjectName];
+		$Desc = $this->App->Config[Library::ConfProjectDescShort];
+
+		////////
+
+		if($this->App->Surface->Has('Page.Title'))
+		$this->App->Surface->Set('Page.Title', sprintf(
+			'%s - %s',
+			$this->App->Surface->Get('Page.Title'),
+			$Name
+		));
+
+		else
+		$this->App->Surface->Set('Page.Title', sprintf(
+			'%s - %s',
+			$Name,
+			$Desc
+		));
+
+		////////
+
+		return $this;
+	}
+
+	protected function
+	PreparePageDesc():
+	static {
+
+		if($this->App->Surface->Get('Page.Desc') === FALSE)
+		$this->App->Surface->Set(
+			'Page.Desc',
+			$this->App->Config[Library::ConfProjectDesc]
+			?? ''
+		);
+
+		return $this;
+	}
+
+	protected function
+	PreparePageKeywords():
+	static {
+
+		$Existing = $this->App->Surface->Get('Page.Keywords');
+
+		////////
+
+		if(is_string($Existing))
+		$Existing = explode(',', $Existing);
+
+		if(is_array($Existing))
+		$Existing = new Datastore($Existing);
+
+		if(!($Existing instanceof Datastore))
+		$Existing = new Datastore;
+
+		////////
+
+		$Existing->Remap(fn(string $Item) => trim($Item));
+
+		$this->App->Surface->Set(
+			'Page.Keywords',
+			$Existing
+		);
+
+		return $this;
 	}
 
 }
