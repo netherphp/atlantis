@@ -2,6 +2,7 @@
 
 /**
  * @var Nether\Object\Datastore $Config
+ * @var Nether\Atlantis\Engine $App
  */
 
 $Config
