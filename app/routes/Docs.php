@@ -74,7 +74,7 @@ extends Web {
 			($this->Response)
 			->SetCode(404);
 
-			($this->Surface)
+			($this->App->Surface)
 			->Area('error/not-found');
 
 			return;
