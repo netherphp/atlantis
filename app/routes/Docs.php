@@ -38,7 +38,8 @@ extends Web {
 			);
 		}
 
-		$this->App->Surface
+		($this->App->Surface)
+		->Set('Page.Title', 'Docs')
 		->Area('sensei/index', [
 			'Codebase'      => $Codebase,
 			'CodebaseStats' => $Stats
@@ -57,17 +58,20 @@ extends Web {
 		$Codebase = unserialize(file_get_contents($Filename));
 		$Area = NULL;
 		$Scope = [];
+		$PageTitle = '';
 
 		////////
 
 		if($Codebase instanceof NamespaceInspector) {
 			$Area = 'sensei/namespace';
 			$Scope['Namespace'] = $Codebase;
+			$PageTitle = "Namespace: {$Codebase->Name}";
 		}
 
 		if($Codebase instanceof ClassInspector) {
 			$Area = 'sensei/class';
 			$Scope['Class'] = $Codebase;
+			$PageTitle = "Class: {$Codebase->Name}";
 		}
 
 		if(!isset($GLOBALS['SenseiBuiltinData']))
@@ -89,6 +93,7 @@ extends Web {
 		////////
 
 		($this->App->Surface)
+		->Set('Page.Title', $PageTitle)
 		->Area($Area, $Scope);
 
 		return;

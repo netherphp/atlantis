@@ -94,12 +94,15 @@ extends Nether\Avenue\Route {
 			$Name
 		));
 
-		else
+		elseif($Desc)
 		$this->App->Surface->Set('Page.Title', sprintf(
 			'%s - %s',
 			$Name,
 			$Desc
 		));
+
+		else
+		$this->App->Surface->Set('Page.Title', $Name);
 
 		////////
 
