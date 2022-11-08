@@ -129,7 +129,7 @@ class Util {
 
 		if(is_file($Source)) {
 			if($Force)
-			$Keep = TRUE;
+			$Keep = FALSE;
 			else
 			$Keep = file_exists($Dest) ? yield $Dest : FALSE;
 
