@@ -117,7 +117,7 @@ class Util {
 	}
 
 	static public function
-	CopyWithConfirm(string $Source, string $Dest):
+	CopyWithConfirm(string $Source, string $Dest, bool $Force=FALSE):
 	Generator {
 
 		$Source = static::Repath($Source);
@@ -128,6 +128,9 @@ class Util {
 		return FALSE;
 
 		if(is_file($Source)) {
+			if($Force)
+			$Keep = TRUE;
+			else
 			$Keep = file_exists($Dest) ? yield $Dest : FALSE;
 
 			if(!$Keep)
@@ -156,6 +159,7 @@ class Util {
 			$Final = str_replace("{$Source}/", "{$Dest}/", $Path);
 
 			foreach(static::CopyWithConfirm($Path, $Final) as $Result)
+			if(!$Force)
 			yield $Result;
 		}
 

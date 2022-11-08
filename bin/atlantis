@@ -129,7 +129,7 @@ extends Nether\Console\Client {
 
 			$this->PrintLn(" * {$Remote}");
 
-			$Copy = Util::CopyWithConfirm($Local, $Remote);
+			$Copy = Util::CopyWithConfirm($Local, $Remote, $Force);
 
 			foreach($Copy as $Confirm)
 			if(is_string($Confirm))
