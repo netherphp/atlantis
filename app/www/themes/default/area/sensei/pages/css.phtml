@@ -241,3 +241,54 @@ $Ratioboxes = [
 		</div>
 	</div>
 </div>
+
+
+
+<div class="bg-alt0">
+	<div class="container pt-6 pb-6">
+		<div class="row">
+			<div class="col-12 mb-4 mb-lg-0">
+				<h2 class="font-size-largerer fw-bold text-uppercase">Gradient Overlays</h2>
+				<div class="font-size-largerer fw-light mb-2">grad-<em>&lt;key&gt;</em></div>
+				<p class="mb-4">
+					Some gradient fills we use commonly.
+				</p>
+			</div>
+			<div class="col-12 mb-0 mb-lg-0">
+
+				<div class="row">
+
+					<?php foreach(['focus-normal', 'focus-dark', 'focus-darker'] as $Grad): ?>
+					<div class="col-12 col-md-4 mb-4">
+						<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(/themes/default/gfx/bob.jpg);">
+							<div class="position-absolutely grad-<?php $Printer($Grad) ?>"></div>
+							<div class="position-absolute position-h-center position-bottom"><?php $Printer($Grad) ?></div>
+						</div>
+					</div>
+					<?php endforeach; ?>
+
+					<?php foreach(['tunnel-normal', 'tunnel-dark', 'tunnel-darker'] as $Grad): ?>
+					<div class="col-12 col-md-4 mb-4">
+						<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(/themes/default/gfx/bob.jpg);">
+							<div class="position-absolutely grad-<?php $Printer($Grad) ?>"></div>
+							<div class="position-absolute position-h-center position-bottom"><?php $Printer($Grad) ?></div>
+						</div>
+					</div>
+					<?php endforeach; ?>
+
+					<?php foreach(['bottom-normal', 'bottom-dark', 'bottom-darker'] as $Grad): ?>
+					<div class="col-12 col-md-4 mb-4">
+						<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(/themes/default/gfx/bob.jpg);">
+							<div class="position-absolutely grad-<?php $Printer($Grad) ?>"></div>
+							<div class="position-absolute position-h-center position-bottom"><?php $Printer($Grad) ?></div>
+						</div>
+					</div>
+					<?php endforeach; ?>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+

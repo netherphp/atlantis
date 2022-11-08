@@ -1,0 +1,20 @@
+<?php
+
+$Faces = [
+	'(」｡≧□≦)」', 'ლ(ಠ_ಠლ)', '(눈_눈)', '(　ﾟДﾟ)＜!!'
+];
+
+$Messages = [
+	"Here I opened wide the door;<br />Darkness there and nothing more."
+];
+
+$ChoiceFace = random_int(0, (count($Faces) - 1));
+$ChoiceMessage = random_int(0, (count($Messages) - 1));
+
+?>
+
+<div class="container pt-8 pb-8">
+	<div class="fw-bold"><?php echo $Faces[$ChoiceFace] ?></div>
+	<h1 class="text-uppercase">Page Not Found</h1>
+	<p><?php echo $Messages[$ChoiceMessage] ?></p>
+</div>
