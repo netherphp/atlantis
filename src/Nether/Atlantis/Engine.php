@@ -35,6 +35,12 @@ application instance.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	use
+	Nether\Ki\CallbackPackage;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	__Construct(string $ProjectRoot, ?Nether\Object\Datastore $Conf=NULL) {
 
@@ -69,6 +75,8 @@ application instance.
 
 		$this->Router = new Nether\Avenue\Router($this->Config);
 		$this->Surface = new Nether\Surface\Engine($this->Config);
+		$this->Flow('App.Prepare', [ 'App'=> $this ], FALSE);
+		$this->Flow('App.Ready', [ 'App'=> $this ], FALSE);
 
 		return;
 	}
