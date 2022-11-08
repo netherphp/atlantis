@@ -26,7 +26,8 @@ extends Web {
 	NotFound():
 	void {
 
-		echo '<div class="text-center pt-8 pb-8">404 m8</div>';
+		($this->App->Surface)
+		->Area('error/not-found');
 
 		return;
 	}

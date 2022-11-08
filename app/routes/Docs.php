@@ -70,6 +70,12 @@ extends Web {
 			$Scope['Class'] = $Codebase;
 		}
 
+		if(!isset($GLOBALS['SenseiBuiltinData']))
+		$GLOBALS['SenseiBuiltinData'] = unserialize(file_get_contents(sprintf(
+			'%s/sensei-builtin.phson',
+			ProjectRoot
+		)));
+
 		if($Area === NULL) {
 			($this->Response)
 			->SetCode(404);
