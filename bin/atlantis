@@ -108,7 +108,7 @@ extends Nether\Console\Client {
 	InitCommonFiles():
 	int {
 
-		$Force = $this->GetOption('y');
+		$Force = (bool)$this->GetOption('y');
 		$CWD = getcwd();
 		$Root = dirname(__FILE__, 2);
 		$File = NULL;
