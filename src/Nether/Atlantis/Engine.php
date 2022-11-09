@@ -75,8 +75,16 @@ application instance.
 
 		$this->Router = new Nether\Avenue\Router($this->Config);
 		$this->Surface = new Nether\Surface\Engine($this->Config);
-		$this->Flow('App.Prepare', [ 'App'=> $this ], FALSE);
-		$this->Flow('App.Ready', [ 'App'=> $this ], FALSE);
+
+		$Data = [
+			'App'    => $this,
+			'Config' => $this->Config,
+			'Path'   => $this->ProjectRoot,
+			'Env'    => $this->ProjectEnv
+		];
+
+		$this->Flow('Atlantis.Prepare', $Data, FALSE);
+		$this->Flow('Atlantis.Ready', $Data, FALSE);
 
 		return;
 	}
