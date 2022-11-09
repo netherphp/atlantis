@@ -10,6 +10,8 @@ use Nether\Atlantis\Library;
 
 class Web
 extends Nether\Avenue\Route {
+/*// provides a basic route template for public endpoints that need to interact
+as html pages. //*/
 
 	protected Nether\Atlantis\Engine
 	$App;
