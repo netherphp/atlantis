@@ -85,7 +85,6 @@ application instance.
 
 		$this->Flow('Atlantis.Prepare', $Data, FALSE);
 		$this->Flow('Atlantis.Ready', $Data, FALSE);
-
 		return;
 	}
 
@@ -231,6 +230,20 @@ application instance.
 		);
 
 		return $WebRoot;
+	}
+
+	public function
+	FromProjectRoot(string $Path):
+	string {
+
+		$Output = sprintf(
+			'%s%s%s',
+			$this->ProjectRoot,
+			DIRECTORY_SEPARATOR,
+			Util::Repath($Path)
+		);
+
+		return $Output;
 	}
 
 	////////////////////////////////////////////////////////////////
