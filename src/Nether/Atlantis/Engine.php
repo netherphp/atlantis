@@ -314,6 +314,8 @@ application instance.
 			sprintf('%s/conf/local.php', $this->ProjectRoot)
 		];
 
+		$File = NULL;
+
 		foreach($Files as $File)
 		if(is_readable($File))
 		(function(string $__FILENAME, Nether\Object\Datastore $Config, Nether\Atlantis\Engine $App){
