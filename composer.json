@@ -30,6 +30,11 @@
 		"netherphp/console": "dev-redux",
 		"netherphp/sensei": "dev-redux"
 	},
+
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "dev-master",
+		"netherphp/standards": "dev-master"
+	},
 	"bin": [
 		"bin/atlantis"
 	],
