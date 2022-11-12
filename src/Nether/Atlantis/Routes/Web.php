@@ -45,6 +45,9 @@ as html pages. //*/
 	OnDone():
 	void {
 
+		if(!$this->App->Surface->IsCapturing())
+		return;
+
 		$this
 		->PreparePageTitle()
 		->PreparePageDesc()

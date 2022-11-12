@@ -16,6 +16,9 @@ provides a basic route template for public endpoints that need to interact
 as json apis. all output is wrapped in a standardised json message.
 //*/
 
+	protected bool
+	$IsDone = FALSE;
+
 	protected Nether\Atlantis\Engine
 	$App;
 
@@ -51,6 +54,8 @@ as json apis. all output is wrapped in a standardised json message.
 	OnDone():
 	void {
 
+		$this->IsDone = TRUE;
+
 		($this->App->Surface)
 		->CaptureEnd();
 
@@ -71,6 +76,16 @@ as json apis. all output is wrapped in a standardised json message.
 		return;
 	}
 
+	public function
+	OnDestroy():
+	void {
+
+		if(isset($this->App) && !$this->IsDone)
+		$this->OnDone();
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -82,11 +97,16 @@ as json apis. all output is wrapped in a standardised json message.
 	}
 
 	public function
-	SetError(int $Code):
+	SetError(int $Code, ?string $Msg=NULL):
 	static {
 
 		($this->App->Surface)
 		->Set('API.Error', $Code);
+
+		if($Msg !== NULL) {
+			($this->App->Surface)
+			->Set('API.Message', $Msg);
+		}
 
 		return $this;
 	}
@@ -140,6 +160,21 @@ as json apis. all output is wrapped in a standardised json message.
 		->Set('API.Payload', $Dataset);
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	Quit(int $Err, string $Msg='error'):
+	void {
+
+		$this
+		->SetError($Err)
+		->SetMessage($Msg);
+
+		exit(0);
+		return;
 	}
 
 }
