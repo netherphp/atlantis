@@ -23,6 +23,7 @@ $ConstsRemote = $Class->GetConstantsInherited();
 <div class="container pt-6 pb-6">
 
 	<div class="SenseiClassHeader <?php $Printer($Class->Info ? 'mb-4' : 'mb-0') ?>">
+
 		<div class="text-muted font-size-smaller font-family-monotype letter-space-loose line-height-normal mb-3">
 			<a href="/docs" class="Block Primary">docs</a> \
 			<?php echo (
@@ -31,6 +32,7 @@ $ConstsRemote = $Class->GetConstantsInherited();
 				: ''
 			); ?>
 		</div>
+
 		<h1 class="font-size-most-large fw-bold font-family-monotype letter-space-loose line-height-normal mb-3">
 			<?php if($Class->Final): ?>
 			<span class="Block Final">final</span>
@@ -41,8 +43,24 @@ $ConstsRemote = $Class->GetConstantsInherited();
 			<span class="Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
 			<?php $Printer($Class->GetBaseName()) ?>
 		</h1>
+
+		<?php if($Class->Extends): ?>
+		<div class="text-muted font-family-monotype letter-space-loose line-height-normal opacity-50 mb-3">
+			<span class="font-family-monotype Block Class">extends</span>
+			<?php echo (
+				Nether\Sensei\Util::IsBuiltInClass($Class->Extends)
+				? sprintf(
+					'<a href="%s" title="PHP Manual" target="_blank">%s <i class="im im-external-link font-size-smaller"></i></a>',
+					Nether\Sensei\Util::GetClassManualURL($Class->Extends),
+					$Class->Extends
+				)
+				: Nether\Sensei\Util::GenerateClassLinkChainHTML($Class->Extends)
+			) ?>
+		</div>
+		<?php endif; ?>
+
 		<?php foreach($Class->Interfaces as $Key => $Interface): ?>
-		<div class="text-muted font-family-monotype letter-space-loose line-height-normal mb-3">
+		<div class="text-muted font-family-monotype letter-space-loose line-height-normal opacity-50 mb-3">
 			<span class="font-family-monotype Block Interface">interface</span>
 			<?php echo (
 				Nether\Sensei\Util::IsBuiltInInterface($Interface)
@@ -55,6 +73,7 @@ $ConstsRemote = $Class->GetConstantsInherited();
 			) ?>
 		</div>
 		<?php endforeach; ?>
+
 	</div>
 
 	<div class="SenseiClassInfo mb-8">

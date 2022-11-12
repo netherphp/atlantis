@@ -69,6 +69,7 @@ as html pages. //*/
 		$Dataset['App'] = $this->App;
 		$Dataset['Router'] = $this->App->Router;
 		$Dataset['Route'] = $this;
+		$Dataset['User'] = $this->App->User;
 
 		// printing callables.
 

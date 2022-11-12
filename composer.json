@@ -28,6 +28,7 @@
 		"netherphp/avenue": "dev-redux",
 		"netherphp/surface": "dev-redux",
 		"netherphp/console": "dev-redux",
+		"netherphp/user": "dev-master",
 		"netherphp/sensei": "dev-redux"
 	},
 	"require-dev": {

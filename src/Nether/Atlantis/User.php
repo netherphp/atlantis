@@ -1,6 +1,6 @@
 <?php
 
-namespace Atlantis;
+namespace Nether\Atlantis;
 use Nether;
 
 use Exception;
