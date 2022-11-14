@@ -1,8 +1,10 @@
 <?php
 
 namespace Nether\Atlantis;
+use Nether;
 
-class Library {
+class Library
+extends Nether\Common\Library {
 
 	const
 	ConfProjectName           = 'Project.Name',

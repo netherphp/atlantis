@@ -1,3 +1,12 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ */
+
+$UserEnabled = $App->Config[Nether\User\Library::ConfEnable];
+
+?>
 <header id="PageHeader">
 	<div class="container h-100">
 		<div class="row align-items-center justify-content-between h-100">
@@ -8,6 +17,11 @@
 				<nav class="row">
 					<div class="col-auto"><a href="/">Home</a></div>
 					<div class="col-auto"><a href="/docs">Docs</a></div>
+
+					<?php
+					if($UserEnabled)
+					$Surface->Area('design/header-user');
+					?>
 				</nav>
 			</div>
 		</div>

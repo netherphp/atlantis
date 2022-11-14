@@ -1,10 +1,23 @@
 <?php
 
 /**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Atlantis\User $User
+ * @var Nether\Avenue\Router $Router
+ * @var Nether\Avenue\Route $Route
  * @var Nether\Surface\Engine $Surface
+ * @var void   $Printer(string in)
+ * @var void   $ThemeURL(string path, string theme)
+ * @var string $Encoder(string in)
+ * @var string $Selected(bool if)
+ * @var string $Checked(bool if)
+ * @var string $GetThemeURL(string path, string theme)
+ * @var string $CacheBuster
  */
 
-$CacheBuster = microtime(TRUE);
+// relulz the theme url helper to default to the default theme.
+
+$ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
 
 ?>
 <!DOCTYPE html>
@@ -12,16 +25,16 @@ $CacheBuster = microtime(TRUE);
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="shortcut icon" href="/themes/default/gfx/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?php $ThemeURL('gfx/favicon.ico') ?>" type="image/x-icon" />
 	<title><?php $Surface->Show('Page.Title') ?></title>
 
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/iconmonstr.min.css" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/materialdesignicons.min.css" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-bootstrap-ext.css?v=<?php $Printer($CacheBuster) ?>" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/nether-sensei.css?v=<?php $Printer($CacheBuster) ?>" />
-	<link rel="stylesheet" type="text/css" href="/themes/default/css/main.css?v=<?php $Printer($CacheBuster) ?>" />
-	<script type="text/javascript" src="/themes/default/js/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL('css/bootstrap.min.css') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL('css/iconmonstr.min.css') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL('css/materialdesignicons.min.css') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/nether-bootstrap-ext.css?v={$CacheBuster}") ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/nether-sensei.css?v={$CacheBuster}") ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/main.css?v={$CacheBuster}") ?>" />
+	<script type="text/javascript" src="<?php $ThemeURL('js/jquery.min.js', 'default') ?>"></script>
 </head>
 <body>
 

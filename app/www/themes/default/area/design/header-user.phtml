@@ -1,0 +1,18 @@
+<?php if($App->User): ?>
+<div class="col-auto">
+	<a href="/dashboard">
+		<?php $Printer($App->User->Alias) ?>
+	</a>
+</div>
+<div class="col-auto">
+	<a href="/logout">
+		Logout
+	</a>
+</div>
+<?php else: ?>
+<div class="col-auto">
+	<a href="/login">
+		Login
+	</a>
+</div>
+<?php endif; ?>

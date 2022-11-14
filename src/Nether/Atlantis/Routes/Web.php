@@ -70,6 +70,7 @@ as html pages. //*/
 		$Dataset['Router'] = $this->App->Router;
 		$Dataset['Route'] = $this;
 		$Dataset['User'] = $this->App->User;
+		$Dataset['CacheBuster'] = md5(microtime(TRUE));
 
 		// printing callables.
 
@@ -80,6 +81,22 @@ as html pages. //*/
 		$Dataset['Encoder'] = Filter::EncodeHTML(...);
 		$Dataset['Selected'] = Util::GetSelectedHTML(...);
 		$Dataset['Checked'] = Util::GetCheckedHTML(...);
+
+		// theme callables that a bit cheeky.
+
+		$Dataset['GetThemeURL'] = (
+			function(string $In, ?string $Theme=NULL) use($Dataset) {
+				$Theme ??= $Dataset['App']->Surface->GetTheme();
+				return "/themes/{$Theme}/{$In}";
+			}
+		);
+
+		$Dataset['ThemeURL'] = (
+			function(string $In, ?string $Theme=NULL) use($Dataset) {
+				echo $Dataset['GetThemeURL']($In, $Theme);
+				return;
+			}
+		);
 
 		return;
 	}

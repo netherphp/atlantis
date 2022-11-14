@@ -98,6 +98,7 @@ class Util {
 		// if we are talking about a directory then recursively dive it.
 
 		Util::MkDir($Dest);
+		$File = NULL;
 
 		$Iter = new FilesystemIterator($Source, (
 			FilesystemIterator::CURRENT_AS_FILEINFO |

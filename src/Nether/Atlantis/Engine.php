@@ -352,6 +352,8 @@ application instance.
 	LoadRequiredLibraries():
 	static {
 
+		Nether\Common\Library::Init($this->Config);
+		Nether\Atlantis\Library::Init($this->Config);
 		Nether\Avenue\Library::Init($this->Config);
 		Nether\Surface\Library::Init($this->Config);
 
@@ -370,6 +372,10 @@ application instance.
 			if(!class_exists($Class))
 			continue;
 
+			if(is_subclass_of($Class, Nether\Common\Library::class)) {
+				($Class)::Init(Config: $this->Config);
+			}
+
 			// @todo - decide which package to insert the interface
 			// into. atm none of them really make sense. object is
 			// required by nearly everything so maybe there.
@@ -380,7 +386,7 @@ application instance.
 			// for now we check the duck's undercarriage.
 
 			if(method_exists($Class, 'Init'))
-			($Class)::Init($this->Config);
+			($Class)::Init(Config: $this->Config);
 		}
 
 		return $this;
