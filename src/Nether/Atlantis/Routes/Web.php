@@ -13,6 +13,9 @@ extends Nether\Avenue\Route {
 /*// provides a basic route template for public endpoints that need to interact
 as html pages. //*/
 
+	protected bool
+	$IsDone = FALSE;
+
 	protected Nether\Atlantis\Engine
 	$App;
 
@@ -45,6 +48,8 @@ as html pages. //*/
 	OnDone():
 	void {
 
+		$this->IsDone = TRUE;
+
 		if(!$this->App->Surface->IsCapturing())
 		return;
 
@@ -56,6 +61,16 @@ as html pages. //*/
 		($this->App->Surface)
 		->CaptureEnd()
 		->Render();
+
+		return;
+	}
+
+	public function
+	OnDestroy():
+	void {
+
+		if(isset($this->App) && !$this->IsDone)
+		$this->OnDone();
 
 		return;
 	}
@@ -173,6 +188,25 @@ as html pages. //*/
 		);
 
 		return $this;
+	}
+
+	public function
+	Quit(int $Err=0, ?string $Msg=NULL, ?string $Title=NULL):
+	void {
+
+		if($Err !== 0) {
+			$Title ??= 'Error';
+			$Msg ??= 'There was an error processing your request.';
+
+			($this->App->Surface)
+			->Set('Error', $Err)
+			->Set('Title', $Title)
+			->Set('Message', $Msg)
+			->Area('error/error');
+		}
+
+		exit(0);
+		return;
 	}
 
 }

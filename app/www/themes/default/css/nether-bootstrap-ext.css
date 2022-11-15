@@ -351,6 +351,17 @@
 /*******************************************************************************
 **** misc stuff ***************************************************************/
 
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+.btn-spread {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
 .blockquote-edged,
 .edged-left {
 	border-left: 4px solid;

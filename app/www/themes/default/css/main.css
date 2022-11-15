@@ -307,3 +307,55 @@ hr {
 .PrettyModernBox .line-clamp-terminator {
 	background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
 }
+
+/*******************************************************************************
+**** fancy or *****************************************************************/
+
+.FancyOrVH {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: center;
+	height: 100%;
+}
+
+.FancyOrVH > div {
+	flex-grow: 1;
+	flex-shrink: 1;
+	margin: 0px;
+	padding: 0px;
+	opacity: 0.25;
+	text-align: center;
+}
+
+.FancyOrVH > div:after {
+	content: ' ';
+	background: #fff;
+	display: inline-block;
+	height: 100%;
+	width: 1px;
+}
+
+.FancyOrVH > label {
+	flex-shrink: 1;
+	flex-grow: 0;
+	font-style: italic;
+	padding: 6px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+@media(max-width: 767.99px) {
+	/** md or smaller */
+
+	.FancyOrVH {
+		flex-direction: row;
+	}
+
+	.FancyOrVH > div:after {
+		background: #fff;
+		height: 1px;
+		width: 100%;
+	}
+}
+

@@ -303,7 +303,11 @@ application instance.
 
 		($this->Config)
 		->Define('Project.WebRoot', 'www')
-		->Define('Project.WebServerType', NULL);
+		->Define('Project.WebServerType', NULL)
+		->Define(
+			Nether\Surface\Library::ConfThemeRoot,
+			"{$this->ProjectRoot}/www/themes"
+		);
 
 		return $this;
 	}

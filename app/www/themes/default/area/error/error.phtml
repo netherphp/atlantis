@@ -1,0 +1,16 @@
+<?php
+
+$Error ??= $Surface->Get('Error') ?? 'x_x';
+$Title ??= $Surface->Get('Title') ?? 'Error';
+$Message ??= $Surface->Get('Message') ?? 'There was an error processing your request.';
+
+?>
+
+<div class="container pt-8 pb-8">
+	<h1>
+		<span class="text-uppercase"><?php $Printer($Title) ?></span>
+		<sup class="opacity-25">(<?php $Printer($Error) ?>)</sup>
+	</h1>
+
+	<p><?php $Printer($Message) ?></p>
+</div>

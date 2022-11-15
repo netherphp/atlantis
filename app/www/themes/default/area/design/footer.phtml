@@ -43,14 +43,21 @@
 					<a class="text-underline-none" href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Back To Top 💦</a>
 				</div>
 				<?php if($App->IsDev()): ?>
-				<div class="white-space-nowrap opacity-40">
+				<div class="font-size-small white-space-nowrap opacity-40">
+					<div>
+						<code class="text-white">
+							<span class="opacity-70">cpu[</span>
+							<?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?>
+							<span class="opacity-70">]</span>
+							<span class="opacity-70">mem[</span>
+							<?php printf('%s', new Nether\Common\Units\Bytes(memory_get_peak_usage())); ?>
+							<span class="opacity-70">]</span>
+						</code>
+					</div>
 					<div>
 						<code class="text-white">
 							<span class="opacity-70">env[</span>
 							<?php printf('%s (%s)', $App->GetProjectEnvType(), $App->GetProjectEnv()); ?>
-							<span class="opacity-70">]</span>
-							<span class="opacity-70">t[</span>
-							<?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?>
 							<span class="opacity-70">]</span>
 						</code>
 					</div>
