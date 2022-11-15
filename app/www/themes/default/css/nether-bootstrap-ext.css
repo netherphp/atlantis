@@ -50,6 +50,8 @@
 .text-underline { text-decoration: underline; }
 .text-underline-none { text-decoration: none; }
 
+.text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 .white-space-nowrap { white-space: nowrap; }
 .white-space-lines { white-space: pre-line; }
 
@@ -356,10 +358,31 @@
 	width: 100%;
 }
 
+.btn-left {
+	display: block;
+	text-align: left;
+	width: 100%;
+}
+
+.btn-left > .mdi {
+	margin-right: 0.25rem;
+}
+
 .btn-spread {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+}
+
+.btn:active:focus,
+.btn:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.form-control:focus {
+	outline: none !important;
+	box-shadow: none !important;
 }
 
 .blockquote-edged,

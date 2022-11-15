@@ -80,6 +80,10 @@ hr {
 	opacity: 1.0;
 }
 
+strong {
+	font-weight: bold;
+}
+
 #PageHeader {
 	position: relative;
 	z-index: 9001;
@@ -112,8 +116,8 @@ hr {
 	color: var(--ColourForegroundPage);
 }
 
-#PageMain a:link:not(.Block):not(.Tag),
-#PageMain a:visited:not(.Block):not(.Tag) {
+#PageMain a:link:not(.Block):not(.Tag):not(.btn),
+#PageMain a:visited:not(.Block):not(.Tag):not(.btn) {
 	color: var(--ColourForegroundRoot);
 	border-bottom: 1px dotted;
 	border-bottom-color: var(--ColourForegroundRoot);
@@ -121,8 +125,8 @@ hr {
 	transition: border-bottom-color 200ms;
 }
 
-#PageMain a:active:not(.Block):not(.Tag),
-#PageMain a:hover:not(.Block):not(.Tag) {
+#PageMain a:active:not(.Block):not(.Tag):not(.btn),
+#PageMain a:hover:not(.Block):not(.Tag):not(.btn) {
 	border-bottom-color: var(--ColourTertiaryAccent);
 }
 
@@ -135,6 +139,7 @@ hr {
 **** themed items in the style of bootstrap ***********************************/
 
 .btn-primary { background-color: var(--ColourPrimaryAccent); border-color: var(--ColourPrimaryAccent); }
+.btn-dark { background-color: #111111; border-color: #111111; }
 
 .font-family-monotype { font-family: var(--FontFamilyMonotype); }
 .font-family-normal { font-family: var(--FontFamilyNormal); }
@@ -255,7 +260,8 @@ hr {
 	padding: 1.0em;
 }
 
-.PrettyModernBox h3 {
+.PrettyModernBox h3,
+.PrettyModernBox dt {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -267,27 +273,37 @@ hr {
 }
 
 .PrettyModernBox h3 a,
-.PrettyModernBox h3 span {
+.PrettyModernBox h3 span,
+.PrettyModernBox dt a,
+.PrettyModernBox dt span {
 	flex-grow: 0;
 }
 
-.PrettyModernBox h3 hr {
+.PrettyModernBox h3 hr,
+.PrettyModernBox dt hr {
 	flex-grow: 1;
 	margin: 0px;
 	padding: 0px
 }
 
-.PrettyModernBox h3 hr:first-child {
+.PrettyModernBox h3 hr:first-child,
+.PrettyModernBox dt hr:first-child {
 	margin: 0px 0.5em 0px 0px;
 }
 
-.PrettyModernBox h3 hr:last-child {
+.PrettyModernBox h3 hr:last-child,
+.PrettyModernBox dt hr:last-child {
 	margin: 0px 0px 0px 0.5em;
 }
 
 .PrettyModernBox a:link:not(.underdot),
 .PrettyModernBox a:visited:not(.underdot) {
 	border-bottom: 0px !important;
+}
+
+.PrettyModernBox dd {
+	margin: 0px;
+	padding: 0px;
 }
 
 .PrettyModernBox blockquote {
@@ -306,6 +322,17 @@ hr {
 
 .PrettyModernBox .line-clamp-terminator {
 	background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
+}
+
+.PrettyModernNavbar {
+	font-weight: 600;
+	background-color: #1A1A1A;
+	border-radius: 5px;
+	padding: 0.75rem 1.0rem 1.0rem 1.0rem;
+}
+
+.PrettyModernNavbar span {
+	opacity: 0.50;
 }
 
 /*******************************************************************************

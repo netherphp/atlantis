@@ -1,0 +1,29 @@
+<?php
+
+$Surface->Area('user/dashboard/nav', [ 'Trail' => [
+	'Change Email' => NULL
+]]);
+
+?>
+
+<div class="row justify-content-center">
+	<div class="col-12 col-md-6">
+		<div class="mb-4">
+			When changing your Email a message will be sent to the new
+			address to confirm the changes.
+		</div>
+
+		<div class="mb-2">
+			<strong>Current:</strong>
+			<?php $Printer($User->Email) ?>
+		</div>
+		<div class="mb-2">
+			<input type="text" class="form-control" placeholder="Email Address..." />
+		</div>
+		<div>
+			<button class="btn btn-dark btn-block fw-bold" onclick="alert('todo');">Update Email</button>
+		</div>
+
+	</div>
+</div>
+

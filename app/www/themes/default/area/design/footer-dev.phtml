@@ -1,0 +1,72 @@
+<div class="font-size-small white-space-nowrap opacity-40">
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">cpu[</span>
+			<?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?>
+			<span class="opacity-70">]</span>
+			<span class="opacity-70">mem[</span>
+			<?php printf('%s', new Nether\Common\Units\Bytes(memory_get_peak_usage())); ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">env[</span>
+			<?php printf('%s (%s)', $App->GetProjectEnvType(), $App->GetProjectEnv()); ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">req[</span>
+			<?php $Printer($Router->Request->Domain) ?>
+			<span class="opacity-70">/</span>
+			<?php $Printer(ltrim($Router->Request->Path, '/')) ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">rtr[</span>
+			<?php $Printer($Router->GetSource()) ?>
+			<span class="opacity-70">/</span>
+			<?php $Printer($Router->GetHandlers()->Accumulate(0, fn($Prev, $Verb)=> $Prev + $Verb->Count())) ?>
+			<span class="opacity-70">/</span>
+			<?php $Printer($Router->GetErrorHandlers()->Count()) ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">rth[</span>
+			<?php $Printer($Route->Handler->Class) ?>
+			<span class="opacity-70">::</span>
+			<?php $Printer($Route->Handler->Method) ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">dbc[</span>
+			<?php $Printer(Nether\Database::$ConnectCount) ?><span class="opacity-70">, </span>
+			<?php $Printer(sprintf('%.3fs', Nether\Database::$ConnectTime)) ?>
+			<span class="opacity-70">]</span>
+			<span class="opacity-70">dbq[</span>
+			<?php $Printer(Nether\Database::$QueryCount) ?><span class="opacity-70">, </span>
+			<?php $Printer(sprintf('%.3fs', Nether\Database::$QueryTime)) ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+	<div>
+		<code class="text-white">
+			<span class="opacity-70">user[</span>
+			<?php if($User): ?>
+			<?php $Printer($User->ID) ?><span class="opacity-70">, </span>
+			<?php $Printer($User->Alias) ?>
+			<?php else: ?>
+			not logged in
+			<?php endif; ?>
+			<span class="opacity-70">]</span>
+		</code>
+	</div>
+</div>

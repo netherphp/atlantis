@@ -1,0 +1,34 @@
+<?php
+
+$Trail ??= $Surface->Get('Trail') ?? [];
+$Key = NULL;
+$Val = NULL;
+
+?>
+
+<div class="mb-4">
+	<div class="PrettyModernNavbar">
+		<div class="row tight">
+			<div class="col-auto">
+				<a href="/"><i class="mdi mdi-fw mdi-home"></i></a>
+			</div>
+			<div class="col-auto">
+				<i class="mdi mdi-fw mdi-chevron-right"></i>
+				<a href="/dashboard">Dashboard</a>
+			</div>
+			<?php foreach($Trail as $Key => $Val): ?>
+			<?php if($Val): ?>
+			<div class="col-auto">
+				<i class="mdi mdi-fw mdi-chevron-right"></i>
+				<a href="<?php $Printer($Val) ?>"><?php $Printer($Key) ?></a>
+			</div>
+			<?php else: ?>
+			<div class="col-auto">
+				<i class="mdi mdi-fw mdi-chevron-right"></i>
+				<span><?php $Printer($Key) ?></span>
+			</div>
+			<?php endif; ?>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</div>

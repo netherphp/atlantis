@@ -30,7 +30,8 @@
 		"netherphp/surface": "dev-redux",
 		"netherphp/console": "dev-redux",
 		"netherphp/user": "dev-master",
-		"netherphp/sensei": "dev-redux"
+		"netherphp/sensei": "dev-redux",
+		"netherphp/email": "dev-master"
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "dev-master",
