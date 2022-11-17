@@ -46,6 +46,7 @@ application instance.
 
 	public function
 	__Construct(string $ProjectRoot, ?Nether\Object\Datastore $Conf=NULL) {
+		session_start();
 
 		// prepare some defaults.
 
@@ -356,10 +357,15 @@ application instance.
 	LoadRequiredLibraries():
 	static {
 
-		Nether\Common\Library::Init($this->Config);
-		Nether\Atlantis\Library::Init($this->Config);
-		Nether\Avenue\Library::Init($this->Config);
-		Nether\Surface\Library::Init($this->Config);
+		Nether\Common\Library::Init(Config: $this->Config);
+		Nether\Atlantis\Library::Init(Config: $this->Config);
+		Nether\Avenue\Library::Init(Config: $this->Config);
+		Nether\Surface\Library::Init(Config: $this->Config);
+
+		($this)
+		->Queue('Atlantis.Prepare', Nether\Database\Library::Init(...))
+		->Queue('Atlantis.Prepare', Nether\User\Library::Init(...))
+		->Queue('Atlantis.Prepare', Nether\Email\Library::Init(...));
 
 		return $this;
 	}

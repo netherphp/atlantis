@@ -3,7 +3,7 @@
 namespace Routes;
 use Nether;
 
-use Nether\Atlantis\Routes\Web;
+use Nether\Atlantis\Routes\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Avenue\Meta\ConfirmWillAnswerRequest;
 use Nether\Avenue\Response;
@@ -12,7 +12,7 @@ use Nether\Sensei\Inspectors\NamespaceInspector;
 use Nether\Sensei\Inspectors\ClassInspector;
 
 class Docs
-extends Web {
+extends PublicWeb {
 
 	#[RouteHandler('/docs')]
 	public function

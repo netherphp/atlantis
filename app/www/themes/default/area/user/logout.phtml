@@ -22,14 +22,14 @@
 </div>
 
 <script type="module">
-import JsonRequest from '/share/atlantis/api/json-request.js?v=<?php $Printer($CacheBuster) ?>';
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
 
 jQuery(function(){
 
 	jQuery('#LogoutAccept')
 	.on('click', function(){
 
-		let req = new JsonRequest('POST', '/api/user/session/logout');
+		let req = new NUI.Request('LOGOUT', '/api/user/session');
 
 		(req.send())
 		.then(function(result){

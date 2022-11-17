@@ -2,12 +2,25 @@
 
 /**
  * @var Nether\Surface\Engine $Surface
+ * @var Nether\Avenue\Route $Route
  */
 
 $HasApple = Nether\User\Library::IsAppleEnabled();
 $HasGitHub = Nether\User\Library::IsGitHubEnabled();
 $HasTwitter = Nether\User\Library::IsTwitterEnabled();
 $HasAnythingElse = ($HasApple || $HasGitHub || $HasTwitter);
+
+$GetLinkWithGoto = function(string $URL) use($Route) {
+
+	if($Route->Request->Query->Goto)
+	$URL = (
+		str_contains($URL, '?')
+		? "{$URL}&goto={$Route->Request->Query->Goto}"
+		: "{$URL}?goto={$Route->Request->Query->Goto}"
+	);
+
+	return $URL;
+};
 
 ?>
 
@@ -18,7 +31,7 @@ $HasAnythingElse = ($HasApple || $HasGitHub || $HasTwitter);
 
 	<div class="row <?php $Printer($HasAnythingElse ? 'justify-content-between' : 'justify-content-center') ?> align-items-stretch">
 		<div class="col-12 col-md-5 mb-4">
-			<form method="post">
+			<form id="LoginFormManual" method="post">
 				<div class="row justify-content-center">
 					<div class="col-12 mb-2">
 						<input id="LoginUsername" type="text" class="form-control" name="Username" placeholder="Username..." />
@@ -27,6 +40,7 @@ $HasAnythingElse = ($HasApple || $HasGitHub || $HasTwitter);
 						<input id="LoginPassword" type="text" class="form-control" name="Password" placeholder="Password..." />
 					</div>
 					<div class="col-12">
+						<input type="hidden" name="Goto" value="<?php $Printer($Route->Request->Query->Goto) ?>" />
 						<button id="LoginAccept" type="submit" class="btn btn-primary d-block w-100">Log In</button>
 					</div>
 				</div>
@@ -55,7 +69,7 @@ $HasAnythingElse = ($HasApple || $HasGitHub || $HasTwitter);
 						<?php endif; ?>
 						<?php if($HasGitHub): ?>
 						<div class="col-12 mb-0">
-							<a href="/auth/github" class="btn btn-block btn-dark text-align-left">
+							<a href="<?php $Printer($GetLinkWithGoto('/auth/github')) ?>" class="btn btn-block btn-dark text-align-left">
 								<i class="mdi mdi-fw mdi-github mr-1"></i>
 								<span>Log In via GitHub</span>
 							</a>
@@ -79,30 +93,19 @@ $HasAnythingElse = ($HasApple || $HasGitHub || $HasTwitter);
 </div>
 
 <script type="module">
-import JsonRequest from '/share/atlantis/api/json-request.js?v=<?php $Printer($CacheBuster) ?>';
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
 
 jQuery(function(){
 
-	jQuery('#LoginForm form')
+	jQuery('#LoginFormManual')
 	.on('submit', function() {
 
-		let input = jQuery(this).serializeArray();
-		let data = new FormData;
-		let req = new JsonRequest('POST', '/api/user/session/login', data);
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('LOGIN', '/api/user/session');
 
-		for(const item of input)
-		data.set(item.name, item.value);
-
-		(req.send())
-		.then(function(result) {
-			if(result.error !== 0) {
-				alert(result.message);
-				return;
-			}
-
-			location.href = '/';
-			return;
-		});
+		(req.send(form.getDataString()))
+		.then(req.goto)
+		.catch(req.catch);
 
 		return false;
 	});

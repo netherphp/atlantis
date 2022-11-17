@@ -2,13 +2,13 @@
 
 namespace Routes;
 
-use Nether\Atlantis\Routes\Web;
+use Nether\Atlantis\Routes\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Avenue\Meta\ErrorHandler;
 use Nether\Avenue\Response;
 
 class Home
-extends Web {
+extends PublicWeb {
 
 	#[RouteHandler('/index')]
 	public function

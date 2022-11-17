@@ -22,11 +22,19 @@ as json apis. all output is wrapped in a standardised json message.
 	protected Nether\Atlantis\Engine
 	$App;
 
+	protected Nether\Object\Datafilter
+	$Query;
+
+	protected Nether\Object\Datafilter
+	$Data;
+
 	public function
 	OnWillConfirmReady(?Datastore $Input):
 	void {
 
 		$this->App = $Input['App'];
+		$this->Query = clone($this->Request->Query);
+		$this->Data = clone($this->Request->Data);
 
 		return;
 	}
@@ -164,6 +172,24 @@ as json apis. all output is wrapped in a standardised json message.
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	HasUser():
+	bool {
+
+		return ($this->App->User instanceof Nether\User\Entity);
+	}
+
+	public function
+	HasAdminUser(int $Min):
+	bool {
+
+		return (
+			TRUE
+			&& ($this->App->User instanceof Nether\User\Entity)
+			&& ($this->App->User->Admin >= $Min)
+		);
+	}
 
 	public function
 	Quit(int $Err, string $Msg='error'):

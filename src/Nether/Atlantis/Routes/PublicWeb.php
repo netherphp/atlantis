@@ -8,7 +8,7 @@ use Nether\Atlantis\Filter;
 use Nether\Atlantis\Util;
 use Nether\Atlantis\Library;
 
-class Web
+class PublicWeb
 extends Nether\Avenue\Route {
 /*// provides a basic route template for public endpoints that need to interact
 as html pages. //*/
@@ -24,6 +24,8 @@ as html pages. //*/
 	void {
 
 		$this->App = $Input['App'];
+		$this->Query = clone($this->Request->Query);
+		$this->Data = clone($this->Request->Data);
 
 		return;
 	}
@@ -74,6 +76,9 @@ as html pages. //*/
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	BuildGlobalScope(array &$Dataset):
@@ -188,6 +193,27 @@ as html pages. //*/
 		);
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	HasUser():
+	bool {
+
+		return ($this->App->User instanceof Nether\User\Entity);
+	}
+
+	public function
+	HasAdminUser(int $Min):
+	bool {
+
+		return (
+			TRUE
+			&& ($this->App->User instanceof Nether\User\Entity)
+			&& ($this->App->User->Admin >= $Min)
+		);
 	}
 
 	public function
