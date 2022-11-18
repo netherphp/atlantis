@@ -39,6 +39,23 @@ extends PublicWeb {
 		return;
 	}
 
+	#[RouteHandler('/login/reset')]
+	public function
+	PageForgot():
+	void {
+
+		$Sent = $this->App->YoinkLocalData('LoginResetSent');
+		$Code = $this->Query->Code;
+
+		($this->App->Surface)
+		->Wrap('user/reset', [
+			'Sent'      => $Sent,
+			'ResetCode' => $Code
+		]);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -111,6 +128,15 @@ extends PublicWeb {
 		// already in the database using the github info.
 
 		try {
+
+			// first actually lets see if a current user wants to connect.
+
+			$User = $this->User;
+
+			// if there is no user then check for an account using the github
+			// auth id.
+
+			if(!$User)
 			$User = Nether\User\EntitySession::GetByGitHubID($Info->AuthID);
 
 			// if we have not found a user yet check for an account with the

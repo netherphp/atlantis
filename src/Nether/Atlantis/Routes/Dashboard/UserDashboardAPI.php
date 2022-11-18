@@ -100,26 +100,32 @@ extends Atlantis\ProtectedAPI {
 		if(!$this->User->ValidatePassword($this->Data->Password0))
 		$this->Quit(1, 'The old password was incorrect');
 
+		if(!$this->Data->Password1 || !$this->Data->Password2)
+		$this->Quit(2, 'You did not successfully enter the new password twice.');
+
+		if($this->Data->Password1 !== $this->Data->Password2)
+		$this->Quit(3, 'You did not successfully enter the new password twice.');
+
 		////////
 
-		if($this->Data->Password1 && $this->Data->Password2)
-		if($this->Data->Password1 === $this->Data->Password2) {
-			$Tester = new Common\PasswordTester($this->Data->Password1);
+		$Tester = new Atlantis\Util\PasswordTester;
 
-			if(!$Tester->IsOK())
-			$this->Quit(2, sprintf(
-				'The new password is not complex enough. %s',
-				$Tester->GetDescription()
-			));
+		if(!$Tester->IsOK($this->Data->Password1))
+		$this->Quit(4, sprintf(
+			'The new password is not complex enough. %s',
+			$Tester->GetDescription()
+		));
 
-			$this->User->UpdatePassword($Tester->Get());
-			$this->User->TransmitSession();
-			$this->SetLocalData('PasswordUpdated', TRUE);
-			$this->SetGoto('/dashboard/settings/password');
-		}
+		$this->User->UpdatePassword($this->Data->Password1);
+		$this->User->TransmitSession();
+		$this->App->SetLocalData('PasswordUpdated', TRUE);
+		$this->SetGoto('/dashboard/settings/password');
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/api/dashboard/auth', Verb: 'POST')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
@@ -135,6 +141,26 @@ extends Atlantis\ProtectedAPI {
 	public function
 	HandleAuthDelete():
 	void {
+
+		($this->Data)
+		->AuthType(Common\Datafilters::TrimmedText(...));
+
+		var_dump($this->Data->AuthType);
+
+		$Field = match($this->Data->AuthType) {
+			'apple'   => 'AuthAppleID',
+			'github'  => 'AuthGitHubID',
+			'google'  => 'AuthGoogleID',
+			'twitter' => 'AuthTwitterID',
+			default   => NULL
+		};
+
+		if($Field === NULL)
+		$this->Quit(1, 'Invalid auth type');
+
+		$this->User->Update([ $Field => NULL ]);
+
+		$this->SetGoto('/dashboard/settings/auth');
 
 		return;
 	}

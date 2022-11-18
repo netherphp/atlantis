@@ -24,15 +24,15 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 
 ?>
 
-<div id="LoginForm">
+<div>
 	<div class="<?php $Printer($HasAnythingElse ? 'text-left' : 'text-center') ?> mb-4">
 		<h4>Log In</h4>
 	</div>
 
 	<div class="row <?php $Printer($HasAnythingElse ? 'justify-content-between' : 'justify-content-center') ?> align-items-stretch">
 		<div class="col-12 col-md-5 mb-4">
-			<form id="LoginFormManual" method="post">
-				<div class="row justify-content-center">
+			<form id="LoginForm" method="post">
+				<div class="row justify-content-center mb-2">
 					<div class="col-12 mb-2">
 						<input id="LoginUsername" type="text" class="form-control" name="Username" placeholder="Username..." />
 					</div>
@@ -45,6 +45,9 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 					</div>
 				</div>
 			</form>
+			<div class="text-center">
+				<a href="/login/reset">Forgot Password?</a>
+			</div>
 		</div>
 		<?php if($HasAnythingElse): ?>
 		<div class="col-md-2 mb-4">
@@ -97,7 +100,7 @@ import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
 
 jQuery(function(){
 
-	jQuery('#LoginFormManual')
+	jQuery('#LoginForm')
 	.on('submit', function() {
 
 		let form = new NUI.Form(this);

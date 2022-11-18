@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\User\Entity $User
+ * @var bool $ConfirmReq - if email confirmation is required.
+ * @var bool $Updated - if the email address was updated.
+ * @var bool $Sent - if an email confirmation was sent.
+ */
+
+$Surface
+->Set('Page.Title', 'Manage Authentication Connections')
+->Area('user/dashboard/nav', [ 'Trail' => [ $Surface->Get('Page.Title') => NULL ]]);
+
+$GetConnectButton = function(string $Type) use($App) {
+
+	$Output = sprintf(
+		'<a href="/auth/%s?goto=%s" class="btn btn-primary" data-auth-action="post" data-auth-type="%s">Connect</a>',
+		$Type,
+		Nether\Common\Datafilters::Base64Encode($App->Router->Request->GetURL()),
+		$Type
+	);
+
+	return $Output;
+};
+
+$GetRemoveButton = function(string $Type) {
+
+	$Output = sprintf(
+		'<button class="btn btn-danger CmdAuthToggle" data-auth-action="delete" data-auth-type="%s">Disconnect</button>',
+		$Type
+	);
+
+	return $Output;
+};
+
+?>
+
+<div class="row">
+	<div class="col-12 mb-4">
+		<div class="row">
+			<div class="col">
+				<i class="mdi mdi-fw mdi-apple mr-2"></i>
+				Apple ID
+			</div>
+			<div class="col-auto">
+				<?php
+				echo $User->AuthAppleID
+				? $GetRemoveButton('apple')
+				: $GetConnectButton('apple');
+				?>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col">
+				<i class="mdi mdi-fw mdi-github mr-2"></i>
+				GitHub
+			</div>
+			<div class="col-auto">
+				<?php
+				echo $User->AuthGitHubID
+				? $GetRemoveButton('github')
+				: $GetConnectButton('github');
+				?>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col">
+				<i class="mdi mdi-fw mdi-google mr-2"></i>
+				Google
+			</div>
+			<div class="col-auto">
+				<?php
+				echo $User->AuthGoogleID
+				? $GetRemoveButton('google')
+				: $GetConnectButton('google');
+				?>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script type="module">
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function(){
+
+	jQuery('.CmdAuthToggle')
+	.on('click', function(){
+
+		let req = new NUI.Request(
+			jQuery(this).attr('data-auth-action').toUpperCase(),
+			'/api/dashboard/auth'
+		);
+
+		let data = NUI.Form.ObjectArrayToDataString([
+			{ name: 'AuthType', value: jQuery(this).attr('data-auth-type') }
+		]);
+
+		(req.send(data))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>
+

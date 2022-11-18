@@ -3,14 +3,14 @@
 namespace Nether\Atlantis\Struct;
 use Nether;
 
-use Nether\Object;
 use Nether\Surface;
 
 use Nether\Database\Verse;
 use Nether\Object\Datastore;
+use Nether\Common\Datafilters;
 
-#[Nether\Database\Meta\TableClass('UserEmailUpdates')]
-class EmailUpdate
+#[Nether\Database\Meta\TableClass('UserLoginResets')]
+class LoginReset
 extends Nether\Database\Prototype {
 
 	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
@@ -18,14 +18,14 @@ extends Nether\Database\Prototype {
 	public int
 	$ID;
 
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	public int
+	$TimeCreated;
+
 	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	#[Nether\Database\Meta\ForeignKey('Users', 'ID')]
 	public int
 	$EntityID;
-
-	#[Nether\Database\Meta\TypeVarChar(Size: 255)]
-	public string
-	$Email;
 
 	#[Nether\Database\Meta\TypeChar(Size: 64)]
 	public string
@@ -38,14 +38,16 @@ extends Nether\Database\Prototype {
 	Send():
 	static {
 
-		$Scope = [ 'Update'=> $this ];
-		$Generator = new Surface\Engine(Surface\Library::$Config);
-		$Content = $Generator->GetArea('email/user-email-update', $Scope);
+		$User = Nether\User\Entity::GetByID($this->EntityID);
+
+		$Scope = [ 'Reset'=> $this ];
+		$Generator = new Surface\Engine(Surface\Library::Config());
+		$Content = $Generator->GetArea('email/user-login-reset', $Scope);
 		unset($Generator);
 
 		$Send = new Nether\Email\Outbound;
-		$Send->To->Push($this->Email);
-		$Send->Subject = 'Email Change Confirmation';
+		$Send->To->Push($User->Email);
+		$Send->Subject = 'Login Reset Information';
 		$Send->Content = $Content;
 		$Send->Send();
 
@@ -53,12 +55,17 @@ extends Nether\Database\Prototype {
 	}
 
 	public function
-	GetConfirmURL():
+	GetURL():
 	string {
 
+		$Encoded = Datafilters::Base64Encode(json_encode([
+			'ID'   => $this->ID,
+			'Code' => $this->Code
+		]));
+
 		return new Nether\Atlantis\WebURL(sprintf(
-			'/dashboard/settings/email?confirm=%s',
-			$this->Code
+			'/login/reset?code=%s',
+			$Encoded
 		));
 	}
 
@@ -142,7 +149,7 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Object\Prototype($Input, [
+		$Input = new Nether\Object\Prototype($Input, [
 			'TimeCreated' => time()
 		]);
 

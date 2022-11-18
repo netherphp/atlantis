@@ -1,0 +1,100 @@
+<?php
+
+/**
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Avenue\Route $Route
+ * @var boolean $Sent
+ * @var string $ResetCode
+ */
+
+$PasswordTester = NULL;
+
+if($ResetCode) {
+	$PasswordTester = new Nether\Atlantis\Util\PasswordTester;
+}
+
+?>
+
+<div>
+	<div class="row justify-content-center">
+		<div class="col-12 col-sm-8 col-md-6 col-lg-5 mb-4">
+			<?php if(!$ResetCode): ?>
+			<div class="text-center mb-4">
+				<h4>Forgotten Password?</h4>
+			</div>
+			<?php if($Sent): ?>
+			<div class="alert alert-info mb-4">
+				If an account existed it has been sent an email with instructions.
+			</div>
+			<?php endif; ?>
+			<form id="ForgotPasswordForm" method="post">
+				<p>Enter the Email address the account uses and if one exists it will be sent information to begin the recovery process.</p>
+				<div class="row justify-content-center mb-2">
+					<div class="col-12 mb-2">
+						<input type="text" class="form-control" name="Email" placeholder="Email Address..." />
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary d-block w-100">Send Recovery Email</button>
+					</div>
+				</div>
+				<div class="text-center">
+					<a href="/login"><i class="mdi mdi-fw mdi-chevron-double-left mr-1"></i> Back to Login</a>
+				</div>
+			</form>
+			<?php else: ?>
+			<div class="text-center mb-4">
+				<h4>Recover Account</h4>
+			</div>
+			<form id="RecoverAccountForm" method="post">
+				<p>You may now set a new password.</p>
+				<p><?php $Printer($PasswordTester->GetDescription()) ?></p>
+				<div class="mb-2">
+					<input type="password" name="Password1" class="form-control" placeholder="New Password..." />
+				</div>
+				<div class="mb-2">
+					<input type="password" name="Password2" class="form-control" placeholder="Confirm New Password..." />
+				</div>
+				<div>
+					<input type="hidden" name="Code" value="<?php $Printer($ResetCode) ?>" />
+					<button type="submit" class="btn btn-primary d-block w-100">Finish</button>
+				</div>
+			</form>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function(){
+
+	jQuery('#ForgotPasswordForm')
+	.on('submit', function(){
+
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('POST', '/api/user/reset');
+
+		(req.send(form.getData()))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	jQuery('#RecoverAccountForm')
+	.on('submit', function(){
+
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('RESET', '/api/user/reset');
+
+		(req.send(form.getData()))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

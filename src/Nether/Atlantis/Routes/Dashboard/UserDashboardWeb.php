@@ -81,7 +81,7 @@ extends Atlantis\ProtectedWeb {
 		$Updated = $this->App->YoinkLocalData('PasswordUpdated');
 
 		($this->App->Surface)
-		->Wrap('user/dashboard/password',[
+		->Wrap('user/dashboard/password', [
 			'HasNoPassword' => ($this->User->PHash === NULL),
 			'Updated'       => $Updated
 		]);
@@ -96,7 +96,7 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->App->Surface)
-		->Wrap('user/dashboard/auth');
+		->Wrap('user/dashboard/auth', []);
 
 		return;
 	}

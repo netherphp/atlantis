@@ -22,7 +22,7 @@ as html pages. //*/
 	protected Nether\Object\Datastore
 	$Config;
 
-	protected ?Nether\User\Entity
+	protected ?Nether\User\EntitySession
 	$User;
 
 	public function

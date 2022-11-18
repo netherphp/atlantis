@@ -2,6 +2,9 @@
 
 namespace Nether\Atlantis;
 
+use Nether\Atlantis;
+use Nether\Common;
+
 use FilesystemIterator;
 use Generator;
 

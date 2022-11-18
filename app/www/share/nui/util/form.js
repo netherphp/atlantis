@@ -41,16 +41,21 @@ class FormUtil {
 		return data;
 	};
 
-
 	getDataString() {
 
 		let input = this.element.serializeArray();
+		return FormUtil.ObjectArrayToDataString(input);
+	};
+
+	static ObjectArrayToDataString(input) {
+
 		let output = [];
 
 		for(const item of input)
 		output.push(`${item.name}=${encodeURIComponent(item.value)}`);
 
 		return output.join('&');
+
 	};
 
 };

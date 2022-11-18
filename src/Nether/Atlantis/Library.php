@@ -2,6 +2,7 @@
 
 namespace Nether\Atlantis;
 use Nether;
+use Nether\Object\Datastore;
 
 class Library
 extends Nether\Common\Library {
@@ -26,8 +27,52 @@ extends Nether\Common\Library {
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
 
 	const
+	ConfPassMinLen        = 'Nether.Atlantis.Passwords.MinLen',
+	ConfPassReqAlphaLower = 'Nether.Atlantis.Passwords.RequireAlphaLower',
+	ConfPassReqAlphaUpper = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
+	ConfPassReqNumeric    = 'Nether.Atlantis.Passwords.RequireNumeric',
+	ConfPassReqSpecial    = 'Nether.Atlantis.Passwords.RequireSpecial';
+
+	const
 	WebServerTypeNone     = NULL,
 	WebServerTypeApache24 = 'apache24';
+
+	static public function
+	InitDefaultConfig(?Datastore $Config = NULL):
+	Datastore {
+
+		$Config = parent::InitDefaultConfig($Config);
+
+		static::$Config->BlendRight([
+			static::ConfPassMinLen        => 10,
+			static::ConfPassReqAlphaLower => TRUE,
+			static::ConfPassReqAlphaUpper => TRUE,
+			static::ConfPassReqNumeric    => TRUE,
+			static::ConfPassReqSpecial    => TRUE
+		]);
+
+		return $Config;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	Init(...$Argv):
+	void {
+
+		static::OnInit(...$Argv);
+		return;
+	}
+
+	static public function
+	OnInit(?Datastore $Config=NULL, ...$Argv):
+	void {
+
+		static::InitDefaultConfig($Config);
+
+		return;
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////

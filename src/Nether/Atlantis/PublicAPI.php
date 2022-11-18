@@ -200,14 +200,20 @@ as json apis. all output is wrapped in a standardised json message.
 	}
 
 	public function
-	Quit(int $Err, string $Msg='error'):
+	Quit(int $Err, ?string $Msg=NULL):
 	void {
+
+		if($Msg === NULL)
+		$Msg = match($Err) {
+			0       => 'OK',
+			default => 'Error'
+		};
 
 		$this
 		->SetError($Err)
 		->SetMessage($Msg);
 
-		exit(0);
+		exit($Err);
 		return;
 	}
 
