@@ -1,13 +1,25 @@
-
 class FormUtil {
 
 	constructor(input) {
 
 		this.element = jQuery(input);
+		this.output = 'string';
+
 		return;
 	};
 
-	getFormData() {
+	getData() {
+
+		if(this.output === 'formdata')
+		return this.getDataFormData();
+
+		if(this.output === 'array')
+		return this.getDataArray();
+
+		return this.getDataString();
+	};
+
+	getDataFormData() {
 
 		let input = this.element.serializeArray();
 		let data = new FormData;
@@ -18,7 +30,7 @@ class FormUtil {
 		return data;
 	};
 
-	getFormArray() {
+	getDataArray() {
 
 		let input = this.element.serializeArray();
 		let data = {};
@@ -26,10 +38,9 @@ class FormUtil {
 		for(const item of input)
 		data[item.name] = item.value;
 
-		console.log(data);
-
 		return data;
 	};
+
 
 	getDataString() {
 

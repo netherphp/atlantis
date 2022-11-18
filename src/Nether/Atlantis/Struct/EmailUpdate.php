@@ -1,0 +1,136 @@
+<?php
+
+namespace Nether\Atlantis\Struct;
+use Nether;
+use Nether\Database\Verse;
+use Nether\Object\Datastore;
+
+use Nether\Surface;
+
+#[Nether\Database\Meta\TableClass('UserEmailUpdates')]
+class EmailUpdate
+extends Nether\Database\Prototype {
+
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
+	#[Nether\Database\Meta\PrimaryKey]
+	public int
+	$ID;
+
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Nether\Database\Meta\ForeignKey('Users', 'ID')]
+	public int
+	$EntityID;
+
+	#[Nether\Database\Meta\TypeVarChar(Size: 255)]
+	public string
+	$Email;
+
+	#[Nether\Database\Meta\TypeChar(Size: 64)]
+	public string
+	$Code;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	Send():
+	static {
+
+		$Scope = [ 'Update'=> $this ];
+		$Generator = new Surface\Engine(Surface\Library::$Config);
+		$Content = $Generator->GetArea('email/user-email-update', $Scope);
+		unset($Generator);
+
+		$Send = new Nether\Email\Outbound;
+		$Send->To->Push($this->Email);
+		$Send->Subject = 'Email Change Confirmation';
+		$Send->Content = $Content;
+		$Send->Send();
+
+		return $this;
+	}
+
+	public function
+	GetConfirmURL():
+	string {
+
+		return new Nether\Atlantis\WebURL(sprintf(
+			'/dashboard/settings/email?confirm=%s',
+			$this->Code
+		));
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	Generate(int $Len=32):
+	string {
+
+		$Iter = NULL;
+		$Output = '';
+
+		for($Iter = 0; $Iter < $Len; $Iter++)
+		$Output .= match(random_int(1, 3)) {
+			1 => chr(random_int(65, 90)),  // A-Z
+			2 => chr(random_int(97, 122)), // a-z
+			3 => (string)random_int(0, 9)  // 0-9
+		};
+
+		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	DropForEntityID(int $EntityID):
+	void {
+
+		$Table = static::GetTableInfo();
+
+		$Result = (
+			(new Nether\Database)
+			->NewVerse()
+			->Delete($Table->Name)
+			->Where('EntityID=:EntityID')
+			->Query([ 'EntityID'=> $EntityID ])
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static protected function
+	FindExtendOptions(Datastore $Input):
+	void {
+
+		$Input->EntityID ??= NULL;
+		$Input->Code ??= NULL;
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters(Verse $SQL, Datastore $Input):
+	void {
+
+		if($Input->EntityID !== NULL)
+		$SQL->Where('Main.EntityID=:EntityID');
+
+		if($Input->Code !== NULL)
+		$SQL->Where('Main.Code=:Code');
+
+		return;
+	}
+
+	static protected function
+	FindExtendSorts(Verse $SQL, Datastore $Input):
+	void {
+
+		return;
+	}
+
+}

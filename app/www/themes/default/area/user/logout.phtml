@@ -32,11 +32,8 @@ jQuery(function(){
 		let req = new NUI.Request('LOGOUT', '/api/user/session');
 
 		(req.send())
-		.then(function(result){
-
-			location.href = '/';
-			return;
-		});
+		.then(req.goto)
+		.catch(req.catch);
 
 		return;
 	});

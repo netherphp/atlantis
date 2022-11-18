@@ -37,7 +37,7 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 						<input id="LoginUsername" type="text" class="form-control" name="Username" placeholder="Username..." />
 					</div>
 					<div class="col-12 mb-2">
-						<input id="LoginPassword" type="text" class="form-control" name="Password" placeholder="Password..." />
+						<input id="LoginPassword" type="password" class="form-control" name="Password" placeholder="Password..." />
 					</div>
 					<div class="col-12">
 						<input type="hidden" name="Goto" value="<?php $Printer($Route->Request->Query->Goto) ?>" />
@@ -103,7 +103,7 @@ jQuery(function(){
 		let form = new NUI.Form(this);
 		let req = new NUI.Request('LOGIN', '/api/user/session');
 
-		(req.send(form.getDataString()))
+		(req.send(form))
 		.then(req.goto)
 		.catch(req.catch);
 

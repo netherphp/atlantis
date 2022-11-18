@@ -29,5 +29,45 @@ extends Nether\Common\Library {
 	WebServerTypeNone     = NULL,
 	WebServerTypeApache24 = 'apache24';
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	Prepare(...$Argv):
+	void {
+
+		static::OnPrepare(...$Argv);
+		return;
+	}
+
+	static public function
+	OnPrepare(Nether\Atlantis\Engine $App, ...$Argv):
+	void {
+
+		$App->User = Nether\User\EntitySession::Get();
+
+		////////
+
+		if($App->Router->GetSource() === 'dirscan') {
+			$RouterPath = dirname(__FILE__);
+			$Scanner = new Nether\Avenue\RouteScanner("{$RouterPath}/Routes");
+			$Map = $Scanner->Generate();
+
+			////////
+
+			$Map['Verbs']->Each(
+				fn(Nether\Object\Datastore $Handlers)
+				=> $App->Router->AddHandlers($Handlers)
+			);
+
+			$Map['Errors']->Each(
+				fn(Nether\Avenue\Meta\RouteHandler $Handler, int $Code)
+				=> $App->Router->AddErrorHandler($Code, $Handler)
+			);
+		}
+
+		return;
+	}
+
 }
 

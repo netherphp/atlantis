@@ -1,6 +1,6 @@
 <?php
 
-namespace Nether\Atlantis\Routes;
+namespace Nether\Atlantis;
 use Nether;
 
 use Nether\Object\Datastore;
@@ -9,7 +9,7 @@ use Nether\Atlantis\Util;
 use Nether\Atlantis\Library;
 
 class ProtectedAPI
-extends Api {
+extends PublicAPI {
 /*//
 @date 2022-11-09
 provides a basic route template for public endpoints that need to interact
@@ -50,7 +50,7 @@ as json apis. all output is wrapped in a standardised json message.
 		// find the access types this route demands.
 
 		foreach($MethodInfo->Attributes as $Val)
-		if($Val instanceof Nether\User\Meta\RouteAccessType)
+		if($Val instanceof Nether\Atlantis\Meta\RouteAccessType)
 		$AccessTypes->Shove($Val->Key, $Val);
 
 		////////
@@ -66,7 +66,7 @@ as json apis. all output is wrapped in a standardised json message.
 				=> $this->HasUser(),
 
 				'Admin'
-				=> $this->HasAdminUser($Val->Value),
+				=> $this->IsUserAdmin($Val->Value),
 
 				default
 				=> (

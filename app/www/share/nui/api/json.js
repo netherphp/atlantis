@@ -1,4 +1,4 @@
-
+import FormUtil from '/share/nui/util/form.js';
 
 class JsonResult {
 
@@ -45,8 +45,21 @@ class JsonRequest {
 		if(typeof data === 'undefined')
 		data = this.data;
 
+		// @todo 2022-11-17 need to be able to switch between urlencoded
+		// and multipart form styles for uploads later. the php side also
+		// needs to be taught how to parse multipart.
+
+		let formdata = data;
+
+		if(formdata instanceof FormUtil)
+		formdata = formdata.getDataString();
+
+		let headers = {
+			'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+		};
+
 		let req = (
-			fetch(this.url, { method: this.method, body: data })
+			fetch(this.url, { method: this.method, body: formdata, headers: headers })
 			.then(function(resp) { return JsonResult.FromResponse(resp); })
 			.then(function(result) {
 				if(result.error !== 0)
@@ -102,14 +115,16 @@ class JsonRequest {
 
 	goto(result) {
 
-		let goto = '/';
+		let goto = null;
 
 		if(result instanceof JsonResult) {
 			if(result.goto !== null)
 			goto = result.goto;
 		}
 
-		location.href = goto;
+		if(goto !== null)
+		setTimeout((()=>location.href = goto), 100);
+
 		return;
 	};
 

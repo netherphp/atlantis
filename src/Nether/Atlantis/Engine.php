@@ -253,6 +253,61 @@ application instance.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public function
+	SetLocalData(string $Key, mixed $Val):
+	static {
+	/*//
+	adds data to the session storage.
+	//*/
+
+		if(isset($_SESSION))
+		$_SESSION[$Key] = $Val;
+
+		return $this;
+	}
+
+	public function
+	UnsetLocalData(string $Key):
+	static {
+	/*//
+	removes data from the session storage.
+	//*/
+
+		if(isset($_SESSION[$Key]))
+		unset($_SESSION[$Key]);
+
+		return $this;
+	}
+
+	public function
+	GetLocalData(string $Key):
+	mixed {
+	/*//
+	reads and returns data from the session storage.
+	//*/
+
+		if(isset($_SESSION[$Key]))
+		return $_SESSION[$Key];
+
+		return NULL;
+	}
+
+	public function
+	YoinkLocalData(string $Key):
+	mixed {
+	/*//
+	read, drop, and then return the data from the session storage.
+	//*/
+
+		$Output = $this->GetLocalData($Key);
+		$this->UnsetLocalData($Key);
+
+		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	protected function
 	DetermineEnvironment():
 	static {
@@ -364,8 +419,9 @@ application instance.
 
 		($this)
 		->Queue('Atlantis.Prepare', Nether\Database\Library::Init(...))
+		->Queue('Atlantis.Prepare', Nether\Email\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\User\Library::Init(...))
-		->Queue('Atlantis.Prepare', Nether\Email\Library::Init(...));
+		->Queue('Atlantis.Prepare', Nether\Atlantis\Library::Prepare(...));
 
 		return $this;
 	}

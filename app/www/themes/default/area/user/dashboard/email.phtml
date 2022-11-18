@@ -1,29 +1,74 @@
 <?php
 
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var bool $ConfirmReq - if email confirmation is required.
+ * @var bool $Updated - if the email address was updated.
+ * @var bool $Sent - if an email confirmation was sent.
+ */
+
 $Surface->Area('user/dashboard/nav', [ 'Trail' => [
-	'Change Email' => NULL
+	'Update Email Address' => NULL
 ]]);
 
 ?>
 
 <div class="row justify-content-center">
 	<div class="col-12 col-md-6">
-		<div class="mb-4">
-			When changing your Email a message will be sent to the new
-			address to confirm the changes.
+		<?php if($Sent): ?>
+		<div class="alert alert-warning text-center mb-4">
+			A confirmation link has been sent to your new Email address.
 		</div>
+		<?php endif; ?>
+
+		<?php if($Updated): ?>
+		<div class="alert alert-success text-center mb-4">
+			Your Email has been updated.
+		</div>
+		<?php endif; ?>
+
+		<?php if($ConfirmReq): ?>
+		<div class="mb-4">
+			A message will be sent to your new email address with a
+			link you will need to use to confirm this change.
+		</div>
+		<?php endif; ?>
 
 		<div class="mb-2">
 			<strong>Current:</strong>
 			<?php $Printer($User->Email) ?>
 		</div>
-		<div class="mb-2">
-			<input type="text" class="form-control" placeholder="Email Address..." />
-		</div>
-		<div>
-			<button class="btn btn-dark btn-block fw-bold" onclick="alert('todo');">Update Email</button>
-		</div>
+		<form id="EmailChangeForm" method="post">
+			<div class="mb-2">
+				<input type="text" name="Email" class="form-control" placeholder="Email Address..." />
+			</div>
+			<div>
+				<button type="submit" class="btn btn-primary btn-block fw-bold">Update Email</button>
+			</div>
+		</form>
 
 	</div>
 </div>
 
+<script type="module">
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function(){
+
+	jQuery('#EmailChangeForm')
+	.on('submit', function(){
+
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('POST', '/api/dashboard/email');
+
+		(req.send(form.getData()))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

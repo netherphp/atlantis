@@ -3,7 +3,7 @@
 namespace Routes;
 use Nether;
 
-use Nether\Atlantis\Routes\PublicWeb;
+use Nether\Atlantis\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Avenue\Meta\ConfirmWillAnswerRequest;
 use Nether\Avenue\Response;

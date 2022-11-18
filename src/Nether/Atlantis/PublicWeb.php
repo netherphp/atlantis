@@ -1,6 +1,6 @@
 <?php
 
-namespace Nether\Atlantis\Routes;
+namespace Nether\Atlantis;
 use Nether;
 
 use Nether\Object\Datastore;
@@ -19,11 +19,19 @@ as html pages. //*/
 	protected Nether\Atlantis\Engine
 	$App;
 
+	protected Nether\Object\Datastore
+	$Config;
+
+	protected ?Nether\User\Entity
+	$User;
+
 	public function
 	OnWillConfirmReady(?Datastore $Input):
 	void {
 
 		$this->App = $Input['App'];
+		$this->User = $this->App->User;
+		$this->Config = $this->App->Config;
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
@@ -206,7 +214,7 @@ as html pages. //*/
 	}
 
 	public function
-	HasAdminUser(int $Min):
+	IsUserAdmin(int $Min):
 	bool {
 
 		return (

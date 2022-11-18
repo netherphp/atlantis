@@ -1,6 +1,6 @@
 <?php
 
-namespace Nether\Atlantis\Routes;
+namespace Nether\Atlantis;
 use Nether;
 
 use Nether\Object\Datastore;
@@ -47,7 +47,7 @@ extends PublicWeb {
 		// find the access types this route demands.
 
 		foreach($MethodInfo->Attributes as $Val)
-		if($Val instanceof Nether\User\Meta\RouteAccessType)
+		if($Val instanceof Nether\Atlantis\Meta\RouteAccessType)
 		$AccessTypes->Shove($Val->Key, $Val);
 
 		////////
@@ -63,7 +63,7 @@ extends PublicWeb {
 				=> $this->HasUser(),
 
 				'Admin'
-				=> $this->HasAdminUser($Val->Value),
+				=> $this->IsUserAdmin($Val->Value),
 
 				default
 				=> (

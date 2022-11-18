@@ -1,6 +1,6 @@
 <?php
 
-namespace Nether\Atlantis\Routes;
+namespace Nether\Atlantis;
 use Nether;
 
 use Nether\Object\Datastore;
@@ -8,7 +8,7 @@ use Nether\Atlantis\Filter;
 use Nether\Atlantis\Util;
 use Nether\Atlantis\Library;
 
-class Api
+class PublicAPI
 extends Nether\Avenue\Route {
 /*//
 @date 2022-11-09
@@ -28,11 +28,19 @@ as json apis. all output is wrapped in a standardised json message.
 	protected Nether\Object\Datafilter
 	$Data;
 
+	protected Nether\Object\Datastore
+	$Config;
+
+	protected ?Nether\User\EntitySession
+	$User;
+
 	public function
 	OnWillConfirmReady(?Datastore $Input):
 	void {
 
 		$this->App = $Input['App'];
+		$this->User = $this->App->User;
+		$this->Config = $this->App->Config;
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
@@ -181,7 +189,7 @@ as json apis. all output is wrapped in a standardised json message.
 	}
 
 	public function
-	HasAdminUser(int $Min):
+	IsUserAdmin(int $Min=1):
 	bool {
 
 		return (

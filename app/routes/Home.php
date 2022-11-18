@@ -2,7 +2,7 @@
 
 namespace Routes;
 
-use Nether\Atlantis\Routes\PublicWeb;
+use Nether\Atlantis\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Avenue\Meta\ErrorHandler;
 use Nether\Avenue\Response;
