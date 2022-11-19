@@ -1,3 +1,13 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ */
+
+$UserAllowSignup = $App->Config[Nether\Atlantis\Library::ConfUserAllowSignup];
+
+?>
+
 <?php if($App->User): ?>
 <div class="col-auto">
 	<a href="/dashboard">
@@ -6,7 +16,7 @@
 </div>
 <div class="col-auto">
 	<a href="/logout">
-		Logout
+		Log Out
 	</a>
 </div>
 <?php else: ?>
@@ -15,4 +25,11 @@
 		Login
 	</a>
 </div>
+<?php if($UserAllowSignup): ?>
+<div class="col-auto">
+	<a href="/join">
+		Join
+	</a>
+</div>
+<?php endif; ?>
 <?php endif; ?>

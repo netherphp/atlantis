@@ -31,7 +31,7 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		$User = User\EntitySession::GetByAlias(
+		$User = User\EntitySession::GetBy(
 			$this->Request->Data->Username
 		);
 
@@ -50,7 +50,7 @@ extends Atlantis\PublicAPI {
 		$User->UpdateTimeSeen();
 
 		$this
-		->SetGoto($this->Request->Data->Goto ?: NULL)
+		->SetGoto($this->Request->Data->Goto ?: '/')
 		->SetPayload([
 			'ID'    => $User->ID,
 			'Alias' => $User->Alias,
@@ -206,6 +206,75 @@ extends Atlantis\PublicAPI {
 		$this->App->SetLocalData('PasswordUpdated', TRUE);
 		$this->SetGoto('/dashboard/settings/password');
 
+		return;
+	}
+
+	#[RouteHandler('/api/user/create', Verb: 'POST')]
+	public function
+	HandleCreateAccount():
+	void {
+
+		($this->Data)
+		->Email(Common\Datafilters::Email(...))
+		->Alias(Common\Datafilters::TrimmedTextNullable(...))
+		->Password1(Common\Datafilters::TypeStringNullable(...))
+		->Password2(Common\Datafilters::TypeStringNullable(...))
+		->Session(Common\Datafilters::TypeBool(...));
+
+		$PasswordTester = new Atlantis\Util\PasswordTester;
+		$User = NULL;
+
+		////////
+
+		if(!$this->Data->Email)
+		$this->Quit(1, 'Invalid Email');
+
+		if(!$this->Data->Alias)
+		$this->Quit(2, 'Invalid Username');
+
+		if(!$this->Data->Password1 || !$this->Data->Password2)
+		$this->Quit(3, 'Invalid Password');
+
+		if($this->Data->Password1 !== $this->Data->Password2)
+		$this->Quit(4, 'Did not enter the same password twice');
+
+		if(!$PasswordTester->IsOK($this->Data->Password1))
+		$this->Quit(5, sprintf(
+			'Password is not complex enough: %s',
+			$PasswordTester->GetDescription()
+		));
+
+		////////
+
+		$User = User\Entity::GetByEmail($this->Data->Email);
+
+		if($User instanceof User\Entity)
+		$this->Quit(6, 'There is already an account using this email address.');
+
+		$User = User\Entity::GetByAlias($this->Data->Alias);
+
+		if($User instanceof User\Entity)
+		$this->Quit(7, 'There is already an account with this username.');
+
+		////////
+
+		$User = User\EntitySession::Insert([
+			'Alias' => $this->Data->Alias,
+			'Email' => $this->Data->Email,
+			'PHash' => User\Entity::GeneratePasswordHash($this->Data->Password1)
+		]);
+
+		if(!$User)
+		$this->Quit(8, 'Unknown error occured creating account.');
+
+		////////
+
+		if($this->Data->Session)
+		$User->TransmitSession();
+
+		////////
+
+		$this->SetGoto('/');
 		return;
 	}
 

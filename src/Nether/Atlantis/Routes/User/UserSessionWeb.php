@@ -56,6 +56,28 @@ extends PublicWeb {
 		return;
 	}
 
+	#[RouteHandler('/join')]
+	public function
+	PageJoin():
+	void {
+
+		($this->App->Surface)
+		->Wrap('user/join');
+
+		return;
+	}
+
+	#[RouteHandler('/activate')]
+	public function
+	PageActivate():
+	void {
+
+		($this->App->Surface)
+		->Wrap('user/activate');
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

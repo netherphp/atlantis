@@ -31,7 +31,8 @@ extends Nether\Common\Library {
 	ConfPassReqAlphaLower = 'Nether.Atlantis.Passwords.RequireAlphaLower',
 	ConfPassReqAlphaUpper = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
 	ConfPassReqNumeric    = 'Nether.Atlantis.Passwords.RequireNumeric',
-	ConfPassReqSpecial    = 'Nether.Atlantis.Passwords.RequireSpecial';
+	ConfPassReqSpecial    = 'Nether.Atlantis.Passwords.RequireSpecial',
+	ConfUserAllowSignup   = 'Nether.Atlantis.Users.AllowSignup';
 
 	const
 	WebServerTypeNone     = NULL,
@@ -48,7 +49,8 @@ extends Nether\Common\Library {
 			static::ConfPassReqAlphaLower => TRUE,
 			static::ConfPassReqAlphaUpper => TRUE,
 			static::ConfPassReqNumeric    => TRUE,
-			static::ConfPassReqSpecial    => TRUE
+			static::ConfPassReqSpecial    => TRUE,
+			static::ConfUserAllowSignup   => TRUE
 		]);
 
 		return $Config;

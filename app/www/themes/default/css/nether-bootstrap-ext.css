@@ -49,6 +49,7 @@
 .text-overline { text-decoration: underline; }
 .text-underline { text-decoration: underline; }
 .text-underline-none { text-decoration: none; }
+.text-muted { color: #7d7d7d !important; }
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 

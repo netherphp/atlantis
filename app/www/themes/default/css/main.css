@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700;0,900;1,100;1,400;1,700;1,900&display=swap');
+
 :root {
 
 	/* page colours */
@@ -20,7 +22,7 @@
 
 	/* page fonts */
 
-	--FontFamilyNormal: 'Segoe UI', 'Helvetica', sans-serif;
+	--FontFamilyNormal: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
 	--FontWeightNormal: 300;
 	--FontSpacingNormal: 0.02em;
 
@@ -86,6 +88,21 @@ img {
 	transition: background-color 200ms;
 }
 
+.form-control::placeholder {
+	color: #7d7d7d;
+	font-size: 0.8rem;
+	letter-spacing: 0.1rem;
+}
+
+.btn {
+	font-size: 0.8rem;
+	font-weight: bold;
+	letter-spacing: 0.1rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	text-transform: uppercase;
+}
+
 h1, h2, h3, h4 {
 	font-weight: bold;
 }
@@ -113,16 +130,22 @@ strong {
 	text-transform: uppercase;
 }
 
-#PageHeader nav a:link,
-#PageHeader nav a:visited {
+#PageHeader nav a:link:not(.btn),
+#PageHeader nav a:visited:not(.btn) {
 	color: #FFFFFF;
 	text-decoration: none;
 	transition: color 200ms;
 }
 
-#PageHeader nav a:hover,
-#PageHeader nav a:active {
+#PageHeader nav a:hover:not(.btn),
+#PageHeader nav a:active:not(.btn) {
 	color: var(--ColourPrimaryAccent);
+}
+
+#PageHeader nav .btn {
+	font-size: 0.8em;
+	font-weight: bold;
+	padding: 1px 8px 2px 8px;
 }
 
 #PageMain {
