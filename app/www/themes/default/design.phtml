@@ -35,6 +35,20 @@ $ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
 	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/nether-sensei.css?v={$CacheBuster}") ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/main.css?v={$CacheBuster}") ?>" />
 	<script type="text/javascript" src="<?php $ThemeURL('js/jquery.min.js', 'default') ?>"></script>
+
+	<!-- <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script> -->
+	<?php if(Nether\User\Library::IsGoogleEnabled()): ?>
+	<script type="text/javascript" src="https://apis.google.com/js/platform.js" async defer></script>
+	<?php endif; ?>
+
+	<?php if(Nether\User\Library::IsAppleEnabled()): ?>
+	<script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" async defer></script>
+	<?php endif; ?>
+
+	<?php if(Nether\User\Library::IsTwitterEnabled()): ?>
+	<script type="text/javascript" src="https://platform.twitter.com/widgets.js" async defer></script>
+	<?php endif; ?>
+
 </head>
 <body>
 

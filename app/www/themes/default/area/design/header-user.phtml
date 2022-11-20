@@ -11,7 +11,7 @@ $UserAllowSignup = $App->Config[Nether\Atlantis\Library::ConfUserAllowSignup];
 <?php if($App->User): ?>
 <div class="col-auto">
 	<a href="/dashboard">
-		<?php $Printer($App->User->Alias) ?>
+		<?php $Printer($App->User->Alias ?? 'Dashboard') ?>
 	</a>
 </div>
 <div class="col-auto">
@@ -27,8 +27,8 @@ $UserAllowSignup = $App->Config[Nether\Atlantis\Library::ConfUserAllowSignup];
 </div>
 <?php if($UserAllowSignup): ?>
 <div class="col-auto">
-	<a href="/join">
-		Join
+	<a href="/signup">
+		Signup
 	</a>
 </div>
 <?php endif; ?>

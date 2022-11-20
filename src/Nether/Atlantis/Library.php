@@ -32,7 +32,9 @@ extends Nether\Common\Library {
 	ConfPassReqAlphaUpper = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
 	ConfPassReqNumeric    = 'Nether.Atlantis.Passwords.RequireNumeric',
 	ConfPassReqSpecial    = 'Nether.Atlantis.Passwords.RequireSpecial',
-	ConfUserAllowSignup   = 'Nether.Atlantis.Users.AllowSignup';
+	ConfUserAllowSignup   = 'Nether.Atlantis.Users.AllowSignup',
+	ConfUserEmailActivate = 'Nether.Atlantis.Users.EmailActivation',
+	ConfUserRequireAlias  = 'Nether.Atlantis.Users.RequireAlias';
 
 	const
 	WebServerTypeNone     = NULL,

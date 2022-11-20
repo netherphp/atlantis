@@ -3,7 +3,6 @@
 namespace Nether\Atlantis\Struct;
 use Nether;
 
-use Nether\Object;
 use Nether\Surface;
 
 use Nether\Database\Verse;
@@ -142,7 +141,7 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Object\Prototype($Input, [
+		$Input = new Nether\Object\Prototype($Input, [
 			'TimeCreated' => time()
 		]);
 

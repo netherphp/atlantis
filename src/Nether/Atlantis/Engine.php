@@ -363,6 +363,10 @@ application instance.
 		->Define(
 			Nether\Surface\Library::ConfThemeRoot,
 			"{$this->ProjectRoot}/www/themes"
+		)
+		->Define(
+			Nether\User\Library::ConfAppleKeyFilePath,
+			"{$this->ProjectRoot}/conf/env/{$this->ProjectEnv}/keys/apple-authkey.p8"
 		);
 
 		return $this;
