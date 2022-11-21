@@ -1,35 +1,38 @@
 <?php
 
+use Nether\Atlantis\Dashboard\SidebarGroup;
+use Nether\Atlantis\Dashboard\SidebarGroupItem;
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Object\Datastore $SidebarItems
+ */
+
 $Surface->Area('user/dashboard/nav');
 
 ?>
 
 <div class="row">
 	<div class="col-12 col-md-4">
+
+		<?php foreach($SidebarItems as $Group): /** @var SidebarGroup $Group */ ?>
 		<dl class="PrettyModernBox">
 			<dt>
-				<span>Account</span>
+				<span><?php $Printer($Group->Title) ?></span>
 				<hr />
 			</dt>
-			<dd class="mb-2">
-				<a href="/dashboard/settings/email" class="btn btn-dark btn-left text-ellipsis">
-					<i class="mdi mdi-fw mdi-cog"></i>
-					Change Email
+			<?php foreach($Group->Items as $Key => $Item): /** @var SidebarGroupItem $Item */ ?>
+			<dd class="<?php $Printer($Group->Items->IsLastKey($Key) ? 'mb-0' : 'mb-2') ?>">
+				<a href="<?php $Printer($Item->URL) ?>" class="btn btn-dark btn-left text-ellipsis">
+					<i class="mdi mdi-fw <?php $Printer($Item->Icon ?? 'mdi-blank') ?>"></i>
+					<?php $Printer($Item->Title) ?>
 				</a>
 			</dd>
-			<dd class="mb-2">
-				<a href="/dashboard/settings/password" class="btn btn-dark btn-left text-ellipsis">
-					<i class="mdi mdi-fw mdi-cog"></i>
-					Change Password
-				</a>
-			</dd>
-			<dd class="mb-0">
-				<a href="/dashboard/settings/auth" class="btn btn-dark btn-left text-ellipsis">
-					<i class="mdi mdi-fw mdi-cog"></i>
-					Manage Connections
-				</a>
-			</dd>
+			<?php endforeach; ?>
 		</dl>
+		<?php endforeach; unset($Key, $Item, $Group); ?>
+
 	</div>
 	<div class="col">
 

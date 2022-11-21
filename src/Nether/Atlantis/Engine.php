@@ -3,6 +3,14 @@
 namespace Nether\Atlantis;
 use Nether;
 
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Ki;
+use Nether\Surface;
+use Nether\User;
+
+use Nether\Object\Datastore;
+
 class Engine {
 /*//
 Provides a core application instance and API to bring all the framework
@@ -11,16 +19,16 @@ such as Theme Engines and Routers where it only makes sense to have one per
 application instance.
 //*/
 
-	public Nether\Object\Datastore
+	public Datastore
 	$Config;
 
-	public Nether\Avenue\Router
+	public Avenue\Router
 	$Router;
 
-	public Nether\Surface\Engine
+	public Surface\Engine
 	$Surface;
 
-	public ?Nether\User\EntitySession
+	public ?User\EntitySession
 	$User;
 
 	////////////////////////////////////////////////////////////////
@@ -39,13 +47,13 @@ application instance.
 	////////////////////////////////////////////////////////////////
 
 	use
-	Nether\Ki\CallbackPackage;
+	Ki\CallbackPackage;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__Construct(string $ProjectRoot, ?Nether\Object\Datastore $Conf=NULL) {
+	__Construct(string $ProjectRoot, ?Datastore $Conf=NULL) {
 		session_start();
 
 		// prepare some defaults.
@@ -53,7 +61,7 @@ application instance.
 		$this->ProjectTime = microtime(TRUE);
 		$this->ProjectRoot = $ProjectRoot;
 		$this->ProjectEnv = 'dev';
-		$this->Config = new Nether\Object\Datastore;
+		$this->Config = new Datastore;
 
 		// load in configuration.
 
@@ -68,7 +76,7 @@ application instance.
 
 		// begin setting things up.
 
-		if($this->Config->IsTrueEnough(Library::ConfProjectDefineConsts))
+		if($this->Config->IsTrueEnough(Atlantis\Library::ConfProjectDefineConsts))
 		$this->DefineProjectConsts();
 
 		$this
@@ -77,8 +85,8 @@ application instance.
 
 		// spool up our instances.
 
-		$this->Router = new Nether\Avenue\Router($this->Config);
-		$this->Surface = new Nether\Surface\Engine($this->Config);
+		$this->Router = new Avenue\Router($this->Config);
+		$this->Surface = new Surface\Engine($this->Config);
 
 		$Data = [
 			'App'    => $this,
@@ -369,6 +377,11 @@ application instance.
 			"{$this->ProjectRoot}/conf/env/{$this->ProjectEnv}/keys/apple-authkey.p8"
 		);
 
+		$this->Queue(
+			'Atlantis.Dashboard.SidebarItems',
+			$this->OnSidebarItems(...)
+		);
+
 		return $this;
 	}
 
@@ -460,6 +473,22 @@ application instance.
 		}
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	OnSidebarItems(Datastore $Items):
+	void {
+
+		if($this->User)
+		$Items->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+
+		if($this->User->IsAdmin())
+		$Items->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);
+
+		return;
 	}
 
 }

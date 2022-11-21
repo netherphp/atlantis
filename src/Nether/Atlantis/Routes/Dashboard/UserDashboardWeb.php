@@ -6,6 +6,9 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 
+use Nether\Object\Datastore;
+use Nether\Atlantis\Dashboard\SidebarGroup;
+
 class UserDashboardWeb
 extends Atlantis\ProtectedWeb {
 
@@ -15,8 +18,36 @@ extends Atlantis\ProtectedWeb {
 	PageDashboard():
 	void {
 
+		$SidebarItems = new Datastore;
+		$MainItems = new Datastore;
+
+		////////
+
+		$this->App->Flow(
+			'Atlantis.Dashboard.SidebarItems',
+			[ 'Items'=> $SidebarItems ]
+		);
+
+		//$this->App->Flow(
+		//	'Atlantis.Dashboard.Items',
+		//	[ 'Items'=> $MainItems ]
+		//);
+
+		$SidebarItems->Sort(
+			fn(SidebarGroup $A, SidebarGroup $B)
+			=> $B->Priority <=> $A->Priority
+		);
+
+		//$MainItems->Sort(
+		//	fn(SidebarGroup $A, SidebarGroup $B)
+		//	=> $B->Priority <=> $A->Priority
+		//);
+
 		($this->App->Surface)
-		->Wrap('user/dashboard/index');
+		->Wrap('user/dashboard/index', [
+			'SidebarItems' => $SidebarItems,
+			'MainItems'    => $MainItems
+		]);
 
 		return;
 	}
