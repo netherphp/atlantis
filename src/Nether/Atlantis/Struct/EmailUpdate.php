@@ -22,6 +22,10 @@ extends Nether\Database\Prototype {
 	public int
 	$EntityID;
 
+	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	public int
+	$TimeCreated;
+
 	#[Nether\Database\Meta\TypeVarChar(Size: 255)]
 	public string
 	$Email;
@@ -34,17 +38,29 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	Send():
+	Send(bool $Activate=FALSE):
 	static {
+
+		$Template = 'email/user-email-update';
+		$Subject = 'Email Change Confirmation';
+
+		if($Activate) {
+			$Template = 'email/user-email-activate';
+			$Subject = 'Activate Your Account';
+		}
+
+		////////
 
 		$Scope = [ 'Update'=> $this ];
 		$Generator = new Surface\Engine(Surface\Library::$Config);
-		$Content = $Generator->GetArea('email/user-email-update', $Scope);
+		$Content = $Generator->GetArea($Template, $Scope);
 		unset($Generator);
+
+		////////
 
 		$Send = new Nether\Email\Outbound;
 		$Send->To->Push($this->Email);
-		$Send->Subject = 'Email Change Confirmation';
+		$Send->Subject = $Subject;
 		$Send->Content = $Content;
 		$Send->Send();
 

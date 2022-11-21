@@ -1,18 +1,11 @@
 <?php
 
 namespace Nether\Atlantis\Routes\User;
-use Nether;
-use League;
 
-use Throwable;
-use Nether\User\Library;
+use Nether\Atlantis;
+
 use Nether\Atlantis\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
-use Nether\Object\Datastore;
-use Nether\Common\Datafilters;
-
-use League\OAuth2\Client\Provider\Github as GitHubProvider;
-use League\OAuth2\Client\Token\AccessToken;
 
 class UserSessionWeb
 extends PublicWeb {
@@ -58,22 +51,29 @@ extends PublicWeb {
 
 	#[RouteHandler('/signup')]
 	public function
-	PageJoin():
+	PageSignup():
 	void {
 
 		($this->App->Surface)
-		->Wrap('user/signup');
+		->Wrap('user/signup',[
+			'RequireAlias' => $this->Config[Atlantis\Library::ConfUserRequireAlias]
+		]);
 
 		return;
 	}
 
-	#[RouteHandler('/activate')]
+	#[RouteHandler('/login/activate')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	PageActivate():
 	void {
 
 		($this->App->Surface)
-		->Wrap('user/activate');
+		->Wrap('user/activate',[
+			'RequireAlias' => $this->Config[Atlantis\Library::ConfUserRequireAlias],
+			'RequireEmail' => $this->Config[Atlantis\Library::ConfUserEmailActivate],
+			'Activated'    => $this->User->Activated
+		]);
 
 		return;
 	}

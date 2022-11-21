@@ -1,0 +1,148 @@
+
+<style type="text/css">
+.app-status .app-status-result { display: none; }
+.app-status.app-status-init .app-status-init { display: block; }
+.app-status.app-status-network .app-status-network { display: block; }
+.app-status.app-status-ok .app-status-ok { display: block; }
+.app-status.app-status-error-1 .app-status-error-1 { display: block; }
+.app-status.app-status-error-2 .app-status-error-2 { display: block; }
+</style>
+
+<form id="AliasForm" method="post">
+	<div class="mb-2">
+		<p>
+			May only contain <span class="text-info">Letters</span>, <span class="text-info">Numbers</span>, <span class="text-info">Dashes</span>, <span class="text-info">Underscores</span>, <span class="text-info">Dots</span>.
+			It must <span class="text-info">start with a Letter</span>, and be at least <span class="text-info">2 characters</span> long.
+			You may not use more than <span class="text-info">1 Dash or Dot in a row</span> and it may <span class="text-info">not end with either</span>.
+		</p>
+		<input id="AliasInput" type="text" name="Alias" class="form-control" placeholder="Username..." />
+	</div>
+	<div id="AliasStatusBin" class="font-size-smaller text-uppercase text-center mb-4 app-status app-status-init">
+		<div class="app-status-result app-status-init text-muted">
+			Begin typing above to check availability...
+		</div>
+		<div class="app-status-result app-status-network text-info">
+			<i class="mdi mdi-spin-hyper mdi-loading"></i>
+			Checking availability...
+		</div>
+		<div class="app-status-result app-status-ok text-success">
+			<i class="mdi mdi-checkbox-marked"></i>
+			Username is available!
+		</div>
+		<div class="app-status-result app-status-error-1 text-danger">
+			<i class="mdi mdi-alert-octagon"></i>
+			Username is invalid.
+		</div>
+		<div class="app-status-result app-status-error-2 text-danger">
+			<i class="mdi mdi-close-octagon"></i>
+			Username is taken.
+		</div>
+	</div>
+	<div>
+		<button type="submit" class="btn btn-block btn-primary">Choose</button>
+	</div>
+</form>
+
+<script type="module">
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+
+class UsernameTester {
+
+	constructor(selector, binselector) {
+
+		this.selector = selector;
+		this.element = jQuery(selector);
+		this.statusbin = jQuery(binselector);
+		this.inputTimeout = null;
+		this.pile = 'app-status-init app-status-network app-status-ok app-status-error-1 app-status-error-2';
+
+		(this.element)
+		.on('keyup', (this.OnKeyUp.bind(this)));
+
+		return;
+	};
+
+	OnKeyUp() {
+
+		if(this.inputTimeout !== null) {
+			clearTimeout(this.inputTimeout);
+			this.inputTimeout = null;
+		}
+
+		this.inputTimeout = setTimeout((this.OnInputTimeout.bind(this)), 300);
+
+		if(!this.statusbin.hasClass('app-status-network'))
+		(this.statusbin)
+		.removeClass(this.pile)
+		.addClass('app-status-network');
+
+		return;
+	};
+
+	OnInputTimeout() {
+
+		let input = jQuery.trim(this.element.val());
+		let req = new NUI.Request('CHECKALIAS', '/api/user/create');
+
+		(req.send(NUI.Form.ObjectArrayToDataString([
+			{ name: 'Alias', value: input }
+		])))
+		.then(this.OnResultOK.bind(this))
+		.catch(this.OnResultError.bind(this))
+		.catch(req.catch);
+
+		return;
+	};
+
+	OnResultOK(result) {
+
+		(this.statusbin)
+		.removeClass(this.pile)
+		.addClass('app-status-ok');
+
+		return;
+	};
+
+	OnResultError(result) {
+
+		if(result.error === 1) {
+			(this.statusbin)
+			.removeClass(this.pile)
+			.addClass('app-status-error-1');
+		}
+
+		else if(result.error === 2) {
+			console.log('error 2');
+			(this.statusbin)
+			.removeClass(this.pile)
+			.addClass('app-status-error-2');
+		}
+
+		else
+		throw result;
+
+		return;
+	};
+
+};
+
+jQuery(function(){
+
+	jQuery('#AliasForm')
+	.on('submit', function() {
+
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('ALIAS', '/api/user/session');
+
+		(req.send(form.getData()))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	new UsernameTester('#AliasInput', '#AliasStatusBin');
+
+	return;
+});
+</script>

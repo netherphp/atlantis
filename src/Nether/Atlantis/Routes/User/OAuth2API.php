@@ -69,7 +69,7 @@ extends PublicWeb {
 			$Token = $this->FetchAuthToken($Client, $AuthCode);
 
 			if(!$Token)
-			$this->Quit(2, sprintf('Unable to process %s Auth Code.', static::AuthName));
+			$this->Quit(2, sprintf('Unable to process %s Auth Code', static::AuthName));
 
 			// at this point we should have basic access to the 	user info
 			// on the remote host so find what we want to fill in an account
@@ -77,8 +77,11 @@ extends PublicWeb {
 
 			$Info = $this->FetchRemoteUserInfo($Client, $Token);
 
-			if(!$Info->Email || !$Info->AuthID)
-			$this->Quit(3, sprintf('%s did not give us an Email or AuthID.', static::AuthName));
+			if(!$Info->Email)
+			$this->Quit(3, sprintf('%s did not give us an Email', static::AuthName));
+
+			if(!$Info->AuthID)
+			$this->Quit(9, sprintf('%s did not give us an AuthID', static::AuthName));
 
 		}
 
@@ -113,10 +116,21 @@ extends PublicWeb {
 			// if we have not found a user yet check for an account with the
 			// same email address.
 
-			var_dump($Info);
-
 			if(!$User)
 			$User = $this->GetUserByAuthEmail($Info->Email, $Info->AuthID);
+
+			// is there already a user with this alias though? if there is just
+			// force it to null for now and the onboarding flow later will
+			// crowbar one out of them if demanded.
+
+			if($Info->Alias) {
+				$AConflict = Nether\User\Entity::GetByAlias($Info->Alias);
+
+				if($AConflict)
+				$Info->Alias = NULL;
+
+				unset($AConflict);
+			}
 
 			// if we have not found a user yet and we allow new users to be
 			// created on the fly then go ahead and insert them now.

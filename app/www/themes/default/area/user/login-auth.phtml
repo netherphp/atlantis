@@ -1,0 +1,88 @@
+<?php
+
+use Nether\User;
+
+/**
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Avenue\Route $Route
+ * @var string $Action
+ */
+
+$HasApple = User\Library::IsAppleEnabled();
+$HasGitHub = User\Library::IsGitHubEnabled();
+$HasGoogle = User\Library::IsGoogleEnabled();
+$HasDiscord = User\Library::IsDiscordEnabled();
+
+$GetLinkWithGoto = function(string $URL) use($Route) {
+
+	if($Route->Request->Query->Goto)
+	$URL = (
+		str_contains($URL, '?')
+		? "{$URL}&goto={$Route->Request->Query->Goto}"
+		: "{$URL}?goto={$Route->Request->Query->Goto}"
+	);
+
+	return $URL;
+};
+
+?>
+
+<div class="PrettyModernBox HideTheLastHR">
+
+	<?php if($HasApple): ?>
+	<div>
+		<?php
+		$Surface->Area('user/login-auth-button', [
+			'Action' => $Action,
+			'Name'   => 'Apple',
+			'Icon'   => 'msi-apple',
+			'URL'    => $GetLinkWithGoto('/auth/apple')
+		]);
+		?>
+	</div>
+	<hr class="opacity-10 mt-2 mb-2" />
+	<?php endif; ?>
+
+	<?php if($HasDiscord): ?>
+	<div>
+		<?php
+		$Surface->Area('user/login-auth-button', [
+			'Action' => $Action,
+			'Name'   => 'Discord',
+			'Icon'   => 'msi-discord',
+			'URL'    => $GetLinkWithGoto('/auth/discord')
+		]);
+		?>
+	</div>
+	<hr class="opacity-10 mt-2 mb-2" />
+	<?php endif; ?>
+
+	<?php if($HasGitHub): ?>
+	<div>
+		<?php
+		$Surface->Area('user/login-auth-button', [
+			'Action' => $Action,
+			'Name'   => 'GitHub',
+			'Icon'   => 'msi-github',
+			'URL'    => $GetLinkWithGoto('/auth/github')
+		]);
+		?>
+	</div>
+	<hr class="opacity-10 mt-2 mb-2" />
+	<?php endif; ?>
+
+	<?php if($HasGoogle): ?>
+	<div>
+		<?php
+		$Surface->Area('user/login-auth-button', [
+			'Action' => $Action,
+			'Name'   => 'Google',
+			'Icon'   => 'msi-google',
+			'URL'    => $GetLinkWithGoto('/auth/google')
+		]);
+		?>
+	</div>
+	<hr class="opacity-10 mt-2 mb-2" />
+	<?php endif; ?>
+
+</div>

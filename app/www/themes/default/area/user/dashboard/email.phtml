@@ -4,7 +4,7 @@
  * @var Nether\Atlantis\Engine $App
  * @var Nether\Surface\Engine $Surface
  * @var bool $ConfirmReq - if email confirmation is required.
- * @var bool $Updated - if the email address was updated.
+ * @var int $Updated - 1 = email updated, 2 = account activated
  * @var bool $Sent - if an email confirmation was sent.
  */
 
@@ -17,21 +17,18 @@ $Surface->Area('user/dashboard/nav', [ 'Trail' => [
 <div class="row justify-content-center">
 	<div class="col-12 col-md-6">
 		<?php if($Sent): ?>
-		<div class="alert alert-warning text-center mb-4">
+		<div class="alert alert-info text-center mb-4">
 			A confirmation link has been sent to your new Email address.
 		</div>
 		<?php endif; ?>
 
-		<?php if($Updated): ?>
+		<?php if($Updated === 1): ?>
 		<div class="alert alert-success text-center mb-4">
 			Your Email has been updated.
 		</div>
-		<?php endif; ?>
-
-		<?php if($ConfirmReq): ?>
-		<div class="mb-4">
-			A message will be sent to your new email address with a
-			link you will need to use to confirm this change.
+		<?php elseif($Updated === 2): ?>
+		<div class="alert alert-success text-center mb-4">
+			Your account has been activated.
 		</div>
 		<?php endif; ?>
 

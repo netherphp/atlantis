@@ -81,6 +81,109 @@ extends Atlantis\PublicAPI {
 		return;
 	}
 
+	#[RouteHandler('/api/user/session', Verb: 'ALIAS')]
+	public function
+	HandleSetAlias():
+	void {
+
+		($this->Data)
+		->Alias(Common\Datafilters::TrimmedText(...));
+
+		$User = User\EntitySession::Get();
+		$Alias = $this->Data->Alias;
+
+		////////
+
+		if(!$User)
+		$this->Quit(1, 'no session');
+
+		////////
+
+		try { Atlantis\Util\UsernameTester::TryValid($Alias); }
+
+		catch(Atlantis\Error\User\AliasInvalidTooShort $Error) {
+			$this->Quit(2, $Error->GetMessage());
+		}
+
+		catch(Atlantis\Error\User\AliasInvalidChars $Error) {
+			$this->Quit(3, $Error->GetMessage());
+		}
+
+		catch(Atlantis\Error\User\AliasInvalidFirstLast $Error) {
+			$this->Quit(4, $Error->GetMessage());
+		}
+
+		catch(Atlantis\Error\User\AliasInvalidDogpiling $Error) {
+			$this->Quit(5, $Error->GetMessage());
+		}
+
+		////////
+
+		$Old = User\Entity::GetByAlias($this->Data->Alias);
+
+		if($Old !== NULL)
+		$this->Quit(6, 'Username is taken');
+
+		////////
+
+		$User->Update([ 'Alias'=> $this->Data->Alias ]);
+
+		$this
+		->SetGoto('/')
+		->SetPayload([
+			'Alias' => $User->Alias
+		]);
+
+		return;
+	}
+
+	#[RouteHandler('/api/user/session', Verb: 'SENDCONFIRM')]
+	public function
+	HandleSendConfirmation():
+	void {
+
+		$FiveMinutesAgo = (time() - (Common\Values::SecPerMin * 5));
+		$User = User\EntitySession::Get();
+		$RecentlySent = FALSE;
+		$Confirm = NULL;
+
+		if(!$User)
+		$this->Quit(1, 'no session');
+
+		////////
+
+		$Prev = Atlantis\Struct\EmailUpdate::Find([
+			'EntityID' => $User->ID,
+			'Limit'    => 1
+		]);
+
+		if($Prev->Count())
+		if($Prev->Current()->TimeCreated > $FiveMinutesAgo)
+		$RecentlySent = TRUE;
+
+		////////
+
+		if(!$RecentlySent) {
+			Atlantis\Struct\EmailUpdate::DropForEntityID($User->ID);
+
+			$Confirm = Atlantis\Struct\EmailUpdate::Insert([
+				'EntityID' => $User->ID,
+				'Email'    => $User->Email,
+				'Code'     => Atlantis\Struct\EmailUpdate::Generate()
+			]);
+
+			$Confirm->Send(TRUE);
+		}
+
+		$this
+		->SetGoto('/login/activate')
+		->SetPayload([
+			'RecentlySent' => $RecentlySent
+		]);
+
+		return;
+	}
+
 	#[RouteHandler('/api/user/session', Verb: 'GET')]
 	public function
 	HandleStatus():
@@ -221,6 +324,8 @@ extends Atlantis\PublicAPI {
 		->Password2(Common\Datafilters::TypeStringNullable(...))
 		->Session(Common\Datafilters::TypeBool(...));
 
+		$RequireEmail = $this->Config[Atlantis\Library::ConfUserEmailActivate];
+		$RequireAlias = $this->Config[Atlantis\Library::ConfUserRequireAlias];
 		$PasswordTester = new Atlantis\Util\PasswordTester;
 		$User = NULL;
 
@@ -229,6 +334,7 @@ extends Atlantis\PublicAPI {
 		if(!$this->Data->Email)
 		$this->Quit(1, 'Invalid Email');
 
+		if($RequireAlias)
 		if(!$this->Data->Alias)
 		$this->Quit(2, 'Invalid Username');
 
@@ -251,21 +357,35 @@ extends Atlantis\PublicAPI {
 		if($User instanceof User\Entity)
 		$this->Quit(6, 'There is already an account using this email address.');
 
-		$User = User\Entity::GetByAlias($this->Data->Alias);
+		if($RequireAlias) {
+			$User = User\Entity::GetByAlias($this->Data->Alias);
 
-		if($User instanceof User\Entity)
-		$this->Quit(7, 'There is already an account with this username.');
+			if($User instanceof User\Entity)
+			$this->Quit(7, 'There is already an account with this username.');
+		}
 
 		////////
 
 		$User = User\EntitySession::Insert([
-			'Alias' => $this->Data->Alias,
+			'Alias' => $RequireAlias ? $this->Data->Alias : NULL,
 			'Email' => $this->Data->Email,
 			'PHash' => User\Entity::GeneratePasswordHash($this->Data->Password1)
 		]);
 
 		if(!$User)
 		$this->Quit(8, 'Unknown error occured creating account.');
+
+		if($RequireEmail) {
+			Atlantis\Struct\EmailUpdate::DropForEntityID($User->ID);
+
+			$Confirm = Atlantis\Struct\EmailUpdate::Insert([
+				'EntityID' => $User->ID,
+				'Email'    => $User->Email,
+				'Code'     => Atlantis\Struct\EmailUpdate::Generate()
+			]);
+
+			$Confirm->Send(TRUE);
+		}
 
 		////////
 
@@ -275,6 +395,25 @@ extends Atlantis\PublicAPI {
 		////////
 
 		$this->SetGoto('/');
+		return;
+	}
+
+	#[RouteHandler('/api/user/create', Verb: 'CHECKALIAS')]
+	public function
+	HandleCheckUsername():
+	void {
+
+		($this->Data)
+		->Alias(Atlantis\Util\UsernameTester::ValidUsernameFilter(...));
+
+		if(!$this->Data->Alias)
+		$this->Quit(1, 'Username is invalid.');
+
+		$AConflict = User\Entity::GetByAlias($this->Data->Alias);
+
+		if($AConflict)
+		$this->Quit(2, 'Username is taken.');
+
 		return;
 	}
 

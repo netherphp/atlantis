@@ -1,7 +1,11 @@
 <?php
 
 namespace Nether\Atlantis;
+
 use Nether;
+use Nether\Avenue;
+use Nether\User;
+
 use Nether\Object\Datastore;
 
 class Library
@@ -52,7 +56,9 @@ extends Nether\Common\Library {
 			static::ConfPassReqAlphaUpper => TRUE,
 			static::ConfPassReqNumeric    => TRUE,
 			static::ConfPassReqSpecial    => TRUE,
-			static::ConfUserAllowSignup   => TRUE
+			static::ConfUserAllowSignup   => TRUE,
+			static::ConfUserEmailActivate => TRUE,
+			static::ConfUserRequireAlias  => TRUE
 		]);
 
 		return $Config;
@@ -90,27 +96,27 @@ extends Nether\Common\Library {
 	}
 
 	static public function
-	OnPrepare(Nether\Atlantis\Engine $App, ...$Argv):
+	OnPrepare(Nether\Atlantis\Engine $App, Datastore $Config, ...$Argv):
 	void {
 
-		$App->User = Nether\User\EntitySession::Get();
+		$App->User = User\EntitySession::Get();
 
 		////////
 
 		if($App->Router->GetSource() === 'dirscan') {
 			$RouterPath = dirname(__FILE__);
-			$Scanner = new Nether\Avenue\RouteScanner("{$RouterPath}/Routes");
+			$Scanner = new Avenue\RouteScanner("{$RouterPath}/Routes");
 			$Map = $Scanner->Generate();
 
 			////////
 
 			$Map['Verbs']->Each(
-				fn(Nether\Object\Datastore $Handlers)
+				fn(Datastore $Handlers)
 				=> $App->Router->AddHandlers($Handlers)
 			);
 
 			$Map['Errors']->Each(
-				fn(Nether\Avenue\Meta\RouteHandler $Handler, int $Code)
+				fn(Avenue\Meta\RouteHandler $Handler, int $Code)
 				=> $App->Router->AddErrorHandler($Code, $Handler)
 			);
 		}

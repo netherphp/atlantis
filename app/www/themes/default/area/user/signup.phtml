@@ -1,63 +1,80 @@
 <?php
 
+use Nether\User;
+
+/**
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Avenue\Route $Route
+ * @var bool $RequireAlias
+ */
+
+$HasThirdPartyAuth = User\Library::HasAnyThirdPartyAuth();
+$TitleCSS = $HasThirdPartyAuth ? 'text-left' : 'text-center';
+$ShiftyColumnCSS = $HasThirdPartyAuth ? 'justify-content-between' : 'justify-content-center';
 $PasswordTester = new Nether\Atlantis\Util\PasswordTester;
 
 ?>
 
 <div>
-	<div class="<?php $Printer($HasAnythingElse ? 'text-left' : 'text-center') ?> mb-4">
-		<h4>Create An Account</h4>
+	<div class="<?php $Printer($TitleCSS) ?> mb-4">
+		<h4>Log In</h4>
 	</div>
-</div>
 
-<div class="row <?php $Printer($HasAnythingElse ? 'justify-content-between' : 'justify-content-center') ?> align-items-stretch">
-	<div class="col-12 col-md-5 mb-4">
-		<form id="JoinForm" method="post">
-			<div class="row justify-content-center mb-2">
-				<div class="col-12 mb-4">
-					<input type="text" class="form-control" name="Email" placeholder="Email..." />
-					<div class="text-muted font-size-smaller">You will be sent a link to activate the account.</div>
+	<div class="row <?php $Printer($ShiftyColumnCSS) ?> align-items-stretch">
+		<div class="col-12 col-md-5 mb-4">
+			<form id="JoinForm" method="post">
+				<div class="row justify-content-center mb-2">
+					<div class="col-12 mb-4">
+						<input type="text" class="form-control" name="Email" placeholder="Email..." />
+						<div class="text-muted font-size-smaller">You will be sent a link to activate the account.</div>
+					</div>
+					<?php if($RequireAlias): ?>
+					<div class="col-12 mb-2">
+						<input type="text" class="form-control" name="Alias" placeholder="Username..." />
+					</div>
+					<?php endif; ?>
+					<div class="col-12 mb-2">
+						<input type="password" class="form-control" name="Password1" placeholder="Password..." />
+					</div>
+					<div class="col-12 mb-4">
+						<input type="password" class="form-control" name="Password2" placeholder="Confirm Password..." />
+						<div class="text-muted font-size-smaller"><?php $Printer($PasswordTester->GetDescription()) ?></div>
+					</div>
+					<div class="col-12">
+						<input type="hidden" name="Session" value="1" />
+						<button type="submit" class="btn btn-primary d-block w-100">Create Account</button>
+					</div>
 				</div>
-				<div class="col-12 mb-2">
-					<input type="text" class="form-control" name="Alias" placeholder="Username..." />
-				</div>
-				<div class="col-12 mb-2">
-					<input type="password" class="form-control" name="Password1" placeholder="Password..." />
-				</div>
-				<div class="col-12 mb-4">
-					<input type="password" class="form-control" name="Password2" placeholder="Confirm Password..." />
-					<div class="text-muted font-size-smaller"><?php $Printer($PasswordTester->GetDescription()) ?></div>
-				</div>
-				<div class="col-12">
-					<input type="hidden" name="Session" value="1" />
-					<button type="submit" class="btn btn-primary d-block w-100">Create Account</button>
-				</div>
+			</form>
+			<div class="text-center">
+				<a href="/login">Already have an account?</a>
 			</div>
-		</form>
-		<div class="text-center">
-			<a href="/login">Already have an account?</a>
+			<script type="module">
+			import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+			jQuery(function(){
+				jQuery('#JoinForm')
+				.on('submit', function() {
+
+					let form = new NUI.Form(this);
+					let req = new NUI.Request('POST', '/api/user/create');
+
+					(req.send(form))
+					.then(req.goto)
+					.catch(req.catch);
+
+					return false;
+				});
+				return;
+			});
+			</script>
 		</div>
+		<?php if($HasThirdPartyAuth): ?>
+		<div class="col-md-2 mb-4">
+			<?php $Surface->Area('misc/fancy-or') ?>
+		</div>
+		<div class="col-12 col-md-5">
+			<?php $Surface->Area('user/login-auth', [ 'Action'=> 'Sign Up' ]) ?>
+		</div>
+		<?php endif; ?>
 	</div>
 </div>
-
-<script type="module">
-import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
-
-jQuery(function(){
-
-	jQuery('#JoinForm')
-	.on('submit', function() {
-
-		let form = new NUI.Form(this);
-		let req = new NUI.Request('POST', '/api/user/create');
-
-		(req.send(form))
-		.then(req.goto)
-		.catch(req.catch);
-
-		return false;
-	});
-
-	return;
-});
-</script>

@@ -23,6 +23,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/email')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	PageEmail():
 	void {
@@ -45,11 +46,15 @@ extends Atlantis\ProtectedWeb {
 			if($Confirm->Total) {
 				$Confirm = $Confirm->Current();
 
-				$this->User->Update([
-					'Email'=> $Confirm->Email
-				]);
+				$this->App->SetLocalData(
+					'EmailUpdated',
+					($this->User->Activated ? 1 : 2)
+				);
 
-				$this->App->SetLocalData('EmailUpdated', TRUE);
+				$this->User->Update([
+					'Email'     => $Confirm->Email,
+					'Activated' => 1
+				]);
 
 				$Confirm->Drop();
 			}

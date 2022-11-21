@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\EmailUpdate $Update
+ */
+
+?>
+
+<div style="margin-bottom:32px;">
+	Click this link or copy the URL into your browser to activate your account.
+</div>
+
+<div style="margin-bottom:32px">
+	<a href="<?php echo htmlentities($Update->GetConfirmURL()) ?>"><?php echo htmlentities($Update->GetConfirmURL()) ?></a>
+</div>
+

@@ -1,0 +1,146 @@
+<?php
+
+/**
+ * @var bool $RequireAlias
+ * @var bool $RequireEmail
+ * @var bool $Activated
+ * @var bool $SentEmail
+ */
+
+$NeedActivated = ($RequireEmail && !$User->Activated);
+$NeedAlias = ($RequireAlias && $User->Alias === NULL);
+
+?>
+
+<div class="row justify-content-center mb-4">
+	<div class="col-12 col-md-7 col-lg-5">
+		<h2>Welcome!</h2>
+		<p>There are a few things we need to do to get your account ready to go.</p>
+	</div>
+</div>
+
+<div class="row justify-content-center mb-4">
+	<div class="col-12 col-md-7 col-lg-5">
+		<dl class="PrettyModernBox">
+			<dt>
+				<span class="fw-bold">Email Confirmation</span>
+				<hr />
+			</dt>
+			<?php if($NeedActivated): ?>
+			<dd>
+				<p>
+					Please check your Email for the confirmation link to activate your account.
+					Don't forget to check the spam folder just in case.
+				</p>
+				<div>
+					<style type="text/css">
+					.app-status .app-status-result { display: inline-block; font-size: 1.3rem; overflow: hidden; width: 0rem; vertical-align: middle; transition: width 200ms; }
+					.app-status.app-status-init .app-status-init { display: inline-block; width: 1.3rem; }
+					.app-status.app-status-network .app-status-network { display: inline-block; width: 1.3rem; }
+					.app-status.app-status-ok .app-status-ok { display: inline-block; width: 1.3rem; }
+					</style>
+					<button class="btn btn-primary btn-block CmdResendEmail app-status app-status-init">
+						<div class="row tight justify-content-center align-items-center">
+							<div class="col-auto">
+								<div class="app-status-result app-status-init text-right">
+									<i class="mdi mdi-fw mdi-email"></i>
+								</div>
+								<div class="app-status-result app-status-network text-right">
+									<i class="mdi mdi-fw mdi-email-fast"></i>
+								</div>
+							</div>
+							<div class="col-auto">
+								Re-send Email
+							</div>
+							<div class="col-auto">
+								<div class="app-status-result app-status-ok">
+									<i class="mdi mdi-fw mdi-email-check"></i>
+								</div>
+							</div>
+						</div>
+					</button>
+
+					<script type="module">
+					import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+
+					jQuery(function(){
+
+						jQuery('.CmdResendEmail')
+						.on('click', function(){
+
+							let that = jQuery(this);
+							let req = new NUI.Request('SENDCONFIRM', '/api/user/session');
+							let pile = 'app-status-init app-status-network app-status-ok';
+
+							that
+							.removeClass(pile)
+							.addClass('app-status-network');
+
+							setTimeout(function(){
+								(req.send())
+								.then(function(result){
+									that
+									.removeClass(pile)
+									.addClass('app-status-ok')
+									.addClass('btn-success')
+									.removeClass('btn-primary');
+
+									console.log(result);
+									return;
+								})
+								.catch(req.catch);
+							}, 300);
+
+							return false;
+						});
+
+						return;
+					});
+					</script>
+				</div>
+			</dd>
+			<?php else: ?>
+			<dd>
+				<div class="row align-items-center">
+					<div class="col-auto">Email Confirmed</div>
+					<div class="col"></div>
+					<div class="col-auto">
+						<i class="mdi mdi-checkbox-marked"></i>
+					</div>
+				</div>
+			</dd>
+			<?php endif; ?>
+		</dl>
+	</div>
+</div>
+
+<div class="row justify-content-center">
+	<div class="col-12 col-md-7 col-lg-5">
+		<dl class="PrettyModernBox">
+			<dt>
+				<span class="fw-bold">Username Selection</span>
+				<hr />
+			</dt>
+			<?php if($NeedAlias): ?>
+			<dd>
+				<p>
+					You need to select a unique Username for your account to be known by.
+				</p>
+				<div>
+					<?php $Surface->Area('user/alias-set') ?>
+				</div>
+			</dd>
+			<?php else:?>
+			<dd>
+				<div class="row align-items-center">
+					<div class="col-auto">Username: <?php $Printer($User->Alias) ?></div>
+					<div class="col"></div>
+					<div class="col-auto">
+						<i class="mdi mdi-checkbox-marked"></i>
+					</div>
+				</div>
+			</dd>
+			<?php endif; ?>
+		</dl>
+	</div>
+</div>

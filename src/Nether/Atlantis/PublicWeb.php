@@ -1,28 +1,28 @@
 <?php
 
 namespace Nether\Atlantis;
-use Nether;
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\User;
 
 use Nether\Object\Datastore;
-use Nether\Atlantis\Filter;
-use Nether\Atlantis\Util;
-use Nether\Atlantis\Library;
 
 class PublicWeb
-extends Nether\Avenue\Route {
+extends Avenue\Route {
 /*// provides a basic route template for public endpoints that need to interact
 as html pages. //*/
 
 	protected bool
 	$IsDone = FALSE;
 
-	protected Nether\Atlantis\Engine
+	protected Atlantis\Engine
 	$App;
 
-	protected Nether\Object\Datastore
+	protected Datastore
 	$Config;
 
-	protected ?Nether\User\EntitySession
+	protected ?User\EntitySession
 	$User;
 
 	public function
@@ -50,6 +50,8 @@ as html pages. //*/
 		->Set('Page.Desc', NULL)
 		->Set('Page.Keywords', NULL)
 		->CaptureBegin();
+
+		$this->HandleUserOnboarding();
 
 		return;
 	}
@@ -203,6 +205,30 @@ as html pages. //*/
 		return $this;
 	}
 
+	protected function
+	HandleUserOnboarding():
+	static {
+
+		if($this->User instanceof User\Entity) {
+
+			$Handler = $this->App->Router->GetCurrentHandler();
+			$Info = static::GetMethodInfo($Handler->Method);
+
+			if(!$this->User->Activated)
+			if($this->Config[Atlantis\Library::ConfUserEmailActivate])
+			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
+			$this->Goto('/login/activate');
+
+			if($this->User->Alias === NULL)
+			if($this->Config[Atlantis\Library::ConfUserRequireAlias])
+			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
+			$this->Goto('/login/activate');
+
+		}
+
+		return $this;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -210,7 +236,7 @@ as html pages. //*/
 	HasUser():
 	bool {
 
-		return ($this->App->User instanceof Nether\User\Entity);
+		return ($this->App->User instanceof User\Entity);
 	}
 
 	public function
@@ -219,7 +245,7 @@ as html pages. //*/
 
 		return (
 			TRUE
-			&& ($this->App->User instanceof Nether\User\Entity)
+			&& ($this->App->User instanceof User\Entity)
 			&& ($this->App->User->Admin >= $Min)
 		);
 	}

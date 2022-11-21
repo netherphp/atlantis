@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @var string $URL - url to begin auth
+ * @var string $Icon - css class of the icon
+ * @var string $Name - name to show on btn
+ * @var string $Action - verb for button
+ */
+
+?>
+
+<a href="<?php $Printer($URL) ?>" class="btn btn-block btn-dark text-align-left">
+	<div class="row tight align-items-center">
+		<div class="col-1 col-sm-1 col-md-2 col-lg-1">
+			<div class="ratiobox square">
+				<div class="position-absolutely <?php $Printer($Icon) ?> bg-white"></div>
+			</div>
+		</div>
+		<div class="col">
+			<span><?php $Printer($Action) ?> via <?php $Printer($Name) ?></span>
+		</div>
+	</div>
+</a>

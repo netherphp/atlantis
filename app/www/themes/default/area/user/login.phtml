@@ -1,130 +1,68 @@
 <?php
 
-use Nether\User\Library as UserLib;
+use Nether\User;
 
 /**
  * @var Nether\Surface\Engine $Surface
  * @var Nether\Avenue\Route $Route
  */
 
-$HasApple = UserLib::IsAppleEnabled();
-$HasGitHub = UserLib::IsGitHubEnabled();
-$HasGoogle = UserLib::IsGoogleEnabled();
-$HasTwitter = UserLib::IsTwitterEnabled();
-$HasAnythingElse = ($HasApple || $HasGitHub || $HasTwitter);
-
-$GetLinkWithGoto = function(string $URL) use($Route) {
-
-	if($Route->Request->Query->Goto)
-	$URL = (
-		str_contains($URL, '?')
-		? "{$URL}&goto={$Route->Request->Query->Goto}"
-		: "{$URL}?goto={$Route->Request->Query->Goto}"
-	);
-
-	return $URL;
-};
+$HasThirdPartyAuth = User\Library::HasAnyThirdPartyAuth();
+$TitleCSS = $HasThirdPartyAuth ? 'text-left' : 'text-center';
+$ShiftyColumnCSS = $HasThirdPartyAuth ? 'justify-content-between' : 'justify-content-center';
 
 ?>
 
 <div>
-	<div class="<?php $Printer($HasAnythingElse ? 'text-left' : 'text-center') ?> mb-4">
+	<div class="<?php $Printer($TitleCSS) ?> mb-4">
 		<h4>Log In</h4>
 	</div>
 
-	<div class="row <?php $Printer($HasAnythingElse ? 'justify-content-between' : 'justify-content-center') ?> align-items-stretch">
+	<div class="row <?php $Printer($ShiftyColumnCSS) ?> align-items-stretch">
 		<div class="col-12 col-md-5 mb-4">
 			<form id="LoginForm" method="post">
 				<div class="row justify-content-center mb-2">
 					<div class="col-12 mb-2">
-						<input id="LoginUsername" type="text" class="form-control" name="Username" placeholder="Username..." />
+						<input type="text" class="form-control" name="Username" placeholder="Username..." />
 					</div>
 					<div class="col-12 mb-2">
-						<input id="LoginPassword" type="password" class="form-control" name="Password" placeholder="Password..." />
+						<input type="password" class="form-control" name="Password" placeholder="Password..." />
 					</div>
 					<div class="col-12">
 						<input type="hidden" name="Goto" value="<?php $Printer($Route->Request->Query->Goto) ?>" />
-						<button id="LoginAccept" type="submit" class="btn btn-primary d-block w-100">Log In</button>
+						<button type="submit" class="btn btn-primary d-block w-100">Log In</button>
 					</div>
 				</div>
 			</form>
 			<div class="text-center">
-				<a href="/join">Create Account</a>
-				| <a href="/login/reset">Forgot Password?</a>
+				<a href="/signup">Create Account</a> | <a href="/login/reset">Forgot Password?</a>
 			</div>
+			<script type="module">
+			import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+			jQuery(function(){
+				jQuery('#LoginForm')
+				.on('submit', function() {
+
+					let form = new NUI.Form(this);
+					let req = new NUI.Request('LOGIN', '/api/user/session');
+
+					(req.send(form))
+					.then(req.goto)
+					.catch(req.catch);
+
+					return false;
+				});
+				return;
+			});
+			</script>
 		</div>
-		<?php if($HasAnythingElse): ?>
+		<?php if($HasThirdPartyAuth): ?>
 		<div class="col-md-2 mb-4">
-			<div class="FancyOrVH">
-				<div></div>
-				<label>Or</label>
-				<div></div>
-			</div>
+			<?php $Surface->Area('misc/fancy-or') ?>
 		</div>
 		<div class="col-12 col-md-5">
-
-			<div class="PrettyModernBox">
-				<div>
-					<div class="row tight">
-						<?php if($HasApple): ?>
-						<div class="col-12 mb-2">
-							<a href="<?php $Printer($GetLinkWithGoto('/auth/apple')) ?>" class="btn btn-block btn-dark text-align-left">
-								<i class="mdi mdi-fw mdi-google mr-1"></i>
-								<span>Log In via Apple</span>
-							</a>
-						</div>
-						<?php endif; ?>
-						<?php if($HasGitHub): ?>
-						<div class="col-12 mb-2">
-							<a href="<?php $Printer($GetLinkWithGoto('/auth/github')) ?>" class="btn btn-block btn-dark text-align-left">
-								<i class="mdi mdi-fw mdi-github mr-1"></i>
-								<span>Log In via GitHub</span>
-							</a>
-						</div>
-						<?php endif; ?>
-						<?php if($HasGoogle): ?>
-						<div class="col-12 mb-2">
-							<a href="<?php $Printer($GetLinkWithGoto('/auth/google')) ?>" class="btn btn-block btn-dark text-align-left">
-								<i class="mdi mdi-fw mdi-google mr-1"></i>
-								<span>Log In via Google</span>
-							</a>
-						</div>
-						<?php endif; ?>
-						<?php if($HasTwitter): ?>
-						<div class="col-12 mb-2">
-							<button class="btn btn-block btn-dark text-align-left">
-								<i class="mdi mdi-fw mdi-twitter mr-1"></i>
-								<span>Log In via Twitter</span>
-							</button>
-						</div>
-						<?php endif; ?>
-					</div>
-				</div>
-			</div>
-
+			<?php $Surface->Area('user/login-auth', [ 'Action'=> 'Log In' ]) ?>
 		</div>
 		<?php endif; ?>
 	</div>
 </div>
-
-<script type="module">
-import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
-
-jQuery(function(){
-
-	jQuery('#LoginForm')
-	.on('submit', function() {
-
-		let form = new NUI.Form(this);
-		let req = new NUI.Request('LOGIN', '/api/user/session');
-
-		(req.send(form))
-		.then(req.goto)
-		.catch(req.catch);
-
-		return false;
-	});
-
-	return;
-});
-</script>

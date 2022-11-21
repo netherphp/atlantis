@@ -151,7 +151,6 @@ extends Atlantis\ProtectedAPI {
 			'apple'   => 'AuthAppleID',
 			'github'  => 'AuthGitHubID',
 			'google'  => 'AuthGoogleID',
-			'twitter' => 'AuthTwitterID',
 			default   => NULL
 		};
 

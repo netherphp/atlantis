@@ -7,7 +7,7 @@ use Nether\User;
 
 use Nether\Avenue\Meta\RouteHandler;
 use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Provider\Github as AppleProvider;
+use League\OAuth2\Client\Provider\Apple as AppleProvider;
 
 class AuthApple
 extends OAuth2API {
