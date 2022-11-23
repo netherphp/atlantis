@@ -1,0 +1,119 @@
+<?php
+
+/**
+ * @var Nether\User\Entity $User - the currently logged in user
+ * @var Nether\User\Entity $Who - the user being inspected.
+ * @var Nether\Database\Struct\PrototypeFindResult $AccessTypes
+ */
+
+$Surface->Area('admin/breadcrumbs', [ 'Trail' => [
+	'Users'               => '/ops/users/list',
+	"User ID: {$Who->ID}" => NULL
+]]);
+
+?>
+
+<div class="row mb-4">
+	<div class="col-2">
+		<div class="ratiobox square">
+			<div class="position-absolutely bg-black rounded">
+				<span class="position-absolute position-v-center position-h-center text-decoration-none">
+					<i class="mdi mdi-fw mdi-account font-size-largerer text-white opacity-20"></i>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<h1 class="font-size-larger"><?php $Printer($Who->Email) ?></h1>
+		<div><b>Alias:</b> <?php $Printer($Who->Alias ?? '<em>Not Set</em>') ?></div>
+		<div><b>Created:</b> <?php $Printer($Who->DateCreated) ?></div>
+	</div>
+</div>
+
+<dl class="PrettyModernBox">
+	<dt class="mb-4">
+		<span>User Access</span>
+		<hr class="opacity-10" />
+	</dt>
+	<dd class="mb-4">
+		<form id="AccessForm" method="post">
+			<div class="row tight">
+				<div class="col">
+					<div class="fw-bold">Key:</div>
+					<input type="text" name="Key" class="form-control" list="AccessTypeDatalist" />
+					<datalist id="AccessTypeDatalist">
+						<?php foreach($DefinedAccessTypes as $Access): ?>
+						<option value="<?php $Printer($Access->Key) ?>"><?php $Printer($Access->Key) ?></option>
+						<?php endforeach; unset($Access); ?>
+					</datalist>
+				</div>
+				<div class="col">
+					<div class="fw-bold">Value:</div>
+					<input type="text" name="Value" class="form-control" />
+				</div>
+				<div class="col-auto">
+					<div class="fw-bold">&nbsp;</div>
+					<input type="hidden" name="ID" value="<?php $Printer($Who->ID) ?>" />
+					<button type="submit" class="btn btn-primary"><i class="mdi mdi-fw mdi-plus"></i></button>
+				</div>
+			</div>
+		</form>
+		<script type="module">
+		import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+		jQuery(function(){
+
+			jQuery('#AccessForm')
+			.on('submit', function(){
+
+				let form = new NUI.Form(this);
+				let req = new NUI.Request('SETACCESS', '/api/user/entity');
+
+				(req.send(form.getData()))
+				.then(req.goto)
+				.catch(req.catch);
+
+				return false;
+			});
+
+			return;
+		});
+		</script>
+	</dd>
+	<dd class="HideTheLastHR">
+		<?php foreach($AccessTypes as $Access): /** @var Nether\User\EntityAccessType $Access */ ?>
+		<div class="row align-items-center">
+			<div class="col"><code><?php $Printer($Access->Key) ?></code></div>
+			<div class="col-auto"><code><?php $Printer($Access->Value) ?></code></div>
+			<div class="col-auto">
+				<button class="btn btn-danger CmdAccessDelete" data-access-id="<?php $Printer($Access->ID) ?>"><i class="mdi mdi-fw mdi-close"></i></button>
+			</div>
+		</div>
+		<hr class="opacity-10" />
+		<?php endforeach; unset($Access); ?>
+		<?php if(!$AccessTypes->Count()): ?>
+		<div class="text-center fst-italic">This user currently has no extra access data.</div>
+		<?php endif; ?>
+	</dd>
+	<script type="module">
+	import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+	jQuery(function(){
+
+		jQuery('.CmdAccessDelete')
+		.on('click', function(){
+
+			let req = new NUI.Request('DELACCESS', '/api/user/entity');
+			let data = NUI.Form.ObjectArrayToDataString([
+				{ name: 'AccessID', value: jQuery(this).attr('data-access-id') }
+			]);
+
+			(req.send(data))
+			.then(req.goto)
+			.catch(req.catch);
+
+			return false;
+		});
+
+		return;
+	});
+	</script>
+</dl>

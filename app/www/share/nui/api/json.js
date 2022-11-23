@@ -120,6 +120,9 @@ class JsonRequest {
 		if(result instanceof JsonResult) {
 			if(result.goto !== null)
 			goto = result.goto;
+
+			if(goto === 'reload')
+			goto = location.href;
 		}
 
 		if(goto !== null)

@@ -31,6 +31,11 @@ class FormUtil {
 	};
 
 	getDataArray() {
+		// misnaming was mearly a setback.
+		return this.getDataObject();
+	};
+
+	getDataObject() {
 
 		let input = this.element.serializeArray();
 		let data = {};
@@ -56,6 +61,26 @@ class FormUtil {
 
 		return output.join('&');
 
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static WhenSubmitDoCleanURL() {
+
+		let form = new FormUtil(this);
+		let url = new URL(location.href);
+		let data = form.getDataObject();
+
+		for(const key of Object.keys(data)) {
+			if(data[key] === '')
+			url.searchParams.delete(key);
+			else
+			url.searchParams.set(key, data[key]);
+		}
+
+		location.href = url.toString();
+		return false;
 	};
 
 };

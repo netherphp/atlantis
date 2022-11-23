@@ -20,6 +20,10 @@
 	--ColourSecondaryAccent: hsl(var(--ColourSecondaryHue), var(--ColourSecondarySat), var(--ColourSecondaryLvl));
 	--ColourTertiaryAccent: hsl(var(--ColourTertiaryHue), var(--ColourTertiarySat), var(--ColourTertiaryLvl));
 
+	--ColourObjectBackground1: #1A1A1A;
+	--ColourObjectBackground2: #222222;
+	--ColourObjectBorder: #101010;
+
 	/* page fonts */
 
 	--FontFamilyNormal: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
@@ -74,8 +78,9 @@ img {
 	object-fit: contain;
 }
 
-.form-control {
-	background-color: #444;
+.form-control,
+.form-select {
+	background-color: #000;
 	border-color: #444;
 	color: #ddd;
 	transition: background-color 200ms;
@@ -114,6 +119,32 @@ hr {
 strong {
 	font-weight: bold;
 }
+
+.table {
+	--bs-table-border-color: var(--ColourObjectBorder);
+	--bs-table-bg: var(--ColourObjectBackground1);
+	--bs-table-striped-bg: var(--ColourObjectBackground2);
+}
+
+.table td {
+	vertical-align: middle;
+}
+
+/*
+.table thead > tr > * {
+	background-color: var(--ColourObjectBackground1) !important;
+	box-shadow: none !important;
+}
+
+.table tbody > tr > * {
+	background-color: var(--ColourObjectBackground1) !important;
+	box-shadow: none !important;
+}
+
+.table tbody > tr:nth-of-type(2n+1) > * {
+	background-color: var(--ColourObjectBackground2) !important;
+}
+*/
 
 #PageHeader {
 	position: relative;
@@ -319,7 +350,7 @@ strong {
 .PrettyModernBox h3 hr,
 .PrettyModernBox dt hr {
 	flex-grow: 1;
-	margin: 0px;
+	margin: 0px 0.5rem;
 	padding: 0px
 }
 

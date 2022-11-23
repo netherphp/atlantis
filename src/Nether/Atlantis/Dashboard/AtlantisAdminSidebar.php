@@ -13,7 +13,7 @@ extends SidebarGroup {
 		parent::__Construct('Admin');
 
 		($this->Items)
-		->Push(new SidebarGroupItem('Manage Users', '/ops/users', 'mdi-account-group'));
+		->Push(new SidebarGroupItem('Manage Users', '/ops/users/list', 'mdi-account-group'));
 
 		return;
 	}

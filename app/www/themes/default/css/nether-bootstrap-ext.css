@@ -50,6 +50,7 @@
 .text-underline { text-decoration: underline; }
 .text-underline-none { text-decoration: none; }
 .text-muted { color: #7d7d7d !important; }
+.text-decoration-none { border-bottom: 0px !important; text-decoration: none !important; }
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -58,6 +59,9 @@
 
 .user-select-none { user-select: none; }
 .user-select-normal { user-select: all; }
+
+.fw-bold { font-weight: 400 !important; }
+.fw-bolder { font-weight: 700 !important; }
 
 @media (max-width: 991.9px) {
 	.font-size-mostest-small { font-size: 0.44em; }
@@ -409,6 +413,11 @@
 }
 
 .rounded-extra { border-radius: 10px; }
+
+.th-shrink,
+.td-shrink {
+	width: 1px;
+}
 
 .mdi-fw {
 	text-align: center;

@@ -1,0 +1,108 @@
+<?php
+
+/**
+ * @var Nether\Database\Struct\PrototypeFindResult $Users
+ * @var Nether\Database\Struct\PrototypeFindResult $AccessTypes
+ */
+
+$Surface->Area('admin/breadcrumbs', [ 'Trail' => [
+	'Users' => NULL
+]]);
+
+$GetEditUserLink = function(Nether\User\Entity $Who) {
+	return sprintf(
+		'/ops/users/%d',
+		$Who->ID
+	);
+};
+
+?>
+
+<div class="PrettyModernBox mb-4">
+	<dt>
+		<span>Filters</span>
+		<hr class="opacity-10" />
+	</dt>
+	<dd>
+		<form id="Filters" method="get">
+			<div class="row tight justify-content-end">
+				<div class="col-12 col-md mb-2 mb-md-0">
+					<div class="fw-bold font-size-smaller">Search</div>
+					<input name="q" type="text" class="form-control" />
+				</div>
+				<div class="col-12 col-md-auto mb-2 mb-md-0">
+					<div class="fw-bold font-size-smaller">Access Type</div>
+					<select name="accesstype" class="form-select">
+						<option value="">All Access Types</option>
+						<?php foreach($AccessTypes as $AT): ?>
+						<option value="<?php $Printer($AT->ID) ?>" <?php $Printer($Selected($Route->Data->AccessType === $AT->ID)) ?>><?php $Printer($AT->Key) ?></option>''
+						<?php endforeach; unset($AT); ?>
+					</select>
+				</div>
+				<div class="col-12 col-md-auto mb-0 mb-md-0">
+					<div class="fw-bold font-size-smaller">Sort</div>
+					<select name="sort" class="form-select">
+						<option value="">Oldest First</option>
+						<option value="newest" <?php $Printer($Selected($Route->Data->Sort === 'newest')) ?>>Newest First</option>
+						<option value="alias" <?php $Printer($Selected($Route->Data->Sort === 'alias')) ?>>By Username</option>
+						<option value="email" <?php $Printer($Selected($Route->Data->Sort === 'email')) ?>>By Email</option>
+					</select>
+				</div>
+				<div class="col-12 mb-2"></div>
+				<div class="col-auto">
+					<a class="btn btn-dark" href="?">Reset</a>
+					<button name="action" value="submit" class="btn btn-primary" type="submit">Apply Filters</button>
+				</div>
+			</div>
+		</form>
+		<script type="module">
+		import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+
+		jQuery(function(){
+
+			jQuery('#Filters')
+			.on('submit', NUI.Form.WhenSubmitDoCleanURL);
+
+			return;
+		});
+		</script>
+	</dd>
+</div>
+
+
+
+<table class="table table-dark table-striped">
+	<thead>
+		<tr>
+			<th class="th-shrink">&nbsp;</th>
+			<th class="th-normal">Account</th>
+			<th class="th-shrink">&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php foreach($Users as $User): ?>
+	<tr>
+		<td>
+			<div class="ratiobox square" style="width:64px;">
+				<div class="position-absolutely bg-black rounded">
+					<a href="<?php $Printer($GetEditUserLink($User)) ?>" class="position-absolute position-v-center position-h-center text-decoration-none">
+						<i class="mdi mdi-fw mdi-account font-size-largerer text-white opacity-20"></i>
+					</a>
+				</div>
+			</div>
+		</td>
+		<td>
+			<div>
+				<a href="<?php $Printer($GetEditUserLink($User)) ?>"><?php $Printer($User->Email) ?></a>
+			</div>
+			<div class="text-muted">
+				Alias: <?php $User->Alias ? $Printer($User->Alias) : '<em>Not Set</em>' ?>
+			</div>
+		</td>
+		<td>
+			<a href="<?php $Printer($GetEditUserLink($User)) ?>">Edit</a>
+		</td>
+	<tr>
+	<?php endforeach; ?>
+	</tbody>
+</table>
