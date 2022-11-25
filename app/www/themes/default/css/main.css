@@ -212,18 +212,22 @@ strong {
 .font-family-monotype { font-family: var(--FontFamilyMonotype); }
 .font-family-normal { font-family: var(--FontFamilyNormal); }
 
+.text-primary,
 .fg-primary,
 .fg-primary:link,
+.text-primary:link,
 .fg-primary:visited,
-.fg-primary:hover {
-	color: var(--ColourPrimaryAccent);
+.text-primary:visited,
+.fg-primary:hover,
+.text-primary:hover {
+	color: var(--ColourPrimaryAccent) !important;
 }
 
 .fg-secondary,
 .fg-secondary:link,
 .fg-secondary:visited,
 .fg-secondary:hover {
-	color: var(--ColourSecondaryAccent);
+	color: var(--ColourSecondaryAccent) !important;
 }
 
 .fg-tertiary,

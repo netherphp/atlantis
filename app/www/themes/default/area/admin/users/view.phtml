@@ -1,9 +1,13 @@
 <?php
 
+use Nether\Common;
+use Nether\User;
+use Nether\Database;
+
 /**
- * @var Nether\User\Entity $User - the currently logged in user
- * @var Nether\User\Entity $Who - the user being inspected.
- * @var Nether\Database\Struct\PrototypeFindResult $AccessTypes
+ * @var User\Entity $User - the currently logged in user
+ * @var User\Entity $Who - the user being inspected.
+ * @var Database\Struct\PrototypeFindResult $AccessTypes
  */
 
 $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
@@ -15,18 +19,38 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 
 <div class="row mb-4">
 	<div class="col-2">
-		<div class="ratiobox square">
+		<div class="ratiobox square mb-4">
 			<div class="position-absolutely bg-black rounded">
 				<span class="position-absolute position-v-center position-h-center text-decoration-none">
 					<i class="mdi mdi-fw mdi-account font-size-largerer text-white opacity-20"></i>
 				</span>
 			</div>
 		</div>
+
+		<div class="text-primary font-size-smaller fw-bold text-uppercase">Joined:</div>
+		<div class="mb-0"><?php $Printer($Who->DateCreated) ?></div>
+		<div class="mb-0"><?php $Printer(($Who->DateCreated)(Common\Values::DateFormatT12Z)) ?></div>
+		<div class="opacity-50 font-size-smaller mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeCreated, Precision: 2)) ?></div>
+
+		<div class="text-primary font-size-smaller fw-bold text-uppercase">Last Seen:</div>
+		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeSeen)) ?></div>
+
+		<div class="text-primary font-size-smaller fw-bold text-uppercase">Remote Addr:</div>
+		<div class="font-family-monotype mb-4"><?php $Printer($Who->RemoteAddr) ?></div>
+
+		<div class="mb-4">
+			<div class="mb-2">
+				<?php if($Who->TimeBanned === 0): ?><button class="btn btn-block btn-primary CmdUserBan" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-ban"></i> Ban</button>
+				<?php else: ?><button class="btn btn-block btn-danger CmdUserUnban" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-ban"></i> Unban</button>
+				<?php endif; ?>
+			</div>
+		</div>
 	</div>
 	<div class="col">
-		<h1 class="font-size-larger"><?php $Printer($Who->Email) ?></h1>
-		<div><b>Alias:</b> <?php $Printer($Who->Alias ?? '<em>Not Set</em>') ?></div>
-		<div><b>Created:</b> <?php $Printer($Who->DateCreated) ?></div>
+		<div class="font-size-smaller fw-bold text-uppercase">Email</div>
+		<div class="mb-4"><input type="text" name="Email" value="<?php $Printer($Who->Email) ?>" class="form-control" /></div>
+		<div class="font-size-smaller fw-bold text-uppercase">Alias</div>
+		<div class="mb-4"><input type="text" name="Alias" value="<?php $Printer($Who->Alias) ?>" class="form-control" /></div>
 	</div>
 </div>
 
@@ -58,26 +82,6 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 				</div>
 			</div>
 		</form>
-		<script type="module">
-		import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
-		jQuery(function(){
-
-			jQuery('#AccessForm')
-			.on('submit', function(){
-
-				let form = new NUI.Form(this);
-				let req = new NUI.Request('SETACCESS', '/api/user/entity');
-
-				(req.send(form.getData()))
-				.then(req.goto)
-				.catch(req.catch);
-
-				return false;
-			});
-
-			return;
-		});
-		</script>
 	</dd>
 	<dd class="HideTheLastHR">
 		<?php foreach($AccessTypes as $Access): /** @var Nether\User\EntityAccessType $Access */ ?>
@@ -94,26 +98,75 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 		<div class="text-center fst-italic">This user currently has no extra access data.</div>
 		<?php endif; ?>
 	</dd>
-	<script type="module">
-	import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
-	jQuery(function(){
+</dl>
 
-		jQuery('.CmdAccessDelete')
-		.on('click', function(){
+<script type="module">
+import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
 
-			let req = new NUI.Request('DELACCESS', '/api/user/entity');
-			let data = NUI.Form.ObjectArrayToDataString([
-				{ name: 'AccessID', value: jQuery(this).attr('data-access-id') }
-			]);
+jQuery(function(){
 
-			(req.send(data))
-			.then(req.goto)
-			.catch(req.catch);
+	jQuery('#AccessForm')
+	.on('submit', function(){
 
-			return false;
-		});
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('SETACCESS', '/api/user/entity');
+
+		(req.send(form.getData()))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	jQuery('.CmdAccessDelete')
+	.on('click', function(){
+
+		let req = new NUI.Request('DELACCESS', '/api/user/entity');
+		let data = NUI.Form.ObjectArrayToDataString([
+			{ name: 'AccessID', value: jQuery(this).attr('data-access-id') }
+		]);
+
+		(req.send(data))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	jQuery('.CmdUserBan')
+	.on('click', function(){
+
+		let data = NUI.Form.ObjectArrayToDataString([
+			{ name: "ID", value: jQuery(this).attr('data-user-id') },
+			{ name: "Reason", value: '' }
+		]);
+
+		let req = new NUI.Request('BAN', '/api/user/entity');
+
+		(req.send(data))
+		.then(req.goto)
+		.catch(req.catch);
 
 		return;
 	});
-	</script>
-</dl>
+
+	jQuery('.CmdUserUnban')
+	.on('click', function(){
+
+		let data = NUI.Form.ObjectArrayToDataString([
+			{ name: "ID", value: jQuery(this).attr('data-user-id') }
+		]);
+
+		let req = new NUI.Request('UNBAN', '/api/user/entity');
+
+		(req.send(data))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return;
+	});
+
+	return;
+});
+
+</script>

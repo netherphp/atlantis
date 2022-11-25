@@ -41,13 +41,15 @@ extends Atlantis\PublicAPI {
 		if(!$User->ValidatePassword($this->Request->Data->Password))
 		$this->Quit(4, 'Invalid credentials');
 
-		if($User->TimeBanned)
+		if($User->TimeBanned !== 0)
 		$this->Quit(5, 'Account is banned');
 
 		////////
 
-		$User->TransmitSession();
-		$User->UpdateTimeSeen();
+		$User
+		->TransmitSession()
+		->UpdateTimeSeen()
+		->UpdateRemoteAddr();
 
 		$this
 		->SetGoto($this->Request->Data->Goto ?: '/')
@@ -328,6 +330,7 @@ extends Atlantis\PublicAPI {
 		$RequireAlias = $this->Config[Atlantis\Library::ConfUserRequireAlias];
 		$PasswordTester = new Atlantis\Util\PasswordTester;
 		$User = NULL;
+		$RemoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : NULL;
 
 		////////
 
@@ -367,9 +370,10 @@ extends Atlantis\PublicAPI {
 		////////
 
 		$User = User\EntitySession::Insert([
-			'Alias' => $RequireAlias ? $this->Data->Alias : NULL,
-			'Email' => $this->Data->Email,
-			'PHash' => User\Entity::GeneratePasswordHash($this->Data->Password1)
+			'Alias'      => $RequireAlias ? $this->Data->Alias : NULL,
+			'Email'      => $this->Data->Email,
+			'PHash'      => User\Entity::GeneratePasswordHash($this->Data->Password1),
+			'RemoteAddr' => $RemoteAddr
 		]);
 
 		if(!$User)

@@ -32,6 +32,7 @@ extends PublicWeb {
 		$AuthCode = $this->Request->Data->Code;
 		$Token = NULL;
 		$User = NULL;
+		$RemoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : NULL;
 
 		////////
 
@@ -140,7 +141,8 @@ extends PublicWeb {
 				static::AuthField => $Info->AuthID,
 				'Alias'           => $Info->Alias,
 				'Email'           => $Info->Email,
-				'Activated'       => 1
+				'Activated'       => 1,
+				'RemoteAddr'      => $RemoteAddr
 			]);
 		}
 
@@ -162,6 +164,9 @@ extends PublicWeb {
 			'There are no accounts linked with this %s identity.',
 			static::AuthName
 		));
+
+		//if($User->TimeBanned !== 0)
+		//$this->Quit(7, 'This account is banned.');
 
 		////////
 

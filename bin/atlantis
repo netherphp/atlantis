@@ -545,6 +545,43 @@ extends Nether\Console\Client {
 		return 0;
 	}
 
+	#[Nether\Console\Meta\Command]
+	#[Nether\Console\Meta\Info('Run git command in all repos.')]
+	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
+	public function
+	NetherGitYoink():
+	int {
+
+		$Verbose = (bool)$this->GetOption('--verbose');
+		$Path = sprintf('%s/vendor/netherphp/*', getcwd());
+		$Found = glob($Path);
+
+		$Dir = NULL;
+		$Git = NULL;
+		$Result = NULL;
+
+		foreach($Found as $Dir) {
+			$Git = sprintf(
+				'git -C "%1$s" pull',
+				Nether\Atlantis\Util::Repath("{$Dir}")
+			);
+
+			$Result = $this->ExecuteCommandLine($Git, TRUE);
+
+			if(count($Result->Output)) {
+				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+
+				if($Verbose)
+				$this->PrintLn($this->FormatSecondary($Git));
+
+				echo PHP_EOL, join(PHP_EOL, $Result->Output);
+				echo PHP_EOL, PHP_EOL;
+			}
+		}
+
+		return 0;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

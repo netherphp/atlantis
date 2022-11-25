@@ -214,10 +214,19 @@ as html pages. //*/
 			$Handler = $this->App->Router->GetCurrentHandler();
 			$Info = static::GetMethodInfo($Handler->Method);
 
+			// handle if the account has been banned.
+
+			if($this->User->TimeBanned !== 0)
+			$this->Quit(403, 'Account is banned.');
+
+			// handle if the account has not yet been activated.
+
 			if(!$this->User->Activated)
 			if($this->Config[Atlantis\Library::ConfUserEmailActivate])
 			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
 			$this->Goto('/login/activate');
+
+			// handle if the account has not had an alias set yet.
 
 			if($this->User->Alias === NULL)
 			if($this->Config[Atlantis\Library::ConfUserRequireAlias])

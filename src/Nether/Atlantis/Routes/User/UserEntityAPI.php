@@ -57,6 +57,66 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[RouteHandler('/api/user/entity', Verb: 'BAN')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntityBan():
+	void {
+
+
+		($this->Data)
+		->ID(Common\Datafilters::TypeInt(...))
+		->Reason(Common\Datafilters::TrimmedTextNullable(...));
+
+		////////
+
+		$User = User\Entity::GetByID($this->Data->ID);
+
+		if(!$User)
+		$this->Quit(1, 'User not found.');
+
+		if($User->ID === $this->User->ID)
+		$this->Quit(2, 'Really?');
+
+		////////
+
+		$User->Update([ 'TimeBanned'=> time() ]);
+
+		$this->SetGoto('reload');
+		return;
+	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'UNBAN')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntityUnban():
+	void {
+
+		($this->Data)
+		->ID(Common\Datafilters::TypeInt(...));
+
+		////////
+
+		$User = User\Entity::GetByID($this->Data->ID);
+
+		if(!$User)
+		$this->Quit(1, 'User not found.');
+
+		////////
+
+		$User->Update([ 'TimeBanned'=> 0 ]);
+
+		$this->SetGoto('reload');
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[RouteHandler('/api/user/entity', Verb: 'SETACCESS')]
 	#[RouteAccessTypeAdmin]
 	public function
@@ -86,8 +146,7 @@ extends Atlantis\ProtectedAPI {
 		$Type = NULL;
 		$Updated = FALSE;
 
-		// update an existing case-insensitive permission if it already
-		// exists for this user.
+		// do a case-insense check if the key already exists.
 
 		foreach($Access as $Key => $Type) {
 			/** @var User\EntityAccessType $Type */
@@ -97,7 +156,10 @@ extends Atlantis\ProtectedAPI {
 				$this->Quit(3, "Key {$Key} already exists: {$Type->Value}");
 
 				$Updated = TRUE;
-				$Type->Update(['Value'=> $this->Data->Value]);
+				$Type->Update([
+					'TimeCreated' => time(),
+					'Value'       => $this->Data->Value
+				]);
 			}
 		}
 
