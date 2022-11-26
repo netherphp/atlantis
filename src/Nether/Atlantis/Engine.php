@@ -1,10 +1,13 @@
 <?php
 
 namespace Nether\Atlantis;
+
+use Monolog;
 use Nether;
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\Ki;
 use Nether\Surface;
 use Nether\User;
@@ -30,6 +33,9 @@ application instance.
 
 	public ?User\EntitySession
 	$User;
+
+	public Util\LogManager
+	$Log;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -66,10 +72,12 @@ application instance.
 		// load in configuration.
 
 		$this
+		->InitLogging()
 		->DetermineEnvironment()
 		->LoadDefaultConfig()
 		->LoadProjectConfig()
-		->LoadEnvironmentConfig();
+		->LoadEnvironmentConfig()
+		->UpdateLogging();
 
 		if($Conf !== NULL)
 		$this->Config->MergeRight($Conf->GetData());
@@ -317,6 +325,27 @@ application instance.
 	////////////////////////////////////////////////////////////////
 
 	protected function
+	InitLogging():
+	static {
+
+		$this->Log = new Util\LogManager($this->ProjectRoot);
+		$this->Log->Init();
+
+		return $this;
+	}
+
+	protected function
+	UpdateLogging():
+	static {
+
+		$this->Log->Update(
+			$this->Config[Atlantis\Library::ConfLogFormat]
+		);
+
+		return $this;
+	}
+
+	protected function
 	DetermineEnvironment():
 	static {
 
@@ -364,6 +393,8 @@ application instance.
 	protected function
 	LoadDefaultConfig():
 	static {
+
+		Nether\Atlantis\Library::Init(Config: $this->Config);
 
 		($this->Config)
 		->Define('Project.WebRoot', 'www')
@@ -430,7 +461,6 @@ application instance.
 	static {
 
 		Nether\Common\Library::Init(Config: $this->Config);
-		Nether\Atlantis\Library::Init(Config: $this->Config);
 		Nether\Avenue\Library::Init(Config: $this->Config);
 		Nether\Surface\Library::Init(Config: $this->Config);
 

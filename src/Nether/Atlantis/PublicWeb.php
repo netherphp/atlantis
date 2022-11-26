@@ -267,6 +267,9 @@ as html pages. //*/
 			$Title ??= 'Error';
 			$Msg ??= 'There was an error processing your request.';
 
+			($this->App->Router->Response)
+			->SetCode(Avenue\Response::CodeForbidden);
+
 			($this->App->Surface)
 			->Set('Error', $Err)
 			->Set('Title', $Title)

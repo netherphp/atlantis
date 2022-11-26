@@ -35,6 +35,11 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Last Seen:</div>
 		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeSeen)) ?></div>
 
+		<?php if($Who->TimeBanned !== 0): ?>
+		<div class="text-danger font-size-smaller fw-bold text-uppercase">Banned:</div>
+		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeBanned)) ?></div>
+		<?php endif; ?>
+
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Remote Addr:</div>
 		<div class="font-family-monotype mb-4"><?php $Printer($Who->RemoteAddr) ?></div>
 

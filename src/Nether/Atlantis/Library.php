@@ -31,6 +31,7 @@ extends Nether\Common\Library {
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
 
 	const
+	ConfLogFormat         = 'Nether.Atlantis.Log.Format',
 	ConfPassMinLen        = 'Nether.Atlantis.Passwords.MinLen',
 	ConfPassReqAlphaLower = 'Nether.Atlantis.Passwords.RequireAlphaLower',
 	ConfPassReqAlphaUpper = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
@@ -50,7 +51,8 @@ extends Nether\Common\Library {
 
 		$Config = parent::InitDefaultConfig($Config);
 
-		static::$Config->BlendRight([
+		$Config->BlendRight([
+			static::ConfLogFormat         => 'default',
 			static::ConfPassMinLen        => 10,
 			static::ConfPassReqAlphaLower => TRUE,
 			static::ConfPassReqAlphaUpper => TRUE,
@@ -100,6 +102,12 @@ extends Nether\Common\Library {
 	void {
 
 		$App->User = User\EntitySession::Get();
+
+		if($App->User->IsAdmin())
+		$App->Log->InitAdminlog(
+			$App->GetProjectRoot(),
+			$App->Config[self::ConfLogFormat]
+		);
 
 		////////
 

@@ -67,7 +67,6 @@ extends Atlantis\ProtectedAPI {
 	EntityBan():
 	void {
 
-
 		($this->Data)
 		->ID(Common\Datafilters::TypeInt(...))
 		->Reason(Common\Datafilters::TrimmedTextNullable(...));
@@ -85,6 +84,11 @@ extends Atlantis\ProtectedAPI {
 		////////
 
 		$User->Update([ 'TimeBanned'=> time() ]);
+
+		$this->App->Log->Admin("BAN: {$this->User} => {$User}",[
+			'UserID'  => $User->ID,
+			'AdminID' => $this->User->ID
+		]);
 
 		$this->SetGoto('reload');
 		return;
@@ -110,6 +114,11 @@ extends Atlantis\ProtectedAPI {
 
 		$User->Update([ 'TimeBanned'=> 0 ]);
 
+		$this->App->Log->Admin("UNBAN: {$this->User} => {$User}",[
+			'UserID'  => $User->ID,
+			'AdminID' => $this->User->ID
+		]);
+
 		$this->SetGoto('reload');
 		return;
 	}
@@ -126,7 +135,7 @@ extends Atlantis\ProtectedAPI {
 		($this->Data)
 		->ID(Common\Datafilters::TypeInt(...))
 		->Key(Common\Datafilters::TrimmedTextNullable(...))
-		->Value(Common\Datafilters::TrimmedTextNullable(...))
+		->Value(Common\Datafilters::TypeInt(...))
 		->Overwrite(Common\Datafilters::TypeBool(...));
 
 		////////
@@ -173,6 +182,13 @@ extends Atlantis\ProtectedAPI {
 			]);
 		}
 
+		$this->App->Log->Admin("ACCESS-SET: {$this->User} => {$User}",[
+			'Key'     => $this->Data->Key,
+			'Value'   => $this->Data->Value,
+			'UserID'  => $User->ID,
+			'AdminID' => $this->User->ID
+		]);
+
 		////////
 
 		$this
@@ -201,7 +217,15 @@ extends Atlantis\ProtectedAPI {
 		if(!$Access)
 		$this->Quit('1', 'Invalid AccessID');
 
+		$User = User\Entity::GetByID($Access->EntityID);
 		$Access->Drop();
+
+		$this->App->Log->Admin("ACCESS-DELETE: {$this->User} => {$User}",[
+			'Key'     => $Access->Key,
+			'Value'   => $Access->Value,
+			'UserID'  => $User->ID,
+			'AdminID' => $this->User->ID
+		]);
 
 		$this->SetGoto('reload');
 		return;
