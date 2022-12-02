@@ -3,11 +3,13 @@
 namespace Nether\Atlantis\Routes\User;
 
 use Nether\Atlantis;
+use Nether\Database;
 use Nether\Common;
 use Nether\User;
 
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Atlantis\Meta\RouteAccessTypeAdmin;
+use Nether\Object\Prototype\PropertyInfo;
 
 class UserEntityAPI
 extends Atlantis\ProtectedAPI {
@@ -41,8 +43,66 @@ extends Atlantis\ProtectedAPI {
 	EntityPatch():
 	void {
 
-		$this->SetMessage('PATCH');
+		($this->Data)
+		->ID(Common\Datafilters::TypeInt(...));
 
+		////////
+
+		$User = User\Entity::GetByID($this->Data->ID);
+
+		if(!$User)
+		$this->Quit(1, 'User not found.');
+
+		////////
+
+		// fetch a dataset of all the things valid to change that have changed.
+
+		$Dataset = [];
+		$Props = User\Entity::FetchPropertyIndex();
+		$Prop = NULL;
+		$Info = NULL;
+
+		foreach($Props as $Prop => $Info) {
+			/** @var PropertyInfo $Info */
+
+			if($Info->HasAttribute(Database\Meta\PrimaryKey::class))
+			continue;
+
+			if($this->Data->Exists($Prop))
+			$Dataset[$Prop] = $this->Data->get($Prop);
+		}
+
+		////////
+
+		// some things cannot be changed without a check.
+
+		if(array_key_exists('Alias', $Dataset)) {
+			$Existing = User\Entity::GetByAlias($Dataset['Alias']);
+
+			if($Existing && $Existing->ID !== $User->ID)
+			$this->Quit(2, 'Alias already in use.');
+		}
+
+		if(array_key_exists('Email', $Dataset)) {
+			$Existing = User\Entity::GetByEmail($Dataset['Email']);
+
+			if($Existing && $Existing->ID !== $User->ID)
+			$this->Quit(2, 'Email already in use.');
+		}
+
+		////////
+
+		if(count($Dataset)) {
+			$User->Update($Dataset);
+
+			$this->App->Log->Admin("USER-PATCH: {$User} by {$this->User}", [
+				'Fields'  => array_keys($Dataset),
+				'UserID'  => $User->ID,
+				'AdminID' => $this->User->ID
+			]);
+		}
+
+		$this->SetPayload($Dataset);
 		return;
 	}
 
@@ -85,7 +145,7 @@ extends Atlantis\ProtectedAPI {
 
 		$User->Update([ 'TimeBanned'=> time() ]);
 
-		$this->App->Log->Admin("BAN: {$this->User} => {$User}",[
+		$this->App->Log->Admin("USER-BAN: {$User} by {$this->User}",[
 			'UserID'  => $User->ID,
 			'AdminID' => $this->User->ID
 		]);
@@ -114,7 +174,7 @@ extends Atlantis\ProtectedAPI {
 
 		$User->Update([ 'TimeBanned'=> 0 ]);
 
-		$this->App->Log->Admin("UNBAN: {$this->User} => {$User}",[
+		$this->App->Log->Admin("USER-UNBAN: {$User} BY {$this->User}",[
 			'UserID'  => $User->ID,
 			'AdminID' => $this->User->ID
 		]);
@@ -182,7 +242,7 @@ extends Atlantis\ProtectedAPI {
 			]);
 		}
 
-		$this->App->Log->Admin("ACCESS-SET: {$this->User} => {$User}",[
+		$this->App->Log->Admin("USER-AXSET: {$User} by {$this->User}",[
 			'Key'     => $this->Data->Key,
 			'Value'   => $this->Data->Value,
 			'UserID'  => $User->ID,
@@ -220,7 +280,7 @@ extends Atlantis\ProtectedAPI {
 		$User = User\Entity::GetByID($Access->EntityID);
 		$Access->Drop();
 
-		$this->App->Log->Admin("ACCESS-DELETE: {$this->User} => {$User}",[
+		$this->App->Log->Admin("USER-AXDEL: {$User} by {$this->User}",[
 			'Key'     => $Access->Key,
 			'Value'   => $Access->Value,
 			'UserID'  => $User->ID,

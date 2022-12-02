@@ -3,6 +3,8 @@
 namespace Nether\Atlantis\Util;
 
 use Monolog;
+use Nether\Atlantis;
+use Nether\Common;
 
 class LogManager {
 
@@ -46,8 +48,13 @@ class LogManager {
 
 		////////
 
+		$Path = sprintf('%s/logs/%s', $this->ProjectRoot, date('Y/m'));
+		Atlantis\Util::MkDir($Path);
+
+		////////
+
 		$this->App->_nStream = new Monolog\Handler\StreamHandler(
-			sprintf('%s/logs/atlantis.log', $this->ProjectRoot),
+			sprintf('%s/atlantis.log', $Path),
 			Monolog\Level::Debug
 		);
 
@@ -109,7 +116,7 @@ class LogManager {
 	}
 
 	public function
-	App(string $Message, array $Context=[], Monolog\Level $Level=Monolog\Level::Info):
+	Main(string $Message, array $Context=[], Monolog\Level $Level=Monolog\Level::Info):
 	static {
 
 		if($this->App instanceof Monolog\Logger)
@@ -130,7 +137,7 @@ class LogManager {
 		////////
 
 		$this->Admin->_nStream = new Monolog\Handler\StreamHandler(
-			sprintf('%s/logs/admin.log', $this->ProjectRoot),
+			sprintf('%s/logs/%s/admin.log', $this->ProjectRoot, date('Y/m')),
 			Monolog\Level::Debug
 		);
 

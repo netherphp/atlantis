@@ -35,7 +35,7 @@ $GetEditUserLink = function(Nether\User\Entity $Who) {
 					<select name="accesstype" class="form-select">
 						<option value="">All Access Types</option>
 						<?php foreach($AccessTypes as $AT): ?>
-						<option value="<?php $Printer($AT->ID) ?>" <?php $Printer($Selected($Route->Data->AccessType === $AT->ID)) ?>><?php $Printer($AT->Key) ?></option>''
+						<option value="<?php $Printer($AT->ID) ?>" <?php $Printer($Selected($Route->Data->AccessType === $AT->ID)) ?>><?php $Printer($AT->Key) ?></option>
 						<?php endforeach; unset($AT); ?>
 					</select>
 				</div>
@@ -80,12 +80,12 @@ $GetEditUserLink = function(Nether\User\Entity $Who) {
 		</tr>
 	</thead>
 	<tbody>
-	<?php foreach($Users as $User): ?>
+	<?php foreach($Users as $Who): ?>
 	<tr>
 		<td>
 			<div class="ratiobox square" style="width:64px;">
 				<div class="position-absolutely bg-black rounded">
-					<a href="<?php $Printer($GetEditUserLink($User)) ?>" class="position-absolute position-v-center position-h-center text-decoration-none">
+					<a href="<?php $Printer($GetEditUserLink($Who)) ?>" class="position-absolute position-v-center position-h-center text-decoration-none">
 						<i class="mdi mdi-fw mdi-account font-size-largerer text-white opacity-20"></i>
 					</a>
 				</div>
@@ -93,14 +93,16 @@ $GetEditUserLink = function(Nether\User\Entity $Who) {
 		</td>
 		<td>
 			<div>
-				<a href="<?php $Printer($GetEditUserLink($User)) ?>"><?php $Printer($User->Email) ?></a>
+				<a href="<?php $Printer($GetEditUserLink($Who)) ?>"><?php $Printer($Who->Email) ?></a>
 			</div>
+			<?php if($Who->Alias): ?>
 			<div class="text-muted">
-				Alias: <?php $User->Alias ? $Printer($User->Alias) : '<em>Not Set</em>' ?>
+				Alias: <?php $Printer($Who->Alias) ?>
 			</div>
+			<?php endif; ?>
 		</td>
 		<td>
-			<a href="<?php $Printer($GetEditUserLink($User)) ?>">Edit</a>
+			<a href="<?php $Printer($GetEditUserLink($Who)) ?>">Edit</a>
 		</td>
 	<tr>
 	<?php endforeach; ?>

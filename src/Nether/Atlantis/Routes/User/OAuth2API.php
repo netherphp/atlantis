@@ -136,14 +136,20 @@ extends PublicWeb {
 			// if we have not found a user yet and we allow new users to be
 			// created on the fly then go ahead and insert them now.
 
-			if(!$User && $AllowNewUsers)
-			$User = Nether\User\EntitySession::Insert([
-				static::AuthField => $Info->AuthID,
-				'Alias'           => $Info->Alias,
-				'Email'           => $Info->Email,
-				'Activated'       => 1,
-				'RemoteAddr'      => $RemoteAddr
-			]);
+			if(!$User && $AllowNewUsers) {
+				$User = Nether\User\EntitySession::Insert([
+					static::AuthField => $Info->AuthID,
+					'Alias'           => $Info->Alias,
+					'Email'           => $Info->Email,
+					'Activated'       => 1,
+					'RemoteAddr'      => $RemoteAddr
+				]);
+
+				$this->App->Log->Main(
+					"USER-CREATE: {$User}",
+					[ 'UserID'=> $User->ID, 'Origin'=> static::AuthName ]
+				);
+			}
 		}
 
 		catch(Nether\User\Error\AuthMismatch $Error) {
@@ -169,6 +175,12 @@ extends PublicWeb {
 		//$this->Quit(7, 'This account is banned.');
 
 		////////
+
+		if(!$User->{static::AuthField})
+		$this->App->Log->Main(
+			"USER-AUTHLINK: {$User}",
+			[ 'UserID'=> $User->ID, 'Origin'=> static::AuthName ]
+		);
 
 		$User->Update([
 			static::AuthField => $Info->AuthID,

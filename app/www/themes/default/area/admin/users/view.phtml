@@ -18,7 +18,11 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 ?>
 
 <div class="row mb-4">
+
+	<!-- LEFT SIDEBAR -->
 	<div class="col-2">
+
+		<!-- USER PICTURE -->
 		<div class="ratiobox square mb-4">
 			<div class="position-absolutely bg-black rounded">
 				<span class="position-absolute position-v-center position-h-center text-decoration-none">
@@ -27,22 +31,27 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 			</div>
 		</div>
 
+		<!-- ACCOUNT CREATED -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Joined:</div>
 		<div class="mb-0"><?php $Printer($Who->DateCreated) ?></div>
 		<div class="mb-0"><?php $Printer(($Who->DateCreated)(Common\Values::DateFormatT12Z)) ?></div>
 		<div class="opacity-50 font-size-smaller mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeCreated, Precision: 2)) ?></div>
 
+		<!-- ACCOUNT LAST SEEN -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Last Seen:</div>
 		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeSeen)) ?></div>
 
 		<?php if($Who->TimeBanned !== 0): ?>
+		<!-- ACCOUNT BAN STATUS -->
 		<div class="text-danger font-size-smaller fw-bold text-uppercase">Banned:</div>
 		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeBanned)) ?></div>
 		<?php endif; ?>
 
+		<!-- ACCOUNT REMOTE ADDR -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Remote Addr:</div>
 		<div class="font-family-monotype mb-4"><?php $Printer($Who->RemoteAddr) ?></div>
 
+		<!-- COMMAND BUTTONS -->
 		<div class="mb-4">
 			<div class="mb-2">
 				<?php if($Who->TimeBanned === 0): ?><button class="btn btn-block btn-primary CmdUserBan" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-ban"></i> Ban</button>
@@ -50,15 +59,48 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 				<?php endif; ?>
 			</div>
 		</div>
+
 	</div>
+
+	<!-- RIGHT AREA -->
 	<div class="col">
+
 		<div class="font-size-smaller fw-bold text-uppercase">Email</div>
-		<div class="mb-4"><input type="text" name="Email" value="<?php $Printer($Who->Email) ?>" class="form-control" /></div>
+		<form id="UserEmail" class="UserPatchForm" method="post">
+			<div class="row tight mb-4">
+				<div class="col">
+					<input type="hidden" name="ID" value="<?php $Printer($Who->ID) ?>" />
+					<input type="text" name="Email" value="<?php $Printer($Who->Email) ?>" class="form-control" />
+				</div>
+				<div class="col-auto">
+					<button type="submit" class="btn btn-primary FancyStateButton">
+						<i class="mdi mdi-fw mdi-content-save Idle"></i>
+						<span>Save</span>
+						<i class="mdi mdi-fw mdi-check Success"></i>
+						<i class="mdi mdi-fw mdi-close Error"></i>
+					</button>
+				</div>
+			</div>
+		</form>
+
 		<div class="font-size-smaller fw-bold text-uppercase">Alias</div>
-		<div class="mb-4"><input type="text" name="Alias" value="<?php $Printer($Who->Alias) ?>" class="form-control" /></div>
+		<form id="UserAlias" class="UserPatchForm" method="post">
+			<div class="row tight mb-4">
+				<div class="col">
+					<input type="hidden" name="ID" value="<?php $Printer($Who->ID) ?>" />
+					<input type="text" name="Alias" value="<?php $Printer($Who->Alias) ?>" class="form-control" />
+				</div>
+				<div class="col-auto">
+					<button type="submit" class="btn btn-primary FancyStateButton"><i class="mdi mdi-content-save Idle"></i><span>Save</span><i class="mdi mdi-check Success"></i><i class="mdi mdi-close Error"></i></button>
+				</div>
+			</div>
+		</form>
+
 	</div>
+
 </div>
 
+<!-- USER ACCESS PANEL -->
 <dl class="PrettyModernBox">
 	<dt class="mb-4">
 		<span>User Access</span>
@@ -169,6 +211,39 @@ jQuery(function(){
 		.catch(req.catch);
 
 		return;
+	});
+
+	jQuery('.UserPatchForm')
+	.on('submit', function(){
+
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('PATCH', '/api/user/entity');
+		let btn = form.element.find('button[type=submit]');
+
+		(req.send(form.getData()))
+		.then(function(result) {
+
+			btn
+			.removeClass('btn-primary')
+			.addClass('btn-success');
+
+			setTimeout(
+				function(){
+					btn
+					.removeClass('btn-success')
+					.addClass('btn-primary');
+
+					return;
+				},
+				1000
+			);
+
+			return;
+		})
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
 	});
 
 	return;

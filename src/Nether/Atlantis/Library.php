@@ -60,7 +60,7 @@ extends Nether\Common\Library {
 			static::ConfPassReqSpecial    => TRUE,
 			static::ConfUserAllowSignup   => TRUE,
 			static::ConfUserEmailActivate => TRUE,
-			static::ConfUserRequireAlias  => TRUE
+			static::ConfUserRequireAlias  => FALSE
 		]);
 
 		return $Config;
@@ -103,7 +103,7 @@ extends Nether\Common\Library {
 
 		$App->User = User\EntitySession::Get();
 
-		if($App->User->IsAdmin())
+		if($App->User && $App->User->IsAdmin())
 		$App->Log->InitAdminlog(
 			$App->GetProjectRoot(),
 			$App->Config[self::ConfLogFormat]
