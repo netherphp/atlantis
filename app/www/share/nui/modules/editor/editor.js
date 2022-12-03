@@ -767,7 +767,7 @@ extends ToolbarButton {
 		// things i wanted the user to interact with.
 
 		//(this.editor.api)
-		//.insertHTML(TemplateEditorImageUploader);
+		//.insertHTML(TemplateEditorImagePlaceholder);
 
 		(this.editor.api)
 		.focus();
@@ -776,7 +776,7 @@ extends ToolbarButton {
 		let node = select.anchorNode;
 
 		node.before(
-			jQuery(TemplateEditorImageUploader)
+			jQuery(TemplateEditorImagePlaceholder)
 			.get(0)
 		);
 
@@ -1034,6 +1034,22 @@ extends ToolbarButton {
 
 };
 
+class ToolbarButtonDeselectDone
+extends ToolbarButton {
+
+	constructor(editor) {
+		super(editor, 'Done', 'mdi mdi-fw mdi-check');
+		return;
+	};
+
+	onClick() {
+
+		this.editor.onClickNothing();
+		return;
+	};
+
+};
+
 class ToolbarMain
 extends Toolbar {
 /*//
@@ -1073,6 +1089,7 @@ extends Toolbar {
 	prepareButtons() {
 
 		this.buttons = [
+			new ToolbarButtonDeselectDone(this.editor),
 			new ToolbarButtonSelectionFloatLeft(this.editor),
 			new ToolbarButtonSelectionFloatCenter(this.editor),
 			new ToolbarButtonSelectionFloatRight(this.editor),
@@ -1134,19 +1151,7 @@ let TemplateModalDialog = `
 </div>
 `;
 
-/*
-let TemplateEditorImageUploader = `
-<div class="EditorItemImage position-relative" style="user-select:none;" contenteditable="false" disabled>
-	<div class="position-absolutely" style="user-select:none;">
-		<button class="btn btn-dark" style="user-select:none;">Upload</button>
-		<button class="btn btn-dark" style="user-select:none;">Del</button>
-	</div>
-	<img src="/share/nui/modules/editor/image-placeholder.jpg" style="user-select:none;" />
-</div>
-`;
-*/
-
-let TemplateEditorImageUploader = `
+let TemplateEditorImagePlaceholder = `
 <img src="/share/nui/modules/editor/image-placeholder.jpg" class="EditorItem EditorItemImage" draggable="false" />
 `;
 
