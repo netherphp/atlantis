@@ -32,7 +32,8 @@
 		"netherphp/user": "dev-master",
 		"netherphp/sensei": "dev-redux",
 		"netherphp/email": "dev-master",
-		"monolog/monolog": "3.x-dev"
+		"monolog/monolog": "3.x-dev",
+		"netherphp/storage": "dev-master"
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "dev-master",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44180b39dd1b0bf5e56fdb43eb083c90",
+    "content-hash": "8aec4e6100003d579d16b536f739ad49",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -1011,6 +1011,58 @@
             "time": "2022-09-06T07:14:34+00:00"
         },
         {
+            "name": "netherphp/storage",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/netherphp/storage.git",
+                "reference": "eb411eeb52b7bac263d786e0317fe94cbd59befa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netherphp/storage/zipball/eb411eeb52b7bac263d786e0317fe94cbd59befa",
+                "reference": "eb411eeb52b7bac263d786e0317fe94cbd59befa",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+                "netherphp/standards": ">=0.1.9",
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Nether\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Bob Majdak Jr",
+                    "email": "bmajdak@php.net",
+                    "homepage": "http://pegasusgate.net/+bob",
+                    "role": "developer"
+                }
+            ],
+            "description": "An Storage library.",
+            "keywords": [
+                "php",
+                "storage"
+            ],
+            "support": {
+                "issues": "https://github.com/netherphp/storage/issues",
+                "source": "https://github.com/netherphp/storage/tree/master"
+            },
+            "time": "2022-12-05T21:26:09+00:00"
+        },
+        {
             "name": "netherphp/surface",
             "version": "dev-redux",
             "source": {
@@ -1699,6 +1751,7 @@
         "netherphp/sensei": 20,
         "netherphp/email": 20,
         "monolog/monolog": 20,
+        "netherphp/storage": 20,
         "dealerdirect/phpcodesniffer-composer-installer": 20,
         "netherphp/standards": 20
     },
