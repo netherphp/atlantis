@@ -11,6 +11,8 @@ use Nether\Atlantis\Dashboard\SidebarGroupItem;
 
 $Surface->Area('user/dashboard/nav');
 
+$StorageLocations = $App->Storage;
+
 ?>
 
 <div class="row">
@@ -35,14 +37,17 @@ $Surface->Area('user/dashboard/nav');
 
 	</div>
 	<div class="col">
+
+		<?php Nether\Common\Dump::Var($StorageLocations, TRUE) ?>
+
 		<div id="Editor" class="Editor"></div>
 		<script type="module">
 		import Editor from '/share/nui/modules/editor/editor.js?v=<?php $Printer($CacheBuster) ?>';
-
 		jQuery(function(){
 			let editor = new Editor('#Editor');
 			return;
 		});
 		</script>
+
 	</div>
 </div>

@@ -9,6 +9,7 @@ use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
 use Nether\Ki;
+use Nether\Storage;
 use Nether\Surface;
 use Nether\User;
 
@@ -27,6 +28,9 @@ application instance.
 
 	public Avenue\Router
 	$Router;
+
+	public Storage\Manager
+	$Storage;
 
 	public Surface\Engine
 	$Surface;
@@ -95,6 +99,7 @@ application instance.
 
 		$this->Router = new Avenue\Router($this->Config);
 		$this->Surface = new Surface\Engine($this->Config);
+		$this->Storage = new Storage\Manager($this->Config);
 
 		$Data = [
 			'App'    => $this,
@@ -463,11 +468,13 @@ application instance.
 		Nether\Common\Library::Init(Config: $this->Config);
 		Nether\Avenue\Library::Init(Config: $this->Config);
 		Nether\Surface\Library::Init(Config: $this->Config);
+		Nether\Storage\Library::Init(Config: $this->Config);
 
 		($this)
 		->Queue('Atlantis.Prepare', Nether\Database\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\Email\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\User\Library::Init(...))
+		->Queue('Atlantis.Prepare', Nether\Storage\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\Atlantis\Library::Prepare(...));
 
 		return $this;
