@@ -9,11 +9,7 @@ use Nether\Atlantis\Dashboard\SidebarGroupItem;
  * @var Nether\Object\Datastore $SidebarItems
  */
 
-$Surface->Area('user/dashboard/nav');
-
-$StorageLocations = $App->Storage;
-
-//$App->Storage->Get('Bucket', 'test/test.txt');
+$Surface->Area('dashboard/nav');
 
 ?>
 
@@ -39,17 +35,6 @@ $StorageLocations = $App->Storage;
 
 	</div>
 	<div class="col">
-
-		<?php Nether\Common\Dump::Var($StorageLocations, TRUE) ?>
-
-		<div id="Editor" class="Editor"></div>
-		<script type="module">
-		import Editor from '/share/nui/modules/editor/editor.js?v=<?php $Printer($CacheBuster) ?>';
-		jQuery(function(){
-			let editor = new Editor('#Editor');
-			return;
-		});
-		</script>
 
 	</div>
 </div>

@@ -44,7 +44,7 @@ extends Atlantis\ProtectedWeb {
 		//);
 
 		($this->App->Surface)
-		->Wrap('user/dashboard/index', [
+		->Wrap('dashboard/index', [
 			'SidebarItems' => $SidebarItems,
 			'MainItems'    => $MainItems
 		]);
@@ -99,7 +99,7 @@ extends Atlantis\ProtectedWeb {
 		$Updated = $this->App->YoinkLocalData('EmailUpdated');
 
 		($this->App->Surface)
-		->Wrap('user/dashboard/email', [
+		->Wrap('dashboard/email', [
 			'ConfirmReq' => $this->App->Config[User\Library::ConfConfirmEmailChange],
 			'Updated'    => $Updated,
 			'Sent'       => $Sent
@@ -117,7 +117,7 @@ extends Atlantis\ProtectedWeb {
 		$Updated = $this->App->YoinkLocalData('PasswordUpdated');
 
 		($this->App->Surface)
-		->Wrap('user/dashboard/password', [
+		->Wrap('dashboard/password', [
 			'HasNoPassword' => ($this->User->PHash === NULL),
 			'Updated'       => $Updated
 		]);
@@ -132,7 +132,7 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->App->Surface)
-		->Wrap('user/dashboard/auth', []);
+		->Wrap('dashboard/auth', []);
 
 		return;
 	}

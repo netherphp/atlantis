@@ -11,7 +11,7 @@
 
 $Surface
 ->Set('Page.Title', 'Manage Authentication Connections')
-->Area('user/dashboard/nav', [ 'Trail' => [ $Surface->Get('Page.Title') => NULL ]]);
+->Area('dashboard/nav', [ 'Trail' => [ $Surface->Get('Page.Title') => NULL ]]);
 
 $GetConnectButton = function(string $Type) use($App) {
 
@@ -42,7 +42,7 @@ $GetRemoveButton = function(string $Type) {
 		<div class="row">
 			<div class="col">
 				<i class="mdi mdi-fw mdi-apple mr-2"></i>
-				Apple ID
+				Apple
 			</div>
 			<div class="col-auto">
 				<?php
