@@ -31,6 +31,7 @@ extends Nether\Common\Library {
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
 
 	const
+	ConfLibraries         = 'Nether.Atlantis.Libraries',
 	ConfLogFormat         = 'Nether.Atlantis.Log.Format',
 	ConfPassMinLen        = 'Nether.Atlantis.Passwords.MinLen',
 	ConfPassReqAlphaLower = 'Nether.Atlantis.Passwords.RequireAlphaLower',

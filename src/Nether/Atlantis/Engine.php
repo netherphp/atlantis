@@ -465,16 +465,19 @@ application instance.
 	LoadRequiredLibraries():
 	static {
 
+		// things we need now.
+
 		Nether\Common\Library::Init(Config: $this->Config);
 		Nether\Avenue\Library::Init(Config: $this->Config);
 		Nether\Surface\Library::Init(Config: $this->Config);
 		Nether\Storage\Library::Init(Config: $this->Config);
 
+		// things that can wait.
+
 		($this)
 		->Queue('Atlantis.Prepare', Nether\Database\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\Email\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\User\Library::Init(...))
-		->Queue('Atlantis.Prepare', Nether\Storage\Library::Init(...))
 		->Queue('Atlantis.Prepare', Nether\Atlantis\Library::Prepare(...));
 
 		return $this;
@@ -484,29 +487,20 @@ application instance.
 	LoadAdditionalLibraries():
 	static {
 
-		$Libs = $this->Config[Library::ConfProjectInitWithConfig] ?? [];
+		$Classes = $this->Config[Library::ConfLibraries];
 		$Class = NULL;
 
-		foreach($Libs as $Class) {
+		foreach($Classes as $Class) {
+			$Class = "{$Class}\\Library";
 
 			if(!class_exists($Class))
-			continue;
+			throw new \Exception("library {$Class} not found");
 
-			if(is_subclass_of($Class, Nether\Common\Library::class)) {
-				($Class)::Init(Config: $this->Config);
-			}
+			if(!is_subclass_of($Class, 'Nether\\Common\\Library'))
+			throw new \Exception("library {$Class} is not valid");
 
-			// @todo - decide which package to insert the interface
-			// into. atm none of them really make sense. object is
-			// required by nearly everything so maybe there.
-
-			// if(!is_subclass_of($Class, LibraryInitWithConfig::class))
-			// continue;
-
-			// for now we check the duck's undercarriage.
-
-			if(method_exists($Class, 'Init'))
-			($Class)::Init(Config: $this->Config);
+			$Class::Init(Config: $this->Config);
+			$this->Queue('Atlantis.Prepare', $Class::Init(...));
 		}
 
 		return $this;
