@@ -39,9 +39,13 @@ $GetRemoveButton = function(string $Type) {
 
 <div class="row">
 	<div class="col-12 mb-4">
-		<div class="row">
+		<div class="row align-items-center">
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm">
+					<div class="position-absolutely msi-apple bg-white"></div>
+				</div>
+			</div>
 			<div class="col">
-				<i class="mdi mdi-fw mdi-apple mr-2"></i>
 				Apple
 			</div>
 			<div class="col-auto">
@@ -53,9 +57,31 @@ $GetRemoveButton = function(string $Type) {
 			</div>
 		</div>
 		<hr />
-		<div class="row">
+		<div class="row align-items-center">
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm">
+					<div class="position-absolutely msi-discord bg-white"></div>
+				</div>
+			</div>
 			<div class="col">
-				<i class="mdi mdi-fw mdi-github mr-2"></i>
+				Discord
+			</div>
+			<div class="col-auto">
+				<?php
+				echo $User->AuthDiscordID
+				? $GetRemoveButton('discord')
+				: $GetConnectButton('discord');
+				?>
+			</div>
+		</div>
+		<hr />
+		<div class="row align-items-center">
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm">
+					<div class="position-absolutely msi-github bg-white"></div>
+				</div>
+			</div>
+			<div class="col">
 				GitHub
 			</div>
 			<div class="col-auto">
@@ -67,9 +93,13 @@ $GetRemoveButton = function(string $Type) {
 			</div>
 		</div>
 		<hr />
-		<div class="row">
+		<div class="row align-items-center">
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm">
+					<div class="position-absolutely msi-google bg-white"></div>
+				</div>
+			</div>
 			<div class="col">
-				<i class="mdi mdi-fw mdi-google mr-2"></i>
 				Google
 			</div>
 			<div class="col-auto">

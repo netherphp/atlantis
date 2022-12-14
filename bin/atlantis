@@ -1,21 +1,15 @@
 <?php
 
-use Nether\Atlantis\Library;
-use Nether\Atlantis\Util;
-use Composer\Console\Application;
+use Nether\Atlantis;
+use Nether\Console;
 
 (function(){
-
-	require(sprintf(
-		'%s/autoload.php',
-		dirname(__DIR__, 3)
-	));
-
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
 	return;
 })();
 
-class Atlantis
-extends Nether\Console\Client {
+class AtlantisCLI
+extends Console\Client {
 
 	#[Nether\Console\Meta\Command]
 	#[Nether\Console\Meta\Info('Start a fresh project from scratch.')]
@@ -129,7 +123,7 @@ extends Nether\Console\Client {
 
 			$this->PrintLn(" * {$Remote}");
 
-			$Copy = Util::CopyWithConfirm($Local, $Remote, $Force);
+			$Copy = Atlantis\Util::CopyWithConfirm($Local, $Remote, $Force);
 
 			foreach($Copy as $Confirm)
 			if(is_string($Confirm))
@@ -630,4 +624,4 @@ extends Nether\Console\Client {
 
 }
 
-(new Atlantis)->Run();
+exit((new AtlantisCLI)->Run());

@@ -46,13 +46,14 @@ extends Nether\Common\Library {
 	WebServerTypeNone     = NULL,
 	WebServerTypeApache24 = 'apache24';
 
-	static public function
-	InitDefaultConfig(?Datastore $Config = NULL):
-	Datastore {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		$Config = parent::InitDefaultConfig($Config);
+	public function
+	OnLoad(...$Argv):
+	void {
 
-		$Config->BlendRight([
+		static::$Config->BlendRight([
 			static::ConfLogFormat         => 'default',
 			static::ConfPassMinLen        => 10,
 			static::ConfPassReqAlphaLower => TRUE,
@@ -64,43 +65,14 @@ extends Nether\Common\Library {
 			static::ConfUserRequireAlias  => FALSE
 		]);
 
-		return $Config;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	static public function
-	Init(...$Argv):
-	void {
-
-		static::OnInit(...$Argv);
 		return;
 	}
 
-	static public function
-	OnInit(?Datastore $Config=NULL, ...$Argv):
+	public function
+	OnReady(... $Argv):
 	void {
 
-		static::InitDefaultConfig($Config);
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	static public function
-	Prepare(...$Argv):
-	void {
-
-		static::OnPrepare(...$Argv);
-		return;
-	}
-
-	static public function
-	OnPrepare(Nether\Atlantis\Engine $App, Datastore $Config, ...$Argv):
-	void {
+		$App = $Argv['App'];
 
 		$App->User = User\EntitySession::Get();
 
@@ -132,6 +104,5 @@ extends Nether\Common\Library {
 
 		return;
 	}
-
 }
 

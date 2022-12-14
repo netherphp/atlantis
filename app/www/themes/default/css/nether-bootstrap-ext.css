@@ -441,6 +441,12 @@
 	width: 1.25rem;
 }
 
+.msi-smol { width: 16px; }
+.msi-sm { width: 24px; }
+.msi-md { width: 32px; }
+.msi-lg { width: 48px; }
+.msi-huge { width: 64px; }
+
 .msi-apple { mask: url(/share/icons/apple.svg) no-repeat center; }
 .msi-discord { mask: url(/share/icons/discord.svg) no-repeat center; }
 .msi-github { mask: url(/share/icons/github.svg) no-repeat center; }

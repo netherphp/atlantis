@@ -22,6 +22,7 @@
 		}
 	},
 	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"require": {
 		"netherphp/object": "dev-redux",
 		"netherphp/ki": "dev-redux",
@@ -33,7 +34,7 @@
 		"netherphp/sensei": "dev-redux",
 		"netherphp/email": "dev-master",
 		"netherphp/storage": "dev-master",
-		"monolog/monolog": "3.x-dev"
+		"monolog/monolog": "^3.2"
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "dev-master",

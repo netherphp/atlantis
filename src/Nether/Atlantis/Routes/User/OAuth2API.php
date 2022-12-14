@@ -117,6 +117,18 @@ extends PublicWeb {
 			// if we have not found a user yet check for an account with the
 			// same email address.
 
+			// @todo 2022-12-13
+			// consider not allowing gank-by-email. linking while logged in
+			// is now working and i think this is a less good idea than it
+			// sounded like while bootstrapping the project. maybe an option
+			// default disabled. it really comes down to do you trust that
+			// the third party auth handled the checking user owning that
+			// email. and even then, this could still cause a condition where
+			// a domain changes hands so a new person accesses a colliding
+			// account of an older previous person. i can see arguments both
+			// ways which is why i am leaning towards a setting that defaults
+			// disabled.
+
 			if(!$User)
 			$User = $this->GetUserByAuthEmail($Info->Email, $Info->AuthID);
 

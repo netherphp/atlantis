@@ -12,6 +12,33 @@ use Nether\Atlantis\Dashboard\SidebarGroup;
 class UserDashboardWeb
 extends Atlantis\ProtectedWeb {
 
+	public function
+	OnReady(?Datastore $Input):
+	void {
+
+		parent::OnReady($Input);
+
+		$this->App->Queue(
+			'Atlantis.Dashboard.SidebarItems',
+			$this->OnSidebarItems(...)
+		);
+
+		return;
+	}
+
+	protected function
+	OnSidebarItems(Datastore $Items):
+	void {
+
+		if($this->User)
+		$Items->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+
+		if($this->User->IsAdmin())
+		$Items->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);
+
+		return;
+	}
+
 	#[Atlantis\Meta\RouteHandler('/dashboard')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function

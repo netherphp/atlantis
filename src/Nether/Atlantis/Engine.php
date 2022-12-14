@@ -26,6 +26,9 @@ application instance.
 	public Datastore
 	$Config;
 
+	public Datastore
+	$Library;
+
 	public Avenue\Router
 	$Router;
 
@@ -72,6 +75,7 @@ application instance.
 		$this->ProjectRoot = $ProjectRoot;
 		$this->ProjectEnv = 'dev';
 		$this->Config = new Datastore;
+		$this->Library = new Datastore;
 
 		// load in configuration.
 
@@ -80,8 +84,7 @@ application instance.
 		->DetermineEnvironment()
 		->LoadDefaultConfig()
 		->LoadProjectConfig()
-		->LoadEnvironmentConfig()
-		->UpdateLogging();
+		->LoadEnvironmentConfig();
 
 		if($Conf !== NULL)
 		$this->Config->MergeRight($Conf->GetData());
@@ -93,7 +96,17 @@ application instance.
 
 		$this
 		->LoadRequiredLibraries()
-		->LoadAdditionalLibraries();
+		->LoadAdditionalLibraries()
+		->UpdateLogging();
+
+		$this->Library->Each(function(Nether\Common\Library $Inst){
+
+			$this
+			->Queue('Atlantis.Prepare', $Inst->OnPrepare(...))
+			->Queue('Atlantis.Ready', $Inst->OnReady(...));
+
+			return;
+		});
 
 		// spool up our instances.
 
@@ -399,23 +412,16 @@ application instance.
 	LoadDefaultConfig():
 	static {
 
-		Nether\Atlantis\Library::Init(Config: $this->Config);
-
 		($this->Config)
 		->Define('Project.WebRoot', 'www')
 		->Define('Project.WebServerType', NULL)
 		->Define(
-			Nether\Surface\Library::ConfThemeRoot,
+			Surface\Library::ConfThemeRoot,
 			"{$this->ProjectRoot}/www/themes"
 		)
 		->Define(
-			Nether\User\Library::ConfAppleKeyFilePath,
+			User\Library::ConfAppleKeyFilePath,
 			"{$this->ProjectRoot}/conf/env/{$this->ProjectEnv}/keys/apple-authkey.p8"
-		);
-
-		$this->Queue(
-			'Atlantis.Dashboard.SidebarItems',
-			$this->OnSidebarItems(...)
 		);
 
 		return $this;
@@ -465,20 +471,15 @@ application instance.
 	LoadRequiredLibraries():
 	static {
 
-		// things we need now.
-
-		Nether\Common\Library::Init(Config: $this->Config);
-		Nether\Avenue\Library::Init(Config: $this->Config);
-		Nether\Surface\Library::Init(Config: $this->Config);
-		Nether\Storage\Library::Init(Config: $this->Config);
-
-		// things that can wait.
-
-		($this)
-		->Queue('Atlantis.Prepare', Nether\Database\Library::Init(...))
-		->Queue('Atlantis.Prepare', Nether\Email\Library::Init(...))
-		->Queue('Atlantis.Prepare', Nether\User\Library::Init(...))
-		->Queue('Atlantis.Prepare', Nether\Atlantis\Library::Prepare(...));
+		($this->Library)
+		->Shove('Common', new Nether\Common\Library(Config: $this->Config))
+		->Shove('Avenue', new Nether\Avenue\Library(Config: $this->Config))
+		->Shove('Surface', new Nether\Surface\Library(Config: $this->Config))
+		->Shove('Storage', new Nether\Storage\Library(Config: $this->Config))
+		->Shove('Database', new Nether\Database\Library(Config: $this->Config))
+		->Shove('User', new Nether\User\Library(Config: $this->Config))
+		->Shove('Email', new Nether\Email\Library(Config: $this->Config))
+		->Shove('Atlantis', new Nether\Atlantis\Library(Config: $this->Config));
 
 		return $this;
 	}
@@ -499,8 +500,7 @@ application instance.
 			if(!is_subclass_of($Class, 'Nether\\Common\\Library'))
 			throw new \Exception("library {$Class} is not valid");
 
-			$Class::Init(Config: $this->Config);
-			$this->Queue('Atlantis.Prepare', $Class::Init(...));
+			$this->Library->Shove($Class, new $Class(Config: $this->Config, App: $this));
 		}
 
 		return $this;
@@ -508,18 +508,5 @@ application instance.
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
-
-	public function
-	OnSidebarItems(Datastore $Items):
-	void {
-
-		if($this->User)
-		$Items->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
-
-		if($this->User->IsAdmin())
-		$Items->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);
-
-		return;
-	}
 
 }

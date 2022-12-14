@@ -145,12 +145,11 @@ extends Atlantis\ProtectedAPI {
 		($this->Data)
 		->AuthType(Common\Datafilters::TrimmedText(...));
 
-		var_dump($this->Data->AuthType);
-
 		$Field = match($this->Data->AuthType) {
 			'apple'   => 'AuthAppleID',
 			'github'  => 'AuthGitHubID',
 			'google'  => 'AuthGoogleID',
+			'discord' => 'AuthDiscordID',
 			default   => NULL
 		};
 
@@ -158,6 +157,11 @@ extends Atlantis\ProtectedAPI {
 		$this->Quit(1, 'Invalid auth type');
 
 		$this->User->Update([ $Field => NULL ]);
+
+		$this->App->Log->Main(
+			"USER-AUTHDEL: {$this->User}",
+			[ 'UserID'=> $this->User->ID, 'Auth'=> $this->Data->AuthType ]
+		);
 
 		$this->SetGoto('/dashboard/settings/auth');
 
