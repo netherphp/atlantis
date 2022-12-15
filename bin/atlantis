@@ -482,7 +482,7 @@ extends Console\Client {
 
 		foreach($Found as $Dir) {
 			$Git = sprintf(
-				'git -C "%s" status --porcelain',
+				'git -C "%s" status --porcelain 2>&1',
 				Nether\Atlantis\Util::Repath("{$Dir}")
 			);
 
@@ -556,7 +556,7 @@ extends Console\Client {
 
 		foreach($Found as $Dir) {
 			$Git = sprintf(
-				'git -C "%1$s" pull',
+				'git -C "%1$s" pull 2>&1',
 				Nether\Atlantis\Util::Repath("{$Dir}")
 			);
 
