@@ -24,10 +24,10 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require": {
+		"netherphp/common": "^5.0",
 		"netherphp/object": "dev-redux",
 		"netherphp/ki": "dev-redux",
 		"netherphp/avenue": "dev-redux",
-		"netherphp/common": "dev-master",
 		"netherphp/surface": "dev-redux",
 		"netherphp/console": "dev-redux",
 		"netherphp/user": "dev-master",
