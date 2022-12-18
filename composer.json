@@ -1,6 +1,6 @@
 {
 	"name": "netherphp/atlantis",
-	"description": "Web Framework STuff",
+	"description": "Web Framework Stuff",
 	"keywords": [ ],
 	"license": "BSD-2-Clause",
 	"authors":[
@@ -38,8 +38,8 @@
 		"monolog/monolog": "^3.2"
 	},
 	"require-dev": {
-		"dealerdirect/phpcodesniffer-composer-installer": "dev-master",
-		"netherphp/standards": "dev-master"
+		"netherphp/standards": "^0.2.7",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
 	},
 	"bin": [
 		"bin/atlantis"
