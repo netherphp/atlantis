@@ -51,18 +51,7 @@ use Nether\Database;
 			<span class="opacity-70">]</span>
 		</code>
 	</div>
-	<div>
-		<code class="text-white">
-			<span class="opacity-70">dbc[</span>
-			<?php $Printer(Database\Manager::$ConnectCount) ?><span class="opacity-70">, </span>
-			<?php $Printer(sprintf('%.3fs', Database\Manager::$ConnectTime)) ?>
-			<span class="opacity-70">]</span>
-			<span class="opacity-70">dbq[</span>
-			<?php $Printer(Database\Manager::$QueryCount) ?><span class="opacity-70">, </span>
-			<?php $Printer(sprintf('%.3fs', Database\Manager::$QueryTime)) ?>
-			<span class="opacity-70">]</span>
-		</code>
-	</div>
+
 	<div>
 		<code class="text-white">
 			<span class="opacity-70">user[</span>
