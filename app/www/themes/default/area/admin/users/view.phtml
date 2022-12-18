@@ -98,6 +98,9 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 				<?php else: ?><button class="btn btn-block btn-danger CmdUserUnban" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-ban"></i> Unban</button>
 				<?php endif; ?>
 			</div>
+			<div class="mb-2">
+				<button class="btn btn-block btn-primary CmdUserOvershadow" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-spy"></i> Overshadow</button>
+			</div>
 		</div>
 
 	</div>
@@ -245,6 +248,22 @@ jQuery(function(){
 		]);
 
 		let req = new NUI.Request('UNBAN', '/api/user/entity');
+
+		(req.send(data))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return;
+	});
+
+	jQuery('.CmdUserOvershadow')
+	.on('click', function(){
+
+		let data = NUI.Form.ObjectArrayToDataString([
+			{ name: "ID", value: jQuery(this).attr('data-user-id') }
+		]);
+
+		let req = new NUI.Request('OVERSHADOW', '/api/user/entity');
 
 		(req.send(data))
 		.then(req.goto)

@@ -117,7 +117,6 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -180,6 +179,41 @@ extends Atlantis\ProtectedAPI {
 		]);
 
 		$this->SetGoto('reload');
+		return;
+	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'OVERSHADOW')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	HandleOvershadow():
+	void {
+
+		($this->Data)
+		->ID(Common\Datafilters::TypeInt(...));
+
+		////////
+
+		$Who = User\EntitySession::GetByID($this->Data->ID);
+
+		if(!$Who)
+		$this->Quit(1, 'user not found');
+
+		////////
+
+		$Who->TransmitSession(TRUE);
+
+		$this->App->Log->Admin("USER-OVERSHADOW: {$Who} BY {$this->User}", [
+			'UserID'  => $Who->ID,
+			'AdminID' => $this->User->ID
+		]);
+
+		$this
+		->SetGoto('/')
+		->SetMessage('Assuming Direct Control')
+		->SetPayload([
+			'UserID' => $Who->ID
+		]);
+
 		return;
 	}
 

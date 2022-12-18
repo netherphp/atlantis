@@ -6,7 +6,7 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 
-class Users
+class UsersWeb
 extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/users/list')]
