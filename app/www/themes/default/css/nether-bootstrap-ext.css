@@ -447,10 +447,11 @@
 .msi-lg { width: 48px; }
 .msi-huge { width: 64px; }
 
-.msi-apple { mask: url(/share/icons/apple.svg) no-repeat center; }
-.msi-discord { mask: url(/share/icons/discord.svg) no-repeat center; }
-.msi-github { mask: url(/share/icons/github.svg) no-repeat center; }
-.msi-google { mask: url(/share/icons/google.svg) no-repeat center; }
+.msi-apple { mask: url(/share/icons/apple.svg) no-repeat center; mask-size: contain; mask-position: center center; }
+.msi-discord { mask: url(/share/icons/discord.svg) no-repeat center; mask-size: contain; mask-position: center center; }
+.msi-github { mask: url(/share/icons/github.svg) no-repeat center; mask-size: contain; mask-position: center center; }
+.msi-google { mask: url(/share/icons/google.svg) no-repeat center; mask-size: contain; mask-position: center center; }
+.msi-keyboard { mask: url(/share/icons/keyboard.svg) no-repeat center; mask-size: contain; mask-position: center center; }
 
 .modal {
 	box-shadow: 0px 0px 10px #000;

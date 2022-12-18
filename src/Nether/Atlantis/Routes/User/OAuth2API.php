@@ -3,6 +3,9 @@
 namespace Nether\Atlantis\Routes\User;
 use Nether;
 
+use Nether\Atlantis;
+use Nether\Avenue;
+
 use Throwable;
 use Nether\Atlantis\PublicWeb;
 use Nether\Common\Datafilters;
@@ -10,11 +13,18 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 
 abstract class OAuth2API
-extends PublicWeb {
+extends Atlantis\PublicWeb {
 
 	const
 	AuthName = NULL,
 	AuthField = NULL;
+
+	static public function
+	GetAuthKey():
+	string {
+
+		return Avenue\Util::MakePathableKey(static::AuthName ?? '');
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -27,7 +37,8 @@ extends PublicWeb {
 		->Code(Datafilters::TrimmedTextNullable(...))
 		->Goto(Datafilters::Base64Decode(...));
 
-		$AllowNewUsers = TRUE;
+		$AllowSignup = $this->App->Config[Atlantis\Library::ConfUserAllowSignup];
+		$AllowSignupGank = $this->App->Config[Atlantis\Library::ConfUserAllowSignupGank];
 		$Goto = $this->Request->Data->Goto;
 		$AuthCode = $this->Request->Data->Code;
 		$Token = NULL;
@@ -117,20 +128,17 @@ extends PublicWeb {
 			// if we have not found a user yet check for an account with the
 			// same email address.
 
-			// @todo 2022-12-13
-			// consider not allowing gank-by-email. linking while logged in
-			// is now working and i think this is a less good idea than it
-			// sounded like while bootstrapping the project. maybe an option
-			// default disabled. it really comes down to do you trust that
-			// the third party auth handled the checking user owning that
-			// email. and even then, this could still cause a condition where
-			// a domain changes hands so a new person accesses a colliding
-			// account of an older previous person. i can see arguments both
-			// ways which is why i am leaning towards a setting that defaults
-			// disabled.
+			if(!$User) {
+				$User = $this->GetUserByAuthEmail($Info->Email, $Info->AuthID);
 
-			if(!$User)
-			$User = $this->GetUserByAuthEmail($Info->Email, $Info->AuthID);
+				if($User && !$User->{static::AuthField})
+				if(!$AllowSignupGank)
+				$this->Quit(10, sprintf(
+					'An account with the Email supplied by %s (%s) already exists.',
+					static::AuthName,
+					$Info->Email
+				));
+			}
 
 			// is there already a user with this alias though? if there is just
 			// force it to null for now and the onboarding flow later will
@@ -148,7 +156,7 @@ extends PublicWeb {
 			// if we have not found a user yet and we allow new users to be
 			// created on the fly then go ahead and insert them now.
 
-			if(!$User && $AllowNewUsers) {
+			if(!$User && $AllowSignup) {
 				$User = Nether\User\EntitySession::Insert([
 					static::AuthField => $Info->AuthID,
 					'Alias'           => $Info->Alias,
@@ -191,7 +199,7 @@ extends PublicWeb {
 		if(!$User->{static::AuthField})
 		$this->App->Log->Main(
 			"USER-AUTHLINK: {$User}",
-			[ 'UserID'=> $User->ID, 'Origin'=> static::AuthName ]
+			[ 'UserID'=> $User->ID, 'Auth'=> static::AuthName ]
 		);
 
 		$User->Update([

@@ -31,16 +31,17 @@ extends Nether\Common\Library {
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
 
 	const
-	ConfLibraries         = 'Nether.Atlantis.Libraries',
-	ConfLogFormat         = 'Nether.Atlantis.Log.Format',
-	ConfPassMinLen        = 'Nether.Atlantis.Passwords.MinLen',
-	ConfPassReqAlphaLower = 'Nether.Atlantis.Passwords.RequireAlphaLower',
-	ConfPassReqAlphaUpper = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
-	ConfPassReqNumeric    = 'Nether.Atlantis.Passwords.RequireNumeric',
-	ConfPassReqSpecial    = 'Nether.Atlantis.Passwords.RequireSpecial',
-	ConfUserAllowSignup   = 'Nether.Atlantis.Users.AllowSignup',
-	ConfUserEmailActivate = 'Nether.Atlantis.Users.EmailActivation',
-	ConfUserRequireAlias  = 'Nether.Atlantis.Users.RequireAlias';
+	ConfLibraries           = 'Nether.Atlantis.Libraries',
+	ConfLogFormat           = 'Nether.Atlantis.Log.Format',
+	ConfPassMinLen          = 'Nether.Atlantis.Passwords.MinLen',
+	ConfPassReqAlphaLower   = 'Nether.Atlantis.Passwords.RequireAlphaLower',
+	ConfPassReqAlphaUpper   = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
+	ConfPassReqNumeric      = 'Nether.Atlantis.Passwords.RequireNumeric',
+	ConfPassReqSpecial      = 'Nether.Atlantis.Passwords.RequireSpecial',
+	ConfUserAllowSignup     = 'Nether.Atlantis.Users.AllowSignup',
+	ConfUserAllowSignupGank = 'Nether.Atlantis.Users.AllowSignupGank',
+	ConfUserEmailActivate   = 'Nether.Atlantis.Users.EmailActivation',
+	ConfUserRequireAlias    = 'Nether.Atlantis.Users.RequireAlias';
 
 	const
 	WebServerTypeNone     = NULL,
@@ -54,15 +55,16 @@ extends Nether\Common\Library {
 	void {
 
 		static::$Config->BlendRight([
-			static::ConfLogFormat         => 'default',
-			static::ConfPassMinLen        => 10,
-			static::ConfPassReqAlphaLower => TRUE,
-			static::ConfPassReqAlphaUpper => TRUE,
-			static::ConfPassReqNumeric    => TRUE,
-			static::ConfPassReqSpecial    => TRUE,
-			static::ConfUserAllowSignup   => TRUE,
-			static::ConfUserEmailActivate => TRUE,
-			static::ConfUserRequireAlias  => FALSE
+			static::ConfLogFormat           => 'default',
+			static::ConfPassMinLen          => 10,
+			static::ConfPassReqAlphaLower   => TRUE,
+			static::ConfPassReqAlphaUpper   => TRUE,
+			static::ConfPassReqNumeric      => TRUE,
+			static::ConfPassReqSpecial      => TRUE,
+			static::ConfUserAllowSignup     => TRUE,
+			static::ConfUserAllowSignupGank => FALSE,
+			static::ConfUserEmailActivate   => TRUE,
+			static::ConfUserRequireAlias    => FALSE
 		]);
 
 		return;

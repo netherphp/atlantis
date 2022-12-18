@@ -6,6 +6,11 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 
+use Nether\Atlantis\Routes\User\AuthApple;
+use Nether\Atlantis\Routes\User\AuthDiscord;
+use Nether\Atlantis\Routes\User\AuthGitHub;
+use Nether\Atlantis\Routes\User\AuthGoogle;
+
 class UserDashboardAPI
 extends Atlantis\ProtectedAPI {
 
@@ -146,10 +151,10 @@ extends Atlantis\ProtectedAPI {
 		->AuthType(Common\Datafilters::TrimmedText(...));
 
 		$Field = match($this->Data->AuthType) {
-			'apple'   => 'AuthAppleID',
-			'github'  => 'AuthGitHubID',
-			'google'  => 'AuthGoogleID',
-			'discord' => 'AuthDiscordID',
+			AuthApple::GetAuthKey()   => AuthApple::AuthField,
+			AuthDiscord::GetAuthKey() => AuthDiscord::AuthField,
+			AuthGitHub::GetAuthKey()  => AuthGitHub::AuthField,
+			AuthGoogle::GetAuthKey()  => AuthGoogle::AuthField,
 			default   => NULL
 		};
 

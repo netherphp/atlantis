@@ -13,7 +13,7 @@ class AuthGoogle
 extends OAuth2API {
 
 	const
-	AuthName  = 'GitHub',
+	AuthName  = 'Google',
 	AuthField = 'AuthGoogleID';
 
 	////////////////////////////////////////////////////////////////

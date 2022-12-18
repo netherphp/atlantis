@@ -37,6 +37,46 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 		<div class="mb-0"><?php $Printer(($Who->DateCreated)(Common\Values::DateFormatT12Z)) ?></div>
 		<div class="opacity-50 font-size-smaller mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeCreated, Precision: 2)) ?></div>
 
+		<!-- ACCOUNT AUTH INFO -->
+		<div class="text-primary font-size-smaller fw-bold text-uppercase">Login Methods:</div>
+		<div class="row tight align-items-center mb-4">
+			<?php if($Who->PHash): ?>
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm" title="Password">
+					<div class="position-absolutely msi-keyboard bg-white"></div>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if($Who->AuthAppleID): ?>
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm" title="Apple">
+					<div class="position-absolutely msi-apple bg-white"></div>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if($Who->AuthDiscordID): ?>
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm" title="Discord">
+					<div class="position-absolutely msi-discord bg-white"></div>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if($Who->AuthGitHubID): ?>
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm" title="GitHub">
+					<div class="position-absolutely msi-github bg-white"></div>
+				</div>
+			</div>
+			<?php endif; ?>
+			<?php if($Who->AuthGoogleID): ?>
+			<div class="col-auto">
+				<div class="ratiobox square msi-sm" title="Google">
+					<div class="position-absolutely msi-google bg-white"></div>
+				</div>
+			</div>
+			<?php endif; ?>
+		</div>
+
 		<!-- ACCOUNT LAST SEEN -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Last Seen:</div>
 		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeSeen)) ?></div>
