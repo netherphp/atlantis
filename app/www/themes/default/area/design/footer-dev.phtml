@@ -1,3 +1,9 @@
+<?php
+
+use Nether\Database;
+
+?>
+
 <div class="font-size-small white-space-nowrap opacity-40">
 	<div>
 		<code class="text-white">
@@ -48,12 +54,12 @@
 	<div>
 		<code class="text-white">
 			<span class="opacity-70">dbc[</span>
-			<?php $Printer(Nether\Database::$ConnectCount) ?><span class="opacity-70">, </span>
-			<?php $Printer(sprintf('%.3fs', Nether\Database::$ConnectTime)) ?>
+			<?php $Printer(Database\Manager::$ConnectCount) ?><span class="opacity-70">, </span>
+			<?php $Printer(sprintf('%.3fs', Database\Manager::$ConnectTime)) ?>
 			<span class="opacity-70">]</span>
 			<span class="opacity-70">dbq[</span>
-			<?php $Printer(Nether\Database::$QueryCount) ?><span class="opacity-70">, </span>
-			<?php $Printer(sprintf('%.3fs', Nether\Database::$QueryTime)) ?>
+			<?php $Printer(Database\Manager::$QueryCount) ?><span class="opacity-70">, </span>
+			<?php $Printer(sprintf('%.3fs', Database\Manager::$QueryTime)) ?>
 			<span class="opacity-70">]</span>
 		</code>
 	</div>

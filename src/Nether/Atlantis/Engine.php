@@ -8,6 +8,7 @@ use Nether;
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
+use Nether\Database;
 use Nether\Ki;
 use Nether\Storage;
 use Nether\Surface;
@@ -34,6 +35,9 @@ application instance.
 
 	public Storage\Manager
 	$Storage;
+
+	public Database\Manager
+	$Database;
 
 	public Surface\Engine
 	$Surface;
@@ -113,6 +117,9 @@ application instance.
 		$this->Router = new Avenue\Router($this->Config);
 		$this->Surface = new Surface\Engine($this->Config);
 		$this->Storage = new Storage\Manager($this->Config);
+		$this->Database = new Database\Manager($this->Config);
+
+		//Common\Dump::Var($this->Database, TRUE);
 
 		$Data = [
 			'App'    => $this,
