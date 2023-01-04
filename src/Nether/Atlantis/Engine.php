@@ -498,6 +498,7 @@ application instance.
 		$Classes = $this->Config[Library::ConfLibraries];
 		$Class = NULL;
 
+		if(is_iterable($Classes))
 		foreach($Classes as $Class) {
 			$Class = "{$Class}\\Library";
 
