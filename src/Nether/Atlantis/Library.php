@@ -38,6 +38,7 @@ extends Nether\Common\Library {
 	ConfPassReqAlphaUpper   = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
 	ConfPassReqNumeric      = 'Nether.Atlantis.Passwords.RequireNumeric',
 	ConfPassReqSpecial      = 'Nether.Atlantis.Passwords.RequireSpecial',
+	ConfUserAllowLogin      = 'Nether.Atlantis.Users.AllowLogin',
 	ConfUserAllowSignup     = 'Nether.Atlantis.Users.AllowSignup',
 	ConfUserAllowSignupGank = 'Nether.Atlantis.Users.AllowSignupGank',
 	ConfUserEmailActivate   = 'Nether.Atlantis.Users.EmailActivation',
@@ -61,7 +62,8 @@ extends Nether\Common\Library {
 			static::ConfPassReqAlphaUpper   => TRUE,
 			static::ConfPassReqNumeric      => TRUE,
 			static::ConfPassReqSpecial      => TRUE,
-			static::ConfUserAllowSignup     => TRUE,
+			static::ConfUserAllowLogin      => FALSE,
+			static::ConfUserAllowSignup     => FALSE,
 			static::ConfUserAllowSignupGank => FALSE,
 			static::ConfUserEmailActivate   => TRUE,
 			static::ConfUserRequireAlias    => FALSE

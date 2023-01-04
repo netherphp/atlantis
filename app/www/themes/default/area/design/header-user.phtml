@@ -1,10 +1,13 @@
 <?php
 
+use Nether\Atlantis;
+
 /**
- * @var Nether\Atlantis\Engine $App
+ * @var Atlantis\Engine $App
  */
 
-$UserAllowSignup = $App->Config[Nether\Atlantis\Library::ConfUserAllowSignup];
+$AllowUserLogin = $App->Config[Atlantis\Library::ConfUserAllowLogin];
+$AllowUserSignup = $App->Config[Atlantis\Library::ConfUserAllowSignup];
 
 ?>
 
@@ -20,12 +23,14 @@ $UserAllowSignup = $App->Config[Nether\Atlantis\Library::ConfUserAllowSignup];
 	</a>
 </div>
 <?php else: ?>
+<?php if($AllowUserLogin): ?>
 <div class="col-auto">
 	<a href="/login">
 		Login
 	</a>
 </div>
-<?php if($UserAllowSignup): ?>
+<?php endif; ?>
+<?php if($AllowUserSignup): ?>
 <div class="col-auto">
 	<a href="/signup">
 		Signup
