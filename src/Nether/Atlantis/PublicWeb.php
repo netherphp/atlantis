@@ -4,14 +4,24 @@ namespace Nether\Atlantis;
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Surface;
 use Nether\User;
 
 use Nether\Object\Datastore;
+use Nether\Object\Datafilter;
 
 class PublicWeb
 extends Avenue\Route {
 /*// provides a basic route template for public endpoints that need to interact
 as html pages. //*/
+
+	public Datafilter
+	$Query;
+
+	public Datafilter
+	$Data;
+
+	////////
 
 	protected bool
 	$IsDone = FALSE;
@@ -19,11 +29,17 @@ as html pages. //*/
 	protected Atlantis\Engine
 	$App;
 
+	protected Surface\Engine
+	$Surface;
+
 	protected Datastore
 	$Config;
 
 	protected ?User\EntitySession
 	$User;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	OnWillConfirmReady(?Datastore $Input):
@@ -32,6 +48,8 @@ as html pages. //*/
 		$this->App = $Input['App'];
 		$this->User = $this->App->User;
 		$this->Config = $this->App->Config;
+		$this->Surface = $this->App->Surface;
+
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 

@@ -30,11 +30,12 @@ extends Atlantis\ProtectedWeb {
 	OnSidebarItems(Datastore $Items):
 	void {
 
-		if($this->User)
-		$Items->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+		$Lib = NULL;
 
-		if($this->User->IsAdmin())
-		$Items->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);
+		foreach($this->App->Library as $Lib) {
+			if($Lib instanceof Atlantis\Dashboard\SidebarInterface)
+			$Lib->OnDashboardSidebar($this->App, $Items);
+		}
 
 		return;
 	}

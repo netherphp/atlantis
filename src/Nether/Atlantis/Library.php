@@ -2,23 +2,28 @@
 
 namespace Nether\Atlantis;
 
-use Nether;
+use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\User;
 
 use Nether\Object\Datastore;
 
 class Library
-extends Nether\Common\Library {
+extends Common\Library
+implements
+	Atlantis\Dashboard\SidebarInterface {
 
 	const
+	ConfProjectID             = 'Project.Key',
 	ConfProjectName           = 'Project.Name',
 	ConfProjectDesc           = 'Project.Desc',
 	ConfProjectDescShort      = 'Project.DescShort',
 	ConfProjectKeywords       = 'Project.Keywords',
 	ConfProjectDefineConsts   = 'Project.DefineConstants',
 	ConfProjectInitWithConfig = 'Project.InitWithConfig',
-	ConfProjectWebRoot        = 'Project.WebRoot';
+	ConfProjectWebRoot        = 'Project.WebRoot',
+	ConfProjectWebserver      = 'Project.WebServerType';
 
 	const
 	ConfAcmePhar       = 'AcmePHP.Phar',
@@ -108,5 +113,22 @@ extends Nether\Common\Library {
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	// SidebarInterface ////////////////////////////////////////////
+
+	public function
+	OnDashboardSidebar(Atlantis\Engine $App, Datastore $Sidebar):
+	void {
+
+		if($App->User)
+		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+
+		if($App->User && $App->User->IsAdmin())
+		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);
+
+		return;
+	}
+
 }
 

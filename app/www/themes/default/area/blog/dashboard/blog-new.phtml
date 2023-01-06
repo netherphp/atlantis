@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ */
+
+$Surface
+->Set('Page.Title', 'Start New Blog - Dashboard')
+->Area('dashboard/nav', [ 'Trail' => [
+	'Blog'           => NULL,
+	'Start New Blog' => NULL
+]]);
+
+?>
+
+<form id="BlogNewForm" method="post">
+	<div class="mb-4">
+		<div class="fw-bold">Blog Title:</div>
+		<input type="text" name="Title" class="form-control" />
+	</div>
+	<div class="mb-4">
+		<div class="fw-bold">Blog URL Alias:</div>
+		<input type="text" name="Alias" class="form-control" />
+	</div>
+	<div class="mb-4">
+		<div class="fw-bold">Tagline:</div>
+		<input type="text" name="Tagline" class="form-control" />
+	</div>
+	<div class="mb-4">
+		<div class="fw-bold">Description:</div>
+		<textarea name="Details" class="form-control"></textarea>
+	</div>
+	<div>
+		<button type="submit" class="btn btn-primary btn-block fw-bold">Create</button>
+	</div>
+</form>

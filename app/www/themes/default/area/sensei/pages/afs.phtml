@@ -56,6 +56,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 						<li class="mb-2"><a class="underdot" href="#step3">3) AcmePHP &amp; SSL Cert</a></li>
 						<li class="mb-2"><a class="underdot" href="#step4">4) Automatic SSL Renew</a></li>
 						<li class="mb-2"><a class="underdot" href="#step5">5) Environment Config</a></li>
+						<li class="mb-2"><a class="underdot" href="#step6">6) Database Config</a></li>
 					</ul>
 				</div>
 			</div>
@@ -385,5 +386,28 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 			Any random prefix such as <code>demo-</code> will report to the framework as a <code>"demo"</code> environment.
 			This will allow things like dumping debugging for only specific classifications of environments.
 		</p>
+	</div>
+</div>
+
+<!-- PART 3: DB CONF -->
+<div class="bg-alt1">
+	<div class="container pt-8 pb-8">
+		<h2 id="step3" class="font-family-monotype mb-4">6) Database Config</h2>
+		<p class="mb-4">
+			Database configuraiton can be done is either of your <code class="file">config.php</code> files, though generally you would put one DB config in your dev environment and a different one for your production.
+			Presently only MySQL/MariaDB are supported by the framework.
+		</p>
+		<pre>
+		$Config->Set(Database\Library::ConfConnections, [
+			'Default' => new Database\Connection(
+				Type:     'mysql',
+				Hostname: 'DB-HOST',
+				Database: 'DB-NAME',
+				Username: 'DB-USERNAME-HURR',
+				Password: 'DB-PASSWORD-DURR'
+			)
+		]);
+		</pre>
+
 	</div>
 </div>
