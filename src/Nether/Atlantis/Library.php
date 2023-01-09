@@ -12,7 +12,7 @@ use Nether\Object\Datastore;
 class Library
 extends Common\Library
 implements
-	Atlantis\Dashboard\SidebarInterface {
+	Atlantis\Plugins\DashboardSidebarInterface {
 
 	const
 	ConfProjectID             = 'Project.Key',
@@ -115,7 +115,7 @@ implements
 	}
 
 	////////////////////////////////////////////////////////////////
-	// SidebarInterface ////////////////////////////////////////////
+	// DashboardSidebarInterface ///////////////////////////////////
 
 	public function
 	OnDashboardSidebar(Atlantis\Engine $App, Datastore $Sidebar):

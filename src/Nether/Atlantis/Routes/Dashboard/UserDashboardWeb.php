@@ -7,7 +7,6 @@ use Nether\Common;
 use Nether\User;
 
 use Nether\Object\Datastore;
-use Nether\Atlantis\Dashboard\SidebarGroup;
 
 class UserDashboardWeb
 extends Atlantis\ProtectedWeb {
@@ -33,7 +32,7 @@ extends Atlantis\ProtectedWeb {
 		$Lib = NULL;
 
 		foreach($this->App->Library as $Lib) {
-			if($Lib instanceof Atlantis\Dashboard\SidebarInterface)
+			if($Lib instanceof Atlantis\Plugins\DashboardSidebarInterface)
 			$Lib->OnDashboardSidebar($this->App, $Items);
 		}
 
@@ -62,7 +61,7 @@ extends Atlantis\ProtectedWeb {
 		//);
 
 		$SidebarItems->Sort(
-			fn(SidebarGroup $A, SidebarGroup $B)
+			fn(Atlantis\Dashboard\SidebarGroup $A, Atlantis\Dashboard\SidebarGroup $B)
 			=> $B->Priority <=> $A->Priority
 		);
 

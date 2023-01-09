@@ -1,5 +1,6 @@
 <?php
 
+use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 use Nether\Database;
@@ -8,6 +9,7 @@ use Nether\Database;
  * @var User\Entity $User - the currently logged in user
  * @var User\Entity $Who - the user being inspected.
  * @var Database\Struct\PrototypeFindResult $AccessTypes
+ * @var Atlantis\User\AccessTypeList $DefinedAccessTypes;
  */
 
 $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
@@ -150,15 +152,42 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 		<hr class="opacity-10" />
 	</dt>
 	<dd class="mb-4">
+		<div class="mb-4">
+			<div class="row">
+				<div class="col-auto">
+					<div id="AccessTypeList" class="dropdown">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+							Access Types
+						</button>
+						<ul class="dropdown-menu dropdown-menu-scrolled">
+							<?php foreach($DefinedAccessTypes as $Type): ?>
+							<li>
+								<a class="dropdown-item" href="#" data-key="<?php $Printer($Type->Key) ?>" data-value="<?php $Printer($Type->Value) ?>">
+									<div class="font-size-small">
+										<?php $Printer($Type->Key) ?>
+										<span class="text-secondary"> =&gt; </span>
+										<?php $Printer($Type->Value) ?>
+									</div>
+									<div class="font-size-smaller text-muted fs-italic"><?php $Printer($Type->Info) ?></div>
+								</a>
+							</li>
+							<?php endforeach; unset($Type); ?>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<hr class="opacity-10" />
 		<form id="AccessForm" method="post">
 			<div class="row tight">
 				<div class="col">
 					<div class="fw-bold">Key:</div>
 					<input type="text" name="Key" class="form-control" list="AccessTypeDatalist" />
 					<datalist id="AccessTypeDatalist">
-						<?php foreach($DefinedAccessTypes as $Access): ?>
-						<option value="<?php $Printer($Access->Key) ?>"><?php $Printer($Access->Key) ?></option>
-						<?php endforeach; unset($Access); ?>
+						<?php foreach($DefinedAccessTypes as $Type): ?>
+						<option value="<?php $Printer($Type->Key) ?>"><?php $Printer($Type->Key) ?></option>
+						<?php endforeach; unset($Type); ?>
 					</datalist>
 				</div>
 				<div class="col">
@@ -204,6 +233,26 @@ jQuery(function(){
 		(req.send(form.getData()))
 		.then(req.goto)
 		.catch(req.catch);
+
+		return false;
+	});
+
+	jQuery('#AccessTypeList')
+	.on('click', '.dropdown-item', function() {
+
+		let that = jQuery(this);
+		let form = jQuery('#AccessForm');
+		let key = that.attr('data-key');
+		let val = that.attr('data-value');
+
+		console.log(key);
+		console.log(val);
+
+		form.find('input[name=Key]').val(key);
+		form.find('input[name=Value]').val(val);
+
+		jQuery('.dropdown-toggle')
+		.dropdown('hide');
 
 		return false;
 	});

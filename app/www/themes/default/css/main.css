@@ -21,8 +21,9 @@
 	--ColourTertiaryAccent: hsl(var(--ColourTertiaryHue), var(--ColourTertiarySat), var(--ColourTertiaryLvl));
 
 	--ColourObjectBackground1: #1A1A1A;
-	--ColourObjectBackground2: #222222;
-	--ColourObjectBorder: #101010;
+	--ColourObjectBackground2: #2A2A2A;
+	--ColourObjectBackground3: #3A3A3A;
+	--ColourObjectBorder1: #101010;
 
 	/* page fonts */
 
@@ -121,7 +122,7 @@ strong {
 }
 
 .table {
-	--bs-table-border-color: var(--ColourObjectBorder);
+	--bs-table-border-color: var(--ColourObjectBorder1);
 	--bs-table-bg: var(--ColourObjectBackground1);
 	--bs-table-striped-bg: var(--ColourObjectBackground2);
 }
@@ -492,8 +493,10 @@ strong {
 **** fancy or *****************************************************************/
 
 .dropdown-menu {
-	background-color: var(--ColourObjectBackground1);
+	background-color: var(--ColourObjectBackground2);
 	padding: 6px;
+	border-radius: 0px;
+	box-shadow: 0px 0px 72px #000;
 }
 
 .dropdown-menu li {
@@ -511,8 +514,9 @@ strong {
 }
 
 .dropdown-menu a.dropdown-item:active,
-.dropdown-menu a.dropdown-item:hover {
-	background-color: var(--ColourObjectBackground2);
+.dropdown-menu a.dropdown-item:hover,
+.dropdown-menu a.dropdown-item:focus {
+	background-color: var(--ColourObjectBackground3);
 }
 
 /*******************************************************************************
@@ -520,7 +524,7 @@ strong {
 
 .Editor {
 	background-color: var(--ColourObjectBackground1);
-	border: 0px solid var(--ColourObjectBorder);
+	border: 0px solid var(--ColourObjectBorder1);
 	border-radius: 6px;
 	padding: 6px;
 }

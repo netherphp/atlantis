@@ -1,3 +1,7 @@
+:root {
+	--DropdownMaxHeight: 300px;
+}
+
 /*******************************************************************************
 **** font stuff ***************************************************************/
 
@@ -60,8 +64,8 @@
 .user-select-none { user-select: none; }
 .user-select-normal { user-select: all; }
 
-.fw-bold { font-weight: 400 !important; }
-.fw-bolder { font-weight: 700 !important; }
+.fw-bold { font-weight: 600 !important; }
+.fw-bolder { font-weight: 900 !important; }
 
 @media (max-width: 991.9px) {
 	.font-size-mostest-small { font-size: 0.44em; }
@@ -125,6 +129,11 @@
 .line-clamp-6 { height: calc(var(--LocalLineHeight) * 6); }
 .line-clamp-7 { height: calc(var(--LocalLineHeight) * 7); }
 .line-clamp-8 { height: calc(var(--LocalLineHeight) * 8); }
+
+.dropdown-menu.dropdown-menu-scrolled {
+	max-height: var(--DropdownMaxHeight);
+	overflow-y: scroll;
+}
 
 /*******************************************************************************
 **** opacity stuff ************************************************************/

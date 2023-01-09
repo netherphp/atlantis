@@ -71,12 +71,14 @@ extends Atlantis\ProtectedWeb {
 
 		$Who = User\Entity::GetByID($UserID);
 		$AccessTypes = $Who->GetAccessTypes();
-		$DefinedAccessTypes = User\EntityAccessType::Find([ 'Index'=> TRUE ]);
+		//$UsedAccessTypes = User\EntityAccessType::Find([ 'Index'=> TRUE ]);
+		$DefinedAccessTypes = Atlantis\User\AccessTypeList::Fetch($this->App);
 
 		($this->App->Surface)
 		->Wrap('admin/users/view', [
 			'Who'                => $Who,
 			'AccessTypes'        => $AccessTypes,
+			//'UsedAccessTypes'    => $UsedAccessTypes,
 			'DefinedAccessTypes' => $DefinedAccessTypes
 		]);
 
