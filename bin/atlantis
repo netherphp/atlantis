@@ -11,6 +11,11 @@ use Nether\Console;
 class AtlantisCLI
 extends Console\Client {
 
+	const
+	AppName    = 'Nether Atlantis',
+	AppVersion = '5.0.0-dev';
+
+
 	#[Nether\Console\Meta\Command]
 	#[Nether\Console\Meta\Info('Start a fresh project from scratch.')]
 	public function
