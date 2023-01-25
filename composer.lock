@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e442ebf063d17f8ccee393d07092ac8",
+    "content-hash": "7445db6b84d230fea991cf67959e0360",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1484,12 +1484,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/object.git",
-                "reference": "4d0010e92ccb43b046df1ec19d25aa6086ad38a6"
+                "reference": "db1f3837f205b65fe0d6f31e21de5e33bbe32116"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/object/zipball/4d0010e92ccb43b046df1ec19d25aa6086ad38a6",
-                "reference": "4d0010e92ccb43b046df1ec19d25aa6086ad38a6",
+                "url": "https://api.github.com/repos/netherphp/object/zipball/db1f3837f205b65fe0d6f31e21de5e33bbe32116",
+                "reference": "db1f3837f205b65fe0d6f31e21de5e33bbe32116",
                 "shasum": ""
             },
             "require": {
@@ -1529,7 +1529,7 @@
                 "issues": "https://github.com/netherphp/object/issues",
                 "source": "https://github.com/netherphp/object/tree/redux"
             },
-            "time": "2023-01-10T19:59:22+00:00"
+            "time": "2023-01-25T23:34:34+00:00"
         },
         {
             "name": "netherphp/sensei",
@@ -2918,7 +2918,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "netherphp/object": 20,
         "netherphp/ki": 20,
         "netherphp/avenue": 20,
         "netherphp/surface": 20,
