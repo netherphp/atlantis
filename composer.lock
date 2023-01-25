@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26f21fd067a86302bc87e9b9ef086e6c",
+    "content-hash": "4e442ebf063d17f8ccee393d07092ac8",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -58,16 +58,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.253.3",
+            "version": "3.257.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "7e66338fc6aedd5fa53b268ee30d8f6e4a568147"
+                "reference": "221369007c459d95ef87576b69a164c4f4dd2976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7e66338fc6aedd5fa53b268ee30d8f6e4a568147",
-                "reference": "7e66338fc6aedd5fa53b268ee30d8f6e4a568147",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/221369007c459d95ef87576b69a164c4f4dd2976",
+                "reference": "221369007c459d95ef87576b69a164c4f4dd2976",
                 "shasum": ""
             },
             "require": {
@@ -146,22 +146,78 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.253.3"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.257.8"
             },
-            "time": "2022-12-15T19:26:05+00:00"
+            "time": "2023-01-25T19:31:51+00:00"
         },
         {
-            "name": "firebase/php-jwt",
-            "version": "v6.3.1",
+            "name": "brick/math",
+            "version": "0.10.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "ddfaddcb520488b42bca3a75e17e9dd53c3667da"
+                "url": "https://github.com/brick/math.git",
+                "reference": "459f2781e1a08d52ee56b0b1444086e038561e3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/ddfaddcb520488b42bca3a75e17e9dd53c3667da",
-                "reference": "ddfaddcb520488b42bca3a75e17e9dd53c3667da",
+                "url": "https://api.github.com/repos/brick/math/zipball/459f2781e1a08d52ee56b0b1444086e038561e3f",
+                "reference": "459f2781e1a08d52ee56b0b1444086e038561e3f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^9.0",
+                "vimeo/psalm": "4.25.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Math\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Arbitrary-precision arithmetic library",
+            "keywords": [
+                "Arbitrary-precision",
+                "BigInteger",
+                "BigRational",
+                "arithmetic",
+                "bigdecimal",
+                "bignum",
+                "brick",
+                "math"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/math/issues",
+                "source": "https://github.com/brick/math/tree/0.10.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-08-10T22:54:19+00:00"
+        },
+        {
+            "name": "firebase/php-jwt",
+            "version": "v6.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "ea7dda77098b96e666c5ef382452f94841e439cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/ea7dda77098b96e666c5ef382452f94841e439cd",
+                "reference": "ea7dda77098b96e666c5ef382452f94841e439cd",
                 "shasum": ""
             },
             "require": {
@@ -208,9 +264,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.3.1"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.3.2"
             },
-            "time": "2022-11-01T21:20:08+00:00"
+            "time": "2022-12-19T17:10:46+00:00"
         },
         {
             "name": "google/recaptcha",
@@ -597,31 +653,34 @@
         },
         {
             "name": "lcobucci/clock",
-            "version": "2.2.0",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/clock.git",
-                "reference": "fb533e093fd61321bfcbac08b131ce805fe183d3"
+                "reference": "039ef98c6b57b101d10bd11d8fdfda12cbd996dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/clock/zipball/fb533e093fd61321bfcbac08b131ce805fe183d3",
-                "reference": "fb533e093fd61321bfcbac08b131ce805fe183d3",
+                "url": "https://api.github.com/repos/lcobucci/clock/zipball/039ef98c6b57b101d10bd11d8fdfda12cbd996dc",
+                "reference": "039ef98c6b57b101d10bd11d8fdfda12cbd996dc",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0",
-                "stella-maris/clock": "^0.1.4"
+                "php": "~8.1.0 || ~8.2.0",
+                "psr/clock": "^1.0"
+            },
+            "provide": {
+                "psr/clock-implementation": "1.0"
             },
             "require-dev": {
                 "infection/infection": "^0.26",
-                "lcobucci/coding-standard": "^8.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-deprecation-rules": "^0.12",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpstan/phpstan-strict-rules": "^0.12",
-                "phpunit/phpunit": "^9.5"
+                "lcobucci/coding-standard": "^9.0",
+                "phpstan/extension-installer": "^1.2",
+                "phpstan/phpstan": "^1.9.4",
+                "phpstan/phpstan-deprecation-rules": "^1.1.1",
+                "phpstan/phpstan-phpunit": "^1.3.2",
+                "phpstan/phpstan-strict-rules": "^1.4.4",
+                "phpunit/phpunit": "^9.5.27"
             },
             "type": "library",
             "autoload": {
@@ -642,7 +701,7 @@
             "description": "Yet another clock abstraction",
             "support": {
                 "issues": "https://github.com/lcobucci/clock/issues",
-                "source": "https://github.com/lcobucci/clock/tree/2.2.0"
+                "source": "https://github.com/lcobucci/clock/tree/3.0.0"
             },
             "funding": [
                 {
@@ -654,20 +713,20 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2022-04-19T19:34:17+00:00"
+            "time": "2022-12-19T15:00:24+00:00"
         },
         {
             "name": "lcobucci/jwt",
-            "version": "4.2.1",
+            "version": "4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "72ac6d807ee51a70ad376ee03a2387e8646e10f3"
+                "reference": "4d7de2fe0d51a96418c0d04004986e410e87f6b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/72ac6d807ee51a70ad376ee03a2387e8646e10f3",
-                "reference": "72ac6d807ee51a70ad376ee03a2387e8646e10f3",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/4d7de2fe0d51a96418c0d04004986e410e87f6b4",
+                "reference": "4d7de2fe0d51a96418c0d04004986e410e87f6b4",
                 "shasum": ""
             },
             "require": {
@@ -676,7 +735,7 @@
                 "ext-mbstring": "*",
                 "ext-openssl": "*",
                 "ext-sodium": "*",
-                "lcobucci/clock": "^2.0",
+                "lcobucci/clock": "^2.0 || ^3.0",
                 "php": "^7.4 || ^8.0"
             },
             "require-dev": {
@@ -716,7 +775,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lcobucci/jwt/issues",
-                "source": "https://github.com/lcobucci/jwt/tree/4.2.1"
+                "source": "https://github.com/lcobucci/jwt/tree/4.3.0"
             },
             "funding": [
                 {
@@ -728,7 +787,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2022-08-19T23:14:07+00:00"
+            "time": "2023-01-02T13:28:00+00:00"
         },
         {
             "name": "league/oauth2-client",
@@ -1089,12 +1148,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/avenue.git",
-                "reference": "01009efd00d514190f5bbc3f0fadef170a1489c1"
+                "reference": "742dc8790d1c451c9511139a1da089374532b267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/avenue/zipball/01009efd00d514190f5bbc3f0fadef170a1489c1",
-                "reference": "01009efd00d514190f5bbc3f0fadef170a1489c1",
+                "url": "https://api.github.com/repos/netherphp/avenue/zipball/742dc8790d1c451c9511139a1da089374532b267",
+                "reference": "742dc8790d1c451c9511139a1da089374532b267",
                 "shasum": ""
             },
             "require": {
@@ -1118,7 +1177,7 @@
                     "Nether\\": "src/"
                 },
                 "psr-4": {
-                    "TestRoutes\\": "routes/"
+                    "TestRoutes\\": "testdata/routes/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1142,24 +1201,25 @@
                 "issues": "https://github.com/netherphp/avenue/issues",
                 "source": "https://github.com/netherphp/avenue/tree/redux"
             },
-            "time": "2022-12-15T22:05:42+00:00"
+            "time": "2023-01-06T19:19:14+00:00"
         },
         {
             "name": "netherphp/common",
-            "version": "v5.0.0",
+            "version": "v5.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/common.git",
-                "reference": "2581c6bec9b8309bf0e7ae1e5e1dccc088639af6"
+                "reference": "a3826e434669acdb893f957f2fd3d6233aa601b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/common/zipball/2581c6bec9b8309bf0e7ae1e5e1dccc088639af6",
-                "reference": "2581c6bec9b8309bf0e7ae1e5e1dccc088639af6",
+                "url": "https://api.github.com/repos/netherphp/common/zipball/a3826e434669acdb893f957f2fd3d6233aa601b1",
+                "reference": "a3826e434669acdb893f957f2fd3d6233aa601b1",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1"
+                "php": "^8.1",
+                "ramsey/uuid": "^4.7"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
@@ -1191,9 +1251,9 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/common/issues",
-                "source": "https://github.com/netherphp/common/tree/v5.0.0"
+                "source": "https://github.com/netherphp/common/tree/v5.0.5"
             },
-            "time": "2022-12-15T21:55:30+00:00"
+            "time": "2023-01-25T20:23:57+00:00"
         },
         {
             "name": "netherphp/console",
@@ -1201,21 +1261,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/console.git",
-                "reference": "5039614ef4975c71cf274d342595f69bec1bc162"
+                "reference": "c1199b036baca7f74c192dca1dc252344a1fab19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/console/zipball/5039614ef4975c71cf274d342595f69bec1bc162",
-                "reference": "5039614ef4975c71cf274d342595f69bec1bc162",
+                "url": "https://api.github.com/repos/netherphp/console/zipball/c1199b036baca7f74c192dca1dc252344a1fab19",
+                "reference": "c1199b036baca7f74c192dca1dc252344a1fab19",
                 "shasum": ""
             },
             "require": {
-                "netherphp/object": "dev-redux",
+                "netherphp/common": "^5.0.5",
                 "php": ">=8.0"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-                "netherphp/standards": ">=0.1.9",
+                "netherphp/standards": ">=0.2.7",
                 "phpunit/phpunit": "^9.5"
             },
             "default-branch": true,
@@ -1251,7 +1311,7 @@
                 "issues": "https://github.com/netherphp/console/issues",
                 "source": "https://github.com/netherphp/console/tree/redux"
             },
-            "time": "2022-12-14T07:22:20+00:00"
+            "time": "2023-01-25T22:43:13+00:00"
         },
         {
             "name": "netherphp/database",
@@ -1259,12 +1319,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/database.git",
-                "reference": "0d3f3e2cc3cab43a6dfd7cc492d1b7b6279cab25"
+                "reference": "e39e441647e3f65a820e2e6c34dc340846a68422"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/database/zipball/0d3f3e2cc3cab43a6dfd7cc492d1b7b6279cab25",
-                "reference": "0d3f3e2cc3cab43a6dfd7cc492d1b7b6279cab25",
+                "url": "https://api.github.com/repos/netherphp/database/zipball/e39e441647e3f65a820e2e6c34dc340846a68422",
+                "reference": "e39e441647e3f65a820e2e6c34dc340846a68422",
                 "shasum": ""
             },
             "require": {
@@ -1281,7 +1341,7 @@
             },
             "default-branch": true,
             "bin": [
-                "bin/netherdb"
+                "bin/ndb"
             ],
             "type": "library",
             "autoload": {
@@ -1310,7 +1370,7 @@
                 "issues": "https://github.com/netherphp/database/issues",
                 "source": "https://github.com/netherphp/database/tree/redux"
             },
-            "time": "2022-12-15T22:00:46+00:00"
+            "time": "2023-01-06T19:53:42+00:00"
         },
         {
             "name": "netherphp/email",
@@ -1424,12 +1484,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/object.git",
-                "reference": "8d4bacd565b60cbf1799e4996e64f8ec313cd2a5"
+                "reference": "4d0010e92ccb43b046df1ec19d25aa6086ad38a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/object/zipball/8d4bacd565b60cbf1799e4996e64f8ec313cd2a5",
-                "reference": "8d4bacd565b60cbf1799e4996e64f8ec313cd2a5",
+                "url": "https://api.github.com/repos/netherphp/object/zipball/4d0010e92ccb43b046df1ec19d25aa6086ad38a6",
+                "reference": "4d0010e92ccb43b046df1ec19d25aa6086ad38a6",
                 "shasum": ""
             },
             "require": {
@@ -1469,7 +1529,7 @@
                 "issues": "https://github.com/netherphp/object/issues",
                 "source": "https://github.com/netherphp/object/tree/redux"
             },
-            "time": "2022-12-14T07:22:24+00:00"
+            "time": "2023-01-10T19:59:22+00:00"
         },
         {
             "name": "netherphp/sensei",
@@ -1579,24 +1639,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/surface.git",
-                "reference": "4e9cc768868c0213ee53679292bc345618c3a86c"
+                "reference": "c381a0b79a9c31ee2e3f060ec299845f62144248"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/surface/zipball/4e9cc768868c0213ee53679292bc345618c3a86c",
-                "reference": "4e9cc768868c0213ee53679292bc345618c3a86c",
+                "url": "https://api.github.com/repos/netherphp/surface/zipball/c381a0b79a9c31ee2e3f060ec299845f62144248",
+                "reference": "c381a0b79a9c31ee2e3f060ec299845f62144248",
                 "shasum": ""
             },
             "require": {
-                "netherphp/common": "^5.0",
+                "netherphp/common": "^5.0.4",
                 "netherphp/ki": "dev-redux",
-                "php": ">=8.0"
+                "php": ">=8.1"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
                 "netherphp/standards": ">=0.1.9",
                 "phpunit/phpunit": "^9.5"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1624,7 +1685,7 @@
                 "issues": "https://github.com/netherphp/surface/issues",
                 "source": "https://github.com/netherphp/surface/tree/redux"
             },
-            "time": "2022-12-15T22:06:54+00:00"
+            "time": "2023-01-19T23:30:17+00:00"
         },
         {
             "name": "netherphp/user",
@@ -1632,12 +1693,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/user.git",
-                "reference": "767884b06ac70c00c23c27e21a34997700dd08a3"
+                "reference": "f50fce29fb4349ee79ca6983e4dc0191d8cb009f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/user/zipball/767884b06ac70c00c23c27e21a34997700dd08a3",
-                "reference": "767884b06ac70c00c23c27e21a34997700dd08a3",
+                "url": "https://api.github.com/repos/netherphp/user/zipball/f50fce29fb4349ee79ca6983e4dc0191d8cb009f",
+                "reference": "f50fce29fb4349ee79ca6983e4dc0191d8cb009f",
                 "shasum": ""
             },
             "require": {
@@ -1685,7 +1746,7 @@
                 "issues": "https://github.com/netherphp/user/issues",
                 "source": "https://github.com/netherphp/user/tree/master"
             },
-            "time": "2022-12-15T22:03:08+00:00"
+            "time": "2023-01-09T00:29:44+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -2104,6 +2165,187 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+            "name": "ramsey/collection",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/collection.git",
+                "reference": "a4b48764bfbb8f3a6a4d1aeb1a35bb5e9ecac4a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/collection/zipball/a4b48764bfbb8f3a6a4d1aeb1a35bb5e9ecac4a5",
+                "reference": "a4b48764bfbb8f3a6a4d1aeb1a35bb5e9ecac4a5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "captainhook/plugin-composer": "^5.3",
+                "ergebnis/composer-normalize": "^2.28.3",
+                "fakerphp/faker": "^1.21",
+                "hamcrest/hamcrest-php": "^2.0",
+                "jangregor/phpstan-prophecy": "^1.0",
+                "mockery/mockery": "^1.5",
+                "php-parallel-lint/php-console-highlighter": "^1.0",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpcsstandards/phpcsutils": "^1.0.0-rc1",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpstan/extension-installer": "^1.2",
+                "phpstan/phpstan": "^1.9",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.3",
+                "phpunit/phpunit": "^9.5",
+                "psalm/plugin-mockery": "^1.1",
+                "psalm/plugin-phpunit": "^0.18.4",
+                "ramsey/coding-standard": "^2.0.3",
+                "ramsey/conventional-commits": "^1.3",
+                "vimeo/psalm": "^5.4"
+            },
+            "type": "library",
+            "extra": {
+                "captainhook": {
+                    "force-install": true
+                },
+                "ramsey/conventional-commits": {
+                    "configFile": "conventional-commits.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ramsey\\Collection\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A PHP library for representing and manipulating collections.",
+            "keywords": [
+                "array",
+                "collection",
+                "hash",
+                "map",
+                "queue",
+                "set"
+            ],
+            "support": {
+                "issues": "https://github.com/ramsey/collection/issues",
+                "source": "https://github.com/ramsey/collection/tree/2.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ramsey",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/ramsey/collection",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-12-31T21:50:55+00:00"
+        },
+        {
+            "name": "ramsey/uuid",
+            "version": "4.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/uuid.git",
+                "reference": "433b2014e3979047db08a17a205f410ba3869cf2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/433b2014e3979047db08a17a205f410ba3869cf2",
+                "reference": "433b2014e3979047db08a17a205f410ba3869cf2",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "^0.8.8 || ^0.9 || ^0.10",
+                "ext-json": "*",
+                "php": "^8.0",
+                "ramsey/collection": "^1.2 || ^2.0"
+            },
+            "replace": {
+                "rhumsaa/uuid": "self.version"
+            },
+            "require-dev": {
+                "captainhook/captainhook": "^5.10",
+                "captainhook/plugin-composer": "^5.3",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+                "doctrine/annotations": "^1.8",
+                "ergebnis/composer-normalize": "^2.15",
+                "mockery/mockery": "^1.3",
+                "paragonie/random-lib": "^2",
+                "php-mock/php-mock": "^2.2",
+                "php-mock/php-mock-mockery": "^1.3",
+                "php-parallel-lint/php-parallel-lint": "^1.1",
+                "phpbench/phpbench": "^1.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^1.8",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpunit/phpunit": "^8.5 || ^9",
+                "ramsey/composer-repl": "^1.4",
+                "slevomat/coding-standard": "^8.4",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vimeo/psalm": "^4.9"
+            },
+            "suggest": {
+                "ext-bcmath": "Enables faster math with arbitrary-precision integers using BCMath.",
+                "ext-gmp": "Enables faster math with arbitrary-precision integers using GMP.",
+                "ext-uuid": "Enables the use of PeclUuidTimeGenerator and PeclUuidRandomGenerator.",
+                "paragonie/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
+                "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
+            },
+            "type": "library",
+            "extra": {
+                "captainhook": {
+                    "force-install": true
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Ramsey\\Uuid\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP library for generating and working with universally unique identifiers (UUIDs).",
+            "keywords": [
+                "guid",
+                "identifier",
+                "uuid"
+            ],
+            "support": {
+                "issues": "https://github.com/ramsey/uuid/issues",
+                "source": "https://github.com/ramsey/uuid/tree/4.7.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ramsey",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/ramsey/uuid",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-01-12T18:13:24+00:00"
+        },
+        {
             "name": "sendgrid/php-http-client",
             "version": "3.14.4",
             "source": {
@@ -2276,53 +2518,6 @@
             "time": "2021-06-06T22:24:49+00:00"
         },
         {
-            "name": "stella-maris/clock",
-            "version": "0.1.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stella-maris-solutions/clock.git",
-                "reference": "fa23ce16019289a18bb3446fdecd45befcdd94f8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/stella-maris-solutions/clock/zipball/fa23ce16019289a18bb3446fdecd45befcdd94f8",
-                "reference": "fa23ce16019289a18bb3446fdecd45befcdd94f8",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0|^8.0",
-                "psr/clock": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "StellaMaris\\Clock\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andreas Heigl",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "A pre-release of the proposed PSR-20 Clock-Interface",
-            "homepage": "https://gitlab.com/stella-maris/clock",
-            "keywords": [
-                "clock",
-                "datetime",
-                "point in time",
-                "psr20"
-            ],
-            "support": {
-                "source": "https://github.com/stella-maris-solutions/clock/tree/0.1.7"
-            },
-            "time": "2022-11-25T16:15:06+00:00"
-        },
-        {
             "name": "symfony/deprecation-contracts",
             "version": "v3.2.0",
             "source": {
@@ -2474,20 +2669,22 @@
         },
         {
             "name": "wohali/oauth2-discord-new",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wohali/oauth2-discord-new.git",
-                "reference": "f34be83cbc88670405c4e63d27cf1003aa858089"
+                "reference": "2df4d2a882e04c749880797704e4bde8f00ea1d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wohali/oauth2-discord-new/zipball/f34be83cbc88670405c4e63d27cf1003aa858089",
-                "reference": "f34be83cbc88670405c4e63d27cf1003aa858089",
+                "url": "https://api.github.com/repos/wohali/oauth2-discord-new/zipball/2df4d2a882e04c749880797704e4bde8f00ea1d9",
+                "reference": "2df4d2a882e04c749880797704e4bde8f00ea1d9",
                 "shasum": ""
             },
             "require": {
-                "league/oauth2-client": "^2.0"
+                "ext-json": "*",
+                "league/oauth2-client": "^2.0",
+                "php": "^7.2|^8.0"
             },
             "conflict": {
                 "team-reflex/oauth2-discord": ">=1.0"
@@ -2531,9 +2728,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wohali/oauth2-discord-new/issues",
-                "source": "https://github.com/wohali/oauth2-discord-new/tree/1.2.0"
+                "source": "https://github.com/wohali/oauth2-discord-new/tree/1.2.1"
             },
-            "time": "2022-11-01T04:14:25+00:00"
+            "time": "2022-12-29T18:45:10+00:00"
         }
     ],
     "packages-dev": [
@@ -2614,16 +2811,16 @@
         },
         {
             "name": "netherphp/standards",
-            "version": "v0.2.7",
+            "version": "v0.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/standards.git",
-                "reference": "4f8bb88805c345813e01542b671900f4dad203b8"
+                "reference": "d87cbd115478af0ad8a53913a15a3e0973cd97bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/standards/zipball/4f8bb88805c345813e01542b671900f4dad203b8",
-                "reference": "4f8bb88805c345813e01542b671900f4dad203b8",
+                "url": "https://api.github.com/repos/netherphp/standards/zipball/d87cbd115478af0ad8a53913a15a3e0973cd97bb",
+                "reference": "d87cbd115478af0ad8a53913a15a3e0973cd97bb",
                 "shasum": ""
             },
             "require": {
@@ -2657,9 +2854,9 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/standards/issues",
-                "source": "https://github.com/netherphp/standards/tree/v0.2.7"
+                "source": "https://github.com/netherphp/standards/tree/v0.2.8"
             },
-            "time": "2022-09-05T00:46:47+00:00"
+            "time": "2023-01-06T18:26:11+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",

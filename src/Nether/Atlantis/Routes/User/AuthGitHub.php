@@ -8,7 +8,7 @@ use Nether\User;
 
 use Throwable;
 use Nether\Avenue\Meta\RouteHandler;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Github as GitHubProvider;

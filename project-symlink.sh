@@ -1,21 +1,48 @@
-#!/bin/sh
+#!/bin/bash
 
-ROOT=`pwd`
+PROOT=`pwd`
+SROOT=`dirname $(readlink -f "$0")`
 
-# demo router and applications.
+################################################################################
+################################################################################
 
-rm ../../../routes/Docs.php
-ln -s $ROOT/app/routes/Docs.php ../../../routes/Docs.php
+echo "ProjectRoot: $PROOT"
+echo "SourceRoot: $SROOT"
 
-rm ../../../routes/Home.php
-ln -s $ROOT/app/routes/Home.php ../../../routes/Home.php
+echo ""
+echo "This will delete some files from your ProjectRoot and symlink them with their counterparts in the SourceRoot."
+echo ""
 
-# default themes.
+read -p "Are you sure? [y/n] " -n 2 -r
 
-rm -rf ../../../www/themes/default
-ln -s $ROOT/app/www/themes/default ../../../www/themes/default
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+	echo "Laters."
+	exit 1
+fi
 
-# default scripts.
+################################################################################
+################################################################################
 
-rm -rf ../../../www/share/atlantis
-ln -s $ROOT/app/www/share/atlantis ../../../www/share/atlantis
+echo "Symlinking in www/index.php..."
+rm $PROOT/www/index.php
+ln -s $SROOT/app/www/index.php $PROOT/www/index.php
+
+echo "Symlinking in www/themes/default..."
+rm -rf $PROOT/www/themes/default
+ln -s $SROOT/app/www/themes/default $PROOT/www/themes/default
+
+echo "Symlinking in www/share/atlantis..."
+rm -rf $PROOT/www/share/atlantis
+ln -s $SROOT/app/www/share/atlantis $PROOT/www/share/atlantis
+
+################################################################################
+################################################################################
+
+echo "Symlinking in routes/Home.php..."
+rm $PROOT/routes/Home.php
+ln -s $SROOT/app/routes/Home.php $PROOT/routes/Home.php
+
+echo "Symlinking in routes/Docs.php..."
+rm $PROOT/routes/Docs.php
+ln -s $SROOT/app/routes/Docs.php $PROOT/routes/Docs.php

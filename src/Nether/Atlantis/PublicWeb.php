@@ -7,8 +7,8 @@ use Nether\Avenue;
 use Nether\Surface;
 use Nether\User;
 
-use Nether\Object\Datastore;
-use Nether\Object\Datafilter;
+use Nether\Common\Datastore;
+use Nether\Common\Datafilter;
 
 class PublicWeb
 extends Avenue\Route {

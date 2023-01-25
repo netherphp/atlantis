@@ -3,7 +3,7 @@
 namespace Nether\Atlantis\Util;
 
 use Exception;
-use Nether\Object\Struct\DatafilterItem;
+use Nether\Common\Struct\DatafilterItem;
 use Nether\Atlantis\Error\User\AliasInvalidTooShort;
 use Nether\Atlantis\Error\User\AliasInvalidFirstLast;
 use Nether\Atlantis\Error\User\AliasInvalidChars;

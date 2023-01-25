@@ -6,7 +6,7 @@ use Nether;
 use Nether\Surface;
 
 use Nether\Database\Verse;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Common\Datafilters;
 
 #[Nether\Database\Meta\TableClass('UserLoginResets')]
@@ -149,7 +149,7 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Nether\Object\Prototype($Input, [
+		$Input = new Nether\Common\Prototype($Input, [
 			'TimeCreated' => time()
 		]);
 

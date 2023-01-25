@@ -14,7 +14,7 @@ use Nether\Storage;
 use Nether\Surface;
 use Nether\User;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class Engine {
 /*//
@@ -71,7 +71,6 @@ application instance.
 
 	public function
 	__Construct(string $ProjectRoot, ?Datastore $Conf=NULL) {
-		session_start();
 
 		// prepare some defaults.
 
@@ -119,8 +118,6 @@ application instance.
 		$this->Storage = new Storage\Manager($this->Config);
 		$this->Database = new Database\Manager($this->Config);
 
-		//Common\Dump::Var($this->Database, TRUE);
-
 		$Data = [
 			'App'    => $this,
 			'Config' => $this->Config,
@@ -147,7 +144,7 @@ application instance.
 	Run():
 	static {
 
-		$this->Router->Run(new Nether\Object\Datastore([
+		$this->Router->Run(new Nether\Common\Datastore([
 			'App'=> $this
 		]));
 
@@ -447,7 +444,7 @@ application instance.
 
 		foreach($Files as $File)
 		if(is_readable($File))
-		(function(string $__FILENAME, Nether\Object\Datastore $Config, Nether\Atlantis\Engine $App){
+		(function(string $__FILENAME, Nether\Common\Datastore $Config, Nether\Atlantis\Engine $App){
 			require($__FILENAME);
 			return;
 		})($File, $this->Config, $this);
@@ -466,7 +463,7 @@ application instance.
 		);
 
 		if(is_readable($File))
-		(function(string $__FILENAME, Nether\Object\Datastore $Config, Nether\Atlantis\Engine $App){
+		(function(string $__FILENAME, Nether\Common\Datastore $Config, Nether\Atlantis\Engine $App){
 			require($__FILENAME);
 			return;
 		})($File, $this->Config, $this);

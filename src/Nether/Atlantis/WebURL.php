@@ -3,7 +3,7 @@
 namespace Nether\Atlantis;
 
 use Stringable;
-use Nether\Object\Datafilter;
+use Nether\Common\Datafilter;
 
 class WebURL
 implements Stringable {

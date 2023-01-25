@@ -3,7 +3,7 @@
 namespace Nether\Atlantis;
 use Nether;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Atlantis\Filter;
 use Nether\Atlantis\Util;
 use Nether\Atlantis\Library;
@@ -22,13 +22,13 @@ as json apis. all output is wrapped in a standardised json message.
 	protected Nether\Atlantis\Engine
 	$App;
 
-	protected Nether\Object\Datafilter
+	protected Nether\Common\Datafilter
 	$Query;
 
-	protected Nether\Object\Datafilter
+	protected Nether\Common\Datafilter
 	$Data;
 
-	protected Nether\Object\Datastore
+	protected Nether\Common\Datastore
 	$Config;
 
 	protected ?Nether\User\EntitySession

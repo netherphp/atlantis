@@ -2,7 +2,7 @@
 
 namespace Nether\Atlantis\Dashboard;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class SidebarGroup {
 

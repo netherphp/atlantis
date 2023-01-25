@@ -7,7 +7,7 @@ use Nether\Avenue;
 use Nether\Common;
 use Nether\User;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class Library
 extends Common\Library

@@ -3,7 +3,7 @@
 namespace Nether\Atlantis;
 use Nether;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class ProtectedWeb
 extends PublicWeb {

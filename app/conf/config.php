@@ -15,7 +15,7 @@ use Nether\Common;
 use Nether\User;
 
 /**
- * @var Nether\Object\Datastore $Config
+ * @var Nether\Common\Datastore $Config
  * @var Nether\Atlantis\Engine $App
  */
 

@@ -4,7 +4,7 @@ namespace Nether\Atlantis\Plugins;
 
 use Nether\Atlantis;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 interface DashboardSidebarInterface {
 

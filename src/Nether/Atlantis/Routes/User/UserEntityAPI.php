@@ -9,7 +9,7 @@ use Nether\User;
 
 use Nether\Avenue\Meta\RouteHandler;
 use Nether\Atlantis\Meta\RouteAccessTypeAdmin;
-use Nether\Object\Prototype\PropertyInfo;
+use Nether\Common\Prototype\PropertyInfo;
 
 class UserEntityAPI
 extends Atlantis\ProtectedAPI {

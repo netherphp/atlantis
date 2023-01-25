@@ -3,12 +3,33 @@
 ini_set('display_errors', TRUE);
 error_reporting(E_ALL);
 
-// bring in composer autoloader.
+////////////////////////////////////////////////////////////////////////////////
+// start a web session. ////////////////////////////////////////////////////////
 
-$ProjectRoot = dirname(__FILE__, 2);
-require(sprintf('%s/vendor/autoload.php', $ProjectRoot));
+if(!session_id())
+session_start();
 
-// spool up atlantis.
+////////////////////////////////////////////////////////////////////////////////
+// boot the autoloader. ////////////////////////////////////////////////////////
+
+$ProjectRoot = match(TRUE) {
+	isset($_SERVER['DOCUMENT_ROOT']),
+	=> dirname($_SERVER['DOCUMENT_ROOT'], 1),
+
+	isset($_SERVER['SCRIPT_FILENAME'])
+	=> dirname($_SERVER['SCRIPT_FILENAME'], 2),
+
+	default
+	=> dirname(__FILE__, 2)
+};
+
+require(sprintf(
+	'%s/vendor/autoload.php',
+	$ProjectRoot
+));
+
+////////////////////////////////////////////////////////////////////////////////
+// spool up atlantis engine ////////////////////////////////////////////////////
 
 define('Atlantis', new Nether\Atlantis\Engine($ProjectRoot));
 Atlantis->Run();

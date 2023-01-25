@@ -5,7 +5,7 @@ namespace Nether\Atlantis\Struct;
 use Exception;
 use Nether\Atlantis\Engine;
 use Nether\Atlantis\Library;
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class AcmeConfig {
 

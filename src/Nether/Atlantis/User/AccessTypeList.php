@@ -5,7 +5,7 @@ namespace Nether\Atlantis\User;
 use Nether\Atlantis;
 use Nether\User;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class AccessTypeList
 extends Datastore {

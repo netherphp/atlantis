@@ -25,7 +25,7 @@
 	"prefer-stable": true,
 	"require": {
 		"php": ">=8.1",
-		"netherphp/common": "^5.0",
+		"netherphp/common": "^5.0.5",
 		"netherphp/object": "dev-redux",
 		"netherphp/ki": "dev-redux",
 		"netherphp/avenue": "dev-redux",
@@ -38,7 +38,7 @@
 		"monolog/monolog": "^3.2"
 	},
 	"require-dev": {
-		"netherphp/standards": "^0.2.7",
+		"netherphp/standards": "^0.2.8",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
 	},
 	"bin": [

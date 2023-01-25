@@ -6,7 +6,7 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 
 class UserDashboardWeb
 extends Atlantis\ProtectedWeb {

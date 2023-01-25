@@ -3,7 +3,7 @@
 namespace Nether\Atlantis;
 use Nether;
 
-use Nether\Object\Datastore;
+use Nether\Common\Datastore;
 use Nether\Atlantis\Filter;
 use Nether\Atlantis\Util;
 use Nether\Atlantis\Library;
