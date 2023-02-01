@@ -24,6 +24,7 @@ extends PublicWeb {
 		$Stats = NULL;
 
 		if(file_exists($Filename)) {
+
 			$Codebase = unserialize(file_get_contents($Filename));
 			$Stats = new CodebaseStats($Codebase);
 
