@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ */
+
+$Surface
+->Set('Page.Title', 'Write Blog Post - Dashboard')
+->Area('dashboard/nav', [ 'Trail' => [
+	'Blog'  => NULL,
+	'Write' => NULL
+]]);
+
+?>
+
+<div class="BlogPostEditor">
+
+	<div class="mb-4">
+		<div class="fw-bold text-uppercase">Blog</div>
+		<div>
+			<select class="form-select"></select>
+		</div>
+	</div>
+
+	<div class="mb-4">
+		<div class="fw-bold text-uppercase">Title</div>
+		<input type="text" name="Title" class="form-control" />
+	</div>
+
+	<div class="mb-4">
+		<div class="fw-bold text-uppercase">Content</div>
+		<div id="Editor" class="Editor"></div>
+	</div>
+
+</div>
+
+
+<script type="module">
+import Editor from '/share/nui/modules/editor/editor.js';
+
+jQuery(function(){
+
+	new Editor('#Editor');
+
+	return;
+});
+</script>

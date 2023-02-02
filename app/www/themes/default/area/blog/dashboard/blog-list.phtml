@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Database\Struct\PrototypeFindResult $BlogUsers
+ */
+
+
+
+$Surface
+->Set('Page.Title', 'Manage Blogs - Dashboard')
+->Area('dashboard/nav', [ 'Trail' => [
+	'Blog'           => NULL,
+	'Manage Blogs'   => NULL
+]]);
+
+?>
+
+<?php foreach($BlogUsers as $Blog): /** @var Nether\Blog\BlogUser $Blog */ ?>
+<div class="mb-4">
+	<a href="/blog/<?php $Printer($Blog->Blog->Alias) ?>"><?php $Printer($Blog->Blog->Title) ?></a>
+</div>
+<?php endforeach; ?>
+
