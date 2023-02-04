@@ -12,8 +12,9 @@ class ProtectedAPI
 extends PublicAPI {
 /*//
 @date 2022-11-09
-provides a basic route template for public endpoints that need to interact
-as json apis. all output is wrapped in a standardised json message.
+adds basic access protection to the api route which can be managed with the
+various access attributes attached to the method and a user's assigned access
+types.
 //*/
 
 	public function

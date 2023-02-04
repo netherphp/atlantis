@@ -13,7 +13,8 @@ extends Nether\Avenue\Route {
 /*//
 @date 2022-11-09
 provides a basic route template for public endpoints that need to interact
-as json apis. all output is wrapped in a standardised json message.
+as json apis. all output is wrapped in a standardised json message. this version
+does not do any additional access checking.
 //*/
 
 	protected bool
