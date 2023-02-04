@@ -26,7 +26,7 @@ use nether\Sensei\Inspectors\ArgumentInspector;
 			<?php $Printer($Constant->GetName()) ?>
 		</div>
 		<div class="col-12 font-size-normal fw-normal fst-italic opacity-50">
-			<?php $Printer($Constant->Value) ?>
+			<?php $Printer(is_array($Constant->Value) || is_object($Constant->Value) ? gettype($Constant->Value) : $Constant->Value) ?>
 		</div>
 	</div>
 </div>

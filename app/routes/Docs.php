@@ -49,7 +49,7 @@ extends PublicWeb {
 		return;
 	}
 
-	#[RouteHandler('/docs/:Path:')]
+	#[RouteHandler('/docs/::Path::')]
 	#[ConfirmWillAnswerRequest]
 	public function
 	View(string $Path):
@@ -145,6 +145,8 @@ extends PublicWeb {
 	protected function
 	GetDocsFile(string $Path):
 	string {
+
+		//die($Path);
 
 		return sprintf(
 			'%s/docs/phson/%s.phson',
