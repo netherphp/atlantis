@@ -43,7 +43,7 @@ extends Atlantis\ProtectedWeb {
 
 		////////
 
-		$Users = User\Entity::Find($Filters);
+		$Users = User\EntitySession::Find($Filters);
 		$AccessTypes = User\EntityAccessType::Find([ 'Index'=> TRUE ]);
 
 		$Searched = (
@@ -69,7 +69,7 @@ extends Atlantis\ProtectedWeb {
 	HandleView(int $UserID):
 	void {
 
-		$Who = User\Entity::GetByID($UserID);
+		$Who = User\EntitySession::GetByID($UserID);
 		$AccessTypes = $Who->GetAccessTypes();
 		//$UsedAccessTypes = User\EntityAccessType::Find([ 'Index'=> TRUE ]);
 		$DefinedAccessTypes = Atlantis\User\AccessTypeList::Fetch($this->App);

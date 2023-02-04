@@ -37,7 +37,7 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Joined:</div>
 		<div class="mb-0"><?php $Printer($Who->DateCreated) ?></div>
 		<div class="mb-0"><?php $Printer(($Who->DateCreated)(Common\Values::DateFormatT12Z)) ?></div>
-		<div class="opacity-50 font-size-smaller mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeCreated, Precision: 2)) ?></div>
+		<div class="opacity-50 font-size-smaller mb-4"><?php $Printer($Who->GetSinceCreated()) ?></div>
 
 		<!-- ACCOUNT AUTH INFO -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Login Methods:</div>
@@ -81,12 +81,12 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 
 		<!-- ACCOUNT LAST SEEN -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Last Seen:</div>
-		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeSeen)) ?></div>
+		<div class="mb-4"><?php $Printer($Who->GetSinceSeen()) ?></div>
 
 		<?php if($Who->TimeBanned !== 0): ?>
 		<!-- ACCOUNT BAN STATUS -->
 		<div class="text-danger font-size-smaller fw-bold text-uppercase">Banned:</div>
-		<div class="mb-4"><?php $Printer(Common\Units\Timeframe::CalcSuffixedString($Who->TimeBanned)) ?></div>
+		<div class="mb-4"><?php $Printer($Who->GetSinceBanned()) ?></div>
 		<?php endif; ?>
 
 		<!-- ACCOUNT REMOTE ADDR -->
