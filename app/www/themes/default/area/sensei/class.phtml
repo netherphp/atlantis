@@ -78,7 +78,7 @@ $ConstsRemote = $Class->GetConstantsInherited();
 
 	<div class="SenseiClassInfo mb-8">
 		<?php if($Class->Info): ?>
-		<blockquote class="blockquote pt-0 pb-0 opacity-50 font-family-monotype edged-left"><?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Class->Info)) ?></blockquote>
+		<pre class="blockquote pt-0 pb-0 opacity-50 font-family-monotype edged-left"><?php $Printer(Nether\Sensei\Util::TrimNetherDoc($Class->Info)) ?></pre>
 		<?php endif; ?>
 	</div>
 

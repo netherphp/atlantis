@@ -34,6 +34,7 @@
 .letter-space-loosest           { letter-spacing:  0.24em; }
 .letter-space-looser            { letter-spacing:  0.16em; }
 .letter-space-loose             { letter-spacing:  0.08em; }
+.letter-space-reading  	        { letter-spacing:  0.03em; }
 .letter-space-normal            { letter-spacing:  0.00em; }
 .letter-space-tight             { letter-spacing: -0.04em; }
 .letter-space-tighter           { letter-spacing: -0.08em; }
@@ -428,8 +429,13 @@
 	width: 1px;
 }
 
+.mdi {
+	display: inline-block;
+}
+
 .mdi-fw {
 	text-align: center;
+	height: 1.25em;
 	width: 1.25em;
 }
 
@@ -487,4 +493,42 @@
 	backdrop-filter: blur(2px);
 	opacity: 0.75;
 	z-index: 9010;
+}
+
+.box-shadow-normal {
+	box-shadow: 0px 5px 5px #00000055;
+}
+
+.box-shadow-inset {
+	box-shadow: inset 0px 0px 25px #00000055, inset 0px 0px 15px #00000055;
+}
+
+.clickthrough {
+	pointer-events: none;
+	user-select: none;
+}
+
+.quotron {
+	padding-left: 0.5rem;
+	border-left: 4px solid var(--ColourForegroundPage);
+}
+
+.quotron-primary {
+	border-left: 4px solid var(--ColourPrimaryAccent);
+}
+
+.quotron-secondary {
+	border-left: 4px solid var(--ColourSecondaryAccent);
+}
+
+.quotron-tertiary {
+	border-left: 4px solid var(--ColourTertiaryAccent);
+}
+
+.quotron-quatarnary {
+	border-left: 4px solid var(--ColourQuaternaryAccent);
+}
+
+.hr-hide-last hr:last-of-type {
+	display: none;
 }

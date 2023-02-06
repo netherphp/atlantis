@@ -10,7 +10,7 @@ extends SidebarGroup {
 
 	public function
 	__Construct() {
-		parent::__Construct('Admin');
+		parent::__Construct('User Admin');
 
 		($this->Items)
 		->Push(new SidebarGroupItem('Manage Users', '/ops/users/list', 'mdi-account-group'));

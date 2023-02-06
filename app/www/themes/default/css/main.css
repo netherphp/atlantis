@@ -29,7 +29,7 @@
 
 	--FontFamilyNormal: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
 	--FontWeightNormal: 300;
-	--FontSpacingNormal: 0.02em;
+	--FontSpacingNormal: 0.03em;
 
 	--FontFamilyMonotype: 'Consolas', 'Menlo', monospace;
 	--FontWeightMonotype: 300;
@@ -114,7 +114,7 @@ h1, h2, h3, h4 {
 }
 
 hr {
-	opacity: 1.0;
+	opacity: 0.20;
 }
 
 strong {
@@ -152,7 +152,7 @@ strong {
 	z-index: 9001;
 
 	background: var(--ThemeHeaderBackground);
-	box-shadow: 0px 5px 5px #00000055;
+	-box-shadow: 0px 5px 5px #00000055;
 	padding: 16px 0px;
 
 	height: var(--ThemeHeaderHeight);
@@ -188,9 +188,9 @@ strong {
 #PageMain a:link:not(.Block):not(.Tag):not(.btn),
 #PageMain a:visited:not(.Block):not(.Tag):not(.btn) {
 	color: var(--ColourForegroundRoot);
-	border-bottom: 1px dotted;
-	border-bottom-color: var(--ColourForegroundRoot);
-	text-decoration: none;
+	-border-bottom: 1px dotted;
+	-border-bottom-color: var(--ColourForegroundRoot);
+	text-decoration: underline;
 	transition: border-bottom-color 200ms;
 }
 

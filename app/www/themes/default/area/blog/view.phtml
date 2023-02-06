@@ -17,10 +17,37 @@ use Nether\Surface;
 
 <div class="pt-4 pb-4">
 	<div class="container">
-		<h2><?php $Printer($Post->Title) ?></h2>
-		<hr />
 
-		<?php echo $Post->Content ?>
+		<div class="row">
+			<div class="col-12 col-md-8 mb-4 mb-md-0">
+
+				<h2><?php $Printer($Post->Title) ?></h2>
+				<hr class="opacity-20" />
+
+				<div class="letter-space-reading">
+				<?php
+
+				if($Post->Editor === 'editorjs') {
+					$Content = Common\Struct\EditorJS\Content::FromString($Post->Content);
+
+					$Content->Blocks->Each(
+						fn(Common\Struct\EditorJS\Block $Block)
+						=> print($Block)
+					);
+				}
+
+				else
+				echo $Post->ContentHTML;
+
+				?>
+				</div>
+
+			</div>
+			<div class="col-12 col-md-4 mb-4 mb-md-0">
+				[sidebar]
+			</div>
+		</div>
+
 	</div>
 </div>
 

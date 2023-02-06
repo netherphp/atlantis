@@ -18,8 +18,25 @@ $Surface
 ?>
 
 <?php foreach($BlogUsers as $Blog): /** @var Nether\Blog\BlogUser $Blog */ ?>
-<div class="mb-4">
-	<a href="/blog/<?php $Printer($Blog->Blog->Alias) ?>"><?php $Printer($Blog->Blog->Title) ?></a>
+<div class="row align-items-center mb-4">
+	<div class="col-auto">
+		<div class="font-size-largerer">
+			<?php if($Blog->CanAdmin()): ?>
+			<i class="mdi mdi-fw mdi-account-cog"></i>
+			<?php elseif($Blog->CanEdit()): ?>
+			<i class="mdi mdi-fw mdi-account-wrench"></i>
+			<?php elseif($Blog->CanWrite()): ?>
+			<i class="mdi mdi-fw mdi-account-edit"></i>
+			<?php endif; ?>
+		</div>
+	</div>
+	<div class="col">
+		<a href="<?php $Printer($Blog->Blog->GetURL()) ?>"><?php $Printer($Blog->Blog->Title) ?></a>
+	</div>
+	<div class="col-auto">
+		<a href="<?php $Printer($Blog->Blog->GetURL()) ?>" class="btn btn-primary">View</a>
+	</div>
 </div>
+<hr class="mt-0 mb-4" />
 <?php endforeach; ?>
 
