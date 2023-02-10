@@ -6,6 +6,8 @@ use Nether\Common;
 use Nether\Database;
 use Nether\Storage;
 
+use Exception;
+
 #[Database\Meta\TableClass('Uploads', 'UP')]
 #[Database\Meta\InsertUpdate]
 #[Database\Meta\InsertReuseUnique]
@@ -41,5 +43,38 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public function
+	GetPublicURL():
+	?string {
+
+		if(str_starts_with($this->URL, 'storage://'))
+		return $this->GetStorageURL();
+
+		return NULL;
+	}
+
+	public function
+	GetStorageURL():
+	?string {
+
+		$Mgr = new Storage\Manager;
+		$Found = NULL;
+
+		preg_match(
+			'#^storage://([^/]+?)(/.+)$#',
+			$this->URL,
+			$Found
+		);
+
+		if(count($Found) !== 3)
+		throw new Exception('storage url seems malformed');
+
+		$Storage = $Mgr->Location($Found[1]);
+
+		if($Storage === NULL)
+		throw new Exception("storage {$Found[1]} not defined");
+
+		return $Storage->GetPublicURL(ltrim($Found[2], '/'));
+	}
 
 }

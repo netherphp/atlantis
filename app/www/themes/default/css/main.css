@@ -55,7 +55,6 @@
 	--ColourBackgroundPageAlt2: #151515;
 
 	--ThemeHeaderBackground: #000000;
-	--ThemeHeaderHeight: 100px;
 }
 
 html, body {
@@ -153,24 +152,22 @@ strong {
 
 	background: var(--ThemeHeaderBackground);
 	-box-shadow: 0px 5px 5px #00000055;
-	padding: 16px 0px;
-
-	height: var(--ThemeHeaderHeight);
+	padding: 14px 0px 14px 0px;
 }
 
 #PageHeader nav {
 	text-transform: uppercase;
 }
 
-#PageHeader nav a:link:not(.btn),
-#PageHeader nav a:visited:not(.btn) {
+#PageHeader a:link:not(.btn),
+#PageHeader a:visited:not(.btn) {
 	color: #FFFFFF;
 	text-decoration: none;
 	transition: color 200ms;
 }
 
-#PageHeader nav a:hover:not(.btn),
-#PageHeader nav a:active:not(.btn) {
+#PageHeader a:hover:not(.btn),
+#PageHeader a:active:not(.btn) {
 	color: var(--ColourPrimaryAccent);
 }
 
@@ -178,6 +175,38 @@ strong {
 	font-size: 0.8em;
 	font-weight: bold;
 	padding: 1px 8px 2px 8px;
+}
+
+#PageHeaderMenu {
+	height: 0px;
+	overflow: hidden;
+}
+
+#PageHeaderMenuToggle span:nth-of-type(1) {
+	opacity: 1.0;
+}
+
+#PageHeaderMenuToggle span:nth-of-type(2) {
+	opacity: 0.0;
+}
+
+.MenuOpen #PageHeaderMenuToggle span:nth-of-type(1) {
+	opacity: 0.0;
+}
+
+.MenuOpen #PageHeaderMenuToggle span:nth-of-type(2) {
+	opacity: 1.0;
+}
+
+
+.MenuOpen #PageHeaderMenu {
+	height: auto;
+}
+
+@media(min-width:768px) {
+	#PageHeaderMenu {
+		height: auto;
+	}
 }
 
 #PageMain {
@@ -188,8 +217,8 @@ strong {
 #PageMain a:link:not(.Block):not(.Tag):not(.btn),
 #PageMain a:visited:not(.Block):not(.Tag):not(.btn) {
 	color: var(--ColourForegroundRoot);
-	-border-bottom: 1px dotted;
-	-border-bottom-color: var(--ColourForegroundRoot);
+	--border-bottom: 1px dotted;
+	--border-bottom-color: var(--ColourForegroundRoot);
 	text-decoration: underline;
 	transition: border-bottom-color 200ms;
 }

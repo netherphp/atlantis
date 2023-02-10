@@ -429,6 +429,10 @@
 	width: 1px;
 }
 
+.cursor-pointer {
+	cursor: pointer;
+}
+
 .mdi {
 	display: inline-block;
 }

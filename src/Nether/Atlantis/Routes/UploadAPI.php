@@ -28,12 +28,12 @@ extends Atlantis\ProtectedAPI {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	##[Avenue\Meta\RouteHandler('/api/upload/chunk', Verb: 'POST')]##
+	## [Avenue\Meta\RouteHandler('/api/upload/chunk', Verb: 'POST')] #########
 	public function
 	ChunkPost():
 	void {
 
-		$Storage = $this->App->Storage->Locations['Temp'];
+		$Storage = $this->App->Storage->Location('Temp');
 
 		if(!($Storage instanceof Storage\Adaptors\Local))
 		$this->Quit(4, 'no Temp storage or not is not a Local adaptor.');

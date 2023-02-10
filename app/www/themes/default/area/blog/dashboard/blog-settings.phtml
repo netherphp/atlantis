@@ -6,7 +6,7 @@
  * @var Nether\Blog\Blog $Blog
  */
 
-
+Nether\Common\Dump::Var($Blog, TRUE);
 
 $Surface
 ->Set('Page.Title', 'Blog Settings - Dashboard')
@@ -37,6 +37,32 @@ $Surface
 		<div>
 			<textarea name="Details" class="form-control" rows="6"><?php $Printer($Blog->Details) ?></textarea>
 		</div>
+	</div>
+
+	<div class="mb-4">
+		<button id="BlogSettingsUploadHeader" type="button" class="btn btn-primary">Upload Header</button>
+		<button id="BlogSettingsUploadIcon" type="button" class="btn btn-primary">Upload Icon</button>
+		<script type="module">
+		import UploadButton from '/share/nui/modules/uploader/uploader.js';
+
+		jQuery(function() {
+
+			let root = jQuery('#BlogSettings');
+			let bid = root.attr('data-blog-id');
+
+			new UploadButton('#BlogSettingsUploadHeader', {
+				'url': '/api/blog/entity/header',
+				'dataset': { 'ID': bid }
+			});
+
+			new UploadButton('#BlogSettingsUploadIcon', {
+				'url': '/api/blog/entity/icon',
+				'dataset': { 'ID': bid }
+			});
+
+			return;
+		});
+		</script>
 	</div>
 
 	<div class="mb-4">
