@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Blog\Blog $Blog
+ */
+
+
+
+$Surface
+->Set('Page.Title', 'Blog Settings - Dashboard')
+->Area('dashboard/nav', [ 'Trail' => [
+	'Blog'                      => NULL,
+	"Settings ({$Blog->Title})" => NULL
+]]);
+
+?>
+
+<form id="BlogSettings" data-blog-id="<?php $Printer($Blog->ID) ?>">
+	<div class="mb-4">
+		<div class="fw-bold text-uppercase">Title</div>
+		<div>
+			<input name="Title" type="text" class="form-control" value="<?php $Printer($Blog->Title) ?>" />
+		</div>
+	</div>
+
+	<div class="mb-4">
+		<div class="fw-bold text-uppercase">Tagline</div>
+		<div>
+			<input name="Tagline" type="text" class="form-control" value="<?php $Printer($Blog->Tagline) ?>" />
+		</div>
+	</div>
+
+	<div class="mb-4">
+		<div class="fw-bold text-uppercase">About</div>
+		<div>
+			<textarea name="Details" class="form-control" rows="6"><?php $Printer($Blog->Details) ?></textarea>
+		</div>
+	</div>
+
+	<div class="mb-4">
+		<input type="hidden" name="ID" value="<?php $Printer($Blog->ID) ?>" />
+		<button type="submit" class="btn btn-primary">
+			<i class="mdi mdi-fw mdi-content-save"></i>
+			Save
+		</button>
+	</div>
+</form>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import FormUtil from '/share/nui/util/form.js';
+
+jQuery(function() {
+
+	jQuery('#BlogSettings')
+	.on('submit', function() {
+
+		let form = new FormUtil(this);
+		let api = new API.Request('PATCH', '/api/blog/entity');
+
+		form.read();
+
+		(api.send(form))
+		.then(api.goto)
+		.catch(api.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>
+

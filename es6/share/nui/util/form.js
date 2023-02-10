@@ -3,29 +3,89 @@ class FormUtil {
 	constructor(input) {
 
 		this.element = jQuery(input);
-		this.output = 'string';
+		this.contentType = null;
+		this.dataType = null;
+		this.data = [];
+
+		this.setContentType('encoded');
 
 		return;
 	};
 
-	getData() {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		if(this.output === 'formdata')
-		return this.getDataFormData();
+	read() {
+	/*//
+	@date 2023-02-06
+	sucks the data currently in the form into oneself.
+	//*/
 
-		if(this.output === 'array')
-		return this.getDataArray();
+		this.data = [];
 
-		return this.getDataString();
+		for(const item of this.element.serializeArray())
+		this.data[item.name] = item.value;
+
+		return this;
 	};
+
+	set(key, val) {
+	/*//
+	@date 2023-02-06
+	push specific data into the dataset.
+	//*/
+
+		this.data[key] = val;
+
+		return this;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	getContentType() {
+	/*//
+	@date 2023-02-06
+	//*/
+
+		return this.contentType;
+	};
+
+	setContentType(ctype) {
+
+		switch(ctype) {
+			case 'normal':
+			case 'string':
+			case 'encoded':
+				this.dataType = 'encoded';
+				this.contentType = 'application/x-www-form-urlencoded;charset=UTF-8';
+			break;
+
+			case 'multipart':
+			case 'data':
+			case 'upload':
+				this.dataType = 'formdata';
+				this.contentType = 'multipart/form-data';
+			break;
+
+			default:
+				this.dataType = 'encoded';
+				this.contentType = ctype;
+			break;
+		}
+
+		return;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	getDataFormData() {
 
-		let input = this.element.serializeArray();
 		let data = new FormData;
 
-		for(const item of input)
-		data.set(item.name, item.value);
+		for(const key in this.data)
+		data.set(key, this.data[key]);
 
 		return data;
 	};
@@ -37,34 +97,43 @@ class FormUtil {
 
 	getDataObject() {
 
-		let input = this.element.serializeArray();
 		let data = {};
 
-		for(const item of input)
-		data[item.name] = item.value;
+		for(const key in this.data)
+		data[key] = this.data[key];
 
 		return data;
 	};
 
 	getDataString() {
 
-		let input = this.element.serializeArray();
-		return FormUtil.ObjectArrayToDataString(input);
+		return FormUtil.ObjectArrayToDataString(this.data);
 	};
+
+	getData() {
+
+		if(this.dataType === 'formdata')
+		return this.getDataFormData();
+
+		if(this.dataType === 'object' || this.dataType === 'array')
+		return this.getDataObject();
+
+		return this.getDataString();
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static ObjectArrayToDataString(input) {
 
 		let output = [];
 
-		for(const item of input)
-		output.push(`${item.name}=${encodeURIComponent(item.value)}`);
+		for(const key of Object.keys(input))
+		output.push(`${key}=${encodeURIComponent(input[key])}`);
 
 		return output.join('&');
 
 	};
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
 
 	static WhenSubmitDoCleanURL() {
 

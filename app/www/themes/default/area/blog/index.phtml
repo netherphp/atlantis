@@ -6,6 +6,7 @@ use Nether\Database;
 
 /**
   * @var Blog\Blog $Blog
+  * @var ?Blog\BlogUser $BlogUser
   * @var Database\Struct\PrototypeFindResult $Posts
   * @var Common\Datastore $Popular
   */
@@ -39,8 +40,10 @@ use Nether\Database;
 						<a href="<?php $Printer($Post->GetURL()) ?>" class="fw-bold">Continue Reading...</a>
 					</div>
 					<div class="opacity-50">
-						<i class="mdi mdi-fw mdi-clock-time-four"></i>
-						n Min Read
+						<i class="mdi mdi-fw mdi-clock-time-four"></i> n Min Read
+						<?php if($Post->CanUserEdit($BlogUser)): ?>
+						| <a href="<?php $Printer($Post->GetEditURL()) ?>">Edit</a>
+						<?php endif; ?>
 					</div>
 				</div>
 				<hr class="mt-4 mb-4" />
@@ -50,7 +53,28 @@ use Nether\Database;
 					[pagination widget]
 				</div>
 			</div>
-			<div class="opacity-50 col-4">
+			<div class="col-4">
+
+				<?php if($BlogUser): ?>
+				<!-- SIDEBAR: MANAGE -->
+				<div class="quotron hr-hide-last mb-6">
+					<?php if($BlogUser->CanWrite()): ?>
+					<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-primary btn-block text-align-left">
+						<i class="mdi mdi-fw mdi-text-box-edit"></i>
+						Write
+					</a>
+					<hr class="mt-2 mb-2" />
+					<?php endif; ?>
+
+					<?php if($BlogUser->CanAdmin()): ?>
+					<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-primary btn-block text-align-left">
+						<i class="mdi mdi-fw mdi-cog"></i>
+						Blog Settings
+					</a>
+					<hr class="mt-2 mb-2" />
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
 
 				<!-- SIDEBAR: ABOUT -->
 				<div class="quotron mb-6">

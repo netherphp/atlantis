@@ -192,4 +192,19 @@ class Util {
 		return str_replace('\\', '/', $Input);
 	}
 
+	static public function
+	AppendGoto(string $URL, string $What):
+	string {
+
+		$Encoded = Common\Datafilters::Base64Encode($What);
+		$Output = $URL;
+
+		if(str_contains($URL, '?'))
+		$Output .= "&goto={$Encoded}";
+		else
+		$Output .= "?goto={$Encoded}";
+
+		return $Output;
+	}
+
 }

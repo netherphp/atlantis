@@ -20,6 +20,12 @@ from your application.
 	// commented out because safari from 2019 is still out in the wild
 	// and it was the last holdout to even start adding field support.
 
+	// type = null;
+	/*//
+	@type string
+	defines the type of editor this is.
+	//*/
+
 	// selector = null;
 	/*//
 	@type string
@@ -64,6 +70,7 @@ from your application.
 
 	constructor(selector) {
 
+		this.type = 'html';
 		this.selector = selector;
 		this.element = null;
 		this.toolbars = {};
@@ -71,6 +78,7 @@ from your application.
 		this.debug = null;
 		this.api = null;
 		this.document = null;
+		this.content = null;
 
 		////////
 
@@ -84,6 +92,8 @@ from your application.
 		this.prepareElement();
 		this.prepareApi();
 		this.onContentChange();
+
+		this.element.removeClass('d-none');
 
 		/*
 		(new ModalDialog)
@@ -102,6 +112,9 @@ from your application.
 		this.debug = new DebugViewport(this);
 		this.selected = null;
 
+		this.content = this.element.html();
+		this.element.empty();
+
 		this.toolbars.main = new ToolbarMain(this);
 		this.toolbars.image = new ToolbarImage(this);
 		this.hideExtraToolbars();
@@ -118,6 +131,7 @@ from your application.
 
 		this.api = new Squire(this.viewport.element.get(0));
 		this.document = this.api.getDocument();
+		this.setContent(this.content);
 
 		this.api.addEventListener(
 			'pathChange',
@@ -257,6 +271,16 @@ from your application.
 	////////////////////////////////////////////////////////////////
 
 	getHTML() {
+
+		return this.api.getHTML();
+	};
+
+	setContent(input) {
+
+		return this.api.setHTML(input);
+	};
+
+	getContent() {
 
 		return this.api.getHTML();
 	};

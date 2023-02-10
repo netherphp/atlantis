@@ -42,10 +42,10 @@ as html pages. //*/
 	////////////////////////////////////////////////////////////////
 
 	public function
-	OnWillConfirmReady(?Datastore $Input):
-	void {
+	OnWillConfirmReady(?Datastore $ExtraData):
+	int {
 
-		$this->App = $Input['App'];
+		$this->App = $ExtraData['App'];
 		$this->User = $this->App->User;
 		$this->Config = $this->App->Config;
 		$this->Surface = $this->App->Surface;
@@ -53,14 +53,14 @@ as html pages. //*/
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
-		return;
+		return Avenue\Response::CodeOK;
 	}
 
 	public function
-	OnReady(?Datastore $Input):
+	OnReady(?Datastore $ExtraData):
 	void {
 
-		$this->OnWillConfirmReady($Input);
+		$this->OnWillConfirmReady($ExtraData);
 
 		($this->App->Surface)
 		->Queue('BuildGlobalScope', $this->BuildGlobalScope(...), TRUE)
@@ -258,6 +258,15 @@ as html pages. //*/
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	SetHeader(string $Name, mixed $Value):
+	static {
+
+		$this->Response->SetHeader($Name, $Value);
+
+		return $this;
+	}
 
 	public function
 	HasUser():

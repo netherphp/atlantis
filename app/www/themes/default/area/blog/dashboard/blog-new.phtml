@@ -32,6 +32,35 @@ $Surface
 		<textarea name="Details" class="form-control"></textarea>
 	</div>
 	<div>
-		<button type="submit" class="btn btn-primary btn-block fw-bold">Create</button>
+		<button type="submit" class="btn btn-primary fw-bold">
+			<i class="mdi mdi-fw mdi-plus"></i>
+			Create
+		</button>
 	</div>
 </form>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import FormUtil from '/share/nui/util/form.js';
+
+jQuery(function(){
+
+	jQuery('#BlogNewForm')
+	.on('submit', function() {
+
+		let form = new FormUtil(this);
+		let api = new API.Request('POST', '/api/blog/entity');
+
+		form.read();
+
+		(api.send(form))
+		.then(api.goto)
+		.catch(api.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>
+

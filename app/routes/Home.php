@@ -21,9 +21,20 @@ extends PublicWeb {
 		return;
 	}
 
+	#[ErrorHandler(Response::CodeForbidden)]
+	public function
+	ErrorForbidden():
+	void {
+
+		($this->App->Surface)
+		->Area('error/forbidden');
+
+		return;
+	}
+
 	#[ErrorHandler(Response::CodeNotFound)]
 	public function
-	NotFound():
+	ErrorNotFound():
 	void {
 
 		($this->App->Surface)

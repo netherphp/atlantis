@@ -1,0 +1,20 @@
+<?php
+
+$Faces = [
+	'(￢_￢;)', '(︶︹︺)', 'o(> <)o', 'ヽ(‵﹏´)ノ'
+];
+
+$Messages = [
+	"Only Garnet is allowed to be here."
+];
+
+$ChoiceFace = random_int(0, (count($Faces) - 1));
+$ChoiceMessage = random_int(0, (count($Messages) - 1));
+
+?>
+
+<div class="container pt-8 pb-8">
+	<div class="font-family-monotype fw-bold"><?php echo $Faces[$ChoiceFace] ?></div>
+	<h1 class="text-uppercase">Forbidden</h1>
+	<p><?php echo $Messages[$ChoiceMessage] ?></p>
+</div>

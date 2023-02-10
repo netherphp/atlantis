@@ -3,40 +3,44 @@
 namespace Nether\Atlantis;
 use Nether;
 
-use Nether\Common\Datastore;
+use Nether\Avenue;
+use Nether\Common;
 
 class ProtectedWeb
 extends PublicWeb {
 
 	public function
-	OnReady(?Datastore $Input):
-	void {
+	OnWillConfirmReady(?Common\Datastore $ExtraData):
+	int {
 
-		parent::OnReady($Input);
+		parent::OnWillConfirmReady($ExtraData);
 
 		if(!$this->CanUserAccess()) {
-			if(!$this->HasUser())
-			$this->Goto('/login', TRUE);
+			if(!$this->HasUser()) {
+				$this->SetHeader('Location', Util::AppendGoto(
+					'/login',
+					$this->Request->GetURL()
+				));
 
-			////////
+				return Avenue\Response::CodeFound;
+			}
 
-			$this->Response->SetCode(403);
-			$this->Quit(403);
+			return Avenue\Response::CodeForbidden;
 		}
 
-		return;
+		return Avenue\Response::CodeOK;
 	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	public function
+	protected function
 	CanUserAccess():
 	bool {
 
 		$Handler = $this->App->Router->GetCurrentHandler();
 		$MethodInfo = static::GetMethodInfo($Handler->Method);
-		$AccessTypes = new Datastore;
+		$AccessTypes = new Common\Datastore;
 		$UserTypes = NULL;
 		$Key = NULL;
 		$Val = NULL;

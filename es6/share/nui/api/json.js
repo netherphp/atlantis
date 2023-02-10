@@ -42,25 +42,69 @@ class JsonRequest {
 
 	send(data) {
 
+		// if no specific data was supplied to this method then pull the
+		// dataset already associated with this instance.
+
 		if(typeof data === 'undefined')
 		data = this.data;
 
-		// @todo 2022-11-17 need to be able to switch between urlencoded
-		// and multipart form styles for uploads later. the php side also
-		// needs to be taught how to parse multipart.
-
-		let formdata = data;
-
-		if(formdata instanceof FormUtil)
-		formdata = formdata.getDataString();
+		////////
 
 		let headers = {
-			'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+			'content-type': (
+				'application/x-www-form-urlencoded;'
+				+ 'charset=UTF-8'
+			)
 		};
 
-		let req = (
-			fetch(this.url, { method: this.method, body: formdata, headers: headers })
-			.then(function(resp) { return JsonResult.FromResponse(resp); })
+		let body = null;
+		let req = null;
+
+		////////
+
+		// if the supplied data was a js form data object it seems like
+		// that just only really works with multipart when used as the
+		// form body.
+
+		if(data instanceof FormData) {
+			headers['content-type'] = 'multipart/form-data';
+			body = data;
+		}
+
+		// if the supplied data is our form util class then we can modify
+		// the request that needs to be sent based on what it wants.
+
+		else if(data instanceof FormUtil) {
+			headers['content-type'] = data.getContentType();
+			body = data.getData();
+		}
+
+		// else... yolo. hope you knew what you were doing.
+
+		else {
+			body = data;
+		}
+
+		////////
+
+		// if it was a multipart form then we actually need to unset that
+		// header because the browser will need to refill it with the
+		// random boundary values it invents.
+
+		if(headers['content-type'] === 'multipart/form-data')
+		delete headers['content-type'];
+
+		////////
+
+		req = (
+			fetch(this.url, {
+				method: this.method,
+				headers: headers,
+				body: body
+			})
+			.then(function(resp) {
+				return JsonResult.FromResponse(resp);
+			})
 			.then(function(result) {
 				if(result.error !== 0)
 				return Promise.reject(result);
@@ -134,3 +178,4 @@ class JsonRequest {
 };
 
 export { JsonRequest, JsonResult };
+export default { Request: JsonRequest, Result: JsonResult };

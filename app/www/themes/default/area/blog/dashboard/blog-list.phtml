@@ -36,6 +36,11 @@ $Surface
 	<div class="col-auto">
 		<a href="<?php $Printer($Blog->Blog->GetURL()) ?>" class="btn btn-primary">View</a>
 	</div>
+	<?php if($Blog->CanAdmin()): ?>
+	<div class="col-auto">
+		<a href="<?php $Printer($Blog->Blog->GetSettingsURL()) ?>" class="btn btn-primary">Settings</a>
+	</div>
+	<?php endif; ?>
 </div>
 <hr class="mt-0 mb-4" />
 <?php endforeach; ?>

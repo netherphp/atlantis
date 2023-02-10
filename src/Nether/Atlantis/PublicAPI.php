@@ -3,10 +3,8 @@
 namespace Nether\Atlantis;
 use Nether;
 
-use Nether\Common\Datastore;
-use Nether\Atlantis\Filter;
-use Nether\Atlantis\Util;
-use Nether\Atlantis\Library;
+use Nether\Avenue;
+use Nether\Common;
 
 class PublicAPI
 extends Nether\Avenue\Route {
@@ -36,23 +34,23 @@ does not do any additional access checking.
 	$User;
 
 	public function
-	OnWillConfirmReady(?Datastore $Input):
-	void {
+	OnWillConfirmReady(?Common\Datastore $ExtraData):
+	int {
 
-		$this->App = $Input['App'];
+		$this->App = $ExtraData['App'];
 		$this->User = $this->App->User;
 		$this->Config = $this->App->Config;
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
-		return;
+		return Avenue\Response::CodeOK;
 	}
 
 	public function
-	OnReady(?Datastore $Input):
+	OnReady(?Common\Datastore $ExtraData):
 	void {
 
-		$this->OnWillConfirmReady($Input);
+		$this->OnWillConfirmReady($ExtraData);
 
 		($this->App->Surface)
 		->Set('API.Error', 0)
@@ -181,6 +179,15 @@ does not do any additional access checking.
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	SetHeader(string $Name, mixed $Value):
+	static {
+
+		$this->Response->SetHeader($Name, $Value);
+
+		return $this;
+	}
 
 	public function
 	HasUser():
