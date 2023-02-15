@@ -10,6 +10,7 @@
 
 .PageHeader a:link:not(.btn),
 .PageHeader a:visited:not(.btn) {
+	border-bottom: 0px;
 	color: var(--bs-body-color);
 	text-decoration: none;
 	transition: color 200ms;

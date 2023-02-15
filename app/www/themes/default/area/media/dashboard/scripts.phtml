@@ -17,7 +17,7 @@ jQuery(function(){
 		let data = { ID: id };
 
 		let dialog = new ConfirmDialog({
-			message: `Really delete? ID #${id}`,
+			message: `Really Delete? ID #${id}`,
 			btnAccept: 'btn-danger',
 			labelAccept: 'Delete',
 			onAccept: (function() {
@@ -30,6 +30,35 @@ jQuery(function(){
 
 				(api.send(data))
 				.then(after)
+				.catch(api.catch);
+
+				return;
+			})
+		});
+
+		dialog.show();
+
+		return false;
+	});
+
+	jQuery('.btn[data-media-regenerate]')
+	.on('click', function(){
+
+		let that = jQuery(this);
+		let id = that.attr('data-media-regenerate');
+		let api = new API.Request('REGEN', '/api/media/entity');
+		let data = { ID: id };
+
+		let dialog = new ConfirmDialog({
+			message: `Regenerate all extra files and thumbnails for ID #${id}`,
+			btnAccept: 'btn-primary',
+			labelAccept: 'Regenerate',
+			onAccept: (function() {
+
+				this.setLoading(true, 'Regenerating...');
+
+				(api.send(data))
+				.then(api.reload)
 				.catch(api.catch);
 
 				return;

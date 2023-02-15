@@ -68,10 +68,15 @@ html, body {
 
 a:link:not(.btn),
 a:visited:not(.btn) {
+	border-bottom: 1px dotted var(--bs-body-color);
 	color: var(--bs-body-color);
+	text-decoration: none;
 }
 
-code {
+code,
+a > code,
+pre {
+	color: var(--bs-code-color);
 	font-family: var(--theme-font-mono-family);
 	font-weight: var(--theme-font-mono-weight);
 	letter-spacing: var(--theme-font-mono-letter-spacing);

@@ -17,91 +17,168 @@ $Surface
 	'View'   => NULL
 ]]);
 
+$File = $Item->GetFile();
+
 ?>
 
 <div class="row justify-content-center">
 	<div class="col-12 col-lg-8 mb-4 mb-4 mb-md-0">
 		<?php if($Item->Type === 'img'): ?>
-		<img src="<?php $Printer($Item->GetPublicURL()) ?>" />
+		<img src="<?php $Printer($Item->GetPreviewURL('lg.jpeg')) ?>" />
 		<?php else: ?>
 		[some unviewed media type: <?php $Printer($Item->Type) ?>]
 		<?php endif; ?>
 	</div>
 	<div class="col-12 col-lg-4">
 		<div class="jumbotron quotron rounded mb-4">
-			<div class="row tight font-size-smaller">
+			<div class="hr-hide-last font-size-smaller">
 
-				<div class="col">
-					<i class="mdi mdi-fw mdi-pound"></i>
-					<strong>ID:</strong>
+				<!-- ID -->
+				<div>
+					<div class="d-flex align-items-center justify-content-between mb-1">
+						<div>
+							<i class="mdi mdi-fw mdi-pound"></i>
+							<strong>ID</strong>
+						</div>
+						<div>
+							<a href="#" data-nui-copy-value="<?php $Printer($Item->ID) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
+						</div>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<code><?php $Printer($Item->ID) ?></code>
+					</div>
 				</div>
-				<div class="col-auto"><?php $Printer($Item->ID) ?></div>
-				<div class="col-auto">
-					<a href="#" data-nui-copy-value="<?php $Printer($Item->ID) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
-				</div>
-				<div class="col-12"><hr /></div>
+				<hr />
 
-				<div class="col">
-					<i class="mdi mdi-fw mdi-liquid-spot"></i>
-					<strong>UUID:</strong>
+				<!-- UUID -->
+				<div>
+					<div class="d-flex align-items-center justify-content-between mb-1">
+						<div>
+							<i class="mdi mdi-fw mdi-liquid-spot"></i>
+							<strong>UUID</strong>
+						</div>
+						<div>
+							<a href="#" data-nui-copy-value="<?php $Printer($Item->UUID) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
+						</div>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<code><?php $Printer($Item->UUID) ?></code>
+					</div>
 				</div>
-				<div class="col-6">
-					<div class="text-align-right text-ellipsis"><?php $Printer($Item->UUID) ?></div>
-				</div>
-				<div class="col-auto">
-					<a href="#" data-nui-copy-value="<?php $Printer($Item->UUID) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
-				</div>
-				<div class="col-12"><hr /></div>
+				<hr />
 
-				<div class="col">
-					<i class="mdi mdi-fw mdi-file"></i>
-					<strong>Type:</strong>
+				<!-- TYPE -->
+				<div>
+					<div class="mb-1">
+						<i class="mdi mdi-fw mdi-file"></i>
+						<strong>Type</strong>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<code><?php $Printer($Item->Type) ?></code>
+					</div>
 				</div>
-				<div class="col-auto"><?php $Printer($Item->Type) ?></div>
-				<div class="col-12"><hr /></div>
+				<hr />
 
-				<div class="col">
-					<i class="mdi mdi-fw mdi-weight"></i>
-					<strong>Size:</strong>
+				<!-- NAME -->
+				<div>
+					<div class="mb-1">
+						<i class="mdi mdi-fw mdi-file"></i>
+						<strong>Name</strong>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<code><?php $Printer($Item->Name) ?></code>
+					</div>
 				</div>
-				<div class="col-auto"><?php $Printer($Item->GetSizeReadable()) ?></div>
-				<div class="col-12"><hr /></div>
+				<hr />
 
-				<div class="col">
-					<i class="mdi mdi-fw mdi-link"></i>
-					<strong>URL:</strong>
+				<!-- URLS -->
+				<div>
+					<div class="d-flex align-items-center justify-content-between mb-1">
+						<div>
+							<i class="mdi mdi-fw mdi-link"></i>
+							<strong>URL</strong>
+						</div>
+						<div>
+							<a href="#" data-nui-copy-value="<?php $Printer($Item->GetPublicURL()) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
+						</div>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<a href="<?php $Printer($Item->GetPublicURL()) ?>" target="_blank"><code><?php $Printer($Item->GetPublicURL()) ?></code></a>
+					</div>
 				</div>
-				<div class="col-auto">
-					<a href="<?php $Printer($Item->GetPublicURL()) ?>" target="_blank">Link to File</a>
-				</div>
-				<div class="col-auto">
-					<a href="#" data-nui-copy-value="<?php $Printer($Item->GetPublicURL()) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
-				</div>
-				<div class="col-12"><hr /></div>
+				<hr />
 
-				<div class="col">
-					<i class="mdi mdi-fw mdi-tag"></i>
-					<strong>Tags:</strong>
+				<!-- MORE URLS -->
+				<?php foreach($Item->ExtraFiles as $ExtraName => $ExtraSize): $ExtraFile = $Item->GetFile($ExtraName); ?>
+				<div>
+					<div class="d-flex align-items-center justify-content-between mb-1">
+						<div>
+							<i class="mdi mdi-fw mdi-link-variant"></i>
+							<strong>URL (<?php $Printer($ExtraName) ?>)</strong>
+						</div>
+						<div>
+							<a href="#" data-nui-copy-value="<?php $Printer($ExtraFile->GetPublicURL()) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
+						</div>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<a href="<?php $Printer($ExtraFile->GetPublicURL()) ?>" target="_blank"><code><?php $Printer($ExtraFile->GetPublicURL()) ?></code></a>
+					</div>
 				</div>
-				<div class="col-12 mb-2"></div>
-				<div class="col-12">
-					<button href="#" class="btn btn-sm pt-1 pb-1 btn-light" data-media-tag-add="<?php $Printer($Item->UUID) ?>" data-media-link-type="<?php $Printer(Nether\Atlantis\Media\FileTagLink::LinkType) ?>">
-						<i class="mdi mdi-fw mdi-plus"></i> Add
-					</button>
+				<hr />
+				<?php endforeach; unset($ExtraName, $ExtraSize, $ExtraFile); ?>
 
-					<?php foreach($Tags as $Link): /** @var Nether\Atlantis\Media\FileTagLink $Link */ ?>
-					<a href="#" class="btn btn-sm pt-1 pb-1 btn-outline-light"><?php $Printer($Link->Tag->Name) ?></a>
-					<?php endforeach; unset($Tag); ?>
+				<!-- TAGS -->
+				<div>
+					<div class="d-flex align-items-center justify-content-between mb-2">
+						<div>
+							<i class="mdi mdi-fw mdi-tag"></i>
+							<strong>Tags</strong>
+						</div>
+						<div>
+							<?php $Printer($Tags->Count()) ?>
+						</div>
+					</div>
+					<div>
+						<button href="#" class="btn btn-sm pt-1 pb-1 btn-light" data-media-tag-add="<?php $Printer($Item->UUID) ?>" data-media-link-type="<?php $Printer(Nether\Atlantis\Media\FileTagLink::LinkType) ?>">
+							<i class="mdi mdi-fw mdi-plus"></i> Add
+						</button>
+
+						<?php foreach($Tags as $Link): /** @var Nether\Atlantis\Media\FileTagLink $Link */ ?>
+						<a href="#" class="btn btn-sm pt-1 pb-1 btn-outline-light text-transform-none"><?php $Printer($Link->Tag->Name) ?></a>
+						<?php endforeach; unset($Tag); ?>
+					</div>
 				</div>
+				<hr />
 
 			</div>
 		</div>
 
 		<div class="jumbotron quotron rounded">
-			<button class="btn btn-danger btn-block text-align-left" data-media-delete="<?php $Printer($Item->ID) ?>" data-goto="/dashboard/media/browse">
-				<i class="mdi mdi-fw mdi-trash-can"></i>
-				Delete
-			</button>
+			<div class="row">
+
+				<?php if($Item->Type === $Item::TypeImg): ?>
+				<div class="col-12 mb-2">
+					<button class="btn btn-outline-light btn-block text-align-left" data-media-regenerate="<?php $Printer($Item->ID) ?>">
+						<i class="mdi mdi-fw mdi-file-image-plus-outline mr-2"></i>
+						Regenerate Images
+					</button>
+				</div>
+				<?php endif; ?>
+
+				<div class="col-12">
+					<button class="btn btn-danger btn-block text-align-left" data-media-delete="<?php $Printer($Item->ID) ?>" data-goto="/dashboard/media/browse">
+						<i class="mdi mdi-fw mdi-trash-can mr-2"></i>
+						Delete
+					</button>
+				</div>
+
+			</div>
 		</div>
 	</div>
 </div>

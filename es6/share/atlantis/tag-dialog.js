@@ -96,6 +96,7 @@ extends ModalDialog {
 		.removeClass('mdi-plus')
 		.addClass('mdi-minus');
 
+		this.tagbin.find('span').remove();
 		this.tagbin.append(btn);
 
 		console.log(`[onSearchTagClick] tag remove: ${tid}`);
@@ -113,7 +114,7 @@ extends ModalDialog {
 		for(let tag of result.payload.Tags) {
 			output.append(
 				jQuery('<button />')
-				.addClass('btn btn-dark mb-2 mr-2')
+				.addClass('btn btn-dark text-transform-none mb-2 mr-2')
 				.attr('data-tag-id', tag.ID)
 				.attr('data-tag-key', tag.Name.toLowerCase())
 				.attr('data-tag-name', tag.Name)
@@ -160,7 +161,7 @@ extends ModalDialog {
 
 			output.append(
 				jQuery('<button />')
-				.addClass('btn btn-primary mb-2 mr-2')
+				.addClass('btn btn-primary text-transform-none mb-2 mr-2')
 				.attr('data-tag-id', tag.ID)
 				.attr('data-tag-key', tag.Name.toLowerCase())
 				.attr('data-tag-name', tag.Name)
@@ -190,7 +191,6 @@ extends ModalDialog {
 		);
 
 		////////
-
 
 		(this.querybin)
 		.empty()
@@ -224,8 +224,10 @@ extends ModalDialog {
 		let itids = 0;
 		let inames = 0;
 
-		this.tagbin.find('.btn')
+		this.tagbin.find('button.btn')
 		.each(function(it) {
+			console.log(it);
+
 			if(this.dataset.tagId !== 'null') {
 				output[`TagID[${itids}]`] = this.dataset.tagId;
 				itids += 1;

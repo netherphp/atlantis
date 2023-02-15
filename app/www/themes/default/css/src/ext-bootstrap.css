@@ -56,6 +56,7 @@
 .text-underline-none { text-decoration: none; }
 .text-muted { color: #7d7d7d !important; }
 .text-decoration-none { border-bottom: 0px !important; text-decoration: none !important; }
+.text-transform-none { text-transform: initial !important; }
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -287,6 +288,11 @@
 	transition: transform 350ms;
 }
 
+.ratiobox a.position-absolutely {
+	border-bottom: 0px;
+	text-decoration: none;
+}
+
 /*******************************************************************************
 **** background image stuff ***************************************************/
 
@@ -423,7 +429,7 @@
 }
 
 .jumbotron {
-	background: #1A1A1A;
+	background: var(--theme-dark-glass);
 	padding: 1em;
 }
 
@@ -505,23 +511,23 @@
 
 .quotron {
 	padding-left: 0.5rem;
-	border-left: 4px solid var(--ColourForegroundPage);
+	border-left: 4px solid var(--theme-light);
 }
 
 .quotron-primary {
-	border-left: 4px solid var(--ColourPrimaryAccent);
+	border-left: 4px solid var(--theme-primary);
 }
 
 .quotron-secondary {
-	border-left: 4px solid var(--ColourSecondaryAccent);
+	border-left: 4px solid var(--theme-secondary);
 }
 
 .quotron-tertiary {
-	border-left: 4px solid var(--ColourTertiaryAccent);
+	border-left: 4px solid var(--theme-tertiary);
 }
 
-.quotron-quatarnary {
-	border-left: 4px solid var(--ColourQuaternaryAccent);
+.quotron-quaternary  {
+	border-left: 4px solid var(--theme-quaternary );
 }
 
 .hr-hide-last hr:last-of-type {

@@ -32,7 +32,8 @@ extends Atlantis\Routes\UploadAPI {
 			'ID'          => $Entity->ID,
 			'Type'        => $Entity->Type,
 			'DateCreated' => $Entity->DateCreated,
-			'URL'         => $Entity->GetPublicURL()
+			'URL'         => $Entity->GetPublicURL(),
+			'ExtraFiles'  => $Entity->ExtraFiles->Keys()
 		]);
 
 		return;
@@ -171,7 +172,7 @@ extends Atlantis\Routes\UploadAPI {
 
 		$Add = $TagsToHave->Distill(
 			fn(int $TagID)
-			=> !$Existing->HasValue($TagID)
+			=> $TagID && !$Existing->HasValue($TagID)
 		);
 
 		$Add->MergeRight(
@@ -195,6 +196,8 @@ extends Atlantis\Routes\UploadAPI {
 
 		////////
 
+		var_dump($Add);
+
 		$Add->Each(
 			fn(int $TagID)
 			=> ($EInfo->LinkClass)::Insert([ 'TagID'=> $TagID, 'EntityUUID'=> $Entity->UUID ])
@@ -216,6 +219,37 @@ extends Atlantis\Routes\UploadAPI {
 
 		return;
 	}
+
+	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'REGEN')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	public function
+	EntityRegen():
+	void {
+
+		($this->Data)
+		->ID(Common\Datafilters::TypeInt(...));
+
+		if(!$this->Data->ID)
+		$this->Quit(1, 'no ID specified');
+
+		$Entity = Atlantis\Media\File::GetByID($this->Data->ID);
+
+		if(!$Entity)
+		$this->Quit(2, 'not entity found');
+
+		$Entity->GenerateExtraFiles();
+
+		$this->SetPayload([
+			'ID'          => $Entity->ID,
+			'Type'        => $Entity->Type,
+			'DateCreated' => $Entity->DateCreated,
+			'URL'         => $Entity->GetPublicURL(),
+			'ExtraFiles'  => $Entity->ExtraFiles->Keys()
+		]);
+
+		return;
+	}
+
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -250,6 +284,8 @@ extends Atlantis\Routes\UploadAPI {
 			'Size'   => $File->GetSize(),
 			'URL'    => $File->GetStorageURL()
 		]);
+
+		$Entity->GenerateExtraFiles();
 
 		return;
 	}

@@ -98,6 +98,26 @@ build and manage a modal popup.
 		return this;
 	};
 
+	setLoading(isLoading, msg='Loading...') {
+
+		if(isLoading) {
+			this.footer.find('button').hide();
+
+			this.footer.append(
+				jQuery('<span />')
+				.addClass('btn btn-block btn-dark clickthru')
+				.html(`<i class="mdi mdi-fw mdi-loading mdi-spin mr-2"></i> ${msg}`)
+			);
+		}
+
+		else {
+			this.footer.find('span').remove();
+			this.footer.find('button').show();
+		}
+
+		return;
+	};
+
 	onCancel() {
 
 		this.destroy();

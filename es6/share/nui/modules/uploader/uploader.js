@@ -90,9 +90,9 @@ extends ModalDialog {
 		this.bar = this.body.find('.progress:first');
 		this.fill = this.body.find('.progress-bar:first');
 
-		this.url = main.url;
-		this.method = main.method;
-		this.dataset = main.dataset;
+		this.url = main.options.url;
+		this.method = main.options.method;
+		this.dataset = main.options.dataset;
 		this.onSuccess = main.options.onSuccess;
 		this.chunkSize = (1024 * 1024 * 2);
 
@@ -210,8 +210,14 @@ extends ModalDialog {
 		console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
-		if(typeof this.onSuccess === 'function')
-		(this.onSuccess)();
+		if(typeof this.onSuccess === 'function') {
+			(this.onSuccess)();
+		}
+
+		if(typeof this.onSuccess === 'string') {
+			if(this.onSuccess === 'reload')
+			location.reload();
+		}
 
 		return;
 	};
@@ -337,10 +343,6 @@ class UploadButton {
 		opt = new UploadButtonOptions(opt);
 
 		this.selector = selector;
-		this.url = opt.url;
-		this.method = opt.method;
-		this.dataset = opt.dataset;
-		this.programmed = opt.programmed;
 		this.options = opt;
 
 		this.element = jQuery(selector);
@@ -350,19 +352,19 @@ class UploadButton {
 
 		////////
 
-		if(this.element.is('[data-url]'))
-		this.url = ths.element.attr('data-url');
-
 		if(this.element.is('[data-method]'))
-		this.url = ths.element.attr('data-method');
+		this.options.method = ths.element.attr('data-method');
+
+		if(this.element.is('[data-url]'))
+		this.options.url = ths.element.attr('data-url');
 
 		if(this.element.is('[data-dataset]'))
-		this.dataset = JSON.parse(
+		this.options.dataset = JSON.parse(
 			this.element.attr('data-dataset')
 		);
 
 		if(this.element.is('[data-programmed]'))
-		this.programmed = (
+		this.options.programmed = (
 			this.element.attr('data-programmed') === 'true'
 			? true : false
 		);

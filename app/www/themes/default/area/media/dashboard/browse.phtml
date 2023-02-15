@@ -25,7 +25,7 @@ $Surface
 <div class="row">
 	<?php foreach($Items as $Item): /** @var Nether\Atlantis\Media\File $Item */ ?>
 	<div class="col-6 col-sm-4 col-md-2 mb-4">
-		<div class="ratiobox square wallpapered rounded" style="background-image:url(<?php $Printer($Item->GetPublicURL()) ?>);">
+		<div class="ratiobox square wallpapered rounded" style="background-image:url(<?php $Printer($Item->GetPreviewURL('sm.jpeg')) ?>);">
 			<a class="position-absolutely" href="/dashboard/media/view/<?php $Printer($Item->ID) ?>"></a>
 			<div class="position-absolute position-bottom-left">
 				<button class="btn btn-danger p-1" data-media-delete="<?php $Printer($Item->ID) ?>"><i class="mdi mdi-fw mdi-trash-can"></i></button>
@@ -45,7 +45,7 @@ jQuery(function() {
 	new UploadButton('#UploadMedia', {
 		'url': '/api/media/entity',
 		'dataset': { },
-		'onSuccess': null
+		'onSuccess': 'reload'
 	});
 
 	return;
