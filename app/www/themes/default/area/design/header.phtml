@@ -5,44 +5,37 @@
  */
 
 ?>
-<header id="PageHeader">
+
+<header class="PageHeader">
 	<div class="container">
 		<div class="row align-items-center justify-content-between">
+			<!-- LOGO -->
 			<div class="col-auto">
 				<a href="/"><div class="PrettyBrandText font-size-larger" style="margin-top:0.25rem;">Nether</div></a>
 			</div>
+
 			<div class="col"><hr class="opacity-10" /></div>
+
+			<div class="col-auto">
+				<button class="btn btn-sm pt-1 pb-1 btn-light" data-nui-theme-toggle="--toggle"><i class="mdi mdi-fw mdi-lightbulb-night font-size-larger"></i></button>
+				<button class="btn btn-sm pt-1 pb-1 btn-dark" data-nui-theme-toggle="--toggle"><i class="mdi mdi-fw mdi-lightbulb-on font-size-larger"></i></button>
+			</div>
+
 			<div class="col-auto d-block d-md-none">
-				<div id="PageHeaderMenuToggle" class="position-relative d-inline-block font-size-most-large">
-					<i class="mdi mdi-fw mdi-empty"></i>
+				<div class="position-relative d-inline-block font-size-most-large">
 					<span class="position-absolutely cursor-pointer opacity-fade PageHeaderMenuToggle"><i class="mdi mdi-fw mdi-menu"></i></span>
 					<span class="position-absolutely cursor-pointer opacity-fade PageHeaderMenuToggle"><i class="mdi mdi-fw mdi-hamburger"></i></span>
+					<i class="mdi mdi-fw mdi-empty"></i>
 				</div>
-
 			</div>
-			<div id="PageHeaderMenu" class="col-12 col-md-auto">
+
+			<div class="col-12 col-md-auto PageHeaderMenu">
 				<nav class="row align-items-center">
 					<div class="col-12 col-md-auto"><a href="/">Home</a></div>
 					<div class="col-12 col-md-auto"><a href="/docs">Docs</a></div>
-
 					<?php $Surface->Area('design/header-user') ?>
 				</nav>
 			</div>
 		</div>
 	</div>
 </header>
-
-<script type="module">
-jQuery(function() {
-
-	let menu = jQuery('#PageHeader');
-	let toggle = jQuery('.PageHeaderMenuToggle');
-
-	toggle.on('click', function() {
-		menu.toggleClass('MenuOpen');
-		return;
-	});
-
-	return;
-});
-</script>

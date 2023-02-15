@@ -4,9 +4,9 @@ use Nether\Database;
 
 ?>
 
-<div class="font-size-small white-space-nowrap opacity-40">
+<div class="font-size-small white-space-nowrap">
 	<div>
-		<code class="text-white">
+		<code>
 			<span class="opacity-70">cpu[</span>
 			<?php printf('%.03fs', (microtime(TRUE) - ProjectTime)); ?>
 			<span class="opacity-70">]</span>
@@ -16,14 +16,14 @@ use Nether\Database;
 		</code>
 	</div>
 	<div>
-		<code class="text-white">
+		<code>
 			<span class="opacity-70">env[</span>
 			<?php printf('%s (%s)', $App->GetProjectEnvType(), $App->GetProjectEnv()); ?>
 			<span class="opacity-70">]</span>
 		</code>
 	</div>
 	<div>
-		<code class="text-white">
+		<code>
 			<span class="opacity-70">req[</span>
 			<?php $Printer($Router->Request->Domain) ?>
 			<span class="opacity-70">/</span>
@@ -32,7 +32,7 @@ use Nether\Database;
 		</code>
 	</div>
 	<div>
-		<code class="text-white">
+		<code>
 			<span class="opacity-70">rtr[</span>
 			<?php $Printer($Router->GetSource()) ?>
 			<span class="opacity-70">/</span>
@@ -43,7 +43,7 @@ use Nether\Database;
 		</code>
 	</div>
 	<div>
-		<code class="text-white">
+		<code>
 			<span class="opacity-70">rth[</span>
 			<?php $Printer($Route->Handler->Class) ?>
 			<span class="opacity-70">::</span>
@@ -53,7 +53,7 @@ use Nether\Database;
 	</div>
 
 	<div>
-		<code class="text-white">
+		<code>
 			<span class="opacity-70">user[</span>
 			<?php if($User): ?>
 			<?php $Printer($User->ID) ?><span class="opacity-70">, </span>

@@ -93,6 +93,10 @@ implements
 
 		////////
 
+		Atlantis\Media\TagLink::RegisterType(Atlantis\Media\FileTagLink::class);
+
+		////////
+
 		if($App->Router->GetSource() === 'dirscan') {
 			$RouterPath = dirname(__FILE__);
 			$Scanner = new Avenue\RouteScanner("{$RouterPath}/Routes");
@@ -122,7 +126,9 @@ implements
 	void {
 
 		if($App->User)
-		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+		$Sidebar
+		->Push(new Atlantis\Dashboard\AtlantisAccountSidebar)
+		->Push(new Atlantis\Dashboard\AtlantisMediaSidebar);
 
 		if($App->User && $App->User->IsAdmin())
 		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);

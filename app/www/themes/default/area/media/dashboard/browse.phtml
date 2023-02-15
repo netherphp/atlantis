@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Database\Struct\PrototypeFindResult $Items
+ */
+
+$Surface
+->Set('Page.Title', 'Manage Media - Dashboard')
+->Area('media/dashboard/scripts', $__SCOPE)
+->Area('dashboard/nav', [ 'Trail' => [
+	'Media'  => NULL,
+	'Browse' => NULL
+]]);
+
+?>
+
+<div class="row mb-4">
+	<div class="col-12 col-md-auto mb-2 mb-md-0">
+		<button id="UploadMedia" type="button" class="btn btn-block btn-outline-light">Upload</button>
+	</div>
+</div>
+
+<div class="row">
+	<?php foreach($Items as $Item): /** @var Nether\Atlantis\Media\File $Item */ ?>
+	<div class="col-6 col-sm-4 col-md-2 mb-4">
+		<div class="ratiobox square wallpapered rounded" style="background-image:url(<?php $Printer($Item->GetPublicURL()) ?>);">
+			<a class="position-absolutely" href="/dashboard/media/view/<?php $Printer($Item->ID) ?>"></a>
+			<div class="position-absolute position-bottom-left">
+				<button class="btn btn-danger p-1" data-media-delete="<?php $Printer($Item->ID) ?>"><i class="mdi mdi-fw mdi-trash-can"></i></button>
+			</div>
+		</div>
+	</div>
+	<?php endforeach; ?>
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import FormUtil from '/share/nui/util/form.js';
+import UploadButton from '/share/nui/modules/uploader/uploader.js';
+
+jQuery(function() {
+
+	new UploadButton('#UploadMedia', {
+		'url': '/api/media/entity',
+		'dataset': { },
+		'onSuccess': null
+	});
+
+	return;
+});
+</script>

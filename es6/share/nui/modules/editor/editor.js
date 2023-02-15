@@ -713,7 +713,7 @@ extends ToolbarButton {
 			.get(0)
 		);
 
-		return;
+		return false;
 	};
 
 }
@@ -729,7 +729,7 @@ extends ToolbarButton {
 
 		this.editor.api.removeAllFormatting();
 
-		return;
+		return false;
 	};
 };
 
@@ -962,7 +962,7 @@ extends ToolbarButton {
 		.addButton('Save', 'btn-primary', 'accept')
 		.fillFromCurrent();
 
-		return;
+		return false;
 	};
 
 };
@@ -970,15 +970,15 @@ extends ToolbarButton {
 class ToolbarButtonDeselectDone
 extends ToolbarButton {
 
-	constructor(editor) {
-		super(editor, 'Done', 'mdi mdi-fw mdi-check');
+	constructor(editor, title='Done') {
+		super(editor, title, 'mdi mdi-fw mdi-check');
 		return;
 	};
 
 	onClick() {
 
 		this.editor.onClickNothing();
-		return;
+		return false;
 	};
 
 };

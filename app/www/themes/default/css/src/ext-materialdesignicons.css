@@ -1,0 +1,18 @@
+.mdi {
+	display: inline-block;
+}
+
+.mdi-fw {
+	text-align: center;
+	width: 1.25em;
+}
+
+.mdi-spin-fast::before {
+	-webkit-animation: mdi-spin 1s infinite linear;
+	animation: mdi-spin 1s infinite linear;
+}
+
+.mdi-spin-hyper::before {
+	-webkit-animation: mdi-spin 500ms infinite linear;
+	animation: mdi-spin 500ms infinite linear;
+}

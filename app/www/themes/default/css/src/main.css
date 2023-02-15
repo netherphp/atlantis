@@ -1,0 +1,201 @@
+/*//////////////////////////////////////////////////////////////////////////////
+//// DARK THEME //////0///////////////////////////////////////////////////////*/
+
+:root {
+	--theme-colour-primary: #2e6ee8;
+	--theme-colour-primary-alt: #5a8ae2;
+
+	--theme-font-normal-family: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
+	--theme-font-normal-weight: 300;
+	--theme-font-normal-letter-spacing: 0.03rem;
+
+	--theme-font-mono-family: 'Consolas', 'Menlo', monospace;
+	--theme-font-mono-weight: 300;
+	--theme-font-mono-letter-spacing: 0.02em;
+
+	--theme-dark: #1A1A1A;
+	--theme-dark-glass: rgba(40, 40, 40, 0.75);
+	--theme-light: #F1F1F1;
+	--theme-light-glass: rgba(60, 60, 60, 0.75);
+	--theme-header-bg: #040404;
+	--theme-footer-bg: #040404;
+
+	--bs-body-color: #fdfdfd;
+	--bs-body-color-rgb: 253, 253, 253;
+	--bs-code-color: var(--theme-colour-primary-alt);
+	--bs-link-hover-color: var(--theme-colour-primary-alt);
+
+	--bs-body-bg: #161616;
+	--bs-body-bg-rgb: 22, 22, 22;
+	--bs-secondary-bg: #0A0A0A;
+	--bs-secondary-bg-rgb: 10, 10, 10;
+	--bs-tertiary-bg: #101010;
+	--bs-tertiary-bg-rgb: 16, 16, 16;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// LIGHT THEME /////////////////////////////////////////////////////////////*/
+
+[data-bs-theme="light"] {
+	--theme-dark: #404040;
+	--theme-dark-glass: rgba(200, 200, 200, 0.75);
+
+	--theme-light: #DDDDDD;
+	--theme-light-glass: rgba(220, 220, 220, 0.75);
+
+	--theme-header-bg: #FEFEFE;
+	--theme-footer-bg: #FEFEFE;
+
+	--bs-body-color: #080808;
+	--bs-body-color-rgb: 4, 4, 4;
+
+	--bs-body-bg: #f2f2f2;
+	--bs-body-bg-rgb: 242, 242, 242;
+	--bs-secondary-bg: #F2F2F2;
+	--bs-secondary-bg-rgb: 236, 236, 236;
+	--bs-tertiary-bg: #F5F5F5;
+	--bs-tertiary-bg-rgb: 248, 248, 248;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// MISC ////////////////////////////////////////////////////////////////////*/
+
+html, body {
+	font-family: var(--theme-font-normal-family);
+	font-weight: var(--theme-font-normal-weight);
+	letter-spacing: var(--theme-font-normal-letter-spacing);
+}
+
+a:link:not(.btn),
+a:visited:not(.btn) {
+	color: var(--bs-body-color);
+}
+
+code {
+	font-family: var(--theme-font-mono-family);
+	font-weight: var(--theme-font-mono-weight);
+	letter-spacing: var(--theme-font-mono-letter-spacing);
+}
+
+img {
+	max-height: 100%;
+	max-width: 100%;
+	object-fit: contain;
+}
+
+
+h1, h2, h3, h4 {
+	font-weight: bold;
+}
+
+hr {
+	opacity: 0.20;
+}
+
+strong {
+	font-weight: bold;
+}
+
+/*******************************************************************************
+**** button stuff *************************************************************/
+
+.btn-primary {
+	--bs-btn-bg: var(--theme-colour-primary);
+	--bs-btn-hover-bg: var(--theme-colour-primary-alt);
+	--bs-btn-border-color: var(--theme-colour-primary);
+	--bs-btn-hover-border-color: var(--theme-colour-primary-alt);
+}
+
+.btn-light {
+	--bs-btn-bg: var(--theme-light);
+	--bs-btn-border-color: var(--theme-light);
+}
+
+.btn-dark {
+	--bs-btn-bg: var(--theme-dark);
+	--bs-btn-border-color: var(--theme-dark);
+}
+
+.btn-outline-light {
+	--bs-btn-border-color: var(--theme-light);
+	--bs-btn-color: var(--theme-light);
+	--bs-btn-hover-bg: var(--theme-light-glass);
+	--bs-btn-hover-color: var(--theme-light);
+}
+
+[data-bs-theme="light"] .btn-outline-light {
+	--bs-btn-border-color: var(--theme-dark);
+	--bs-btn-color: var(--theme-dark);
+	--bs-btn-hover-bg: var(--theme-dark-glass);
+	--bs-btn-hover-color: var(--theme-dark);
+}
+
+.btn-outline-dark {
+	--bs-btn-border-color: var(--theme-dark);
+	--bs-btn-color: var(--theme-dark);
+}
+
+/*******************************************************************************
+**** form stuff ***************************************************************/
+
+.form-control,
+.form-select {
+	background-color: var(--theme-light-glass);
+	border-color: var(--theme-light-glass);
+	transition: background-color 200ms;
+}
+
+.form-control:focus {
+	transition: background-color 200ms;
+}
+
+.form-control::placeholder {
+	color: var(--bs-body-color);
+	opacity: 0.25;
+	font-size: 0.8rem;
+	letter-spacing: 0.1rem;
+}
+
+.btn {
+	font-size: 0.80rem;
+	font-weight: bold;
+	letter-spacing: 0.03em;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	text-transform: uppercase;
+}
+
+.dropdown-menu {
+	background-color: var(--theme-dark-glass);
+	padding: 6px;
+	border-radius: 0px;
+	box-shadow: 0px 0px 72px #000;
+}
+
+.jumbotron {
+	background-color: var(--theme-dark-glass);
+}
+
+.dropdown-menu li {
+	margin-bottom: 6px;
+}
+
+.dropdown-menu li:last-of-type {
+	margin-bottom: 0px;
+}
+
+.dropdown-menu a.dropdown-item:link,
+.dropdown-menu a.dropdown-item:visited {
+	border-bottom: 0px !important;
+	text-decoration: none !important;
+}
+
+.dropdown-menu a.dropdown-item:active,
+.dropdown-menu a.dropdown-item:hover,
+.dropdown-menu a.dropdown-item:focus {
+	background-color: var(--theme-dark-glass);
+}
+
+.table td {
+	vertical-align: middle;
+}

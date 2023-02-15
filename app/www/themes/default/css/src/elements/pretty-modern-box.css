@@ -1,0 +1,70 @@
+
+.PrettyModernBox {
+	background-color: var(--theme-dark-glass);
+	border-radius: 5px;
+	padding: 1.0em;
+}
+
+.PrettyModernBox h3,
+.PrettyModernBox dt {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	letter-spacing: 0.12em;
+	margin-bottom: 0.5em;
+	font-weight: 200;
+	text-transform: uppercase;
+}
+
+.PrettyModernBox h3 a,
+.PrettyModernBox h3 span,
+.PrettyModernBox dt a,
+.PrettyModernBox dt span {
+	flex-grow: 0;
+}
+
+.PrettyModernBox h3 hr,
+.PrettyModernBox dt hr {
+	flex-grow: 1;
+	margin: 0px 0.5rem;
+	padding: 0px
+}
+
+.PrettyModernBox h3 hr:first-child,
+.PrettyModernBox dt hr:first-child {
+	margin: 0px 0.5em 0px 0px;
+}
+
+.PrettyModernBox h3 hr:last-child,
+.PrettyModernBox dt hr:last-child {
+	margin: 0px 0px 0px 0.5em;
+}
+
+.PrettyModernBox a:link:not(.underdot),
+.PrettyModernBox a:visited:not(.underdot) {
+	border-bottom: 0px !important;
+}
+
+.PrettyModernBox dd {
+	margin: 0px;
+	padding: 0px;
+}
+
+.PrettyModernBox blockquote {
+	letter-spacing: 0.12em;
+	line-height: 1em;
+	font-size: 2em;
+	font-weight: 200;
+	margin-bottom: 0px;
+	text-align: right;
+}
+
+.PrettyModernBox .PrettyBrandText {
+	border-top: 0.10em solid;
+	font-weight: 200;
+}
+
+.PrettyModernBox .line-clamp-terminator {
+	background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
+}

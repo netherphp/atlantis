@@ -15,26 +15,28 @@
  * @var string $CacheBuster
  */
 
-// relulz the theme url helper to default to the default theme.
-
 $ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
+
+$Surface
+->Set('Theme.Page.ThemeMode', (array_key_exists('theme', $_COOKIE) ? $_COOKIE['theme'] : 'dark' ))
+->Set('Theme.Page.MainCSS', ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'));
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="<?php $Surface->Show('Theme.Page.ThemeMode') ?>">
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="shortcut icon" href="<?php $ThemeURL('gfx/favicon.ico') ?>" type="image/x-icon" />
 	<title><?php $Surface->Show('Page.Title') ?></title>
 
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL('css/bootstrap.min.css') ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL('css/materialdesignicons.min.css') ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/nether-bootstrap-ext.css?v={$CacheBuster}") ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/nether-sensei.css?v={$CacheBuster}") ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("css/main.css?v={$CacheBuster}") ?>" />
-	<script type="text/javascript" src="<?php $ThemeURL('js/jquery.min.js', 'default') ?>"></script>
-	<script type="text/javascript" src="<?php $ThemeURL('js/bootstrap.bundle.min.js', 'default') ?>"></script>
+	<script type="text/javascript" src="<?php $ThemeURL('lib/js/jquery.min.js') ?>"></script>
+	<script type="text/javascript" src="<?php $ThemeURL('lib/js/bootstrap.bundle.min.js') ?>"></script>
+	<script type="module">import Main from '<?php $ThemeURL('js/main.js') ?>';</script>
+
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/bootstrap.min.css?v={$CacheBuster}") ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/materialdesignicons.min.css?v={$CacheBuster}") ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("{$Surface->Get('Theme.Page.MainCSS')}?v={$CacheBuster}") ?>" />
 
 	<!-- <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script> -->
 </head>

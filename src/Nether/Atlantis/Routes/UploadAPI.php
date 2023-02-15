@@ -133,6 +133,21 @@ extends Atlantis\ProtectedAPI {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	protected function
+	PrepareStorageLocation(string $StorageName='Default'):
+	Storage\Adaptor {
+
+		$Storage = $this->App->Storage->Location($StorageName);
+
+		if(!$Storage)
+		throw new Exception("no storage location {$StorageName} defined");
+
+		return $Storage;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static public function
 	DetermineCommonExt(string $Name):
 	string {

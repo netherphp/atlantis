@@ -79,6 +79,10 @@ class JsonRequest {
 			body = data.getData();
 		}
 
+		else if(typeof data === 'object') {
+			body = FormUtil.ObjectArrayToDataString(data);
+		}
+
 		// else... yolo. hope you knew what you were doing.
 
 		else {
@@ -172,6 +176,12 @@ class JsonRequest {
 		if(goto !== null)
 		setTimeout((()=>location.href = goto), 100);
 
+		return;
+	};
+
+	reload(result) {
+
+		location.reload();
 		return;
 	};
 

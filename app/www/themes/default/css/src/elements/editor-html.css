@@ -1,0 +1,67 @@
+
+.Editor {
+	background-color: var(--theme-light-glass);
+	border-radius: 6px;
+	padding: 6px;
+}
+
+.Editor .EditorItem.Selected {
+	border-radius: 0.25rem;
+	outline: 2px solid var(--theme-primary);
+}
+
+.Editor .Viewport {
+	background-color: var(--bs-body-bg);
+	border-radius: 6px;
+	padding: 6px;
+}
+
+.Editor .Viewport:focus-visible {
+	outline: 0px solid var(--bs-body-bg);
+}
+
+.Editor .Toolbar {
+	gap: 0.50rem;
+	padding: 6px;
+	border-radius: 6px;
+	margin-bottom: 6px;
+}
+
+.Editor .Toolbar > div {
+	padding: 0px !important;
+}
+
+.Editor .ToolbarButton {
+	display: flex;
+	align-items: center;
+	flex-grow: 0;
+
+	font-size: 1.2em;
+	padding: 1px 6px 0px 6px;
+}
+
+.Editor .ToolbarButton > span {
+	display: none;
+}
+
+.Editor .ToolbarDropdown .dropdown-menu {
+	background-color: var(--bs-secondary-bg);
+}
+
+.Editor .ToolbarDropdown .row {
+	gap: 0.50rem;
+}
+
+.Editor .ToolbarDropdown .row > div {
+	padding: 0px !important;
+}
+
+.Editor .Debug {
+	font-size: 0.8rem;
+	margin-top: 10px;
+	white-space: break-word;
+}
+
+.EditorItem {
+	user-select: none;
+}

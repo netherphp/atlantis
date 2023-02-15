@@ -45,8 +45,6 @@ build and manage a modal popup.
 		if(bodyContent !== null)
 		this.setBody(bodyContent);
 
-		this.api.show();
-
 		return;
 	};
 
@@ -59,6 +57,13 @@ build and manage a modal popup.
 		this.element = null;
 
 		return;
+	};
+
+	show() {
+
+		this.api.show();
+
+		return this;
 	};
 
 	addButton(name, bclass='btn-primary', action='accept') {

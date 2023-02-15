@@ -1,0 +1,59 @@
+<?php ?>
+<script type="module">
+import API from '/share/nui/api/json.js';
+import FormUtil from '/share/nui/util/form.js';
+import ConfirmDialog from '/share/nui/modules/modal/confirm.js';
+import TagDialog from '/share/atlantis/tag-dialog.js';
+
+jQuery(function(){
+
+	jQuery('.btn[data-media-delete]')
+	.on('click', function(){
+
+		let that = jQuery(this);
+		let id = that.attr('data-media-delete');
+		let goto = that.attr('data-goto');
+		let api = new API.Request('DELETE', '/api/media/entity');
+		let data = { ID: id };
+
+		let dialog = new ConfirmDialog({
+			message: `Really delete? ID #${id}`,
+			btnAccept: 'btn-danger',
+			labelAccept: 'Delete',
+			onAccept: (function() {
+
+				let after = (
+					(typeof goto === 'string' && goto.length)
+					? (()=> location.href = goto)
+					: api.reload
+				);
+
+				(api.send(data))
+				.then(after)
+				.catch(api.catch);
+
+				return;
+			})
+		});
+
+		dialog.show();
+
+		return false;
+	});
+
+	jQuery('.btn[data-media-tag-add]')
+	.on('click', function(){
+
+		let dialog = new TagDialog(
+			this.dataset.mediaTagAdd,
+			this.dataset.mediaLinkType
+		);
+
+		dialog.show();
+
+		return;
+	});
+
+	return;
+});
+</script>

@@ -7,38 +7,40 @@
  * @var Nether\Surface\Engine $Surface
  */
 
+$LibraryLinks = [
+	'Atlantis' => 'https://github.com/netherphp/atlantis',
+	'Avenue' => 'https://github.com/netherphp/avenue',
+	'Blog' => 'https://github.com/netherphp/blog',
+	'Common' => 'https://github.com/netherphp/common',
+	'Console' => 'https://github.com/netherphp/console',
+	'Database' => 'https://github.com/netherphp/database',
+	'Ki' => 'https://github.com/netherphp/ki',
+	'Sensei' => 'https://github.com/netherphp/sensei',
+	'Storage' => 'https://github.com/netherphp/storage',
+	'Surface' => 'https://github.com/netherphp/surface',
+	'User' => 'https://github.com/netherphp/user'
+];
+
 ?>
-<footer id="PageFooter">
+
+<footer class="PageFooter">
 	<div class="container">
 		<div class="row justify-content-between">
-			<div class="col-12 col-lg-3 mb-4 mb-lg-0">
+			<div class="col-12 col-md-6 mb-4 mb-lg-0">
 				<h4 class="PrettyBrandText">Nether</h4>
-				<div class="text-muted font-size-smaller fst-italic">
+				<div class="font-size-smaller">
 					A PHP 8 Framework.
 				</div>
-				<hr class="opacity-25" />
-				<div class="row text-muted font-size-smallerer fw-bold text-uppercase letter-space-some PrettyFooterLinkGrid">
-					<div class="col-4 mb-4">
-						<a href="https://github.com/netherphp/atlantis" class="d-block text-underline-none fg-tertiary">Atlantis</a>
+				<hr />
+				<div class="row font-size-smallerer fw-bold text-uppercase letter-space-some PrettyFooterLinkGrid">
+					<?php foreach($LibraryLinks as $LinkTitle => $LinkURL): ?>
+					<div class="col-auto mb-4">
+						<a href="<?php $Printer($LinkURL) ?>" class="d-block text-underline-none fg-tertiary"><?php $Printer($LinkTitle) ?></a>
 					</div>
-					<div class="col-4 mb-4">
-						<a href="https://github.com/netherphp/avenue" class="d-block text-underline-none fg-primary">Avenue</a>
-					</div>
-					<div class="col-4 mb-4">
-						<a href="https://github.com/netherphp/console" class="d-block text-underline-none fg-primary">Console</a>
-					</div>
-					<div class="col-4 mb-4">
-						<a href="https://github.com/netherphp/ki" class="d-block text-underline-none fg-primary">Ki</a>
-					</div>
-					<div class="col-4 mb-4">
-						<a href="https://github.com/netherphp/object" class="d-block text-underline-none fg-primary">Object</a>
-					</div>
-					<div class="col-4 mb-4">
-						<a href="https://github.com/netherphp/surface" class="d-block text-underline-none fg-primary">Surface</a>
-					</div>
+					<?php endforeach; ?>
 				</div>
 			</div>
-			<div class="col-12 col-lg mb-0 mb-lg-0 text-align-right">
+			<div class="col-12 col-md mb-0 mb-lg-0 text-align-right">
 				<div class="text-uppercase opacity-70 font-size-smaller fw-bold mb-2">
 					<a class="text-underline-none" href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Back To Top 💦</a>
 				</div>

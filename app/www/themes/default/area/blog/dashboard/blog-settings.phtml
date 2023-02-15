@@ -6,7 +6,7 @@
  * @var Nether\Blog\Blog $Blog
  */
 
-Nether\Common\Dump::Var($Blog, TRUE);
+//Nether\Common\Dump::Var($Blog, TRUE);
 
 $Surface
 ->Set('Page.Title', 'Blog Settings - Dashboard')
@@ -18,6 +18,17 @@ $Surface
 ?>
 
 <form id="BlogSettings" data-blog-id="<?php $Printer($Blog->ID) ?>">
+
+	<div class="mb-4">
+		<div class="mb-2">
+			<?php $Surface->Area('blog/blog-header', [ 'Blog'=> $Blog ]) ?>
+		</div>
+		<div class="row tight justify-content-center">
+			<div class="col-12 col-md-auto mb-2 mb-md-0"><button id="BlogSettingsUploadIcon" type="button" class="btn btn-block btn-outline-light">Upload Icon</button></div>
+			<div class="col-12 col-md-auto mb-0 mb-md-0"><button id="BlogSettingsUploadHeader" type="button" class="btn btn-block btn-outline-light">Upload Header</button></div>
+		</div>
+	</div>
+
 	<div class="mb-4">
 		<div class="fw-bold text-uppercase">Title</div>
 		<div>
@@ -40,32 +51,6 @@ $Surface
 	</div>
 
 	<div class="mb-4">
-		<button id="BlogSettingsUploadHeader" type="button" class="btn btn-primary">Upload Header</button>
-		<button id="BlogSettingsUploadIcon" type="button" class="btn btn-primary">Upload Icon</button>
-		<script type="module">
-		import UploadButton from '/share/nui/modules/uploader/uploader.js';
-
-		jQuery(function() {
-
-			let root = jQuery('#BlogSettings');
-			let bid = root.attr('data-blog-id');
-
-			new UploadButton('#BlogSettingsUploadHeader', {
-				'url': '/api/blog/entity/header',
-				'dataset': { 'ID': bid }
-			});
-
-			new UploadButton('#BlogSettingsUploadIcon', {
-				'url': '/api/blog/entity/icon',
-				'dataset': { 'ID': bid }
-			});
-
-			return;
-		});
-		</script>
-	</div>
-
-	<div class="mb-4">
 		<input type="hidden" name="ID" value="<?php $Printer($Blog->ID) ?>" />
 		<button type="submit" class="btn btn-primary">
 			<i class="mdi mdi-fw mdi-content-save"></i>
@@ -77,8 +62,24 @@ $Surface
 <script type="module">
 import API from '/share/nui/api/json.js';
 import FormUtil from '/share/nui/util/form.js';
+import UploadButton from '/share/nui/modules/uploader/uploader.js';
 
 jQuery(function() {
+
+	let root = jQuery('#BlogSettings');
+	let bid = root.attr('data-blog-id');
+
+	new UploadButton('#BlogSettingsUploadHeader', {
+		'url': '/api/blog/entity/header',
+		'dataset': { 'ID': bid },
+		'onSuccess': ()=> location.reload()
+	});
+
+	new UploadButton('#BlogSettingsUploadIcon', {
+		'url': '/api/blog/entity/icon',
+		'dataset': { 'ID': bid },
+		'onSuccess': ()=> location.reload()
+	});
 
 	jQuery('#BlogSettings')
 	.on('submit', function() {
@@ -98,4 +99,3 @@ jQuery(function() {
 	return;
 });
 </script>
-

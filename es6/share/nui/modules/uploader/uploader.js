@@ -93,11 +93,13 @@ extends ModalDialog {
 		this.url = main.url;
 		this.method = main.method;
 		this.dataset = main.dataset;
+		this.onSuccess = main.options.onSuccess;
 		this.chunkSize = (1024 * 1024 * 2);
 
 		this.button.on('click', this.onSelectFile.bind(this));
 		this.input.on('change', this.onSelected.bind(this));
 
+		this.show();
 		return;
 	};
 
@@ -171,6 +173,15 @@ extends ModalDialog {
 
 		let range = item.getChunkRange(iter);
 
+		if(this.req.response.Error !== 0) {
+			this.fill
+			.addClass('bg-danger')
+			.css({ 'width': '100%' });
+
+			alert(this.req.response.Message);
+			return;
+		}
+
 		// after the first chunk this upload will get a uuid.
 		item.uuid = this.req.response.Payload.UUID;
 
@@ -190,14 +201,17 @@ extends ModalDialog {
 			return;
 		}
 
-		this.fill.css({
+		(this.fill)
+		.addClass('bg-success')
+		.css({
 			'width': '100%'
 		});
 
 		console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
-		//(this.funcOnDone)(this.req.response, this);
+		if(typeof this.onSuccess === 'function')
+		(this.onSuccess)();
 
 		return;
 	};
@@ -225,7 +239,8 @@ extends ModalDialog {
 
 	queueRun() {
 
-		this.bar.removeClass('d-none');
+		this.fill.removeClass('bg-danger bg-success');
+		this.bar.parent().removeClass('d-none');
 
 		for(let item of this.queue) {
 			this.upload(item);
@@ -271,8 +286,6 @@ extends ModalDialog {
 		this.req.setRequestHeader('content-range', chunkHeader);
 		this.req.send(chunk);
 
-		console.log(chunkHeader);
-
 		return;
 	};
 
@@ -306,6 +319,12 @@ class UploadButtonOptions {
 			: false
 		);
 
+		this.onSuccess = (
+			typeof input.onSuccess !== 'undefined'
+			? input.onSuccess
+			: null
+		);
+
 		return;
 	};
 
@@ -322,6 +341,7 @@ class UploadButton {
 		this.method = opt.method;
 		this.dataset = opt.dataset;
 		this.programmed = opt.programmed;
+		this.options = opt;
 
 		this.element = jQuery(selector);
 		this.dialog = null;

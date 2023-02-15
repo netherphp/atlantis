@@ -9,12 +9,12 @@ use Nether\Blog;
 ?>
 
 <div class="bg-alt1 position-relative" style="overflow:hidden;">
-	<div class="wallpapered position-absolutely" style="transform: scale(1.1);filter: blur(10px) brightness(0.8);background-image:url(https://pegasusgate-upl.sfo2.cdn.digitaloceanspaces.com/c8b736b7-eec4-4214-b45d-e489b2f06e8c/-blog-header-2/lg.jpg?t=1601590016);"></div>
+	<div class="wallpapered position-absolutely" style="transform: scale(1.1);filter: blur(10px) brightness(0.8);background-image:url(<?php $Printer($Blog->GetHeaderURL()) ?>);"></div>
 	<div class="container position-relative">
-		<div class="bg-alt2 wallpapered box-shadow-normal p-4" style="background-image:url(https://pegasusgate-upl.sfo2.cdn.digitaloceanspaces.com/c8b736b7-eec4-4214-b45d-e489b2f06e8c/-blog-header-2/lg.jpg?t=1601590016);">
+		<div class="bg-alt2 wallpapered box-shadow-normal p-4" style="background-image:url(<?php $Printer($Blog->GetHeaderURL()) ?>);">
 			<div class="row align-items-center">
-				<div class="col-2">
-					<div class="ratiobox square rounded wallpapered box-shadow-normal bg-alt0" style="background-image:url(https://pegasusgate-upl.sfo2.cdn.digitaloceanspaces.com/c8b736b7-eec4-4214-b45d-e489b2f06e8c/-blog-icon-2/th.jpg?t=1601608983);">
+				<div class="col-4 col-sm-3 col-md-2">
+					<div class="ratiobox square rounded wallpapered box-shadow-normal bg-alt0" style="background-image:url(<?php $Printer($Blog->GetIconURL()) ?>);">
 						<a href="<?php $Printer($Blog->GetURL()) ?>" class="position-absolutely text-decoration-none"></a>
 					</div>
 				</div>

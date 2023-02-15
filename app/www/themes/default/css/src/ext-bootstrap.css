@@ -368,6 +368,11 @@
 /*******************************************************************************
 **** misc stuff ***************************************************************/
 
+.bg-body-primary {
+	--bs-bg-opacity: 1;
+	background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important
+}
+
 .btn-block {
 	display: block;
 	width: 100%;
@@ -433,26 +438,6 @@
 	cursor: pointer;
 }
 
-.mdi {
-	display: inline-block;
-}
-
-.mdi-fw {
-	text-align: center;
-	height: 1.25em;
-	width: 1.25em;
-}
-
-.mdi-spin-fast::before {
-	-webkit-animation: mdi-spin 1s infinite linear;
-	animation: mdi-spin 1s infinite linear;
-}
-
-.mdi-spin-hyper::before {
-	-webkit-animation: mdi-spin 500ms infinite linear;
-	animation: mdi-spin 500ms infinite linear;
-}
-
 .msi {
 	display: inline-block;
 	height: 1rem;
@@ -477,8 +462,13 @@
 	z-index: 9011;
 }
 
+.modal-dialog {
+	transition: height 200ms;
+}
+
 .modal-content {
-	background-color: var(--ColourBackgroundPageAlt0) !important;
+	background-color: var(--bs-body-bg) !important;
+	border-color: var(--bs-body-bg) !important;
 }
 
 .modal-header,
@@ -493,9 +483,9 @@
 }
 
 .modal-backdrop.show {
-	background-color: #000 !important;
+	background-color: var(--theme-dark-glass) !important;
 	backdrop-filter: blur(2px);
-	opacity: 0.75;
+	opacity: 1.0;
 	z-index: 9010;
 }
 
@@ -507,6 +497,7 @@
 	box-shadow: inset 0px 0px 25px #00000055, inset 0px 0px 15px #00000055;
 }
 
+.clickthru,
 .clickthrough {
 	pointer-events: none;
 	user-select: none;

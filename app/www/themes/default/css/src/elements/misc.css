@@ -1,0 +1,84 @@
+
+.PrettyBrandText {
+	display: inline-block;
+	font-weight: bold;
+	border-top: 0.15em solid;
+	border-color: var(--theme-colour-primary);
+	text-transform: uppercase;
+	line-height: 1.4rem;
+}
+
+.FancyOrVH {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: center;
+	height: 100%;
+}
+
+.FancyOrVH > div {
+	flex-grow: 1;
+	flex-shrink: 1;
+	margin: 0px;
+	padding: 0px;
+	opacity: 0.25;
+	text-align: center;
+}
+
+.FancyOrVH > div:after {
+	content: ' ';
+	background: #fff;
+	display: inline-block;
+	height: 100%;
+	width: 1px;
+}
+
+.FancyOrVH > label {
+	flex-shrink: 1;
+	flex-grow: 0;
+	font-style: italic;
+	padding: 6px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+@media(max-width: 767.99px) {
+	/** md or smaller */
+
+	.FancyOrVH {
+		flex-direction: row;
+	}
+
+	.FancyOrVH > div:after {
+		background: #fff;
+		height: 1px;
+		width: 100%;
+	}
+}
+
+.FancyStateButton {
+	display: flex;
+}
+
+.FancyStateButton > i {
+	overflow: auto;
+	width: 0rem;
+
+	transition: width 200ms;
+}
+
+.FancyStateButton.btn-primary .Idle {
+	margin-right: 0.25rem;
+	width: 1.0rem;
+}
+
+.FancyStateButton.btn-success .Success {
+	margin-left: 0.25rem;
+	width: 1.0rem;
+}
+
+.FancyStateButton.btn-danger .Danger {
+	margin-left: 0.25rem;
+	width: 1.0rem;
+}
+
