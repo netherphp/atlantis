@@ -1,33 +1,33 @@
 <?php
 
 namespace Nether\Atlantis\Struct;
-use Nether;
 
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+use Nether\Email;
 use Nether\Surface;
+use Nether\User;
 
-use Nether\Database\Verse;
-use Nether\Common\Datastore;
-use Nether\Common\Datafilters;
-
-#[Nether\Database\Meta\TableClass('UserLoginResets')]
+#[Database\Meta\TableClass('UserLoginResets')]
 class LoginReset
-extends Nether\Database\Prototype {
+extends Database\Prototype {
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
-	#[Nether\Database\Meta\PrimaryKey]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
+	#[Database\Meta\PrimaryKey]
 	public int
 	$ID;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
 	public int
 	$TimeCreated;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
-	#[Nether\Database\Meta\ForeignKey('Users', 'ID')]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Database\Meta\ForeignKey('Users', 'ID')]
 	public int
 	$EntityID;
 
-	#[Nether\Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\TypeChar(Size: 64)]
 	public string
 	$Code;
 
@@ -38,14 +38,14 @@ extends Nether\Database\Prototype {
 	Send():
 	static {
 
-		$User = Nether\User\Entity::GetByID($this->EntityID);
+		$User = User\Entity::GetByID($this->EntityID);
 
 		$Scope = [ 'Reset'=> $this ];
 		$Generator = new Surface\Engine(Surface\Library::Config());
 		$Content = $Generator->GetArea('email/user-login-reset', $Scope);
 		unset($Generator);
 
-		$Send = new Nether\Email\Outbound;
+		$Send = new Email\Outbound;
 		$Send->To->Push($User->Email);
 		$Send->Subject = 'Login Reset Information';
 		$Send->Content = $Content;
@@ -58,12 +58,12 @@ extends Nether\Database\Prototype {
 	GetURL():
 	string {
 
-		$Encoded = Datafilters::Base64Encode(json_encode([
+		$Encoded = Common\Datafilters::Base64Encode(json_encode([
 			'ID'   => $this->ID,
 			'Code' => $this->Code
 		]));
 
-		return new Nether\Atlantis\WebURL(sprintf(
+		return new Atlantis\WebURL(sprintf(
 			'/login/reset?code=%s',
 			$Encoded
 		));
@@ -97,10 +97,10 @@ extends Nether\Database\Prototype {
 	void {
 
 		$Table = static::GetTableInfo();
+		$DBM = new Database\Manager;
 
 		$Result = (
-			(new Nether\Database)
-			->NewVerse()
+			$DBM->NewVerse(static::$DBA)
 			->Delete($Table->Name)
 			->Where('EntityID=:EntityID')
 			->Query([ 'EntityID'=> $EntityID ])
@@ -113,30 +113,30 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static protected function
-	FindExtendOptions(Datastore $Input):
+	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input->EntityID ??= NULL;
-		$Input->Code ??= NULL;
+		$Input['EntityID'] ??= NULL;
+		$Input['Code'] ??= NULL;
 
 		return;
 	}
 
 	static protected function
-	FindExtendFilters(Verse $SQL, Datastore $Input):
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
-		if($Input->EntityID !== NULL)
+		if($Input['EntityID'] !== NULL)
 		$SQL->Where('Main.EntityID=:EntityID');
 
-		if($Input->Code !== NULL)
+		if($Input['Code'] !== NULL)
 		$SQL->Where('Main.Code=:Code');
 
 		return;
 	}
 
 	static protected function
-	FindExtendSorts(Verse $SQL, Datastore $Input):
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
 		return;
@@ -149,11 +149,13 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Nether\Common\Prototype($Input, [
+		$Input = new Common\Datastore($Input);
+
+		$Input->BlendRight([
 			'TimeCreated' => time()
 		]);
 
-		return parent::Insert((array)$Input);
+		return parent::Insert($Input);
 	}
 
 }

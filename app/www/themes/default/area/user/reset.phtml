@@ -75,7 +75,7 @@ jQuery(function(){
 		let form = new NUI.Form(this);
 		let req = new NUI.Request('POST', '/api/user/reset');
 
-		(req.send(form.getData()))
+		(req.send(form.read()))
 		.then(req.goto)
 		.catch(req.catch);
 
@@ -88,7 +88,7 @@ jQuery(function(){
 		let form = new NUI.Form(this);
 		let req = new NUI.Request('RESET', '/api/user/reset');
 
-		(req.send(form.getData()))
+		(req.send(form.read()))
 		.then(req.goto)
 		.catch(req.catch);
 

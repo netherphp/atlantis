@@ -58,7 +58,7 @@ $PasswordTester = new Nether\Atlantis\Util\PasswordTester;
 					let form = new NUI.Form(this);
 					let req = new NUI.Request('POST', '/api/user/create');
 
-					(req.send(form))
+					(req.send(form.read()))
 					.then(req.goto)
 					.catch(req.catch);
 

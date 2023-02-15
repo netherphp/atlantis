@@ -46,7 +46,7 @@ $ShiftyColumnCSS = $HasThirdPartyAuth ? 'justify-content-between' : 'justify-con
 					let form = new NUI.Form(this);
 					let req = new NUI.Request('LOGIN', '/api/user/session');
 
-					(req.send(form))
+					(req.send(form.read()))
 					.then(req.goto)
 					.catch(req.catch);
 

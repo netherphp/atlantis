@@ -1,36 +1,40 @@
 <?php
 
 namespace Nether\Atlantis\Struct;
-use Nether;
 
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+use Nether\Email;
 use Nether\Surface;
+use Nether\User;
 
-use Nether\Database\Verse;
+use Database\Verse;
 use Nether\Common\Datastore;
 
-#[Nether\Database\Meta\TableClass('UserEmailUpdates')]
+#[Database\Meta\TableClass('UserEmailUpdates')]
 class EmailUpdate
-extends Nether\Database\Prototype {
+extends Database\Prototype {
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
-	#[Nether\Database\Meta\PrimaryKey]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
+	#[Database\Meta\PrimaryKey]
 	public int
 	$ID;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
-	#[Nether\Database\Meta\ForeignKey('Users', 'ID')]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Database\Meta\ForeignKey('Users', 'ID')]
 	public int
 	$EntityID;
 
-	#[Nether\Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	public int
 	$TimeCreated;
 
-	#[Nether\Database\Meta\TypeVarChar(Size: 255)]
+	#[Database\Meta\TypeVarChar(Size: 255)]
 	public string
 	$Email;
 
-	#[Nether\Database\Meta\TypeChar(Size: 64)]
+	#[Database\Meta\TypeChar(Size: 64)]
 	public string
 	$Code;
 
@@ -58,7 +62,7 @@ extends Nether\Database\Prototype {
 
 		////////
 
-		$Send = new Nether\Email\Outbound;
+		$Send = new Email\Outbound;
 		$Send->To->Push($this->Email);
 		$Send->Subject = $Subject;
 		$Send->Content = $Content;
@@ -71,9 +75,9 @@ extends Nether\Database\Prototype {
 	GetConfirmURL():
 	string {
 
-		return new Nether\Atlantis\WebURL(sprintf(
+		return new Atlantis\WebURL(sprintf(
 			'/dashboard/settings/email?confirm=%s',
-			$this->Code
+			Common\Datafilters::Base64Encode($this->Code)
 		));
 	}
 
@@ -105,10 +109,10 @@ extends Nether\Database\Prototype {
 	void {
 
 		$Table = static::GetTableInfo();
+		$DBM = new Database\Manager;
 
 		$Result = (
-			(new Nether\Database)
-			->NewVerse()
+			$DBM->NewVerse(static::$DBA)
 			->Delete($Table->Name)
 			->Where('EntityID=:EntityID')
 			->Query([ 'EntityID'=> $EntityID ])
@@ -121,30 +125,30 @@ extends Nether\Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static protected function
-	FindExtendOptions(Datastore $Input):
+	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input->EntityID ??= NULL;
-		$Input->Code ??= NULL;
+		$Input['EntityID'] ??= NULL;
+		$Input['Code'] ??= NULL;
 
 		return;
 	}
 
 	static protected function
-	FindExtendFilters(Verse $SQL, Datastore $Input):
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
-		if($Input->EntityID !== NULL)
-		$SQL->Where('Main.EntityID=:EntityID');
+		if($Input['EntityID'] !== NULL)
+		$SQL->Where('`Main`.`EntityID`=:EntityID');
 
-		if($Input->Code !== NULL)
-		$SQL->Where('Main.Code=:Code');
+		if($Input['Code'] !== NULL)
+		$SQL->Where('`Main`.`Code`=:Code');
 
 		return;
 	}
 
 	static protected function
-	FindExtendSorts(Verse $SQL, Datastore $Input):
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
 		return;
@@ -157,11 +161,13 @@ extends Nether\Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Nether\Common\Prototype($Input, [
-			'TimeCreated' => time()
+		$Input = new Common\Datastore($Input);
+		$Input->BlendLeft([
+			'TimeCreated' => time(),
+			'Code'        => static::Generate()
 		]);
 
-		return parent::Insert((array)$Input);
+		return parent::Insert($Input);
 	}
 
 }

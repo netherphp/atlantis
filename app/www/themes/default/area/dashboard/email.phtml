@@ -59,7 +59,7 @@ jQuery(function(){
 		let form = new NUI.Form(this);
 		let req = new NUI.Request('POST', '/api/dashboard/email');
 
-		(req.send(form.getData()))
+		(req.send(form.read()))
 		.then(req.goto)
 		.catch(req.catch);
 

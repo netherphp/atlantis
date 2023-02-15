@@ -170,8 +170,7 @@ extends Atlantis\PublicAPI {
 
 			$Confirm = Atlantis\Struct\EmailUpdate::Insert([
 				'EntityID' => $User->ID,
-				'Email'    => $User->Email,
-				'Code'     => Atlantis\Struct\EmailUpdate::Generate()
+				'Email'    => $User->Email
 			]);
 
 			$Confirm->Send(TRUE);
