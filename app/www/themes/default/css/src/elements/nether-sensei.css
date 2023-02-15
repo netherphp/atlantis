@@ -73,7 +73,7 @@
 
 .Block {
 	background-color: var(--SenseiGrey);
-	color: var(--ColourDark);
+	color: var(--theme-dark);
 	border-radius: 2px;
 	font-weight: bold;
 	line-height: 1em;
@@ -84,11 +84,13 @@
 
 .Block:link,
 .Block:visited {
-	color: var(--ColourDark);
+	color: var(--theme-dark);
+	border-bottom: 0px !important;
+	text-decoration: none !important;
 }
 
-.Block.Primary { background-color: var(--ColourPrimaryAccent); }
-.Block.Secondary { background-color: var(--ColourSecondaryAccent); }
+.Block.Primary { background-color: var(--theme-primary); }
+.Block.Secondary { background-color: var(--SenseiPurple); }
 .Block.Access { background-color: var(--SenseiPurple); }
 .Block.Type { background-color: var(--SenseiType); }
 .Block.Class { background-color: var(--SenseiClass); }

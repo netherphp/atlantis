@@ -3,7 +3,7 @@
 	display: inline-block;
 	font-weight: bold;
 	border-top: 0.15em solid;
-	border-color: var(--theme-colour-primary);
+	border-color: var(--theme-primary);
 	text-transform: uppercase;
 	line-height: 1.4rem;
 }

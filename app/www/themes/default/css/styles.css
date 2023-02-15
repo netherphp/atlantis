@@ -1,5 +1,5 @@
 /*//
-@date 2023-02-15 19:45:01 UTC
+@date 2023-02-15 21:09:59 UTC
 @files 12 [
     "src\/imports.css",
     "src\/main.css",
@@ -28,8 +28,11 @@
 //// DARK THEME //////0///////////////////////////////////////////////////////*/
 
 :root {
-	--theme-colour-primary: #2e6ee8;
-	--theme-colour-primary-alt: #5a8ae2;
+	--theme-primary: #2e6ee8;
+	--theme-primary-alt: #5a8ae2;
+
+	--theme-secondary: #9834c7;
+	--theme-secondary-alt: #c08bd8;
 
 	--theme-font-normal-family: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
 	--theme-font-normal-weight: 300;
@@ -48,8 +51,8 @@
 
 	--bs-body-color: #fdfdfd;
 	--bs-body-color-rgb: 253, 253, 253;
-	--bs-code-color: var(--theme-colour-primary-alt);
-	--bs-link-hover-color: var(--theme-colour-primary-alt);
+	--bs-code-color: var(--theme-primary-alt);
+	--bs-link-hover-color: var(--theme-primary-alt);
 
 	--bs-body-bg: #161616;
 	--bs-body-bg-rgb: 22, 22, 22;
@@ -131,10 +134,10 @@ strong {
 **** button stuff *************************************************************/
 
 .btn-primary {
-	--bs-btn-bg: var(--theme-colour-primary);
-	--bs-btn-hover-bg: var(--theme-colour-primary-alt);
-	--bs-btn-border-color: var(--theme-colour-primary);
-	--bs-btn-hover-border-color: var(--theme-colour-primary-alt);
+	--bs-btn-bg: var(--theme-primary);
+	--bs-btn-hover-bg: var(--theme-primary-alt);
+	--bs-btn-border-color: var(--theme-primary);
+	--bs-btn-hover-border-color: var(--theme-primary-alt);
 }
 
 .btn-light {
@@ -1021,7 +1024,7 @@ strong {
 	display: inline-block;
 	font-weight: bold;
 	border-top: 0.15em solid;
-	border-color: var(--theme-colour-primary);
+	border-color: var(--theme-primary);
 	text-transform: uppercase;
 	line-height: 1.4rem;
 }
@@ -1178,7 +1181,7 @@ strong {
 
 .Block {
 	background-color: var(--SenseiGrey);
-	color: var(--ColourDark);
+	color: var(--theme-dark);
 	border-radius: 2px;
 	font-weight: bold;
 	line-height: 1em;
@@ -1189,11 +1192,13 @@ strong {
 
 .Block:link,
 .Block:visited {
-	color: var(--ColourDark);
+	color: var(--theme-dark);
+	border-bottom: 0px !important;
+	text-decoration: none !important;
 }
 
-.Block.Primary { background-color: var(--ColourPrimaryAccent); }
-.Block.Secondary { background-color: var(--ColourSecondaryAccent); }
+.Block.Primary { background-color: var(--theme-primary); }
+.Block.Secondary { background-color: var(--SenseiPurple); }
 .Block.Access { background-color: var(--SenseiPurple); }
 .Block.Type { background-color: var(--SenseiType); }
 .Block.Class { background-color: var(--SenseiClass); }

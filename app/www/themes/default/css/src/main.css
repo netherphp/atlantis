@@ -2,8 +2,11 @@
 //// DARK THEME //////0///////////////////////////////////////////////////////*/
 
 :root {
-	--theme-colour-primary: #2e6ee8;
-	--theme-colour-primary-alt: #5a8ae2;
+	--theme-primary: #2e6ee8;
+	--theme-primary-alt: #5a8ae2;
+
+	--theme-secondary: #9834c7;
+	--theme-secondary-alt: #c08bd8;
 
 	--theme-font-normal-family: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
 	--theme-font-normal-weight: 300;
@@ -22,8 +25,8 @@
 
 	--bs-body-color: #fdfdfd;
 	--bs-body-color-rgb: 253, 253, 253;
-	--bs-code-color: var(--theme-colour-primary-alt);
-	--bs-link-hover-color: var(--theme-colour-primary-alt);
+	--bs-code-color: var(--theme-primary-alt);
+	--bs-link-hover-color: var(--theme-primary-alt);
 
 	--bs-body-bg: #161616;
 	--bs-body-bg-rgb: 22, 22, 22;
@@ -105,10 +108,10 @@ strong {
 **** button stuff *************************************************************/
 
 .btn-primary {
-	--bs-btn-bg: var(--theme-colour-primary);
-	--bs-btn-hover-bg: var(--theme-colour-primary-alt);
-	--bs-btn-border-color: var(--theme-colour-primary);
-	--bs-btn-hover-border-color: var(--theme-colour-primary-alt);
+	--bs-btn-bg: var(--theme-primary);
+	--bs-btn-hover-bg: var(--theme-primary-alt);
+	--bs-btn-border-color: var(--theme-primary);
+	--bs-btn-hover-border-color: var(--theme-primary-alt);
 }
 
 .btn-light {
