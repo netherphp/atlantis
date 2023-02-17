@@ -81,11 +81,15 @@ extends Atlantis\Prototype {
 		$this->DateCreated = Common\Date::FromTime($this->TimeCreated);
 		$this->ExtraFiles = new Common\Datastore;
 
-		if($this->ExtraFilesJSON) {
+		if(isset($this->ExtraFilesJSON)) {
 			$Data = json_decode($this->ExtraFilesJSON, TRUE);
 
-			if(is_array($Data))
-			$this->ExtraFiles->SetData($Data);
+			if(!is_array($Data))
+			$Data = [];
+
+			($this->ExtraFiles)
+			->SetData($Data)
+			->Remap(fn(mixed $Row)=> new ExtraFile($Row));
 
 			unset($Data);
 		}
@@ -110,6 +114,27 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	GetEntityInfo():
+	array {
+
+		return match($this->Type) {
+			'img' => [
+				'ID'  => $this->ID,
+				'URL' => [
+					'SM' => $this->GetPreviewURL('sm.'),
+					'MD' => $this->GetPreviewURL('md.'),
+					'LG' => $this->GetPreviewURL('lg.'),
+					'OG' => $this->GetPublicURL()
+				]
+			],
+			default => [
+				'ID'  => $this->ID,
+				'URL' => $this->GetPublicURL()
+			]
+		};
+	}
+
+	public function
 	GetFile(?string $Name=NULL):
 	Storage\File {
 
@@ -128,10 +153,18 @@ extends Atlantis\Prototype {
 	}
 
 	public function
-	GetSizeReadable():
+	GetSizeReadable(bool $IncExtraFiles=FALSE):
 	string {
 
-		$Bytes = new Common\Units\Bytes($this->Size);
+		$Size = $this->Size;
+
+		if($IncExtraFiles)
+		$Size += $this->ExtraFiles->Accumulate(0,
+			fn(int $C, ExtraFile $Val)
+			=> $C + $Val->Size
+		);
+
+		$Bytes = new Common\Units\Bytes($Size);
 
 		return $Bytes->Get();
 	}
@@ -140,12 +173,21 @@ extends Atlantis\Prototype {
 	GetPreviewURL(?string $Name=NULL):
 	?string {
 
-		if(!$this->ExtraFiles->HasKey($Name))
-		$Name = NULL;
+		$File = NULL;
+		$Size = NULL;
 
-		$File = $this->GetFile($Name);
+		if($Name !== NULL) {
+			if($this->ExtraFiles->HasKey($Name))
+			return $this->GetFile($Name)->GetPublicURL();
 
-		return $File->GetPublicURL();
+			if(str_ends_with($Name, '.')) {
+				foreach($this->ExtraFiles as $File => $Size)
+				if(str_starts_with($File, $Name))
+				return $this->GetFile($File)->GetPublicURL();
+			}
+		}
+
+		return $this->GetFile()->GetPublicURL();
 	}
 
 	public function
@@ -186,8 +228,32 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	CleanExtraFiles():
+	void {
+
+		$MainFile = basename($this->URL);
+		$File = $this->GetFile();
+		$List = $File->Storage->List($File->GetParentDirectory());
+		$Found = NULL;
+
+		foreach($List as $Found) {
+			$CurFile = basename($Found);
+
+			if($CurFile === $MainFile)
+			continue;
+
+			$File->Storage->Delete($Found);
+		}
+
+		return;
+	}
+
+	public function
 	GenerateExtraFiles():
 	static {
+
+		$File = $this->GetFile();
+		$this->ExtraFiles->Clear();
 
 		if($this->Type === static::TypeImg)
 		$this->GenerateImageThumbnails();
@@ -200,12 +266,22 @@ extends Atlantis\Prototype {
 	static {
 
 		$File = $this->GetFile();
-		$Ext = 'jpeg';
+		$Ext = match($File->GetExtension()) {
+			'png'   => 'png',
+			'gif'   => 'gif',
+			default => 'jpeg'
+		};
 
-		$Sizes = [
-			'lg.{Ext}'=> [ 1024, 1024 ],
-			'sm.{Ext}'=> [ 400, 400 ]
-		];
+		$Sizes = match($Ext) {
+			'gif' => [
+				'sm.{Ext}'=> [ 250, 250 ]
+			],
+			default => [
+				'lg.{Ext}'=> [ 1920, 1920 ],
+				'md.{Ext}'=> [ 800, 800 ],
+				'sm.{Ext}'=> [ 250, 250 ]
+			]
+		};
 
 		$Name = NULL;
 		$Dim = NULL;
@@ -213,9 +289,12 @@ extends Atlantis\Prototype {
 
 		foreach($Sizes as $Name => $Dim) {
 			$Name = str_replace('{Ext}', $Ext, $Name);
-			$New = $this->GenerateImageFit($File, $Name, $Dim[0], $Dim[1]);
+			$New = $this->GenerateImageFit($File, $Name, $Dim[0], $Dim[1], $Ext);
 
-			$this->ExtraFiles[$Name] = $New->GetSize();
+			$this->ExtraFiles[$Name] = new ExtraFile([
+				'Type' => ExtraFile::TypeImgSet,
+				'Size' => $New->GetSize()
+			]);
 		}
 
 		$this->Update([
@@ -226,39 +305,192 @@ extends Atlantis\Prototype {
 	}
 
 	public function
-	GenerateImageFit(Storage\File $File, string $Name, int $W, int $H):
+	GenerateImageFit(Storage\File $File, string $Name, int $W, int $H, string $Ext):
 	Storage\File {
+
+		$Swapper = function(Imagick $Old, Imagick $New){
+			$Old->Clear();
+			return $New;
+		};
+
+		$Flooring = function(float $In, int $Dec) {
+			$Mag = pow(10, $Dec);
+
+			return floor($Mag * $In) / $Mag;
+		};
 
 		try {
 			$Img = new Imagick;
 			$Img->ReadImageBlob($File->Read());
-			$Img->ResizeImage($W, $H, Imagick::FILTER_CATROM, 1.0, TRUE);
-			$Img->SetFormat('jpeg');
-			$Img->SetImageCompression(Imagick::COMPRESSION_JPEG);
-			$Img->SetCompressionQuality(92);
+			$Img->ResetIterator();
+			$Img->StripImage();
+			$IP = $Img->GetImagePage();
+			$IW = $IP['width'];
+			$IH = $IP['height'];
 
-			$Data = $Img->GetImageBlob();
-			$Img->Destroy();
+			$Per = min(($W / $IW), ($H / $IH));
+			$Per = round($Per, 8);
+
+			$MyWay = TRUE;
+
+			switch($Ext) {
+				case 'png':
+					$Img->SetFormat('png');
+
+					if($IW > $W || $IH > $H)
+					$Img->ResizeImage($W, $H, Imagick::FILTER_LANCZOS, 1.0, TRUE);
+				break;
+				case 'gif':
+					$Img->SetFormat('gif');
+					$Img->ResetIterator();
+
+					// everything i tried to resize the image layers
+					// manually-but-easy would result in what
+					// seemed like rounding errors, sometimes things
+					// would be a fraction off leaving artificts from
+					// previous frames.
+
+					// new theory is to recompose the image in a way
+					// that nukes all the stupid offsets and stuff
+					// allowing all the scaling to use the same
+					// numbers hopefully making all the layers look
+					// good on top of eachother after they dispose.
+
+					// all of this is because the coaleseImages way
+					// everyone says to do and does work good, also
+					// destroys the gif optimisations making a gif
+					// half the size weight twice as much, and the
+					// imagick optimise method cant make up for it.
+
+					$FW = ($IW * $Per);
+					$FH = ($IH * $Per);
+
+					if($MyWay)
+					if($IW > $W || $IH > $H) {
+						$New = new Imagick;
+						$New->SetFormat('gif');
+						$Iter = 0;
+
+						while($Img->NextImage()) {
+							$Iter += 1;
+							$FP = $Img->GetImagePage();
+
+							$New->NewImage($FP['width'], $FP['height'], 'transparent');
+							$New->SetImageDispose($Img->GetImageDispose());
+							$New->SetImageDelay($Img->GetImageDelay());
+							$New->CompositeImage($Img, Imagick::COMPOSITE_COPY, $FP['x'], $FP['y']);
+							$New->ResizeImage($FW, $FH, Imagick::FILTER_BOX, 0.0);
+
+							// release old frames.
+							$Img->RemoveImage();
+
+							// reset iter as the above ruined it.
+							// chug frame 0 until no frames.
+							$Img->ResetIterator();
+						}
+
+						$Img->Clear();
+						$Img = $New;
+					}
+
+					if(!$MyWay)
+					if($IW > $W || $IH > $H) {
+						$Img = $Swapper($Img, $Img->CoalesceImages());
+						$Img->ResetIterator();
+
+						while($Img->NextImage()) {
+							$Img->ResizeImage($FW, $FH, Imagick::FILTER_BOX, 0.0);
+						}
+
+						$Img = $Swapper($Img, $Img->OptimizeImageLayers());
+
+						/** @var Imagick $Img */
+						// apparently the above method is documented
+						// wrong. as of 2023-02-17 it is returning
+						// an imagick object not a bool. and the
+						// imagemagick source code claims that
+						// OptimizeLayerFrames does return an obj.
+
+						$Img = $Swapper($Img, $Img->DeconstructImages());
+					}
+
+				break;
+				default:
+					$Img->SetFormat('jpeg');
+					$Img->SetImageCompression(Imagick::COMPRESSION_JPEG);
+					$Img->SetCompressionQuality(90);
+
+					if($IW > $W || $IH > $H)
+					$Img->ResizeImage($W, $H, Imagick::FILTER_LANCZOS, 1.0, TRUE);
+				break;
+			}
+
+			//echo 'get image data', PHP_EOL;
+			$Data = $Img->GetImagesBlob();
+
+			//echo 'free image resources', PHP_EOL;
+			$Img->Clear();
+			unset($Img);
 		}
 
 		catch(Exception $Err) {
-			throw new Exception("imagick hated that: {$Err->GetMessage()}");
+			//throw new Exception("imagick hated that: {$Err->GetMessage()}");
+			throw $Err;
 		}
 
 		////////
 
 		try {
+			//echo "write to disk", PHP_EOL;
 			$Output = $File->New($Name);
 			$Output->Write($Data);
+			echo '> Wrote ', new Common\Units\Bytes($Output->GetSize()), PHP_EOL;
 		}
 
 		catch(Exception $Err) {
 			throw new Exception("storage hated that: {$Err->GetMessage()}");
 		}
 
+		echo '> Memory: ', new Common\Units\Bytes(memory_get_peak_usage()), PHP_EOL;
+
 		////////
 
 		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static protected function
+	FindExtendOptions(Common\Datastore $Input):
+	void {
+
+		$Input['Sort'] ??= 'newest';
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		return;
+	}
+
+	static protected function
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		switch($Input['Sort']) {
+			case 'newest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+			break;
+			case 'newest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+			break;
+		}
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////

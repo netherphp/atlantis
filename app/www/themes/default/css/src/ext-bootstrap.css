@@ -60,6 +60,11 @@
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
+.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
+
+.text-primary { color: var(--theme-primary) !important; }
+
 .white-space-nowrap { white-space: nowrap; }
 .white-space-lines { white-space: pre-line; }
 
@@ -310,11 +315,11 @@
 }
 
 .wallpapered {
-	background: #000;
+	background: var(--theme-darker);
 	background-repeat: no-repeat;
 	background-position: center center;
 	color: #fff;
-	text-shadow: 0px 0px 4px #000a;
+	text-shadow: 0px 0px 4px var(--theme-darker);
 }
 
 .wallpapered,
@@ -496,11 +501,11 @@
 }
 
 .box-shadow-normal {
-	box-shadow: 0px 5px 5px #00000055;
+	box-shadow: 0px 5px 5px var(--theme-darker);
 }
 
 .box-shadow-inset {
-	box-shadow: inset 0px 0px 25px #00000055, inset 0px 0px 15px #00000055;
+	box-shadow: inset 0px 0px 25px var(--theme-darker), inset 0px 0px 15px var(--theme-darker);
 }
 
 .clickthru,

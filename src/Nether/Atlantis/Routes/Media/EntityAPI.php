@@ -45,13 +45,22 @@ extends Atlantis\Routes\UploadAPI {
 	EntityPost():
 	void {
 
+		$this->ChunkPost();
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'POSTFINAL')]
+	public function
+	EntityPostFinal():
+	void {
+
 		$this->Queue(
-			static::KiOnUploadComplete,
-			$this->OnUpload(...),
+			static::KiOnUploadFinalise,
+			$this->OnUploadDone(...),
 			FALSE
 		);
 
-		$this->ChunkPost();
+		$this->ChunkFinalise();
 		return;
 	}
 
@@ -250,30 +259,59 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/media/entitye', Verb: 'GET')]
+	public function
+	EntitySearch():
+	void {
+
+		($this->Data)
+		->Page(Common\Datafilters::PageNumber(...))
+		->Limit(Common\Datafilters::TypeIntRange(...), 10, 30, 0);
+
+		$Filters = [
+			'Type'  => 'img',
+			'Sort'  => 'newest',
+			'Page'  => $this->Data->Page,
+			'Limit' => $this->Data->Limit ?: 20
+		];
+
+		$Results = Atlantis\Media\File::Find($Filters);
+
+		$this->SetPayload([
+			'Filters' => $Filters,
+			'Results' => $Results->Map(
+				fn(Atlantis\Media\File $File)
+				=> $File->GetEntityInfo()
+			)
+		]);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
 	public function
-	OnUpload(string $Name, Storage\File $File):
+	OnUploadDone(string $UUID, string $Name, Storage\File $Source):
 	void {
 
 		$Storage = $this->PrepareStorageLocation('Default');
-		$UUID = Common\UUID::V7();
 
 		$Path = sprintf(
 			'upl/%s/original.%s',
 			join('/', explode('-',$UUID, 2)),
-			$File->GetExtension()
+			$Source->GetExtension()
 		);
 
 		////////
 
-		$Storage->Put($Path, $File->Read());
-		$File->DeleteParentDirectory();
+		$Storage->Put($Path, $Source->Read());
+		$Source->DeleteParentDirectory();
 
 		////////
 
 		$File = $Storage->GetFileObject($Path);
+		$this->SetPayload([ 'File'=> $File ]);
 
 		$Entity = Atlantis\Media\File::Insert([
 			'UUID'   => $UUID,
@@ -284,8 +322,10 @@ extends Atlantis\Routes\UploadAPI {
 			'URL'    => $File->GetStorageURL()
 		]);
 
-		$Entity->GenerateExtraFiles();
+		// gifs can take a moment.
+		set_time_limit(60);
 
+		$Entity->GenerateExtraFiles();
 		return;
 	}
 

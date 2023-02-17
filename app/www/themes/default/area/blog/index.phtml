@@ -21,8 +21,8 @@ use Nether\Database;
 
 			<!-- THE ZONE -->
 			<div class="col-12 col-md mb-6 mb-md-0 pr-0 pr-md-4">
-				<h2 class="font-size-larger text-uppercase mb-2">Latest Posts</h2>
-				<hr class="mt-0 mb-4" />
+				<h2 class="PrettyBrandText font-size-normal mb-4">Latest Posts</h2>
+
 
 				<?php foreach($Posts as $Post): /** @var Nether\Blog\Post $Post */ ?>
 				<div>
@@ -30,22 +30,19 @@ use Nether\Database;
 					<h3 class="font-size-larger">
 						<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
 					</h3>
-					<div class="opacity-50 mb-2">
+					<div class="opacity-50 mt-4">
 						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Eventually</a>
 						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Tags</a>
 						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Here</a>
 					</div>
-					<div class="mb-2">
+					<div class="mt-2">
 						<?php $Printer($Post->GetExcerpt()) ?>
 					</div>
-					<div class="mb-2">
+					<div class="mt-2">
 						<a href="<?php $Printer($Post->GetURL()) ?>" class="fw-bold">Continue Reading...</a>
 					</div>
-					<div class="opacity-50">
+					<div class="mt-4 opacity-50">
 						<i class="mdi mdi-fw mdi-clock-time-four"></i> n Min Read
-						<?php if($Post->CanUserEdit($BlogUser)): ?>
-						| <a href="<?php $Printer($Post->GetEditURL()) ?>">Edit</a>
-						<?php endif; ?>
 					</div>
 				</div>
 				<hr class="mt-4 mb-4" />
@@ -69,7 +66,7 @@ use Nether\Database;
 				<!-- SIDEBAR: MANAGE -->
 				<div class="quotron hr-hide-last mb-6">
 					<?php if($BlogUser->CanWrite()): ?>
-					<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-primary btn-block text-align-left">
+					<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light btn-block text-align-left">
 						<i class="mdi mdi-fw mdi-text-box-edit"></i>
 						Write
 					</a>
@@ -77,7 +74,7 @@ use Nether\Database;
 					<?php endif; ?>
 
 					<?php if($BlogUser->CanAdmin()): ?>
-					<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-primary btn-block text-align-left">
+					<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light btn-block text-align-left">
 						<i class="mdi mdi-fw mdi-cog"></i>
 						Blog Settings
 					</a>

@@ -9,6 +9,7 @@ use Nether\Surface;
   * @var Surface\Engine $Surface
   * @var Blog\Blog $Blog
   * @var Blog\Post $Post
+  * @var ?Blog\BlogUser $BlogUser
   */
 
 ?>
@@ -44,7 +45,20 @@ use Nether\Surface;
 
 			</div>
 			<div class="col-12 col-md-4 mb-4 mb-md-0">
-				[sidebar]
+
+				<?php if($BlogUser): ?>
+				<!-- SIDEBAR: MANAGE -->
+				<div class="quotron hr-hide-last mb-6">
+					<?php if($BlogUser->CanWrite()): ?>
+					<a href="<?php $Printer($Post->GetEditURL()) ?>" class="btn btn-outline-light btn-block text-align-left">
+						<i class="mdi mdi-fw mdi-pencil"></i>
+						Edit
+					</a>
+					<hr class="mt-2 mb-2" />
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
+
 			</div>
 		</div>
 

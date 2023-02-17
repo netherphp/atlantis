@@ -1,4 +1,5 @@
 import ModalDialog from '/share/nui/modules/modal/modal.js';
+import API from '/share/nui/api/json.js';
 
 let UploaderTemplate = `
 	<div class="row">
@@ -94,7 +95,7 @@ extends ModalDialog {
 		this.method = main.options.method;
 		this.dataset = main.options.dataset;
 		this.onSuccess = main.options.onSuccess;
-		this.chunkSize = (1024 * 1024 * 2);
+		this.chunkSize = 1024 * 1024;
 
 		this.button.on('click', this.onSelectFile.bind(this));
 		this.input.on('change', this.onSelected.bind(this));
@@ -172,6 +173,7 @@ extends ModalDialog {
 	onUploadChunkDone(ev, item, iter) {
 
 		let range = item.getChunkRange(iter);
+		let self = this;
 
 		if(this.req.response.Error !== 0) {
 			this.fill
@@ -202,22 +204,31 @@ extends ModalDialog {
 		}
 
 		(this.fill)
-		.addClass('bg-success')
-		.css({
-			'width': '100%'
-		});
+		.addClass('bg-success progress-bar-striped progress-bar-animated')
+		.css({ 'width': '100%' });
 
 		console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
-		if(typeof this.onSuccess === 'function') {
-			(this.onSuccess)();
-		}
+		let api = new API.Request('POSTFINAL', '/api/media/entity');
+		let finish = {
+			'UUID': this.req.response.Payload.UUID,
+			'Name': this.req.response.Payload.Name,
+			'Finish': 1
+		};
 
-		if(typeof this.onSuccess === 'string') {
-			if(this.onSuccess === 'reload')
-			location.reload();
-		}
+		(api.send(finish))
+		.then(function(result) {
+			if(typeof self.onSuccess === 'function') {
+				(self.onSuccess)();
+			}
+
+			if(typeof self.onSuccess === 'string') {
+				if(self.onSuccess === 'reload')
+				location.reload();
+			}
+		})
+		.catch(api.catch);
 
 		return;
 	};

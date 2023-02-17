@@ -2,8 +2,8 @@
 //// DARK THEME //////0///////////////////////////////////////////////////////*/
 
 :root {
-	--theme-primary: #2e6ee8;
-	--theme-primary-alt: #5a8ae2;
+	--theme-primary: #467adb;
+	--theme-primary-alt: #84a6e6;
 
 	--theme-secondary: #9834c7;
 	--theme-secondary-alt: #c08bd8;
@@ -16,11 +16,16 @@
 	--theme-font-mono-weight: 300;
 	--theme-font-mono-letter-spacing: 0.02em;
 
-	--theme-dark: #1A1A1A;
-	--theme-dark-glass: rgba(40, 40, 40, 0.75);
+	--theme-darker: #080808;
+	--theme-dark: #121212;
 	--theme-light: #F1F1F1;
+	--theme-lighter: #FAFAFA;
+
+	--theme-dark-glass: rgba(40, 40, 40, 0.75);
 	--theme-light-glass: rgba(60, 60, 60, 0.75);
+
 	--theme-header-bg: #040404;
+	--theme-header-color: #FBFBFB;
 	--theme-footer-bg: #040404;
 
 	--bs-body-color: #fdfdfd;
@@ -40,10 +45,13 @@
 //// LIGHT THEME /////////////////////////////////////////////////////////////*/
 
 [data-bs-theme="light"] {
-	--theme-dark: #404040;
-	--theme-dark-glass: rgba(200, 200, 200, 0.75);
 
+	--theme-darker: #101010;
+	--theme-dark: #242424;
 	--theme-light: #DDDDDD;
+	--theme-lighter: #F0F0F0;
+
+	--theme-dark-glass: rgba(200, 200, 200, 0.75);
 	--theme-light-glass: rgba(220, 220, 220, 0.75);
 
 	--theme-header-bg: #FEFEFE;

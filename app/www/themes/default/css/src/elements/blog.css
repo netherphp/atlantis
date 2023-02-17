@@ -1,0 +1,20 @@
+
+.BlogHeader,
+.BlogHeader a:link,
+.BlogHeader a:visited {
+	color: var(--theme-header-color) !important;
+	text-decoration: none;
+	border: 0px;
+}
+
+.BlogHeader {
+	position: relative;
+
+	background: var(--theme-dark);
+	overflow: hidden;
+}
+
+.BlogHeaderWash {
+	filter: blur(10px) brightness(0.8);
+	transform: scale(1.1);
+}

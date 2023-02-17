@@ -23,7 +23,8 @@ extends Atlantis\ProtectedAPI {
 	HeaderContentRange = 'HTTP_CONTENT_RANGE';
 
 	const
-	KiOnUploadComplete = 'Atlantis.FileUploader.OnUploadComplete';
+	KiOnUploadComplete = 'Atlantis.FileUploader.OnUploadComplete',
+	KiOnUploadFinalise = 'Atlantis.FileUploader.OnUplaodFinalise';
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -111,8 +112,9 @@ extends Atlantis\ProtectedAPI {
 			////////
 
 			$this->Flow(static::KiOnUploadComplete, [
+				'UUID' => $this->Data->UUID,
 				'Name' => $File['name'],
-				'File' => $Storage->GetFileObject($FinalResting)
+				'Source' => $Storage->GetFileObject($FinalResting)
 			]);
 		}
 
@@ -122,9 +124,31 @@ extends Atlantis\ProtectedAPI {
 
 		$this->SetPayload([
 			'UUID'        => $UUID,
-			'File'        => $File['name'],
+			'Name'        => $File['name'],
 			'ChunkSize'   => $Size,
 			'Range'       => $Range
+		]);
+
+		return;
+	}
+
+	## [Avenue\Meta\RouteHandler('/api/upload/chunk', Verb: 'POSTFINAL')] ####
+	public function
+	ChunkFinalise():
+	void {
+
+		$Storage = $this->App->Storage->Location('Temp');
+
+		$File = $Storage->GetFileObject(sprintf(
+			'upl/%s/original.%s',
+			$this->Data->UUID,
+			static::DetermineCommonExt($this->Data->Name)
+		));
+
+		$this->Flow(static::KiOnUploadFinalise, [
+			'UUID' => $this->Data->UUID,
+			'Name' => $this->Data->Name,
+			'Source' => $File
 		]);
 
 		return;
@@ -168,7 +192,7 @@ extends Atlantis\ProtectedAPI {
 				$Ext->GetDefaultType()
 			);
 
-			return $Type->GetDefaultExtension();
+			return strtolower($Type->GetDefaultExtension());
 		}
 
 		catch(Exception $Error) { }

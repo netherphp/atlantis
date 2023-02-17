@@ -24,7 +24,7 @@ $File = $Item->GetFile();
 <div class="row justify-content-center">
 	<div class="col-12 col-lg-8 mb-4 mb-4 mb-md-0">
 		<?php if($Item->Type === 'img'): ?>
-		<img src="<?php $Printer($Item->GetPreviewURL('lg.jpeg')) ?>" />
+		<img src="<?php $Printer($Item->GetPreviewURL('lg.')) ?>" />
 		<?php else: ?>
 		[some unviewed media type: <?php $Printer($Item->Type) ?>]
 		<?php endif; ?>
@@ -95,6 +95,19 @@ $File = $Item->GetFile();
 				</div>
 				<hr />
 
+				<!-- Space -->
+				<div>
+					<div class="mb-1">
+						<i class="mdi mdi-fw mdi-weight"></i>
+						<strong>Weight</strong>
+					</div>
+					<div class="text-ellipsis">
+						<i class="mdi mdi-fw mdi-empty"></i>
+						<code><?php $Printer($Item->GetSizeReadable(TRUE)) ?></code>
+					</div>
+				</div>
+				<hr />
+
 				<!-- URLS -->
 				<div>
 					<div class="d-flex align-items-center justify-content-between mb-1">
@@ -103,6 +116,7 @@ $File = $Item->GetFile();
 							<strong>URL</strong>
 						</div>
 						<div>
+							<?php $Printer($Item->GetSizeReadable()) ?>
 							<a href="#" data-nui-copy-value="<?php $Printer($Item->GetPublicURL()) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
 						</div>
 					</div>
@@ -114,24 +128,25 @@ $File = $Item->GetFile();
 				<hr />
 
 				<!-- MORE URLS -->
-				<?php foreach($Item->ExtraFiles as $ExtraName => $ExtraSize): $ExtraFile = $Item->GetFile($ExtraName); ?>
+				<?php foreach($Item->ExtraFiles as $ExtraName => $ExtraFile): $EFile = $Item->GetFile($ExtraName); ?>
 				<div>
 					<div class="d-flex align-items-center justify-content-between mb-1">
 						<div>
 							<i class="mdi mdi-fw mdi-link-variant"></i>
-							<strong>URL (<?php $Printer($ExtraName) ?>)</strong>
+							<strong>URL:</strong> <?php $Printer($ExtraName) ?>
 						</div>
 						<div>
-							<a href="#" data-nui-copy-value="<?php $Printer($ExtraFile->GetPublicURL()) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
+							<?php $Printer(new Nether\Common\Units\Bytes($ExtraFile->Size)) ?>
+							<a href="#" data-nui-copy-value="<?php $Printer($EFile->GetPublicURL()) ?>"><i class="mdi mdi-fw mdi-content-copy"></i></a>
 						</div>
 					</div>
 					<div class="text-ellipsis">
 						<i class="mdi mdi-fw mdi-empty"></i>
-						<a href="<?php $Printer($ExtraFile->GetPublicURL()) ?>" target="_blank"><code><?php $Printer($ExtraFile->GetPublicURL()) ?></code></a>
+						<a href="<?php $Printer($EFile->GetPublicURL()) ?>" target="_blank"><code><?php $Printer($EFile->GetPublicURL()) ?></code></a>
 					</div>
 				</div>
 				<hr />
-				<?php endforeach; unset($ExtraName, $ExtraSize, $ExtraFile); ?>
+				<?php endforeach; unset($ExtraName, $ExtraFile, $EFile); ?>
 
 				<!-- TAGS -->
 				<div>

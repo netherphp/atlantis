@@ -1,6 +1,6 @@
 /*//
-@date 2023-02-15 21:09:59 UTC
-@files 12 [
+@date 2023-02-16 07:21:07 UTC
+@files 13 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -8,6 +8,7 @@
     "src\/design\/footer.css",
     "src\/design\/header.css",
     "src\/elements\/article.css",
+    "src\/elements\/blog.css",
     "src\/elements\/editor-html.css",
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
@@ -28,8 +29,8 @@
 //// DARK THEME //////0///////////////////////////////////////////////////////*/
 
 :root {
-	--theme-primary: #2e6ee8;
-	--theme-primary-alt: #5a8ae2;
+	--theme-primary: #467adb;
+	--theme-primary-alt: #84a6e6;
 
 	--theme-secondary: #9834c7;
 	--theme-secondary-alt: #c08bd8;
@@ -42,11 +43,16 @@
 	--theme-font-mono-weight: 300;
 	--theme-font-mono-letter-spacing: 0.02em;
 
-	--theme-dark: #1A1A1A;
-	--theme-dark-glass: rgba(40, 40, 40, 0.75);
+	--theme-darker: #080808;
+	--theme-dark: #121212;
 	--theme-light: #F1F1F1;
+	--theme-lighter: #FAFAFA;
+
+	--theme-dark-glass: rgba(40, 40, 40, 0.75);
 	--theme-light-glass: rgba(60, 60, 60, 0.75);
+
 	--theme-header-bg: #040404;
+	--theme-header-color: #FBFBFB;
 	--theme-footer-bg: #040404;
 
 	--bs-body-color: #fdfdfd;
@@ -66,10 +72,13 @@
 //// LIGHT THEME /////////////////////////////////////////////////////////////*/
 
 [data-bs-theme="light"] {
-	--theme-dark: #404040;
-	--theme-dark-glass: rgba(200, 200, 200, 0.75);
 
+	--theme-darker: #101010;
+	--theme-dark: #242424;
 	--theme-light: #DDDDDD;
+	--theme-lighter: #F0F0F0;
+
+	--theme-dark-glass: rgba(200, 200, 200, 0.75);
 	--theme-light-glass: rgba(220, 220, 220, 0.75);
 
 	--theme-header-bg: #FEFEFE;
@@ -298,6 +307,11 @@ strong {
 .text-transform-none { text-transform: initial !important; }
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
+.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
+
+.text-primary { color: var(--theme-primary) !important; }
 
 .white-space-nowrap { white-space: nowrap; }
 .white-space-lines { white-space: pre-line; }
@@ -549,11 +563,11 @@ strong {
 }
 
 .wallpapered {
-	background: #000;
+	background: var(--theme-darker);
 	background-repeat: no-repeat;
 	background-position: center center;
 	color: #fff;
-	text-shadow: 0px 0px 4px #000a;
+	text-shadow: 0px 0px 4px var(--theme-darker);
 }
 
 .wallpapered,
@@ -735,11 +749,11 @@ strong {
 }
 
 .box-shadow-normal {
-	box-shadow: 0px 5px 5px #00000055;
+	box-shadow: 0px 5px 5px var(--theme-darker);
 }
 
 .box-shadow-inset {
-	box-shadow: inset 0px 0px 25px #00000055, inset 0px 0px 15px #00000055;
+	box-shadow: inset 0px 0px 25px var(--theme-darker), inset 0px 0px 15px var(--theme-darker);
 }
 
 .clickthru,
@@ -940,11 +954,34 @@ strong {
 //// src/elements/article.css ////////////////////////////////////////////////*/
 
 .ArticlePrelabel {
-	color: var(--ColourTertiaryAccent);
+	color: var(--theme-primary);
 	font-size: 0.8em;
 	font-weight: bold;
 	line-height: 1rem;
 	text-transform: uppercase;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/blog.css ///////////////////////////////////////////////////*/
+
+.BlogHeader,
+.BlogHeader a:link,
+.BlogHeader a:visited {
+	color: var(--theme-header-color) !important;
+	text-decoration: none;
+	border: 0px;
+}
+
+.BlogHeader {
+	position: relative;
+
+	background: var(--theme-dark);
+	overflow: hidden;
+}
+
+.BlogHeaderWash {
+	filter: blur(10px) brightness(0.8);
+	transform: scale(1.1);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

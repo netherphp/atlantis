@@ -1,12 +1,16 @@
 <?php
 
 use Nether\Atlantis;
+use Nether\Common;
 use Nether\Console;
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
 	return;
 })();
+
+
+define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
 
 class AtlantisCLI
 extends Console\Client {
@@ -15,9 +19,8 @@ extends Console\Client {
 	AppName    = 'Nether Atlantis',
 	AppVersion = '5.0.0-dev';
 
-
-	#[Nether\Console\Meta\Command]
-	#[Nether\Console\Meta\Info('Start a fresh project from scratch.')]
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Start a fresh project from scratch.')]
 	public function
 	Init():
 	int {
@@ -37,8 +40,8 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command(Hide: TRUE)]
-	#[Nether\Console\Meta\Info('Add things this framework knows you need to .gitignore')]
+	#[Console\Meta\Command(Hide: TRUE)]
+	#[Console\Meta\Info('Add things this framework knows you need to .gitignore')]
 	public function
 	InitGitIgnore():
 	int {
@@ -59,9 +62,9 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command(Hide: TRUE)]
-	#[Nether\Console\Meta\Info('Build up the common directory structure.')]
-	#[Nether\Console\Meta\Error(1, 'unable to create directory: file exists')]
+	#[Console\Meta\Command(Hide: TRUE)]
+	#[Console\Meta\Info('Build up the common directory structure.')]
+	#[Console\Meta\Error(1, 'unable to create directory: file exists')]
 	public function
 	InitCommonDirs():
 	int {
@@ -99,10 +102,10 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command(Hide: TRUE)]
-	#[Nether\Console\Meta\Info('Copy in core files for reference by local app.')]
-	#[Nether\Console\Meta\Toggle('-y', 'Say yes to everything. This WILL OVERWRITE core files with stock versions!')]
-	#[Nether\Console\Meta\Error(1, 'failed to copy file')]
+	#[Console\Meta\Command(Hide: TRUE)]
+	#[Console\Meta\Info('Copy in core files for reference by local app.')]
+	#[Console\Meta\Toggle('-y', 'Say yes to everything. This WILL OVERWRITE core files with stock versions!')]
+	#[Console\Meta\Error(1, 'failed to copy file')]
 	public function
 	InitCommonFiles():
 	int {
@@ -144,13 +147,13 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command('acmephp-config')]
-	#[Nether\Console\Meta\Info('Generate a new acmephp.yml file for SSL reg.')]
-	#[Nether\Console\Meta\Value('--filename', 'Filename of config file (default: acmephp.yml)')]
-	#[Nether\Console\Meta\Toggle('--raw', 'Only print the config contents.')]
-	#[Nether\Console\Meta\Toggle('--verbose', 'Show the contents of the file too.')]
-	#[Nether\Console\Meta\Error(1, 'missing ssl config: %s')]
-	#[Nether\Console\Meta\Error(2, 'conf not writable: %s')]
+	#[Console\Meta\Command('acmephp-config')]
+	#[Console\Meta\Info('Generate a new acmephp.yml file for SSL reg.')]
+	#[Console\Meta\Value('--filename', 'Filename of config file (default: acmephp.yml)')]
+	#[Console\Meta\Toggle('--raw', 'Only print the config contents.')]
+	#[Console\Meta\Toggle('--verbose', 'Show the contents of the file too.')]
+	#[Console\Meta\Error(1, 'missing ssl config: %s')]
+	#[Console\Meta\Error(2, 'conf not writable: %s')]
 	public function
 	AcmePhpGenerate():
 	int {
@@ -212,11 +215,11 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command('acmephp-run')]
-	#[Nether\Console\Meta\Info('Run the AcmePHP for the current env.')]
-	#[Nether\Console\Meta\Value('--filename', 'Filename of config file in environment config (default: acmephp.yml).')]
-	#[Nether\Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
-	#[Nether\Console\Meta\Toggle('--rehash', 'Automatically rehash the webserver after.')]
+	#[Console\Meta\Command('acmephp-run')]
+	#[Console\Meta\Info('Run the AcmePHP for the current env.')]
+	#[Console\Meta\Value('--filename', 'Filename of config file in environment config (default: acmephp.yml).')]
+	#[Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
+	#[Console\Meta\Toggle('--rehash', 'Automatically rehash the webserver after.')]
 	public function
 	AcmePhpRun():
 	int {
@@ -258,15 +261,15 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command('webserver-link')]
-	#[Nether\Console\Meta\Info('Symlink our web config into the webserver config system.')]
-	#[Nether\Console\Meta\Value('--filename', 'Config file to link in. (ex. conf/env/dev/apache24.conf).')]
-	#[Nether\Console\Meta\Value('--destdir', 'Directory to link into (ex. /etc/apache2/sites-enabled).')]
-	#[Nether\Console\Meta\Value('--destname', 'Name to link as (ex. 100-dev-app.conf).')]
-	#[Nether\Console\Meta\Toggle('--copy', 'Copy instead of symlinking.')]
-	#[Nether\Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
-	#[Nether\Console\Meta\Error(1, 'unsupported Project.WebServerType (%s)')]
-	#[Nether\Console\Meta\Error(2, 'directory unwritable - maybe run with sudo')]
+	#[Console\Meta\Command('webserver-link')]
+	#[Console\Meta\Info('Symlink our web config into the webserver config system.')]
+	#[Console\Meta\Value('--filename', 'Config file to link in. (ex. conf/env/dev/apache24.conf).')]
+	#[Console\Meta\Value('--destdir', 'Directory to link into (ex. /etc/apache2/sites-enabled).')]
+	#[Console\Meta\Value('--destname', 'Name to link as (ex. 100-dev-app.conf).')]
+	#[Console\Meta\Toggle('--copy', 'Copy instead of symlinking.')]
+	#[Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
+	#[Console\Meta\Error(1, 'unsupported Project.WebServerType (%s)')]
+	#[Console\Meta\Error(2, 'directory unwritable - maybe run with sudo')]
 	public function
 	WebserverLink():
 	int {
@@ -370,10 +373,10 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command('webserver-rehash')]
-	#[Nether\Console\Meta\Info('Get the web server to reload its config files.')]
-	#[Nether\Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
-	#[Nether\Console\Meta\Error(1, 'unsupported Project.WebServerType (%s)')]
+	#[Console\Meta\Command('webserver-rehash')]
+	#[Console\Meta\Info('Get the web server to reload its config files.')]
+	#[Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
+	#[Console\Meta\Error(1, 'unsupported Project.WebServerType (%s)')]
 	public function
 	WebserverRehash():
 	int {
@@ -408,10 +411,10 @@ extends Console\Client {
 		return $Result->Error;
 	}
 
-	#[Nether\Console\Meta\Command('env')]
-	#[Nether\Console\Meta\Info('Show what the configured Env is.')]
-	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
-	#[Nether\Console\Meta\Value('--set', 'Set the Environment name.')]
+	#[Console\Meta\Command('env')]
+	#[Console\Meta\Info('Show what the configured Env is.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Console\Meta\Value('--set', 'Set the Environment name.')]
 	public function
 	GetProjectEnv():
 	int {
@@ -470,9 +473,99 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Nether\Console\Meta\Command]
-	#[Nether\Console\Meta\Info('Run git command in all repos.')]
-	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Regenerate all image thumbnails.')]
+	public function
+	ImageRegen():
+	int {
+
+		$Page = 1;
+		$PageCount = PHP_INT_MAX;
+		$Which = $this->GetInput(1);
+		$Timer = new Common\Timer;
+		$TotalTime = 0.0;
+
+		while($Page <= $PageCount) {
+
+			$Result = Atlantis\Media\File::Find([
+				'Type' => Atlantis\Media\File::TypeImg,
+				'Page' => $Page
+			]);
+
+			$this->FormatLn(
+				'==== Page %d of %d ====',
+				$Result->Page,
+				$Result->PageCount
+			);
+
+			foreach($Result as $File) {
+				/** @var Atlantis\Media\File $File */
+
+				if($Which && $File->UUID !== $Which)
+				continue;
+
+				$this->FormatLn(sprintf(
+					'%s [%s] [%s]',
+					$this->FormatPrimary('> Regenerating'),
+					$File->ID,
+					$File->UUID
+				));
+
+				////////
+
+				$this->FormatLn(sprintf(
+					'%s [%s] [%s]',
+					$this->FormatPrimary('> Cleaning Extra Files'),
+					$File->ID,
+					$File->UUID
+				));
+
+				$Timer->Reset();
+				$TotalTime += $Timer(fn()=> $File->CleanExtraFiles());
+				$this->FormatLn(
+					$this->FormatSecondary('> %.3fs'),
+					$Timer->Time,
+				);
+
+				////////
+
+				$this->FormatLn(sprintf(
+					'%s [%s] [%s]',
+					$this->FormatPrimary('> Rendering Extra Files'),
+					$File->ID,
+					$File->UUID
+				));
+
+				$Timer->Reset();
+				$TotalTime += $Timer(fn()=> $File->GenerateExtraFiles());
+				$this->FormatLn(
+					$this->FormatSecondary('> %.3fs'),
+					$Timer->Time,
+				);
+
+				////////
+
+				$this->FormatLn(
+					$this->FormatSecondary('> Run Time: %.3fs'),
+					$TotalTime
+				);
+
+				$this->PrintLn();
+			}
+
+			$PageCount = $Result->PageCount;
+			$Page += 1;
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Run git command in all repos.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
 	NetherGitStatus():
 	int {
@@ -510,9 +603,9 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command]
-	#[Nether\Console\Meta\Info('Run git command in all repos.')]
-	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Run git command in all repos.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
 	NetherGitShove():
 	int {
@@ -550,9 +643,9 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Nether\Console\Meta\Command]
-	#[Nether\Console\Meta\Info('Run git command in all repos.')]
-	#[Nether\Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Run git command in all repos.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
 	NetherGitYoink():
 	int {
