@@ -1,6 +1,6 @@
 /*//
-@date 2023-02-16 07:21:07 UTC
-@files 13 [
+@date 2023-02-18 08:17:11 UTC
+@files 14 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -10,6 +10,7 @@
     "src\/elements\/article.css",
     "src\/elements\/blog.css",
     "src\/elements\/editor-html.css",
+    "src\/elements\/gallery.css",
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
     "src\/elements\/pretty-modern-box.css",
@@ -26,7 +27,7 @@
 //// src/main.css ////////////////////////////////////////////////////////////*/
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// DARK THEME //////0///////////////////////////////////////////////////////*/
+//// DARK THEME //////////////////////////////////////////////////////////////*/
 
 :root {
 	--theme-primary: #467adb;
@@ -308,8 +309,8 @@ strong {
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
-.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
+.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), 0px 0px 12px var(--theme-dark-glass); }
+.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark); }
 
 .text-primary { color: var(--theme-primary) !important; }
 
@@ -627,6 +628,10 @@ strong {
 /*******************************************************************************
 **** misc stuff ***************************************************************/
 
+.progress-bar {
+	transition: width 100ms;
+}
+
 .bg-body-primary {
 	--bs-bg-opacity: 1;
 	background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important
@@ -728,6 +733,7 @@ strong {
 .modal-content {
 	background-color: var(--bs-body-bg) !important;
 	border-color: var(--bs-body-bg) !important;
+	box-shadow: 0px 0px 24px var(--theme-dark), 0px 0px 12px var(--theme-dark-glass);
 }
 
 .modal-header,
@@ -1052,6 +1058,20 @@ strong {
 
 .EditorItem {
 	user-select: none;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/gallery.css ////////////////////////////////////////////////*/
+
+.GalleryItem .GalleryHoverTools {
+	background: var(--theme-dark-glass);
+	padding: 4px;
+	opacity: 0.0;
+	width: 100%;
+}
+
+.GalleryItem:hover .GalleryHoverTools {
+	opacity: 1.0;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

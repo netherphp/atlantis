@@ -137,6 +137,11 @@ extends Atlantis\ProtectedAPI {
 	ChunkFinalise():
 	void {
 
+		($this->Data)
+		->UUID(Common\Datafilters::UUID(...));
+
+		////////
+
 		$Storage = $this->App->Storage->Location('Temp');
 
 		$File = $Storage->GetFileObject(sprintf(
@@ -144,6 +149,9 @@ extends Atlantis\ProtectedAPI {
 			$this->Data->UUID,
 			static::DetermineCommonExt($this->Data->Name)
 		));
+
+		if(!$File->Exists())
+		throw new Atlantis\Error\Media\InvalidUpload($this->Data->UUID);
 
 		$this->Flow(static::KiOnUploadFinalise, [
 			'UUID' => $this->Data->UUID,

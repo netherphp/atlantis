@@ -1,0 +1,11 @@
+
+.GalleryItem .GalleryHoverTools {
+	background: var(--theme-dark-glass);
+	padding: 4px;
+	opacity: 0.0;
+	width: 100%;
+}
+
+.GalleryItem:hover .GalleryHoverTools {
+	opacity: 1.0;
+}

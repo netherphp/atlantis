@@ -13,7 +13,7 @@ extends SidebarGroup {
 		parent::__Construct('Media');
 
 		($this->Items)
-		->Push(new SidebarGroupItem('Browse', '/dashboard/media/browse', 'mdi-view-grid'));
+		->Push(new SidebarGroupItem('Browse Images', '/dashboard/media/images', 'mdi-view-grid'));
 
 		return;
 	}

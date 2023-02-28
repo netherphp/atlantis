@@ -30,6 +30,7 @@ extends Atlantis\Routes\UploadAPI {
 
 		$this->SetPayload([
 			'ID'          => $Entity->ID,
+			'Name'        => $Entity->Name,
 			'Type'        => $Entity->Type,
 			'DateCreated' => $Entity->DateCreated,
 			'URL'         => $Entity->GetPublicURL(),
@@ -54,13 +55,31 @@ extends Atlantis\Routes\UploadAPI {
 	EntityPostFinal():
 	void {
 
+		error_log('PAGE HIT');
+
 		$this->Queue(
 			static::KiOnUploadFinalise,
 			$this->OnUploadDone(...),
 			FALSE
 		);
 
-		$this->ChunkFinalise();
+		try { $this->ChunkFinalise(); }
+		catch(Atlantis\Error\Media\InvalidUpload $Error) {
+			if(!$this->Data->UUID)
+			$this->Quit(1, 'no upload uuid specified');
+
+			////////
+
+			$Entity = Atlantis\Media\File::GetByUUID($this->Data->UUID);
+
+			if(!$Entity)
+			$this->Quit(2, 'invalid upload');
+
+			////////
+
+			$this->Quit(42, 'timeout? big gif? file is in but thumbnailing probably failed.');
+		}
+
 		return;
 	}
 
@@ -305,8 +324,13 @@ extends Atlantis\Routes\UploadAPI {
 
 		////////
 
+		error_log('BEFORE DELETE');
+
 		$Storage->Put($Path, $Source->Read());
 		$Source->DeleteParentDirectory();
+
+
+		error_log('AFTER DELETE');
 
 		////////
 
@@ -323,9 +347,12 @@ extends Atlantis\Routes\UploadAPI {
 		]);
 
 		// gifs can take a moment.
-		set_time_limit(60);
+		//set_time_limit(30);
 
+		error_log('BEFORE GENERATE');
 		$Entity->GenerateExtraFiles();
+		error_log('AFTER GENERATE');
+
 		return;
 	}
 

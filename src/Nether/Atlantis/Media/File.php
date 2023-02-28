@@ -170,24 +170,32 @@ extends Atlantis\Prototype {
 	}
 
 	public function
-	GetPreviewURL(?string $Name=NULL):
+	GetPreviewURL(?string $Query=NULL, bool $ElseOG=FALSE):
 	?string {
 
-		$File = NULL;
-		$Size = NULL;
+		$FName = NULL;
+		$FExtra = NULL;
 
-		if($Name !== NULL) {
-			if($this->ExtraFiles->HasKey($Name))
-			return $this->GetFile($Name)->GetPublicURL();
+		////////
 
-			if(str_ends_with($Name, '.')) {
-				foreach($this->ExtraFiles as $File => $Size)
-				if(str_starts_with($File, $Name))
-				return $this->GetFile($File)->GetPublicURL();
+		if($Query === NULL)
+		return $this->GetPublicURL();
+
+		////////
+
+		if(str_ends_with($Query, '.')) {
+			foreach($this->ExtraFiles as $FName => $FExtra) {
+				/** @var Atlantis\Media\ExtraFile $FExtra */
+				if($FExtra->Type === $FExtra::TypeImgSet)
+				if(str_starts_with($FName, $Query))
+				return $this->GetFile($FName)->GetPublicURL();
 			}
 		}
 
-		return $this->GetFile()->GetPublicURL();
+		if($ElseOG)
+		return $this->GetPublicURL();
+
+		return '';
 	}
 
 	public function
@@ -245,6 +253,9 @@ extends Atlantis\Prototype {
 			$File->Storage->Delete($Found);
 		}
 
+		$this->ExtraFiles->Clear();
+		$this->Update([ 'ExtraFilesJSON'=> NULL ]);
+
 		return;
 	}
 
@@ -255,8 +266,14 @@ extends Atlantis\Prototype {
 		$File = $this->GetFile();
 		$this->ExtraFiles->Clear();
 
-		if($this->Type === static::TypeImg)
-		$this->GenerateImageThumbnails();
+		try {
+			if($this->Type === static::TypeImg)
+			$this->GenerateImageThumbnails();
+		}
+
+		catch(Exception $E) {
+			$this->CleanExtraFiles();
+		}
 
 		return $this;
 	}
@@ -313,13 +330,12 @@ extends Atlantis\Prototype {
 			return $New;
 		};
 
-		$Flooring = function(float $In, int $Dec) {
-			$Mag = pow(10, $Dec);
-
-			return floor($Mag * $In) / $Mag;
-		};
+		$Data = NULL;
 
 		try {
+			if(!($Data = $File->Read()))
+			throw new Exception('failed to read data');
+
 			$Img = new Imagick;
 			$Img->ReadImageBlob($File->Read());
 			$Img->ResetIterator();
@@ -330,6 +346,9 @@ extends Atlantis\Prototype {
 
 			$Per = min(($W / $IW), ($H / $IH));
 			$Per = round($Per, 8);
+
+			$FW = (int)($IW * $Per);
+			$FH = (int)($IH * $Per);
 
 			$MyWay = TRUE;
 
@@ -361,9 +380,6 @@ extends Atlantis\Prototype {
 					// destroys the gif optimisations making a gif
 					// half the size weight twice as much, and the
 					// imagick optimise method cant make up for it.
-
-					$FW = ($IW * $Per);
-					$FH = ($IH * $Per);
 
 					if($MyWay)
 					if($IW > $W || $IH > $H) {

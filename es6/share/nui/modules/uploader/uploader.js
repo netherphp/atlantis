@@ -8,9 +8,8 @@ let UploaderTemplate = `
 			<input type="file" class="d-none" />
 		</div>
 		<div class="col-12 mt-4 text-center d-none">
-			<div class="progress">
-				<div class="progress-bar" style="width: 0%"></div>
-			</div>
+			<div class="progress"><div class="progress-bar" style="width: 0%"></div></div>
+			<div class="status mt-2 text-uppercase font-size-smaller fw-bold"></div>
 		</div>
 	</div>
 `;
@@ -90,6 +89,7 @@ extends ModalDialog {
 		this.input = this.body.find('input[type=file]:first');
 		this.bar = this.body.find('.progress:first');
 		this.fill = this.body.find('.progress-bar:first');
+		this.status = this.body.find('.status:first');
 
 		this.url = main.options.url;
 		this.method = main.options.method;
@@ -207,6 +207,8 @@ extends ModalDialog {
 		.addClass('bg-success progress-bar-striped progress-bar-animated')
 		.css({ 'width': '100%' });
 
+		this.status.text('Processing...');
+
 		console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
@@ -216,6 +218,8 @@ extends ModalDialog {
 			'Name': this.req.response.Payload.Name,
 			'Finish': 1
 		};
+
+		console.log('finish');
 
 		(api.send(finish))
 		.then(function(result) {
@@ -227,6 +231,8 @@ extends ModalDialog {
 				if(self.onSuccess === 'reload')
 				location.reload();
 			}
+
+			return;
 		})
 		.catch(api.catch);
 
@@ -258,6 +264,7 @@ extends ModalDialog {
 
 		this.fill.removeClass('bg-danger bg-success');
 		this.bar.parent().removeClass('d-none');
+		this.status.text('Uploading...');
 
 		for(let item of this.queue) {
 			this.upload(item);

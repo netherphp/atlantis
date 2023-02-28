@@ -114,41 +114,4 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	public function
-	OnUpload(string $Name, Storage\File $File):
-	void {
-
-		$Storage = $this->PrepareStorageLocation('Default');
-		$UUID = Common\UUID::V7();
-
-		$Path = sprintf(
-			'upl/%s/original.%s',
-			join('/', explode('-',$UUID, 2)),
-			$File->GetExtension()
-		);
-
-		////////
-
-		$Storage->Put($Path, $File->Read());
-		$File->DeleteParentDirectory();
-
-		////////
-
-		$File = $Storage->GetFileObject($Path);
-
-		$Entity = Atlantis\Media\File::Insert([
-			'UUID'   => $UUID,
-			'UserID' => $this->User->ID,
-			'Name'   => $Name,
-			'Type'   => $File->GetType(),
-			'Size'   => $File->GetSize(),
-			'URL'    => $File->GetStorageURL()
-		]);
-
-		return;
-	}
-
 }

@@ -11,6 +11,7 @@ use Nether\Console;
 
 
 define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
+/** @constant Nether\Atlantis\Engine Atlantis */
 
 class AtlantisCLI
 extends Console\Client {
@@ -560,6 +561,17 @@ extends Console\Client {
 		return 0;
 	}
 
+	#[Console\Meta\Command]
+	public function
+	CleanUplDir():
+	int {
+
+		$Storage = Atlantis->Storage->Get('Default');
+
+
+		return 0;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -664,6 +676,43 @@ extends Console\Client {
 
 			$Git = sprintf(
 				'git -C "%1$s" pull 2>&1',
+				Nether\Atlantis\Util::Repath("{$Dir}")
+			);
+
+			$Result = $this->ExecuteCommandLine($Git, TRUE);
+
+			if(count($Result->Output)) {
+				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+
+				if($Verbose)
+				$this->PrintLn($this->FormatSecondary($Git));
+
+				echo PHP_EOL, join(PHP_EOL, $Result->Output);
+				echo PHP_EOL, PHP_EOL;
+			}
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Fix the git filemode crap.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	public function
+	NetherGitFilemode():
+	int {
+
+		$Verbose = (bool)$this->GetOption('--verbose');
+		$Path = sprintf('%s/vendor/netherphp/*', getcwd());
+		$Found = glob($Path);
+
+		$Dir = NULL;
+		$Git = NULL;
+		$Result = NULL;
+
+		foreach($Found as $Dir) {
+			$Git = sprintf(
+				'git -C "%1$s" config core.filemode 0 2>&1',
 				Nether\Atlantis\Util::Repath("{$Dir}")
 			);
 

@@ -60,8 +60,8 @@
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
-.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark), -1px -1px 0 var(--theme-dark), 1px -1px 0 var(--theme-dark), -1px 1px 0 var(--theme-dark), 1px 1px 0 var(--theme-dark); }
+.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), 0px 0px 12px var(--theme-dark-glass); }
+.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark); }
 
 .text-primary { color: var(--theme-primary) !important; }
 
@@ -379,6 +379,10 @@
 /*******************************************************************************
 **** misc stuff ***************************************************************/
 
+.progress-bar {
+	transition: width 100ms;
+}
+
 .bg-body-primary {
 	--bs-bg-opacity: 1;
 	background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important
@@ -480,6 +484,7 @@
 .modal-content {
 	background-color: var(--bs-body-bg) !important;
 	border-color: var(--bs-body-bg) !important;
+	box-shadow: 0px 0px 24px var(--theme-dark), 0px 0px 12px var(--theme-dark-glass);
 }
 
 .modal-header,

@@ -9,7 +9,7 @@ use Nether\Common;
 class MediaDashboardWeb
 extends Atlantis\ProtectedWeb {
 
-	#[Atlantis\Meta\RouteHandler('/dashboard/media/browse')]
+	#[Atlantis\Meta\RouteHandler('/dashboard/media/images')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function
 	Browse():

@@ -13,8 +13,8 @@ $Surface
 ->Set('Page.Title', 'View Media - Dashboard')
 ->Area('media/dashboard/scripts', $__SCOPE)
 ->Area('dashboard/nav', [ 'Trail' => [
-	'Media'  => NULL,
-	'View'   => NULL
+	'Browse Images'  => '/dashboard/media/images',
+	$Item->Name           => $App->Router->Request->GetURL()
 ]]);
 
 $File = $Item->GetFile();
@@ -24,7 +24,7 @@ $File = $Item->GetFile();
 <div class="row justify-content-center">
 	<div class="col-12 col-lg-8 mb-4 mb-4 mb-md-0">
 		<?php if($Item->Type === 'img'): ?>
-		<img src="<?php $Printer($Item->GetPreviewURL('lg.')) ?>" />
+		<img src="<?php $Printer($Item->GetPreviewURL('lg.', TRUE)) ?>" />
 		<?php else: ?>
 		[some unviewed media type: <?php $Printer($Item->Type) ?>]
 		<?php endif; ?>
