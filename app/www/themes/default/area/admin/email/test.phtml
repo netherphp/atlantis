@@ -1,0 +1,130 @@
+<?php
+
+$Surface->Area('admin/breadcrumbs', [ 'Trail' => [
+	'Email Test' => '/ops/email/test'
+]]);
+
+?>
+
+<div class="row justify-content-center mb-4">
+	<div class="col-12 col-md-8 col-lg-6">
+		<div class="row tight">
+			<div class="col-12">
+				<div class="fw-bold">Send Test To:</div>
+				<input type="text" class="form-control" name="Email" value="<?php $Printer($User->Email) ?>" />
+			</div>
+			<div class="col-12 mb-2"></div>
+			<div class="col">
+				<select name="SendVia" class="form-select">
+					<?php foreach($ServiceConfigs as $ServName => $ServConf): if(!$ServConf->Ready) continue; ?>
+					<option value="<?php $Printer($ServConf->Value) ?>">via <?php $Printer($ServName) ?></option>
+					<?php endforeach; unset($ServName, $ServConf); ?>
+				</select>
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-primary btn-block">
+					<i class="mdi mdi-fw mdi-email mr-2"></i> Send
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+
+	<div class="col-12 mb-4">
+		<hr />
+	</div>
+
+	<div class="col-12 mb-4">
+		<div class="PrettyModernBox">
+			<h3>
+				<span class="text-transform-none">Config</span>
+				<hr />
+			</h3>
+			<div class="row">
+				<div class="col">
+					Default Service:
+				</div>
+				<div class="col-auto">
+					<?php $Printer($DefaultName) ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-12 mb-4">
+		<hr />
+	</div>
+
+	<?php foreach($ServiceConfigs as $ServName => $ServConf): ?>
+	<div class="col-12 mb-4">
+		<div class="PrettyModernBox">
+			<h3>
+				<span class="text-transform-none"><?php $Printer($ServName) ?></span>
+				<hr />
+			</h3>
+			<div>
+				<div class="LocalConfigAlert alert <?php $Printer($ServConf->Ready ? 'alert-success' : 'alert-secondary') ?> mb-0">
+					<div class="row tight align-items-center">
+						<div class="col-auto">
+							<i class="mdi mdi-fw <?php $Printer($ServConf->Ready ? 'mdi-check-circle' : 'mdi-close-box') ?>"></i>
+						</div>
+						<div class="col">
+							<?php $Printer($ServConf->Ready ? 'Ready' : 'Not Configured') ?>
+						</div>
+						<div class="col-auto">
+							<button class="btn <?php $Printer($ServConf->Ready ? 'btn-success' : 'btn-secondary') ?>">Show Config</button>
+						</div>
+					</div>
+				</div>
+				<div class="LocalConfigInstructions d-none mt-2">
+					<div class="table-responsive font-size-smaller">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Library Const</th>
+									<th>Config Key Name</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php foreach($ServConf->Keys as $ServKey => $ServConst): ?>
+								<tr>
+									<td>
+										<?php $Printer($ServConst) ?>
+									</td>
+									<td>
+										<?php $Printer($ServKey) ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php endforeach; unset($ServName, $ServConf, $ServKey, $ServConst); ?>
+
+</div>
+
+<script type="module">
+
+function LocalConfigShow(ev) {
+
+	let me = jQuery(ev.delegateTarget);
+
+	(me.next('.LocalConfigInstructions'))
+	.toggleClass('d-none');
+
+	return;
+};
+
+jQuery(function() {
+
+	jQuery('.LocalConfigAlert')
+	.on('click', '.btn', LocalConfigShow);
+
+	return;
+});
+</script>

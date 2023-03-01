@@ -497,8 +497,6 @@ application instance.
 
 		if(is_iterable($Classes))
 		foreach($Classes as $Class) {
-			$Class = "{$Class}\\Library";
-
 			if(!class_exists($Class))
 			throw new \Exception("library {$Class} not found");
 

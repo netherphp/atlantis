@@ -61,8 +61,12 @@ extends Atlantis\ProtectedWeb {
 		//);
 
 		$SidebarItems->Sort(
-			fn(Atlantis\Dashboard\SidebarGroup $A, Atlantis\Dashboard\SidebarGroup $B)
-			=> $B->Priority <=> $A->Priority
+			function(Atlantis\Dashboard\SidebarGroup $A, Atlantis\Dashboard\SidebarGroup $B) {
+				if($A->Priority !== $B->Priority)
+				return $B->Priority <=> $A->Priority;
+
+				return $A->Title <=> $B->Title;
+			}
 		);
 
 		//$MainItems->Sort(
