@@ -100,12 +100,16 @@ class JsonRequest {
 
 		////////
 
+		let fetchset = {
+			method: this.method,
+			headers: headers
+		};
+
+		if(this.method !== 'HEAD' && this.method !== 'GET')
+		fetchset.body = body;
+
 		req = (
-			fetch(this.url, {
-				method: this.method,
-				headers: headers,
-				body: body
-			})
+			fetch(this.url, fetchset)
 			.then(function(resp) {
 				return JsonResult.FromResponse(resp);
 			})
@@ -156,7 +160,10 @@ class JsonRequest {
 	catch(error) {
 
 		if(error instanceof JsonResult)
-		alert(`JsonRequest Error: ${error.message}`);
+		alert(`Error: ${error.message}`);
+
+		console.log('api error:');
+		console.log(error);
 
 		return;
 	};
