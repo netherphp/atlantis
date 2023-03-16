@@ -9,9 +9,11 @@ use Nether\Console;
 	return;
 })();
 
-
 define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
 /** @constant Nether\Atlantis\Engine Atlantis */
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
 class AtlantisCLI
 extends Console\Client {
@@ -117,7 +119,7 @@ extends Console\Client {
 		$File = NULL;
 		$Local = NULL;
 		$Remote = NULL;
-		$Confirm = NULL;
+		$ConfirmFile = NULL;
 
 		$Files = [
 			'conf',
@@ -134,12 +136,16 @@ extends Console\Client {
 
 			$Copy = Atlantis\Util::CopyWithConfirm($Local, $Remote, $Force);
 
-			foreach($Copy as $Confirm)
-			if(is_string($Confirm))
-			$Copy->Send($this->PromptEquals(
-				"   Overwrite {$Confirm}?",
-				'   (y/n):', 'y'
-			));
+			foreach($Copy as $ConfirmFile) {
+				if(is_string($ConfirmFile)) {
+					$Copy->Send($this->PromptTrue(
+						"   Overwrite {$ConfirmFile}?",
+						'   (y/N):'
+					));
+
+					continue;
+				}
+			}
 
 			if(!file_exists($Remote))
 			$this->Quit(1);
