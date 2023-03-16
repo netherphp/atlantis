@@ -74,6 +74,15 @@ class Util {
 		$EOL = PHP_EOL;
 		$Line = NULL;
 
+		////////
+
+		if(!count($New))
+		return;
+
+		////////
+
+		fwrite($File, $EOL);
+
 		foreach($New as $Line)
 		fwrite($File, "{$Line}{$EOL}");
 

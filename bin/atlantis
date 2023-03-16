@@ -53,8 +53,11 @@ extends Console\Client {
 		$IgnoreFile = "{$CWD}/.gitignore";
 		$IgnoreList = [
 			'/env.lock',
+			'/backups',
+			'/logs',
+			'/temp',
 			'/vendor',
-			'/www/themes/default'
+			'/www/.well-known'
 		];
 
 		Nether\Atlantis\Util::WriteToGitIgnore(

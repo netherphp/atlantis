@@ -8,3 +8,4 @@ cp ../../../routes/Home.php app/routes/
 # demo themes.
 
 cp -r ../../../www/themes/default/. app/www/themes/default
+cp -r ../../../www/share/. app/www/share
