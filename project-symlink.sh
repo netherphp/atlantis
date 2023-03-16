@@ -32,9 +32,9 @@ echo "Symlinking in www/themes/default..."
 rm -rf $PROOT/www/themes/default
 ln -s $SROOT/app/www/themes/default $PROOT/www/themes/default
 
-echo "Symlinking in www/share/atlantis..."
-rm -rf $PROOT/www/share/atlantis
-ln -s $SROOT/app/www/share/atlantis $PROOT/www/share/atlantis
+echo "Symlinking in www/share..."
+rm -rf $PROOT/www/share
+ln -s $SROOT/app/www/share $PROOT/www/share
 
 ################################################################################
 ################################################################################
