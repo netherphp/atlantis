@@ -25,7 +25,7 @@ class Util {
 	string {
 
 		if($Cond)
-		return 'selected="selected"';
+		return 'checked="checked"';
 
 		return '';
 	}

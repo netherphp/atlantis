@@ -13,7 +13,7 @@ extends Atlantis\ProtectedWeb {
 	#[Atlantis\Meta\RouteHandler('/ops/email/test')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
-	HandleTest():
+	HandleTestGet():
 	void {
 
 		$DefaultService = Email\Library::Get(Email\Library::ConfOutboundVia);
@@ -67,6 +67,49 @@ extends Atlantis\ProtectedWeb {
 			'DefaultName'    => $DefaultName,
 			'ServiceConfigs' => $ServiceConfigs
 		]);
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/ops/email/test', Verb: 'POST')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	HandleTestPost():
+	void {
+
+		($this->Data)
+		->Email(Common\Datafilters::Email(...))
+		->Via(Common\Datafilters::TypeIntNullable(...));
+
+		if($this->Data->Email && $this->Data->Via) {
+			$this->SendTestEmail($this->Data->Email, $this->Data->Via);
+			$this->Surface->Set('Admin.Email.TestSent', TRUE);
+		}
+
+		$this->HandleTestGet();
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	SendTestEmail(string $SendTo, int $Via):
+	void {
+
+		$Email = new Email\Outbound;
+
+		$Email->To->Push($SendTo);
+		$Email->Subject = 'Test Email';
+
+		$Email->Content = '<h2>This is a test email.</h2>';
+		$Email->Content .= '<p>It was sent as a test.</p>';
+		$Email->Content .= sprintf(
+			'<p>Sent from the admin panel via the configured %s.</p>',
+			$Email::GetViaName($Via)
+		);
+
+		$Email->Send($Via);
 
 		return;
 	}

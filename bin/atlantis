@@ -696,38 +696,59 @@ extends Console\Client {
 	}
 
 	#[Console\Meta\Command]
-	#[Console\Meta\Info('Fix the git filemode crap.')]
+	#[Console\Meta\Info('Fixes various annoyances with git config on my repos that really grind my gears.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
-	NetherGitFilemode():
+	NetherGitConfig():
 	int {
 
-		$Verbose = (bool)$this->GetOption('--verbose');
+		$Verbose = (bool)$this->GetOption('Verbose');
+		$Global = $this->GetOption('Global');
 		$Path = sprintf('%s/vendor/netherphp/*', getcwd());
 		$Found = glob($Path);
 
+		$GitCommandsToRun = [
+			'config core.filemode 0',
+			'config core.pager ""',
+			'config tag.sort version:refname'
+		];
+
 		$Dir = NULL;
 		$Git = NULL;
+		$GitCmd = NULL;
 		$Result = NULL;
 
 		foreach($Found as $Dir) {
-			$Git = sprintf(
-				'git -C "%1$s" config core.filemode 0 2>&1',
-				Nether\Atlantis\Util::Repath("{$Dir}")
-			);
+			foreach($GitCommandsToRun as $GitCmd) {
+				$Git = match($Global) {
+					TRUE => sprintf(
+						'git %1$s 2>&1',
+						str_replace('config ', 'config --global ', $GitCmd)
+					),
+					default => sprintf(
+						'git -C "%1$s" %2$s 2>&1',
+						Nether\Atlantis\Util::Repath("{$Dir}"),
+						$GitCmd
+					)
+				};
 
-			$Result = $this->ExecuteCommandLine($Git, TRUE);
+				$Result = $this->ExecuteCommandLine($Git);
 
-			if(count($Result->Output)) {
-				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+				if(count($Result->Output)) {
+					$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
 
-				if($Verbose)
-				$this->PrintLn($this->FormatSecondary($Git));
+					if($Verbose)
+					$this->PrintLn($this->FormatSecondary($Git));
 
-				echo PHP_EOL, join(PHP_EOL, $Result->Output);
-				echo PHP_EOL, PHP_EOL;
+					echo PHP_EOL, join(PHP_EOL, $Result->Output);
+					echo PHP_EOL, PHP_EOL;
+				}
 			}
+
+			if($Global)
+			break;
 		}
+
 
 		return 0;
 	}

@@ -8,25 +8,27 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 
 <div class="row justify-content-center mb-4">
 	<div class="col-12 col-md-8 col-lg-6">
-		<div class="row tight">
-			<div class="col-12">
-				<div class="fw-bold">Send Test To:</div>
-				<input type="text" class="form-control" name="Email" value="<?php $Printer($User->Email) ?>" />
+		<form method="post">
+			<div class="row tight">
+				<div class="col-12">
+					<div class="fw-bold">Send Test To:</div>
+					<input type="text" class="form-control" name="Email" value="<?php $Printer($User->Email) ?>" />
+				</div>
+				<div class="col-12 mb-2"></div>
+				<div class="col">
+					<select name="Via" class="form-select">
+						<?php foreach($ServiceConfigs as $ServName => $ServConf): if(!$ServConf->Ready) continue; ?>
+						<option value="<?php $Printer($ServConf->Value) ?>" <?php $Printer($Selected($ServConf->Value === $DefaultService)) ?>>via <?php $Printer($ServName) ?></option>
+						<?php endforeach; unset($ServName, $ServConf); ?>
+					</select>
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-primary btn-block">
+						<i class="mdi mdi-fw mdi-email mr-2"></i> Send
+					</button>
+				</div>
 			</div>
-			<div class="col-12 mb-2"></div>
-			<div class="col">
-				<select name="SendVia" class="form-select">
-					<?php foreach($ServiceConfigs as $ServName => $ServConf): if(!$ServConf->Ready) continue; ?>
-					<option value="<?php $Printer($ServConf->Value) ?>">via <?php $Printer($ServName) ?></option>
-					<?php endforeach; unset($ServName, $ServConf); ?>
-				</select>
-			</div>
-			<div class="col-auto">
-				<button class="btn btn-primary btn-block">
-					<i class="mdi mdi-fw mdi-email mr-2"></i> Send
-				</button>
-			</div>
-		</div>
+		</form>
 	</div>
 </div>
 
