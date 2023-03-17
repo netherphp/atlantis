@@ -27,7 +27,7 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 
 ?>
 
-<div class="PrettyModernBox HideTheLastHR">
+<div class="PrettyModernBox hr-hide-last">
 
 	<?php if($HasApple): ?>
 	<div>
@@ -35,7 +35,7 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 		$Surface->Area('user/login-auth-button', [
 			'Action' => $Action,
 			'Name'   => 'Apple',
-			'Icon'   => 'msi-apple',
+			'Icon'   => 'si si-apple',
 			'URL'    => $GetLinkWithGoto('/auth/apple')
 		]);
 		?>
@@ -49,7 +49,7 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 		$Surface->Area('user/login-auth-button', [
 			'Action' => $Action,
 			'Name'   => 'Discord',
-			'Icon'   => 'msi-discord',
+			'Icon'   => 'si si-discord',
 			'URL'    => $GetLinkWithGoto('/auth/discord')
 		]);
 		?>
@@ -63,7 +63,7 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 		$Surface->Area('user/login-auth-button', [
 			'Action' => $Action,
 			'Name'   => 'GitHub',
-			'Icon'   => 'msi-github',
+			'Icon'   => 'si si-github',
 			'URL'    => $GetLinkWithGoto('/auth/github')
 		]);
 		?>
@@ -77,7 +77,7 @@ $GetLinkWithGoto = function(string $URL) use($Route) {
 		$Surface->Area('user/login-auth-button', [
 			'Action' => $Action,
 			'Name'   => 'Google',
-			'Icon'   => 'msi-google',
+			'Icon'   => 'si si-google',
 			'URL'    => $GetLinkWithGoto('/auth/google')
 		]);
 		?>

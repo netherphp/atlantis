@@ -1,10 +1,11 @@
 .mdi {
 	display: inline-block;
+	vertical-align: middle;
+	width: 1.0em;
 }
 
-.mdi-fw {
-	text-align: center;
-	width: 1.25em;
+.btn > .mdi:first-child {
+	margin-right: 0.25em;
 }
 
 .mdi-spin-fast::before {

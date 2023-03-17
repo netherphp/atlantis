@@ -182,8 +182,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-dark-glass);
-	padding: 6px;
+	background-color: var(--theme-dark);
 	border-radius: 0px;
 	box-shadow: 0px 0px 72px #000;
 }
@@ -209,7 +208,7 @@ strong {
 .dropdown-menu a.dropdown-item:active,
 .dropdown-menu a.dropdown-item:hover,
 .dropdown-menu a.dropdown-item:focus {
-	background-color: var(--theme-dark-glass);
+	background-color: var(--theme-dark);
 }
 
 .table td {

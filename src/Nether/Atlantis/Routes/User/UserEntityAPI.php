@@ -14,7 +14,6 @@ use Nether\Common\Prototype\PropertyInfo;
 class UserEntityAPI
 extends Atlantis\ProtectedAPI {
 
-
 	#[RouteHandler('/api/user/entity', Verb: 'GET')]
 	#[RouteAccessTypeAdmin]
 	public function
@@ -69,7 +68,7 @@ extends Atlantis\ProtectedAPI {
 			continue;
 
 			if($this->Data->Exists($Prop))
-			$Dataset[$Prop] = $this->Data->get($Prop);
+			$Dataset[$Prop] = $this->Data->Get($Prop);
 		}
 
 		////////

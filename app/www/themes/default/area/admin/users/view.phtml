@@ -6,8 +6,8 @@ use Nether\User;
 use Nether\Database;
 
 /**
- * @var User\Entity $User - the currently logged in user
- * @var User\Entity $Who - the user being inspected.
+ * @var User\EntitySession $User - the currently logged in user
+ * @var User\EntitySession $Who - the user being inspected.
  * @var Database\Struct\PrototypeFindResult $AccessTypes
  * @var Atlantis\User\AccessTypeList $DefinedAccessTypes;
  */
@@ -41,40 +41,30 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 
 		<!-- ACCOUNT AUTH INFO -->
 		<div class="text-primary font-size-smaller fw-bold text-uppercase">Login Methods:</div>
-		<div class="row tight align-items-center mb-4">
+		<div class="row tight align-items-center font-size-larger mb-4">
 			<?php if($Who->PHash): ?>
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm" title="Password">
-					<div class="position-absolutely msi-keyboard bg-white"></div>
-				</div>
+				<i class="mdi mdi-keyboard" title="Password"></i>
 			</div>
 			<?php endif; ?>
 			<?php if($Who->AuthAppleID): ?>
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm" title="Apple">
-					<div class="position-absolutely msi-apple bg-white"></div>
-				</div>
+				<i class="si si-apple" title="Apple"></i>
 			</div>
 			<?php endif; ?>
 			<?php if($Who->AuthDiscordID): ?>
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm" title="Discord">
-					<div class="position-absolutely msi-discord bg-white"></div>
-				</div>
+				<i class="si si-discord" title="Discord"></i>
 			</div>
 			<?php endif; ?>
 			<?php if($Who->AuthGitHubID): ?>
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm" title="GitHub">
-					<div class="position-absolutely msi-github bg-white"></div>
-				</div>
+				<i class="si si-github" title="GitHub"></i>
 			</div>
 			<?php endif; ?>
 			<?php if($Who->AuthGoogleID): ?>
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm" title="Google">
-					<div class="position-absolutely msi-google bg-white"></div>
-				</div>
+				<i class="si si-google" title="Google"></i>
 			</div>
 			<?php endif; ?>
 		</div>
@@ -96,12 +86,12 @@ $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
 		<!-- COMMAND BUTTONS -->
 		<div class="mb-4">
 			<div class="mb-2">
-				<?php if($Who->TimeBanned === 0): ?><button class="btn btn-block btn-primary CmdUserBan" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-ban"></i> Ban</button>
-				<?php else: ?><button class="btn btn-block btn-danger CmdUserUnban" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-ban"></i> Unban</button>
+				<?php if($Who->TimeBanned === 0): ?><button class="btn btn-block btn-primary btn-left CmdUserBan" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-gavel"></i> Ban</button>
+				<?php else: ?><button class="btn btn-block btn-danger btn-left CmdUserUnban" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-gavel"></i> Unban</button>
 				<?php endif; ?>
 			</div>
 			<div class="mb-2">
-				<button class="btn btn-block btn-primary CmdUserOvershadow" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-spy"></i> Overshadow</button>
+				<button class="btn btn-block btn-primary btn-left CmdUserOvershadow" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-incognito-circle"></i> Overshadow</button>
 			</div>
 		</div>
 
@@ -230,7 +220,7 @@ jQuery(function(){
 		let form = new NUI.Form(this);
 		let req = new NUI.Request('SETACCESS', '/api/user/entity');
 
-		(req.send(form.getData()))
+		(req.send(form.read()))
 		.then(req.goto)
 		.catch(req.catch);
 
@@ -245,9 +235,6 @@ jQuery(function(){
 		let key = that.attr('data-key');
 		let val = that.attr('data-value');
 
-		console.log(key);
-		console.log(val);
-
 		form.find('input[name=Key]').val(key);
 		form.find('input[name=Value]').val(val);
 
@@ -261,9 +248,9 @@ jQuery(function(){
 	.on('click', function(){
 
 		let req = new NUI.Request('DELACCESS', '/api/user/entity');
-		let data = NUI.Form.ObjectArrayToDataString([
-			{ name: 'AccessID', value: jQuery(this).attr('data-access-id') }
-		]);
+		let data = NUI.Form.ObjectArrayToDataString({
+			'AccessID': jQuery(this).attr('data-access-id')
+		});
 
 		(req.send(data))
 		.then(req.goto)
@@ -275,10 +262,12 @@ jQuery(function(){
 	jQuery('.CmdUserBan')
 	.on('click', function(){
 
-		let data = NUI.Form.ObjectArrayToDataString([
-			{ name: "ID", value: jQuery(this).attr('data-user-id') },
-			{ name: "Reason", value: '' }
-		]);
+		let data = NUI.Form.ObjectArrayToDataString({
+			"ID": jQuery(this).attr('data-user-id'),
+			"Reason": ''
+		});
+
+		console.log(data);
 
 		let req = new NUI.Request('BAN', '/api/user/entity');
 
@@ -292,9 +281,9 @@ jQuery(function(){
 	jQuery('.CmdUserUnban')
 	.on('click', function(){
 
-		let data = NUI.Form.ObjectArrayToDataString([
-			{ name: "ID", value: jQuery(this).attr('data-user-id') }
-		]);
+		let data = NUI.Form.ObjectArrayToDataString({
+			"ID": jQuery(this).attr('data-user-id')
+		});
 
 		let req = new NUI.Request('UNBAN', '/api/user/entity');
 
@@ -308,9 +297,9 @@ jQuery(function(){
 	jQuery('.CmdUserOvershadow')
 	.on('click', function(){
 
-		let data = NUI.Form.ObjectArrayToDataString([
-			{ name: "ID", value: jQuery(this).attr('data-user-id') }
-		]);
+		let data = NUI.Form.ObjectArrayToDataString({
+			"ID": jQuery(this).attr('data-user-id')
+		});
 
 		let req = new NUI.Request('OVERSHADOW', '/api/user/entity');
 
@@ -328,7 +317,7 @@ jQuery(function(){
 		let req = new NUI.Request('PATCH', '/api/user/entity');
 		let btn = form.element.find('button[type=submit]');
 
-		(req.send(form.getData()))
+		(req.send(form.read()))
 		.then(function(result) {
 
 			btn

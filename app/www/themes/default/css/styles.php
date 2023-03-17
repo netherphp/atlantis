@@ -13,6 +13,7 @@ new Nether\Common\Library;
 ->AddFile('src/main.css')
 ->AddFile('src/ext-bootstrap.css')
 ->AddFile('src/ext-materialdesignicons.css')
+->AddFile('src/ext-simpleicons.css')
 ->AddDir('src/design')
 ->AddDir('src/elements')
 ->Print(TRUE);

@@ -1,10 +1,11 @@
 /*//
-@date 2023-02-18 08:17:11 UTC
-@files 14 [
+@date 2023-03-17 23:14:23 UTC
+@files 15 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-materialdesignicons.css",
+    "src\/ext-simpleicons.css",
     "src\/design\/footer.css",
     "src\/design\/header.css",
     "src\/elements\/article.css",
@@ -210,8 +211,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-dark-glass);
-	padding: 6px;
+	background-color: var(--theme-dark);
 	border-radius: 0px;
 	box-shadow: 0px 0px 72px #000;
 }
@@ -237,7 +237,7 @@ strong {
 .dropdown-menu a.dropdown-item:active,
 .dropdown-menu a.dropdown-item:hover,
 .dropdown-menu a.dropdown-item:focus {
-	background-color: var(--theme-dark-glass);
+	background-color: var(--theme-dark);
 }
 
 .table td {
@@ -798,11 +798,12 @@ strong {
 
 .mdi {
 	display: inline-block;
+	vertical-align: middle;
+	width: 1.0em;
 }
 
-.mdi-fw {
-	text-align: center;
-	width: 1.25em;
+.btn > .mdi:first-child {
+	margin-right: 0.25em;
 }
 
 .mdi-spin-fast::before {
@@ -813,6 +814,19 @@ strong {
 .mdi-spin-hyper::before {
 	-webkit-animation: mdi-spin 500ms infinite linear;
 	animation: mdi-spin 500ms infinite linear;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-simpleicons.css /////////////////////////////////////////////////*/
+
+.si {
+	display: inline-block;
+	vertical-align: middle;
+	width: 1.0em;
+}
+
+.btn > .si:first-child {
+	margin-right: 0.25em;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
