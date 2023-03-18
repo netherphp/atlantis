@@ -56,21 +56,20 @@ extends Atlantis\ProtectedAPI {
 
 		// fetch a dataset of all the things valid to change that have changed.
 
-		$Patchables = User\Entity::GetPropertiesWithAttribute(Common\Meta\PropertyPatchable::class);
+		$Patchables = Common\Meta\PropertyPatchable::FromClass(User\Entity::class);
 		$Prop = NULL;
 		$Filters = NULL;
 		$Filter = NULL;
 		$Dataset = [];
 
-		foreach($Patchables as $Prop) {
-			if(!$this->Data->Exists($Prop->Name))
+		foreach($Patchables as $Prop => $Filters) {
+			if(!$this->Data->Exists($Prop))
 			continue;
 
-			$Filters = $Prop->GetAttributes(Common\Meta\PropertyFilter::class);
-			$Dataset[$Prop->Name] = $this->Data->{$Prop->Name};
+			$Dataset[$Prop] = $this->Data->Get($Prop);
 
 			foreach($Filters as $Filter)
-			$Dataset[$Prop->Name] = $Filter($Dataset[$Prop->Name]);
+			$Dataset[$Prop] = $Filter($Dataset[$Prop]);
 		}
 
 		////////
