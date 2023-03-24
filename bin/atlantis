@@ -28,7 +28,6 @@ extends Console\Client {
 	Init():
 	int {
 
-		$this->PrintLn($this->Formatter->BoldYellow('Setup Git Ignore...'));
 		$this->InitGitIgnore();
 
 		//$this->PrintLn($this->Formatter->BoldYellow('Setup Common Directories...'));
@@ -49,21 +48,25 @@ extends Console\Client {
 	InitGitIgnore():
 	int {
 
-		$CWD = getcwd();
-		$IgnoreFile = "{$CWD}/.gitignore";
-		$IgnoreList = [
+		$this->FormatLn(
+			'%s %s',
+			$this->FormatPrimary('[Atlantis]'),
+			'Setup Git Ignore...'
+		);
+
+		$File = Common\Filesystem\Util::Pathify(getcwd(), '.gitignore');
+		$Ignore = new Atlantis\Util\GitIgnoreTool($File);
+
+		$Ignore->Append([
 			'/env.lock',
 			'/backups',
 			'/logs',
 			'/temp',
 			'/vendor',
 			'/www/.well-known'
-		];
+		]);
 
-		Nether\Atlantis\Util::WriteToGitIgnore(
-			$IgnoreList,
-			$IgnoreFile
-		);
+		$Ignore->Write();
 
 		return 0;
 	}

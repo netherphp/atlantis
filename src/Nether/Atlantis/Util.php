@@ -42,56 +42,6 @@ class Util {
 	}
 
 	static public function
-	ReadFromGitIgnore(string $Filename='.gitignore'):
-	?array {
-
-		if(!file_exists($Filename))
-		return NULL;
-
-		if(!is_readable($Filename))
-		return NULL;
-
-		$Output = array_map(
-			(fn($Line)=> trim($Line)),
-			(file($Filename) ?: [])
-		);
-
-		return $Output;
-	}
-
-	static public function
-	WriteToGitIgnore(array $Lines, string $Filename='.gitignore'):
-	void {
-
-		// find what is already there.
-		$Old = static::ReadFromGitIgnore($Filename);
-
-		// find what is missing.
-		$New = array_diff($Lines, $Old ?? []);
-
-		// push the new things into the file.
-		$File = fopen($Filename, 'a');
-		$EOL = PHP_EOL;
-		$Line = NULL;
-
-		////////
-
-		if(!count($New))
-		return;
-
-		////////
-
-		fwrite($File, $EOL);
-
-		foreach($New as $Line)
-		fwrite($File, "{$Line}{$EOL}");
-
-		fclose($File);
-
-		return;
-	}
-
-	static public function
 	Copy(string $Source, string $Dest):
 	bool {
 
