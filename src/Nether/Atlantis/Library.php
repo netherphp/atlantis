@@ -17,6 +17,7 @@ implements
 	const
 	ConfProjectID             = 'Project.Key',
 	ConfProjectName           = 'Project.Name',
+	ConfProjectDomain         = 'Project.Domain',
 	ConfProjectDesc           = 'Project.Desc',
 	ConfProjectDescShort      = 'Project.DescShort',
 	ConfProjectKeywords       = 'Project.Keywords',

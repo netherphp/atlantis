@@ -3,21 +3,23 @@
 /*//////////////////////////////////////////////////////////////////////////////
 // global project settings /////////////////////////////////////////////////////
 
-this file is for main project configuration which should be consistenta cross
+this file is for main project configuration which should be consistent across
 any of the environments it should run on.
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////*/
 
-use Nether\Atlantis;
-use Nether\Avenue;
-use Nether\Common;
-use Nether\User;
-
 /**
  * @var Nether\Common\Datastore $Config
  * @var Nether\Atlantis\Engine $App
  */
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Email;
+use Nether\Storage;
+use Nether\User;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,20 +29,32 @@ use Nether\User;
 ($Config)
 ->Set(Atlantis\Library::ConfProjectID, 'atlantis')
 ->Set(Atlantis\Library::ConfProjectName, 'Atlantis WebApp')
+->Set(Atlantis\Library::ConfProjectDomain, 'whatever.tld')
 ->Set(Atlantis\Library::ConfProjectDescShort, 'Example project built on Nether Atlantis')
-->Set(Atlantis\Library::ConfProjectWebserver, NULL);
+->Set(Atlantis\Library::ConfProjectWebserver, Atlantis\Library::WebServerTypeApache24);
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ATLANTIS CONFIG.
+// FRAMEWORK CONFIG.
 
 ($Config)
+->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
+->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))
 ->Set(Atlantis\Library::ConfUserAllowLogin, FALSE)
 ->Set(Atlantis\Library::ConfUserAllowSignup, FALSE)
 ->Set(Atlantis\Library::ConfLibraries, [ ])
-->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
-->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'));
+->Set(Storage\Library::ConfStorageLocations, [
+	new Storage\Adaptors\Local(
+		Name: 'Default',
+		Root: $App->FromProjectRoot('data'),
+		URL: '/data/{Path}'
+	),
+	new Storage\Adaptors\Local(
+		Name: 'Temp',
+		Root: $App->FromProjectRoot('temp')
+	)
+]);
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +75,24 @@ use Nether\User;
 ->Set(User\Library::ConfDiscordEnabled, FALSE)
 ->Set(User\Library::ConfDiscordID, '')
 ->Set(User\Library::ConfDiscordSecret, '');
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// EMAIL CONFIG.
+
+($Config)
+->Set(Email\Library::ConfSendGridKey, '')
+->Set(Email\Library::ConfMailjetPublicKey, '')
+->Set(Email\Library::ConfMailjetPrivateKey, '')
+->Set(Email\Library::ConfServerHost, '')
+->Set(Email\Library::ConfServerPort, 587)
+->Set(Email\Library::ConfServerUsername, '')
+->Set(Email\Library::ConfServerPassword, '')
+->Set(Email\Library::ConfOutboundVia, NULL)
+->Set(Email\Library::ConfOutboundFrom, 'info@whatever.tld')
+->Set(Email\Library::ConfOutboundReplyTo, 'who@whatever.tld')
+->Set(Email\Library::ConfOutboundName, 'Info');
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
