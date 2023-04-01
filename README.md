@@ -68,3 +68,13 @@ to make it faster for production you can generate a static route file.
 
 This will create a `routes.phson` file in the `ProjectRoot` which the router
 will then use instead of directory scanning.
+
+# Credits
+
+The following libraries are used in this project via direct inclusion
+(aka copy paste) rather than installed via Composer:
+
+* jQuery (DOM, https://jquery.com/)
+* Squire (HTML editor core, https://github.com/fastmail/Squire)
+* Editor.js (Block editor, https://editorjs.io)
+* SimpleLightbox (Image gallery thing, https://simplelightbox.com/)

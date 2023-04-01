@@ -144,7 +144,7 @@ application instance.
 	Run():
 	static {
 
-		$this->Router->Run(new Nether\Common\Datastore([
+		$this->Router->Run(new Nether\Avenue\Struct\ExtraData([
 			'App'=> $this
 		]));
 

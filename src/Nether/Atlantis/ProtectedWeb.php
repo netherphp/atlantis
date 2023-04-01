@@ -10,7 +10,7 @@ class ProtectedWeb
 extends PublicWeb {
 
 	public function
-	OnWillConfirmReady(?Common\Datastore $ExtraData):
+	OnWillConfirmReady(?Avenue\Struct\ExtraData $ExtraData):
 	int {
 
 		parent::OnWillConfirmReady($ExtraData);

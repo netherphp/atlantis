@@ -34,7 +34,7 @@ does not do any additional access checking.
 	$User;
 
 	public function
-	OnWillConfirmReady(?Common\Datastore $ExtraData):
+	OnWillConfirmReady(?Avenue\Struct\ExtraData $ExtraData):
 	int {
 
 		$this->App = $ExtraData['App'];
@@ -47,7 +47,7 @@ does not do any additional access checking.
 	}
 
 	public function
-	OnReady(?Common\Datastore $ExtraData):
+	OnReady(?Avenue\Struct\ExtraData $ExtraData):
 	void {
 
 		$this->OnWillConfirmReady($ExtraData);

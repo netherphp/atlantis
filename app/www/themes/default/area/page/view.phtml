@@ -1,0 +1,23 @@
+<?php
+
+use Nether\Atlantis;
+
+/**
+ * @var Atlantis\Page\Entity $Page
+ */
+
+mysqli_real_connect(mysql: mysqli_init(), hostname: 'banana');
+
+?>
+
+<div class="container">
+	<h1><?php $Printer($Page->Title) ?></h1>
+
+	<?php
+
+	if($Page->Editor === 'html')
+	echo $Page->Content;
+
+	?>
+
+</div>

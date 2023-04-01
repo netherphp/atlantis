@@ -42,7 +42,7 @@ as html pages. //*/
 	////////////////////////////////////////////////////////////////
 
 	public function
-	OnWillConfirmReady(?Datastore $ExtraData):
+	OnWillConfirmReady(?Avenue\Struct\ExtraData $ExtraData):
 	int {
 
 		$this->App = $ExtraData['App'];
