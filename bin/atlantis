@@ -104,6 +104,255 @@ extends Console\Client {
 		return 0;
 	}
 
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Copy the default theme from the package into the public web dir.')]
+	#[Console\Meta\Toggle('--link', 'Symlink directories instead of copying them.')]
+	#[Console\Meta\Error(1, 'Unable to locate %s')]
+	public function
+	SetupTheme():
+	int {
+
+		$Theme = $this->GetOption('theme') ?? 'default';
+		$Link = $this->GetOption('link') ?? FALSE;
+		$Method = __METHOD__;
+		$Existing = NULL;
+
+		$DestDir = (
+			$this->GetOption('dest')
+			?? Common\Filesystem\Util::Pathify(
+				getcwd(),
+				'www', 'themes', $Theme
+			)
+		);
+
+		$SourceDir = Common\Filesystem\Util::Pathify(
+			getcwd(),
+			'vendor', 'netherphp', 'atlantis',
+			'app', 'www', 'themes', $Theme
+		);
+
+		////////
+
+		if(!file_exists($SourceDir))
+		$this->Quit(1, $SourceDir);
+
+		////////
+
+		($this)
+		->PrintLn($this->FormatPrimary("[{$Method}]"))
+		->FormatLn(
+			'%s: %s',
+			$this->FormatSecondary('Source'),
+			$SourceDir
+		)
+		->FormatLn(
+			'%s: %s',
+			$this->FormatSecondary('Dest'),
+			$DestDir
+		);
+
+		if(is_link($DestDir)) {
+			$Existing = 'link';
+
+			($this)
+			->PrintLn()
+			->PrintLn($this->FormatErrorPrimary(('!! CURRENTLY EXISTS AS A SYMLINK')))
+			->PrintLn($this->FormatErrorSecondary(readlink($DestDir)));
+		}
+
+		elseif(is_dir($DestDir)) {
+			$Existing = 'dir';
+
+			($this)
+			->PrintLn()
+			->PrintLn($this->FormatErrorPrimary('!! CURRENTLY EXISTS AS A DIRECTORY'));
+		}
+
+		$this->PrintLn();
+
+		if($this->PromptTrue('Proceed?', '[y/N]')) {
+
+			// handle clearing out the old.
+
+			if($Existing === 'link')
+			unlink($DestDir);
+
+			elseif($Existing === 'dir')
+			Common\Filesystem\Util::RmDir($DestDir);
+
+			// handle dropping in the new.
+
+			if($Link) {
+				$this->FormatLn(
+					'%s %s',
+					$this->FormatSecondary('Linking'),
+					$DestDir
+				);
+
+				symlink($SourceDir, $DestDir);
+			}
+
+			else {
+				$this->FormatLn(
+					'%s %s...',
+					$this->FormatSecondary('Copying'),
+					$DestDir
+				);
+
+				Atlantis\Util::Copy($SourceDir, $DestDir);
+			}
+
+			$this->PrintLn();
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Copy the shared resources from the package into the public web dir.')]
+	#[Console\Meta\Toggle('--link', 'Symlink directories instead of copying them.')]
+	#[Console\Meta\Error(1, 'Unable to locate %s')]
+	#[Console\Meta\Error(2, 'Destination exists and is not a directory %s')]
+	#[Console\Meta\Error(3, 'Unable to create destination directory %s')]
+	public function
+	SetupShare():
+	int {
+
+		$ShareDirs = [ 'atlantis', 'nui' ];
+
+		$DestPrefix = (
+			$this->GetOption('dest')
+			?? Common\Filesystem\Util::Pathify(
+				getcwd(), 'www', 'share'
+			)
+		);
+
+		$SourcePrefix = Common\Filesystem\Util::Pathify(
+			getcwd(),
+			'vendor', 'netherphp', 'atlantis',
+			'app', 'www', 'share'
+		);
+
+		$Link = $this->GetOption('link') ?? FALSE;
+
+		////////
+
+		$Method = __METHOD__;
+		$Existing = NULL;
+		$DestDir = NULL;
+		$SourceDir = NULL;
+		$Dir = NULL;
+
+		////////
+
+		if(file_exists($DestPrefix) && !is_dir($DestPrefix))
+		$this->Quit(2, $DestPrefix);
+
+		if(!file_exists($DestPrefix))
+		Common\Filesystem\Util::MkDir($DestPrefix);
+
+		if(!is_dir($DestPrefix))
+		$this->Quit(3, $DestPrefix);
+
+		////////
+
+		foreach($ShareDirs as $Dir) {
+			$DestDir = Common\Filesystem\Util::Pathify($DestPrefix, $Dir);
+			$SourceDir = Common\Filesystem\Util::Pathify($SourcePrefix, $Dir);
+			$Existing = NULL;
+
+			clearstatcache($DestDir);
+
+			if(!file_exists($SourceDir))
+			$this->Quit(1, $SourceDir);
+
+			////////
+
+			($this)
+			->PrintLn($this->FormatPrimary("[{$Method}]"))
+			->FormatLn(
+				'%s: %s',
+				$this->FormatSecondary('Source'),
+				$SourceDir
+			)
+			->FormatLn(
+				'%s: %s',
+				$this->FormatSecondary('Dest'),
+				$DestDir
+			);
+
+			////////
+
+			if(is_link($DestDir)) {
+				$Existing = 'link';
+
+				($this)
+				->PrintLn()
+				->FormatLn(
+					'%s',
+					$this->FormatErrorPrimary('CURRENTLY EXISTS AS A SYMLINK')
+				)
+				->FormatLn(
+					'%s %s',
+					$this->FormatErrorSecondary('!!'),
+					$this->FormatErrorSecondary(readlink($DestDir))
+				);
+			}
+
+			elseif(is_dir($DestDir)) {
+				$Existing = 'dir';
+
+				($this)
+				->PrintLn()
+				->FormatLn(
+					'%s',
+					$this->FormatErrorPrimary('CURRENTLY EXISTS AS A DIRECTORY')
+				);
+			}
+
+			////////
+
+			$this->PrintLn();
+
+			if($this->PromptTrue('Proceed?', '[y/N]')) {
+
+				// handle clearing out the old.
+
+				if($Existing === 'link')
+				unlink($DestDir);
+
+				elseif($Existing === 'dir')
+				Common\Filesystem\Util::RmDir($DestDir);
+
+				// handle dropping in the new.
+
+				if($Link) {
+					$this->FormatLn(
+						'%s %s...',
+						$this->FormatSecondary('Symlinking'),
+						$DestDir
+					);
+
+					symlink($SourceDir, $DestDir);
+				}
+
+				else {
+					$this->FormatLn(
+						'%s %s...',
+						$this->FormatSecondary('Copying'),
+						$DestDir
+					);
+
+					Atlantis\Util::Copy($SourceDir, $DestDir);
+				}
+
+				$this->PrintLn();
+			}
+		}
+
+		return 0;
+	}
+
 	#[Console\Meta\Command('acmephp-config')]
 	#[Console\Meta\Info('Generate a new acmephp.yml file for SSL reg.')]
 	#[Console\Meta\Value('--filename', 'Filename of config file (default: acmephp.yml)')]

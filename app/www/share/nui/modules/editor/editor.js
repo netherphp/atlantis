@@ -1,4 +1,4 @@
-import '/share/squire/squire-raw.js';
+import '/share/atlantis/lib/squire/squire-raw.js';
 import ModalDialog from '/share/nui/modules/modal/modal.js';
 import * as Toolbarr from '/share/nui/modules/editor/toolbar.js';
 
