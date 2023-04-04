@@ -66,7 +66,7 @@ Shared resources that Atlantis' front-end depends on.
 
 By default when you hit your project it will scan the `routes` directory and figure out what needs to happen on the fly. This is good for quick devving but to make it faster for production you can generate a static route file.
 
-`netherave gen routes`
+`nave gen routes`
 
 This will create a `routes.phson` file in the `ProjectRoot` which the router will then use instead of directory scanning.
 

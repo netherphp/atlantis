@@ -48,7 +48,7 @@ extends Atlantis\ProtectedWeb {
 	}
 
 	protected function
-	ViewWillAnswerRequest(int $FileID, Common\Datastore $ExtraData):
+	ViewWillAnswerRequest(int $FileID, Avenue\Struct\ExtraData $ExtraData):
 	int {
 
 		$File = Atlantis\Media\File::GetByID($FileID);
