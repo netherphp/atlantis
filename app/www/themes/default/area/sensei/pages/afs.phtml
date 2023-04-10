@@ -23,6 +23,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<div class="fw-bold">Assumptions:</div>
 				<ul>
 					<li>Composer for PHP is installed system wide.</li>
+					<li>User has <code>./vendor/bin</code> in <code>$PATH</code>.</li>
 					<li>User is setup to be able to use sudo.</li>
 					<li>Server is Debian flavoured with Apache 2.4.</li>
 					<li>AcmePHP is setup in <code>/opt/ssl</code>.</li>
@@ -58,7 +59,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 			<li class="mb-4">
 				<p>Grab the Project template.</p>
 				<blockquote class="edged-left">
-					<div class="mb-0"><code class="cli">$ git clone netherphp/project</code></div>
+					<div class="mb-0"><code class="cli">$ git clone https://github.com/netherphp/project</code></div>
 					<div class="mb-0"><code class="cli">$ cd project</code></div>
 					<div class="mb-0"><code class="cli">$ rm -rf .git</code></div>
 				</blockquote>
@@ -133,7 +134,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				</blockquote>
 			</li>
 			<li class="mb-4">
-				<p>Edit <code class="file">conf/env/dev/apache24.conf</code> to use the HTTPS macro instead. Literally change it from <code>HTTP</code> to <code>HTTPS</code> and rehash the configuration.</p>
+				<p>Edit <code class="file">conf/env/dev/apache24.conf</code> to use the HTTPS macro instead. Literally change it from <code>Use HTTP</code> to <code>Use HTTPS</code> and rehash the configuration.</p>
 				<blockquote class="edged-left">
 					<div class="mb-2"><code class="cli">$ atlantis webserver-rehash --sudo</code></div>
 				</blockquote>

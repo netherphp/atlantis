@@ -1,5 +1,5 @@
 /*//
-@date 2023-03-17 23:14:23 UTC
+@date 2023-04-07 03:21:39 UTC
 @files 15 [
     "src\/imports.css",
     "src\/main.css",
@@ -31,11 +31,19 @@
 //// DARK THEME //////////////////////////////////////////////////////////////*/
 
 :root {
+
+	/* these colours should be used to brand the theme to fit in with the
+	logo and/or desired look. these should typically be somewhat bold colours
+	to be used on primary attention getting elements. */
+
 	--theme-primary: #467adb;
 	--theme-primary-alt: #84a6e6;
-
 	--theme-secondary: #9834c7;
 	--theme-secondary-alt: #c08bd8;
+
+	/* font settings for the theme. generally these should be the most
+	readable fonts that you think look good, not any fancy things used for
+	flavour */
 
 	--theme-font-normal-family: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
 	--theme-font-normal-weight: 300;
@@ -45,13 +53,34 @@
 	--theme-font-mono-weight: 300;
 	--theme-font-mono-letter-spacing: 0.02em;
 
-	--theme-darker: #080808;
-	--theme-dark: #121212;
-	--theme-light: #F1F1F1;
-	--theme-lighter: #FAFAFA;
+	/* these should be generically neutral colours as they will be used for
+	various page elements for division and such */
 
-	--theme-dark-glass: rgba(40, 40, 40, 0.75);
-	--theme-light-glass: rgba(60, 60, 60, 0.75);
+	--theme-body-bg: #161616;
+	--theme-body-bg-alt: #0D0D0D;
+	--theme-body-bg-alt2: #111111;
+	--theme-body-bg-alt0: var(--theme-body-bg);
+	--theme-body-bg-alt1: var(--theme-body-bg-alt);
+
+	--theme-body-fg: #FAFAFA;
+
+	--theme-shadow: #000000AA;
+
+	--theme-dark-bg: #1A1A1A;
+	--theme-dark-glass: #09090988;
+	--theme-dark-fg: #FAFAFA;
+	--theme-darker-bg: #080808;
+	--theme-darker-fg: var(--theme-body-fg);
+
+	--theme-light-bg: #F1F1F1;
+	--theme-light-fg: #161616;
+	--theme-lighter-bg: #FAFAFA;
+	--theme-lighter-fg: var(--theme-body-bg);
+
+	--theme-dark-bg-glass: rgba(40, 40, 40, 0.75);
+	--theme-light-bg-glass: rgba(60, 60, 60, 0.75);
+
+	/* *** */
 
 	--theme-header-bg: #040404;
 	--theme-header-color: #FBFBFB;
@@ -62,7 +91,7 @@
 	--bs-code-color: var(--theme-primary-alt);
 	--bs-link-hover-color: var(--theme-primary-alt);
 
-	--bs-body-bg: #161616;
+	--bs-body-bg: var(--theme-body-bg);
 	--bs-body-bg-rgb: 22, 22, 22;
 	--bs-secondary-bg: #0A0A0A;
 	--bs-secondary-bg-rgb: 10, 10, 10;
@@ -75,21 +104,25 @@
 
 [data-bs-theme="light"] {
 
-	--theme-darker: #101010;
-	--theme-dark: #242424;
-	--theme-light: #DDDDDD;
-	--theme-lighter: #F0F0F0;
+	--theme-font-normal-weight: 300;
+	--theme-font-mono-weight: 300;
 
-	--theme-dark-glass: rgba(200, 200, 200, 0.75);
-	--theme-light-glass: rgba(220, 220, 220, 0.75);
+	--theme-body-bg: #F6F6F6;
+	--theme-body-bg-alt: #EAEAEA;
+	--theme-body-bg-alt2: #F0F0F0;
+	--theme-body-bg-alt0: var(--theme-body-bg);
+	--theme-body-bg-alt1: var(--theme-body-bg-alt);
 
-	--theme-header-bg: #FEFEFE;
-	--theme-footer-bg: #FEFEFE;
+	--theme-body-fg: #161616;
+
+	--theme-dark-glass: #CCCCCC88;
+
+	--theme-header-bg: #FFFFFF;
+	--theme-footer-bg: #FFFFFF;
 
 	--bs-body-color: #080808;
 	--bs-body-color-rgb: 4, 4, 4;
 
-	--bs-body-bg: #f2f2f2;
 	--bs-body-bg-rgb: 242, 242, 242;
 	--bs-secondary-bg: #F2F2F2;
 	--bs-secondary-bg-rgb: 236, 236, 236;
@@ -152,32 +185,34 @@ strong {
 }
 
 .btn-light {
-	--bs-btn-bg: var(--theme-light);
-	--bs-btn-border-color: var(--theme-light);
+	--bs-btn-bg: var(--theme-light-bg);
+	--bs-btn-border-color: var(--theme-light-bg);
+	--bs-btn-color: var(--theme-light-fg);
 }
 
 .btn-dark {
-	--bs-btn-bg: var(--theme-dark);
-	--bs-btn-border-color: var(--theme-dark);
+	--bs-btn-bg: var(--theme-dark-bg);
+	--bs-btn-border-color: var(--theme-dark-bg);
+	--bs-btn-color: var(--theme-dark-fg);
 }
 
 .btn-outline-light {
-	--bs-btn-border-color: var(--theme-light);
-	--bs-btn-color: var(--theme-light);
-	--bs-btn-hover-bg: var(--theme-light-glass);
-	--bs-btn-hover-color: var(--theme-light);
+	--bs-btn-border-color: var(--theme-light-bg);
+	--bs-btn-color: var(--theme-light-bg);
+	--bs-btn-hover-bg: var(--theme-light-bg-glass);
+	--bs-btn-hover-color: var(--theme-light-bg);
 }
 
 [data-bs-theme="light"] .btn-outline-light {
-	--bs-btn-border-color: var(--theme-dark);
-	--bs-btn-color: var(--theme-dark);
-	--bs-btn-hover-bg: var(--theme-dark-glass);
-	--bs-btn-hover-color: var(--theme-dark);
+	--bs-btn-border-color: var(--theme-dark-bg);
+	--bs-btn-color: var(--theme-dark-bg);
+	--bs-btn-hover-bg: var(--theme-dark-bg-glass);
+	--bs-btn-hover-color: var(--theme-dark-bg);
 }
 
 .btn-outline-dark {
-	--bs-btn-border-color: var(--theme-dark);
-	--bs-btn-color: var(--theme-dark);
+	--bs-btn-border-color: var(--theme-dark-bg);
+	--bs-btn-color: var(--theme-dark-bg);
 }
 
 /*******************************************************************************
@@ -185,8 +220,8 @@ strong {
 
 .form-control,
 .form-select {
-	background-color: var(--theme-light-glass);
-	border-color: var(--theme-light-glass);
+	background-color: var(--theme-light-bg-glass);
+	border-color: var(--theme-light-bg-glass);
 	transition: background-color 200ms;
 }
 
@@ -211,13 +246,13 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-dark);
+	background-color: var(--theme-dark-bg);
 	border-radius: 0px;
 	box-shadow: 0px 0px 72px #000;
 }
 
 .jumbotron {
-	background-color: var(--theme-dark-glass);
+	background-color: var(--theme-dark-bg-glass);
 }
 
 .dropdown-menu li {
@@ -237,11 +272,23 @@ strong {
 .dropdown-menu a.dropdown-item:active,
 .dropdown-menu a.dropdown-item:hover,
 .dropdown-menu a.dropdown-item:focus {
-	background-color: var(--theme-dark);
+	background-color: var(--theme-dark-bg);
 }
 
 .table td {
 	vertical-align: middle;
+}
+
+.bg-alt0 {
+	background-color: var(--theme-body-bg-alt0);
+}
+
+.bg-alt1 {
+	background-color: var(--theme-body-bg-alt1);
+}
+
+.bg-alt2 {
+	background-color: var(--theme-body-bg-alt2);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -309,8 +356,11 @@ strong {
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-dark), 0px 0px 12px var(--theme-dark-glass); }
-.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-dark); }
+.box-shadow-normal { box-shadow: 0px 5px 5px var(--theme-shadow); }
+.box-shadow-wofty { box-shadow: 0px 0px 24px var(--theme-shadow), 0px 0px 12px var(--theme-shadow); }
+.box-shadow-inset { box-shadow: inset 0px 0px 25px var(--theme-shadow), inset 0px 0px 15px var(--theme-shadow); }
+
+.text-shadow-wofty { text-shadow: 0px 0px 24px var(--theme-shadow); }
 
 .text-primary { color: var(--theme-primary) !important; }
 
@@ -564,11 +614,11 @@ strong {
 }
 
 .wallpapered {
-	background: var(--theme-darker);
+	background: var(--theme-darker-bg);
 	background-repeat: no-repeat;
 	background-position: center center;
 	color: #fff;
-	text-shadow: 0px 0px 4px var(--theme-darker);
+	text-shadow: 0px 0px 4px var(--theme-shadow);
 }
 
 .wallpapered,
@@ -687,7 +737,7 @@ strong {
 }
 
 .jumbotron {
-	background: var(--theme-dark-glass);
+	background: var(--theme-dark-bg-glass);
 	padding: 1em;
 }
 
@@ -733,7 +783,7 @@ strong {
 .modal-content {
 	background-color: var(--bs-body-bg) !important;
 	border-color: var(--bs-body-bg) !important;
-	box-shadow: 0px 0px 24px var(--theme-dark), 0px 0px 12px var(--theme-dark-glass);
+	box-shadow: 0px 0px 24px var(--theme-dark-bg), 0px 0px 12px var(--theme-dark-bg-glass);
 }
 
 .modal-header,
@@ -748,19 +798,13 @@ strong {
 }
 
 .modal-backdrop.show {
-	background-color: var(--theme-dark-glass) !important;
+	background-color: var(--theme-dark-bg-glass) !important;
 	backdrop-filter: blur(2px);
 	opacity: 1.0;
 	z-index: 9010;
 }
 
-.box-shadow-normal {
-	box-shadow: 0px 5px 5px var(--theme-darker);
-}
 
-.box-shadow-inset {
-	box-shadow: inset 0px 0px 25px var(--theme-darker), inset 0px 0px 15px var(--theme-darker);
-}
 
 .clickthru,
 .clickthrough {
@@ -770,7 +814,7 @@ strong {
 
 .quotron {
 	padding-left: 0.5rem;
-	border-left: 4px solid var(--theme-light);
+	border-left: 4px solid var(--theme-light-bg);
 }
 
 .quotron-primary {
