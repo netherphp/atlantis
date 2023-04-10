@@ -3,6 +3,7 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
+use Nether\User;
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
@@ -463,6 +464,71 @@ extends Console\Client {
 
 		if($UseRehash)
 		$this->WebserverRehash();
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('apple-auth-info')]
+	#[Console\Meta\Info('Generate what you need to Copy-Paste into Apple Developer to make Auth work into their stupid comma seperated Textarea.')]
+	public function
+	AppleAuthInfo():
+	int {
+
+		$Domain = (
+			$this->GetOption('Domain')
+			?? Atlantis->Config[ Atlantis\Library::ConfProjectDomain ]
+		);
+
+		$Domains = [ $Domain ];
+		$ReturnURLs = [];
+
+		////////
+
+		if(substr_count($Domain, '.') === 1)
+		$Domains[] = "www.{$Domain}";
+
+		////////
+
+		foreach($Domains as $Dom)
+		$ReturnURLs[] = "https://{$Dom}/auth/apple";
+
+		////////
+
+		$this
+		->PrintLn($this->FormatPrimary('Domains:'))
+		->PrintLn(join(',', $Domains))
+		->PrintLn();
+
+		$this
+		->PrintLn($this->FormatPrimary('Return URLs:'))
+		->PrintLn(join(',', $ReturnURLs))
+		->PrintLn();
+
+		$this
+		->PrintLn($this->FormatSecondary('[Info] Put the P8 file here:'))
+		->FormatLn('conf/env/%s/keys/apple-authkey.p8', Atlantis->GetProjectEnv())
+		->PrintLn();
+
+		if(!Atlantis->Config[User\Library::ConfAppleID]) {
+			$this
+			->PrintLn($this->FormatSecondary('[Info] User\Library::ConfAppleID'))
+			->PrintLn('The reverse DNS for the Service ID. Ex: tld.something.www')
+			->PrintLn();
+		}
+
+		if(!Atlantis->Config[User\Library::ConfAppleTeamID]) {
+			$this
+			->PrintLn($this->FormatSecondary('[Info] User\Library::ConfAppleTeamID'))
+			->PrintLn('The gibberish alpha-numeric ID of the Apple Developer account.')
+			->PrintLn();
+		}
+
+		if(!Atlantis->Config[User\Library::ConfAppleKeyFileID]) {
+			$this
+			->PrintLn($this->FormatSecondary('[Info] User\Library::ConfAppleKeyFileID'))
+			->PrintLn('The gibberish alpha-numeric ID of the Key File.')
+			->PrintLn();
+		}
 
 		return 0;
 	}

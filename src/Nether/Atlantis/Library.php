@@ -128,11 +128,12 @@ implements
 
 		if($App->User)
 		$Sidebar
-		->Push(new Atlantis\Dashboard\AtlantisAccountSidebar)
-		->Push(new Atlantis\Dashboard\AtlantisMediaSidebar);
+		->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
 
 		if($App->User && $App->User->IsAdmin())
-		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAdminSidebar);
+		$Sidebar
+		->Push(new Atlantis\Dashboard\AtlantisAdminSidebar)
+		->Push(new Atlantis\Dashboard\AtlantisMediaSidebar);
 
 		return;
 	}

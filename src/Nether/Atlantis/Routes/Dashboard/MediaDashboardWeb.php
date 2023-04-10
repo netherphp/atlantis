@@ -10,7 +10,7 @@ class MediaDashboardWeb
 extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/media/images')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	Browse():
 	void {
