@@ -2,8 +2,10 @@
 
 namespace Nether\Atlantis\Page;
 
+use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
+use Nether\Storage;
 
 use Exception;
 
@@ -95,6 +97,82 @@ extends Database\Prototype {
 		////////
 
 		return parent::Insert($Input);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	LoadStaticFile(Atlantis\Engine $App, $Alias):
+	?static {
+	/*//
+	@date 2023-04-10
+	generate a page entity from a static file on disk.
+	//*/
+
+		$Path = sprintf(
+			'pages/static/%s.phtml',
+			Common\Datafilters::SlottableKey($Alias)
+		);
+
+		$Location = $App->Storage->Location('Default');
+
+		////////
+
+		if(!$Location)
+		throw new Exception('Page library unable to find Default storage.');
+
+		if(!($Location instanceof Storage\Adaptors\Local))
+		throw new Exception('Page library only works with local filesystem adaptor.');
+
+		////////
+
+		if(!$Location->Exists($Path))
+		return NULL;
+
+		$Filename = $Location->GetPath($Path);
+
+		////////
+
+		$Page = (function(string $__FILENAME, string $Alias) {
+			$Title = 'Untitled Page';
+			$DateCreated = date('Y-m-d');
+			$DateUpdated = date('Y-m-d');
+
+			ob_start();
+			require($__FILENAME);
+			$Content = ob_get_clean();
+
+			return new static([
+				'Title'       => $Title,
+				'Alias'       => $Alias,
+				'Content'     => $Content,
+				'Editor'      => 'static',
+				'TimeCreated' => strtotime($DateCreated),
+				'TimeUpdated' => strtotime($DateUpdated)
+			]);
+		})($Filename, $Alias);
+
+		////////
+
+		if(!($Page instanceof static))
+		return NULL;
+
+		return $Page;
+	}
+
+	static public function
+	FromStaticFile(Atlantis\Engine $App, string $Alias):
+	?static {
+
+		$Page = static::LoadStaticFile($App, $Alias);
+
+		if(!$Page)
+		return NULL;
+
+		////////
+
+		return $Page;
 	}
 
 }

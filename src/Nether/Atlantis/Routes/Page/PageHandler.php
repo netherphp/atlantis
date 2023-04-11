@@ -15,6 +15,18 @@ extends Atlantis\PublicWeb {
 	View(string $Alias, Atlantis\Page\Entity $Page):
 	void {
 
+		($this->Surface)
+		->Set('Page.Title', $Page->Title);
+
+		////////
+
+		if($Page->Editor === 'static') {
+			echo $Page->Content;
+			return;
+		}
+
+		////////
+
 		$this->Surface->Wrap(
 			$this->GetViewArea(),
 			[ 'Page'=> $Page ]
@@ -28,6 +40,9 @@ extends Atlantis\PublicWeb {
 	int {
 
 		$Page = Atlantis\Page\Entity::GetByField('Alias', $Alias);
+
+		if(!$Page)
+		$Page = Atlantis\Page\Entity::FromStaticFile($this->App, $Alias);
 
 		if(!$Page)
 		return Avenue\Response::CodeNope;
