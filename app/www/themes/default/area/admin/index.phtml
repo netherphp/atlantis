@@ -1,0 +1,97 @@
+<?php
+
+use Nether\Email;
+
+/**
+ * @var Email\Struct\LibraryConfigInfo $EmailConfigInfo
+ */
+
+
+$Surface->Area('admin/breadcrumbs', [ 'Trail' => [ ]]);
+
+?>
+
+<div class="col-12 mb-4">
+	<div class="PrettyModernBox">
+		<h3>
+			<span class="text-transform-none">Email</span>
+			<hr />
+		</h3>
+
+		<div class="row tight align-items-center">
+			<div class="col-auto">
+				<a href="/ops/email/config" class="btn btn-dark">
+					<i class="mdi mdi-cog"></i>
+					Config Info
+				</a>
+			</div>
+			<div class="col-auto">
+				<a href="/ops/email/test" class="btn btn-dark">
+					<i class="mdi mdi-email-fast"></i>
+					Send Tester
+				</a>
+			</div>
+		</div>
+		<hr />
+
+		<div class="hr-hide-last">
+
+			<?php if($EmailConfigInfo->HasDefaultService()): ?>
+			<div class="row align-items-center">
+				<div class="col">
+					Service:
+				</div>
+				<div class="col-auto">
+					<?php if($EmailConfigInfo->GetDefaultService()->IsReady()): ?>
+					<i class="mdi mdi-check text-success"></i>
+					<?php else: ?>
+					<i class="mdi mdi-close text-danger"></i>
+					<?php endif; ?>
+					<?php $Printer($EmailConfigInfo->DefaultName) ?>
+				</div>
+			</div>
+			<hr />
+
+			<div class="row align-items-center">
+				<div class="col">
+					Log File:
+				</div>
+				<div class="col-auto">
+					<?php $Printer(Email\Library::Get(Email\Library::ConfLogFile) ?: 'Not Configured') ?>
+				</div>
+			</div>
+			<hr />
+
+			<?php else: ?>
+			<div class="jumbotron p-4 mb-4">
+				<div class="text-uppercase fw-bold">Sending Not Configured.</div>
+				<div>No <code>Email\Library::ConfOutboundVia</code> set in the config.</div>
+			</div>
+			<hr />
+			<?php endif; ?>
+
+			<?php if(!$EmailConfigInfo->GetReadyServices()->Count()): ?>
+			<div class="jumbotron p-4">
+				<div class="text-uppercase fw-bold">No Email services are configured.</div>
+				<div>Servers and/or API Keys for email sending need to be set in the config.</div>
+			</div>
+			<hr />
+			<?php endif; ?>
+
+		</div>
+
+	</div>
+</div>
+<div class="col-12 mb-4">
+	<hr />
+</div>
+
+<script type="module">
+jQuery(function(){
+
+
+
+	return;
+});
+</script>
+

@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @var string $Email
+ * @var string $Name
+ * @var string $Subject
+ * @var string $Message
+ */
+
+$From = function(?string $Name, ?string $Email): string {
+
+	if(!$Name && !$Email)
+	return 'Unknown';
+
+	if($Name && !$Email)
+	return $Name;
+
+	if($Email && !$Name)
+	return $Email;
+
+	return sprintf('%s <%s>', $Name, $Email);
+};
+
+?>
+
+<div>
+	<strong>Subject:</strong>
+	<?php echo htmlentities($Subject) ?>
+</div>
+<div>
+	<strong>From:</strong>
+	<?php echo htmlentities($From($Name, $Email)) ?>
+</div>
+
+<div style="margin-top: 24px;">
+	<div7>
+		<strong>Message:</strong>
+	</div>
+
+	<div style="margin-top: 4px; border-left: 4px solid #cccccc; padding-left: 16px;">
+
+<?php echo nl2br(htmlentities($Message)) ?>
+
+	</div>
+</div>

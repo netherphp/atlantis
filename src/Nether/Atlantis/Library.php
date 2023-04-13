@@ -48,7 +48,10 @@ implements
 	ConfUserAllowSignup     = 'Nether.Atlantis.Users.AllowSignup',
 	ConfUserAllowSignupGank = 'Nether.Atlantis.Users.AllowSignupGank',
 	ConfUserEmailActivate   = 'Nether.Atlantis.Users.EmailActivation',
-	ConfUserRequireAlias    = 'Nether.Atlantis.Users.RequireAlias';
+	ConfUserRequireAlias    = 'Nether.Atlantis.Users.RequireAlias',
+	ConfContactTo           = 'Nether.Atlantis.Contact.To',
+	ConfContactBCC          = 'Nether.Atlantis.Contact.BCC',
+	ConfContactSubject      = 'Nether.Atlantis.Contact.Subject';
 
 	const
 	WebServerTypeNone     = NULL,
@@ -72,7 +75,10 @@ implements
 			static::ConfUserAllowSignup     => FALSE,
 			static::ConfUserAllowSignupGank => FALSE,
 			static::ConfUserEmailActivate   => TRUE,
-			static::ConfUserRequireAlias    => FALSE
+			static::ConfUserRequireAlias    => FALSE,
+			static::ConfContactTo           => NULL,
+			static::ConfContactBCC          => NULL,
+			static::ConfContactSubject      => 'Contact from Website'
 		]);
 
 		return;

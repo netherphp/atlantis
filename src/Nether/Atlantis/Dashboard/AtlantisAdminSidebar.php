@@ -13,7 +13,7 @@ extends SidebarGroup {
 		parent::__Construct('System');
 
 		($this->Items)
-		->Push(new SidebarGroupItem('Email System Test', '/ops/email/test', 'mdi-email-fast'))
+		->Push(new SidebarGroupItem('System Admin', '/ops', 'mdi-account-hard-hat'))
 		->Push(new SidebarGroupItem('Manage Users', '/ops/users/list', 'mdi-account-group'));
 
 		return;

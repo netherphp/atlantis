@@ -34,7 +34,8 @@
 		"netherphp/sensei": "dev-redux",
 		"netherphp/email": "dev-master",
 		"netherphp/storage": "dev-master",
-		"monolog/monolog": "^3.2"
+		"monolog/monolog": "^3.2",
+		"google/recaptcha": "^1.2.4"
 	},
 	"require-dev": {
 		"netherphp/standards": "^0.2.8",

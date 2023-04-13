@@ -82,6 +82,7 @@ use Nether\User;
 // EMAIL CONFIG.
 
 ($Config)
+->Set(Email\Library::ConfLogFile, $App->FromProjectRoot('logs/{Y}/{M}/email.log'))
 ->Set(Email\Library::ConfSendGridKey, '')
 ->Set(Email\Library::ConfMailjetPublicKey, '')
 ->Set(Email\Library::ConfMailjetPrivateKey, '')

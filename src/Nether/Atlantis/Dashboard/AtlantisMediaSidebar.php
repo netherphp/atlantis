@@ -6,7 +6,7 @@ class AtlantisMediaSidebar
 extends SidebarGroup {
 
 	public int
-	$Priority = -4;
+	$Priority = -10;
 
 	public function
 	__Construct() {

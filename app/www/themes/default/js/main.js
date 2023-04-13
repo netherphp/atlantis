@@ -45,9 +45,14 @@ function initColourModer() {
 			else
 			theme = 'dark';
 
-			document.cookie = `theme=${theme};path=/;max-age=31536000`;
-		};
 
+		}
+
+		else {
+			theme = mode;
+		}
+
+		document.cookie = `theme=${theme};path=/;max-age=31536000`;
 		document.documentElement.dataset.bsTheme = theme;
 		return;
 	});

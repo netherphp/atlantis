@@ -18,7 +18,7 @@
 		<textarea name="Message" class="form-control" rows="6"></textarea>
 	</div>
 	<div class="col-12 mb-4">
-		[ReCaptcha]
+		<?php $Surface->Area('widgets/recaptcha') ?>
 	</div>
 	<div class="col-12">
 		<button class="btn btn-dark btn-lg fw-bold">Send Message</button>
@@ -27,7 +27,7 @@
 </form>
 
 <script type="module">
-import JsonRequest from '/share/atlantis/api/json-request.js?v=<?php $Printer($CacheBuster) ?>';
+import JsonAPI from '/share/nui/api/json.js?v=<?php $Printer($CacheBuster) ?>';
 
 jQuery(function() {
 
@@ -36,7 +36,7 @@ jQuery(function() {
 
 		let data = new FormData;
 		let input = jQuery(this).serializeArray();
-		let req = new JsonRequest('POST', '/api/outbound/send', data);
+		let req = new JsonAPI.Request('POST', '/api/contact/send', data);
 
 		for(const item of input)
 		data.append(item.name, item.value);
@@ -64,7 +64,8 @@ jQuery(function() {
 			.val('');
 
 			return;
-		});
+		})
+		.catch(req.catch);
 
 		return false;
 	});
