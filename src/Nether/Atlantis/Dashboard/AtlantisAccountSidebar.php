@@ -13,9 +13,10 @@ extends SidebarGroup {
 		parent::__Construct('Account');
 
 		($this->Items)
-		->Push(new SidebarGroupItem('Change Email', '/dashboard/settings/email'))
-		->Push(new SidebarGroupItem('Change Password', '/dashboard/settings/password'))
-		->Push(new SidebarGroupItem('Manage Connections', '/dashboard/settings/auth'));
+		->Push(new SidebarGroupItem('Change Email', '/dashboard/settings/email', 'mdi-email'))
+		->Push(new SidebarGroupItem('Change Password', '/dashboard/settings/password', 'mdi-key'))
+		->Push(new SidebarGroupItem('Manage Login Methods', '/dashboard/settings/auth', 'mdi-link'))
+		->Push(new SidebarGroupItem('Log Out', '/logout', 'mdi-hand-wave'));
 
 		return;
 	}

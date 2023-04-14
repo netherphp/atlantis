@@ -10,7 +10,15 @@ $Key = $App->Config['Google.ReCaptcha.PublicKey'];
 ?>
 
 <?php if($Key): ?>
-<div class="g-recaptcha" data-sitekey="<?php echo $App->Config['Google.ReCaptcha.PublicKey'] ?>"></div>
+<div class="g-recaptcha" data-sitekey="<?php echo $Key ?>"></div>
+<script type="module">
+jQuery(function(){
+	//grecaptca.execute();
+	return;
+});
+</script>
+
 <?php elseif($Enabled): ?>
 <div>No ReCaptcha API key (<code>Google.ReCaptcha.PublicKey</code>) in config.</div>
+
 <?php endif; ?>

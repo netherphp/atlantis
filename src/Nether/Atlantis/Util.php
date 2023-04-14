@@ -2,11 +2,13 @@
 
 namespace Nether\Atlantis;
 
+use ReCaptcha;
 use Nether\Atlantis;
 use Nether\Common;
 
 use FilesystemIterator;
 use Generator;
+use Exception;
 
 class Util {
 
@@ -164,6 +166,43 @@ class Util {
 		$Output .= "?goto={$Encoded}";
 
 		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	IsReCaptchaValid(Atlantis\Engine $App):
+	bool {
+
+		$ApiEnabled = $App->Config['Google.ReCaptcha.Enabled'];
+		$ApiKey = $App->Config['Google.ReCaptcha.PrivateKey'];
+
+		if(!$ApiEnabled)
+		return TRUE;
+
+		if($ApiEnabled && !$ApiKey)
+		throw new Exception('Missing Google.ReCaptcha.PrivateKey in config.');
+
+		////////
+
+		$Response = (
+			$App->Router->Request->Data
+			->Get('g-recaptcha-response')
+		);
+
+		$RemoteAddr = (
+			isset($_SERVER['REMOTE_ADDR'])
+			? $_SERVER['REMOTE_ADDR']
+			: NULL
+		);
+
+		////////
+
+		$ReCaptcha = new ReCaptcha\ReCaptcha($ApiKey);
+		$ReResult = $ReCaptcha->Verify($Response, $RemoteAddr);
+
+		return (Bool)$ReResult->IsSuccess();
 	}
 
 }

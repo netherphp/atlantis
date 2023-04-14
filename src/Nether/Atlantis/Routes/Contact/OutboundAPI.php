@@ -6,6 +6,8 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\Email;
 
+use Exception;
+
 class OutboundAPI
 extends Atlantis\PublicAPI {
 
@@ -22,6 +24,17 @@ extends Atlantis\PublicAPI {
 		($this->Request->Data)
 		->Email(Common\Datafilters::Email(...))
 		->Message(Common\Datafilters::TrimmedTextNullable(...));
+
+		////////
+
+		try {
+			if(!Atlantis\Util::IsReCaptchaValid($this->App))
+			$this->Quit(4, 'Did not pass ReCaptcha.');
+		}
+
+		catch(Exception $Error) {
+			$this->Quit(5, $Error->GetMessage());
+		}
 
 		////////
 

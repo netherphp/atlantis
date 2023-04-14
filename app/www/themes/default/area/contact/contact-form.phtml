@@ -1,0 +1,72 @@
+<div id="ContactOutput" class="d-none mb-4"></div>
+
+<form id="ContactForm" method="post">
+<div class="row">
+	<div class="col-6 mb-4">
+		<div class="mb-2">Name...</div>
+		<input type="text" name="Name" class="form-control" />
+	</div>
+	<div class="col-6 mb-4">
+		<div class="mb-2">Email...</div>
+		<input type="text" name="Email" class="form-control" />
+	</div>
+	<div class="col-12 mb-4">
+		<div class="mb-2">Message...</div>
+		<textarea name="Message" class="form-control" rows="6"></textarea>
+	</div>
+	<div class="col-12 mb-4">
+		<?php $Surface->Area('widgets/recaptcha') ?>
+	</div>
+	<div class="col-12">
+		<button class="btn btn-dark btn-lg fw-bold">Send Message</button>
+	</div>
+</div>
+</form>
+
+<script type="module">
+import JsonAPI from '/share/nui/api/json.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function() {
+
+	jQuery('#ContactForm')
+	.on('submit', function(){
+
+		let data = new FormData;
+		let input = jQuery(this).serializeArray();
+		let req = new JsonAPI.Request('POST', '/api/contact/send', data);
+
+		for(const item of input)
+		data.append(item.name, item.value);
+
+		////////
+
+		(req.send())
+		.then(function(result){
+			if(result.error !== 0) {
+				alert('There was an error sending the message.');
+				return;
+			}
+
+			jQuery('#ContactOutput')
+			.empty()
+			.removeClass('d-none')
+			.append(
+				jQuery('<div />')
+				.addClass('alert alert-success')
+				.append('Your message has been sent.')
+			);
+
+			jQuery('#ContactForm')
+			.find('input[type=text], textarea')
+			.val('');
+
+			return;
+		})
+		.catch(req.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

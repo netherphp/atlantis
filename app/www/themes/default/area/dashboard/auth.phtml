@@ -3,7 +3,7 @@
 /**
  * @var Nether\Atlantis\Engine $App
  * @var Nether\Surface\Engine $Surface
- * @var Nether\User\Entity $User
+ * @var Nether\User\EntitySession $User
  * @var bool $ConfirmReq - if email confirmation is required.
  * @var bool $Updated - if the email address was updated.
  * @var bool $Sent - if an email confirmation was sent.
@@ -47,12 +47,11 @@ $GetRemoveButton = function(string $Type) {
 ?>
 
 <div class="row">
-	<div class="col-12 mb-4">
+	<div class="col-12 mb-4 hr-hide-last">
+		<?php if(Nether\User\Library::IsAppleEnabled()): ?>
 		<div class="row align-items-center">
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm">
-					<div class="position-absolutely msi-apple bg-white"></div>
-				</div>
+				<i class="font-size-larger si si-apple"></i>
 			</div>
 			<div class="col">
 				Apple
@@ -66,11 +65,12 @@ $GetRemoveButton = function(string $Type) {
 			</div>
 		</div>
 		<hr />
+		<?php endif; ?>
+
+		<?php if(Nether\User\Library::IsDiscordEnabled()): ?>
 		<div class="row align-items-center">
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm">
-					<div class="position-absolutely msi-discord bg-white"></div>
-				</div>
+				<i class="font-size-larger si si-discord"></i>
 			</div>
 			<div class="col">
 				Discord
@@ -84,11 +84,12 @@ $GetRemoveButton = function(string $Type) {
 			</div>
 		</div>
 		<hr />
+		<?php endif; ?>
+
+		<?php if(Nether\User\Library::IsGitHubEnabled()): ?>
 		<div class="row align-items-center">
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm">
-					<div class="position-absolutely msi-github bg-white"></div>
-				</div>
+				<i class="font-size-larger si si-github"></i>
 			</div>
 			<div class="col">
 				GitHub
@@ -102,11 +103,12 @@ $GetRemoveButton = function(string $Type) {
 			</div>
 		</div>
 		<hr />
+		<?php endif; ?>
+
+		<?php if(Nether\User\Library::IsGoogleEnabled()): ?>
 		<div class="row align-items-center">
 			<div class="col-auto">
-				<div class="ratiobox square msi-sm">
-					<div class="position-absolutely msi-google bg-white"></div>
-				</div>
+				<i class="font-size-larger si si-google"></i>
 			</div>
 			<div class="col">
 				Google
@@ -119,6 +121,9 @@ $GetRemoveButton = function(string $Type) {
 				?>
 			</div>
 		</div>
+		<hr />
+		<?php endif; ?>
+
 	</div>
 
 </div>
