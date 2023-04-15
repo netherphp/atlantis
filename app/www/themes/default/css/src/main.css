@@ -217,7 +217,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-dark-bg);
+	background-color: var(--theme-body-bg-alt2);
 	border-radius: 0px;
 	box-shadow: 0px 0px 72px #000;
 }

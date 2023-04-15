@@ -1,0 +1,38 @@
+	.Collapser {
+		margin-bottom: 1.5em;
+	}
+
+	.Collapser > header {
+		background-color: var(--bs-secondary-bg);
+		border-radius: 6px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 1.5em;
+		font-weight: bold;
+		margin-bottom: 0.75em;
+		padding: 6px 6px 6px 12px;
+		user-select: none;
+	}
+
+	.Collapser > header .Indicator {
+		font-size: 1.3em;
+		margin-left: 0.5em;
+		transform: rotate(0deg);
+		transition: transform 400ms;
+	}
+
+	.Collapser > section {
+		border-left: 4px solid var(--bs-secondary-bg);
+		display: none;
+		padding-left: 8px;
+	}
+
+	.Collapser.Open > section {
+		display: block;
+	}
+
+	.Collapser.Open > header .Indicator {
+		transform: rotate(225deg);
+	}

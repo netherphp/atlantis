@@ -24,10 +24,6 @@ $From = function(?string $Name, ?string $Email): string {
 ?>
 
 <div>
-	<strong>Subject:</strong>
-	<?php echo htmlentities($Subject) ?>
-</div>
-<div>
 	<strong>From:</strong>
 	<?php echo htmlentities($From($Name, $Email)) ?>
 </div>

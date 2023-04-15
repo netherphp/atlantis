@@ -12,7 +12,8 @@ use Nether\Common\Datastore;
 class Library
 extends Common\Library
 implements
-	Atlantis\Plugins\DashboardSidebarInterface {
+	Atlantis\Plugins\DashboardSidebarInterface,
+	Atlantis\Plugins\AccessTypeDefineInterface {
 
 	const
 	ConfProjectID             = 'Project.Key',
@@ -56,6 +57,9 @@ implements
 	const
 	WebServerTypeNone     = NULL,
 	WebServerTypeApache24 = 'apache24';
+
+	const
+	AccessContactLogView = 'Nether.Contact.Log.View';
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -132,14 +136,35 @@ implements
 	OnDashboardSidebar(Atlantis\Engine $App, Datastore $Sidebar):
 	void {
 
-		if($App->User)
-		$Sidebar
-		->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+		if(!$App->User)
+		return;
 
-		if($App->User && $App->User->IsAdmin())
+		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
+
+		if($App->User->HasAccessType(static::AccessContactLogView))
+		$Sidebar->Push(new Atlantis\Dashboard\AtlantisContactLogSidebar);
+
+		if($App->User->IsAdmin())
 		$Sidebar
 		->Push(new Atlantis\Dashboard\AtlantisAdminSidebar)
 		->Push(new Atlantis\Dashboard\AtlantisMediaSidebar);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	// AccessTypeDefInterface //////////////////////////////////////
+
+	public function
+	OnAccessTypeDefine(Atlantis\Engine $App, Common\Datastore $List):
+	void {
+
+		$List->MergeRight([
+			new Atlantis\User\AccessTypeDef(
+				static::AccessContactLogView, 1,
+				'Allow the user to view the Contact Us log.'
+			)
+		]);
 
 		return;
 	}

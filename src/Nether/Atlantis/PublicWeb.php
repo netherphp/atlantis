@@ -60,7 +60,7 @@ as html pages. //*/
 	OnReady(?Datastore $ExtraData):
 	void {
 
-		$this->OnWillConfirmReady($ExtraData);
+		$Code = $this->OnWillConfirmReady($ExtraData);
 
 		($this->App->Surface)
 		->Queue('BuildGlobalScope', $this->BuildGlobalScope(...), TRUE)
@@ -68,6 +68,13 @@ as html pages. //*/
 		->Set('Page.Desc', NULL)
 		->Set('Page.Keywords', NULL)
 		->CaptureBegin();
+
+		////////
+
+		if($Code >= 400)
+		$this->Quit($Code);
+
+		////////
 
 		$this->HandleUserOnboarding();
 

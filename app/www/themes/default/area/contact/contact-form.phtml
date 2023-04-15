@@ -18,7 +18,7 @@
 		<?php $Surface->Area('widgets/recaptcha') ?>
 	</div>
 	<div class="col-12">
-		<button class="btn btn-dark btn-lg fw-bold">Send Message</button>
+		<button type="submit" class="btn btn-dark btn-lg fw-bold">Send Message</button>
 	</div>
 </div>
 </form>
@@ -34,6 +34,11 @@ jQuery(function() {
 		let data = new FormData;
 		let input = jQuery(this).serializeArray();
 		let req = new JsonAPI.Request('POST', '/api/contact/send', data);
+		let submit = jQuery(this).find('button[type=submit]');
+
+		submit
+		.prop('disabled', true)
+		.text('Sending...');
 
 		for(const item of input)
 		data.append(item.name, item.value);
@@ -44,6 +49,13 @@ jQuery(function() {
 		.then(function(result){
 			if(result.error !== 0) {
 				alert('There was an error sending the message.');
+
+				submit
+				.prop('disabled', false)
+				.text('Send Message');
+
+				grecaptcha.reset();
+
 				return;
 			}
 
@@ -60,9 +72,26 @@ jQuery(function() {
 			.find('input[type=text], textarea')
 			.val('');
 
+			submit
+			.prop('disabled', false)
+			.text('Send Message');
+
+			grecaptcha.reset();
+
 			return;
 		})
-		.catch(req.catch);
+		.catch(function(d){
+
+			submit
+			.prop('disabled', false)
+			.text('Send Message');
+
+			grecaptcha.reset();
+
+			req.catch(d);
+
+			return;
+		});
 
 		return false;
 	});

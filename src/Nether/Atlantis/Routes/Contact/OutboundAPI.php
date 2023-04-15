@@ -53,6 +53,7 @@ extends Atlantis\PublicAPI {
 		$InputName = $this->Request->Data->Name;
 		$InputEmail = $this->Request->Data->Email;
 		$InputMessage = $this->Request->Data->Message;
+		$InputIP = $this->Request->RemoteAddr;
 
 		if(!$InputName)
 		$this->Quit(3, 'Name is required');
@@ -76,13 +77,27 @@ extends Atlantis\PublicAPI {
 		$Email->BCC->MergeLeft($SendBCC);
 
 		$Email->Render('email/contact-form', [
+			'IP'      => $InputIP,
 			'Email'   => $InputEmail,
 			'Name'    => $InputName,
 			'Subject' => $SendSubject,
 			'Message' => $InputMessage
 		]);
 
-		$Email->Send();
+		////////
+
+		try { $Email->Send(); }
+		catch(Exception $E) {
+
+		}
+
+		Atlantis\Struct\ContactEntry::Insert([
+			'IP'      => $InputIP,
+			'Name'    => $InputName,
+			'Email'   => $InputEmail,
+			'Subject' => $SendSubject,
+			'Message' => $InputMessage
+		]);
 
 		////////
 
