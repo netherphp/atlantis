@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @var Nether\User\Entity $User
+ * @var Nether\Messenger\Message $Thread
+ * @var Nether\Database\Struct\PrototypeFindResult $Messages
+ * @var Nether\Database\Struct\PrototypeFindResult $Threads
+ */
+
+?>
+
+<div class="container pt-6 mb-4">
+	<?php
+
+	$Surface
+	->Set('Page.Title', $Thread->GetSubject())
+	->Area('dashboard/nav', [ 'Trail' => [
+		'Inbox' => '/dashboard/messenger/inbox',
+		$Surface->Get('Page.Title') => NULL
+	]]);
+
+	?>
+</div>
+
+<style type="text/css">
+.MessageTextLog .MessageContent { border-radius: 4px; padding: 6px 12px; }
+.MessageTextLog .MessageTextInbound .MessageContent { background: #CCCCCC; }
+.MessageTextLog .MessageTextOutbound .MessageContent { background: var(--theme-primary); color: #FFFFFF; }
+.MessageTimestamp { font-size: 0.8em; opacity: 0.5; }
+</style>
+
+<script type="module">
+import Messenger from '/share/nui/modules/messenger/client.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function() {
+
+	let msgr = new Messenger;
+
+	return;
+});
+</script>
+
+<div class="container pt-0 pb-6">
+
+	<div class="row">
+		<div class="col-4">
+			<?php foreach($Threads as $OtherThread): ?>
+			<div class="row mb-2">
+				<div class="col-12">
+					<a href="<?php $Printer($OtherThread->GetDashboardURL()) ?>" class="btn btn-block btn-primary text-transform-none"><?php $Printer($OtherThread->GetSubject()) ?></a>
+				</div>
+			</div>
+			<?php endforeach; unset($OtherThread); ?>
+			<div class="row mb-2">
+				<div class="col-12">
+					<a href="" class="btn btn-block btn-dark text-transform-none">Some Other Message Thread</a>
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-12">
+					<a href="" class="btn btn-block btn-dark text-transform-none">Another Message</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-8">
+			<div class="jumbotron rounded pt-2 pb-2 mb-4">
+				<div class="row tight justify-content-center align-items-center">
+					<div class="col-auto"><i class="mdi mdi-account-circle font-size-largerer"></i></div>
+					<div class="col-auto"><?php $Printer($Thread->GetOtherUserAlias($User->ID)) ?></div>
+				</div>
+			</div>
+
+			<div class="MessageTextLog">
+			</div>
+			<hr class="border-0" />
+
+			<div class="row">
+				<div class="col">
+					<input class="form-control MessengerInputText" data-thread-id="<?php $Printer($Thread->ID) ?>" data-user-to-id="<?php $Printer($Thread->UserToID) ?>" type="text" />
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-dark MessengerInputSend">Send</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

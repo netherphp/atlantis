@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @var Nether\Database\Struct\PrototypeFindResult $Threads
+ */
+
+?>
+
+<div class="container pt-6 mb-4">
+	<?php
+
+	$Surface
+	->Set('Page.Title', 'Inbox')
+	->Area('dashboard/nav', [ 'Trail' => [ $Surface->Get('Page.Title') => NULL ]]);
+
+	?>
+</div>
+
+<div class="container pt-0 pb-6">
+
+	<?php foreach($Threads as $Thread): ?>
+	<div class="col-12">
+		<a href="<?php $Printer($Thread->GetDashboardURL()) ?>"><?php $Printer($Thread->GetSubject()) ?></a>
+	</div>
+	<?php endforeach; unset($Thread); ?>
+
+</div>

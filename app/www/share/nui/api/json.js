@@ -105,8 +105,22 @@ class JsonRequest {
 			headers: headers
 		};
 
-		if(this.method !== 'HEAD' && this.method !== 'GET')
-		fetchset.body = body;
+		////////
+
+		if(this.method === 'GET' || this.method === 'HEAD') {
+			if(typeof body === 'string') {
+				if(this.url.indexOf('?') === -1)
+				this.url += `?${body}`;
+				else
+				this.url += `&${body}`;
+			}
+		}
+
+		else {
+			fetchset.body = body;
+		}
+
+		////////
 
 		req = (
 			fetch(this.url, fetchset)
