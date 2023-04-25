@@ -5,10 +5,18 @@
 		"preferred-install": {
 			"netherphp/*": "source",
 			"*": "dist"
+		},
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"netherphp/composer-plugin": true
 		}
 	},
 	"require": {
 		"netherphp/atlantis": "dev-master"
+	},
+	"require-dev": {
+		"netherphp/standards": "^0.2.9",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0"
 	},
 	"autoload": {
 		"psr-0": {
