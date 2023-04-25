@@ -1,6 +1,6 @@
 /*//
-@date 2023-04-07 03:21:39 UTC
-@files 15 [
+@date 2023-04-25 03:23:01 UTC
+@files 16 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -10,6 +10,7 @@
     "src\/design\/header.css",
     "src\/elements\/article.css",
     "src\/elements\/blog.css",
+    "src\/elements\/collapser.css",
     "src\/elements\/editor-html.css",
     "src\/elements\/gallery.css",
     "src\/elements\/misc.css",
@@ -246,7 +247,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-dark-bg);
+	background-color: var(--theme-body-bg-alt2);
 	border-radius: 0px;
 	box-shadow: 0px 0px 72px #000;
 }
@@ -1047,6 +1048,48 @@ strong {
 	filter: blur(10px) brightness(0.8);
 	transform: scale(1.1);
 }
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/collapser.css //////////////////////////////////////////////*/
+
+.Collapser {
+		margin-bottom: 1.5em;
+	}
+
+	.Collapser > header {
+		background-color: var(--bs-secondary-bg);
+		border-radius: 6px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 1.5em;
+		font-weight: bold;
+		margin-bottom: 0.75em;
+		padding: 6px 6px 6px 12px;
+		user-select: none;
+	}
+
+	.Collapser > header .Indicator {
+		font-size: 1.3em;
+		margin-left: 0.5em;
+		transform: rotate(0deg);
+		transition: transform 400ms;
+	}
+
+	.Collapser > section {
+		border-left: 4px solid var(--bs-secondary-bg);
+		display: none;
+		padding-left: 8px;
+	}
+
+	.Collapser.Open > section {
+		display: block;
+	}
+
+	.Collapser.Open > header .Indicator {
+		transform: rotate(225deg);
+	}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/editor-html.css ////////////////////////////////////////////*/

@@ -889,20 +889,22 @@ extends Console\Client {
 	#[Console\Meta\Command]
 	#[Console\Meta\Info('Run git command in all repos.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Console\Meta\Toggle('--all', 'Include the ones I usually skip.')]
 	public function
 	NetherGitShove():
 	int {
 
-		$Verbose = (bool)$this->GetOption('--verbose');
+		$Verbose = (bool)$this->GetOption('verbose');
 		$Path = sprintf('%s/vendor/netherphp/*', getcwd());
 		$Found = glob($Path);
+		$DoAll = $this->GetOption('all');
 
 		$Dir = NULL;
 		$Git = NULL;
 		$Result = NULL;
 
 		foreach($Found as $Dir) {
-			if(str_ends_with($Dir, '/common'))
+			if(!$DoAll && str_ends_with($Dir, '/common'))
 			continue;
 
 			$Git = sprintf(
@@ -936,13 +938,14 @@ extends Console\Client {
 		$Verbose = (bool)$this->GetOption('--verbose');
 		$Path = sprintf('%s/vendor/netherphp/*', getcwd());
 		$Found = glob($Path);
+		$DoAll = $this->GetOption('all');
 
 		$Dir = NULL;
 		$Git = NULL;
 		$Result = NULL;
 
 		foreach($Found as $Dir) {
-			if(str_ends_with($Dir, '/common'))
+			if(!$DoAll && str_ends_with($Dir, '/common'))
 			continue;
 
 			$Git = sprintf(
