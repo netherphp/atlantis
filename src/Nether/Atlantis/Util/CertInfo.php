@@ -20,8 +20,8 @@ extends Common\Prototype {
 	StatusWords = [
 		self::StatusExpired        => 'EXPIRED',
 		self::StatusOK             => 'OK',
-		self::StatusExpireSoon     => 'Expire Soon',
-		self::StatusExpireWarning  => 'EXPIRE WARNING'
+		self::StatusExpireSoon     => 'SOON',
+		self::StatusExpireWarning  => 'IMMINENT'
 	];
 
 	////////
