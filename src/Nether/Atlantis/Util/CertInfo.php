@@ -94,7 +94,7 @@ extends Common\Prototype {
 			(new Common\Date)->GetUnixtime(),
 			$this->DateExpire->GetUnixtime(),
 			Common\Units\Timeframe::FormatShorter,
-			Precision: 3
+			Precision: 2
 		);
 	}
 
