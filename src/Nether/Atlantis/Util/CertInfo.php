@@ -92,7 +92,9 @@ extends Common\Prototype {
 
 		return new Common\Units\Timeframe(
 			(new Common\Date)->GetUnixtime(),
-			$this->DateExpire->GetUnixtime()
+			$this->DateExpire->GetUnixtime(),
+			Common\Units\Timeframe::FormatShorter,
+			Precision: 3
 		);
 	}
 
