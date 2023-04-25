@@ -124,7 +124,8 @@ extends Common\Prototype {
 
 		$Context = stream_context_create([
 			'ssl' => [
-				'capture_peer_cert' => TRUE
+				'capture_peer_cert' => TRUE,
+				'verify_peer'       => FALSE
 			]
 		]);
 

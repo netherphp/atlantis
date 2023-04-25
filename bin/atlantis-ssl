@@ -24,8 +24,8 @@ extends Console\Client {
 	AppVersion = '5.0.0-dev';
 
 	#[Console\Meta\Command]
-	#[Console\Meta\Info('Start a fresh project from scratch.')]
-	#[Console\Meta\Arg('Domain')]
+	#[Console\Meta\Info('Check the status of an SSL cert for a domain.')]
+	#[Console\Meta\Arg('domain')]
 	#[Console\Meta\Error(1, 'no domain specified')]
 	#[Console\Meta\Error(2, 'cert lookup failure: %s')]
 	#[Console\Meta\Error(3, 'cert unexpected format: %s')]
