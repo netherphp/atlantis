@@ -42,7 +42,8 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
 	},
 	"bin": [
-		"bin/atlantis"
+		"bin/atlantis",
+		"bin/atlantis-ssl"
 	],
 	"autoload": {
 		"psr-0": {

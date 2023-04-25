@@ -1,0 +1,187 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
+/** @constant Nether\Atlantis\Engine Atlantis */
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+class AtlantisCLI
+extends Console\Client {
+
+	const
+	AppName    = 'Atlantis SSL Tool',
+	AppVersion = '5.0.0-dev';
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Start a fresh project from scratch.')]
+	#[Console\Meta\Arg('Domain')]
+	#[Console\Meta\Error(1, 'no domain specified')]
+	#[Console\Meta\Error(2, 'cert lookup failure: %s')]
+	#[Console\Meta\Error(3, 'cert unexpected format: %s')]
+	public function
+	Check():
+	int {
+
+		$Domain = $this->GetInput(1);
+		$Via = 'openssl';
+		$Format = 'cli';
+		$Result = NULL;
+		$Key = NULL;
+		$Val = NULL;
+
+		////////
+
+		if(!$Domain)
+		$this->Quit(1);
+
+		////////
+
+		if($this->GetOption('json')) {
+			if($this->GetOption('pretty'))
+			$Format = 'json-pretty';
+			else
+			$Format = 'json';
+		}
+
+
+		if($this->GetOption('openssl'))
+		$Via = 'openssl';
+
+		if($this->GetOption('curl'))
+		$Via = 'curl';
+
+		////////
+
+		try {
+			$Result = match($Via) {
+				'curl'
+				=> Atlantis\Util\CertInfo::FetchViaCurl($Domain),
+
+				default
+				=> Atlantis\Util\CertInfo::FetchViaOpenSSL($Domain)
+			};
+		}
+
+		catch(Throwable $Error) { }
+
+		$Output = [
+			'Domain' => $Domain,
+			'Status' => (
+				$Result
+				? $Result->GetStatusWord()
+				: NULL
+			),
+			'Code' => (
+				$Result
+				? $Result->GetStatusCode()
+				: NULL
+			),
+			'Date' => (
+				$Result
+				? (string)($Result->DateStart)
+				: NULL
+			),
+			'ExpireDate' => (
+				$Result
+				? (string)($Result->DateExpire)
+				: NULL
+			),
+			'ExpireTimeframe' => (
+				$Result
+				? (string)($Result->GetTimeframe())
+				: NULL
+			),
+			'Source' => (
+				$Result
+				? (string)($Result->Source)
+				: NULL
+			)
+		];
+
+		////////
+
+		if($Format === 'json') {
+			$this->PrintLn(json_encode($Output));
+			return 0;
+		}
+
+		if($Format === 'json-pretty') {
+			$this->PrintLn(json_encode($Output, JSON_PRETTY_PRINT));
+			return 0;
+		}
+
+		////////
+
+		foreach($Output as $Key => $Val) {
+
+			if($Output['Code'] !== NULL)
+			if($Key === 'Domain' || $Key === 'Status') {
+				$this->FormatLn(
+					'%s %s',
+					$this->FormatPrimary("{$Key}:"),
+					match($Output['Code']) {
+						0=> $this->Formatter->BoldRed(strtoupper($Val)),
+						1=> $this->Formatter->BoldGreen(strtoupper($Val)),
+						2=> $this->Formatter->BoldYellow(strtoupper($Val)),
+						3=> $this->Formatter->BoldMagenta(strtoupper($Val)),
+						default=> strtoupper($Val)
+					}
+				);
+
+				continue;
+			}
+
+			$this->FormatLn(
+				'%s %s',
+				$this->FormatPrimary("{$Key}:"),
+				$Val !== NULL
+				? $Val
+				: $this->FormatErrorPrimary('ERROR')
+			);
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	GetProjectDirectory():
+	string {
+
+		$BinPath = Nether\Atlantis\Util::Repath(dirname(__FILE__));
+		$CurPath = Nether\Atlantis\Util::Repath(getcwd());
+
+		// if it looks like we in a project directory assume we are in
+		// the project directory.
+
+		if(file_exists(sprintf('%s/composer.lock', $CurPath)))
+		if(str_starts_with($BinPath, $CurPath))
+		return $CurPath;
+
+		// if we are elsewhere but calling this installed as a vendor
+		// binary assume that the project directory is up from that.
+
+		if(str_ends_with($BinPath, 'vendor/netherphp/atlantis/bin'))
+		return dirname(__FILE__, 5);
+
+		// else just yolo with the current path again.
+
+		return $CurPath;
+	}
+
+}
+
+exit((new AtlantisCLI)->Run());
