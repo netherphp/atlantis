@@ -23,6 +23,7 @@ extends Atlantis\PublicAPI {
 
 		($this->Request->Data)
 		->Email(Common\Datafilters::Email(...))
+		->Phone(Common\Datafilters::TrimmedTextNullable(...))
 		->Message(Common\Datafilters::TrimmedTextNullable(...));
 
 		////////
@@ -52,6 +53,7 @@ extends Atlantis\PublicAPI {
 
 		$InputName = $this->Request->Data->Name;
 		$InputEmail = $this->Request->Data->Email;
+		$InputPhone = $this->Request->Data->Phone;
 		$InputMessage = $this->Request->Data->Message;
 		$InputIP = $this->Request->RemoteAddr;
 
@@ -78,8 +80,9 @@ extends Atlantis\PublicAPI {
 
 		$Email->Render('email/contact-form', [
 			'IP'      => $InputIP,
-			'Email'   => $InputEmail,
 			'Name'    => $InputName,
+			'Email'   => $InputEmail,
+			'Phone'   => $InputPhone,
 			'Subject' => $SendSubject,
 			'Message' => $InputMessage
 		]);
@@ -95,6 +98,7 @@ extends Atlantis\PublicAPI {
 			'IP'      => $InputIP,
 			'Name'    => $InputName,
 			'Email'   => $InputEmail,
+			'Phone'   => $InputPhone,
 			'Subject' => $SendSubject,
 			'Message' => $InputMessage
 		]);

@@ -30,6 +30,10 @@ extends Database\Prototype {
 	public ?string
 	$Email;
 
+	#[Database\Meta\TypeVarChar(Size: 32)]
+	public ?string
+	$Phone;
+
 	#[Database\Meta\TypeVarChar(Size: 128)]
 	public ?string
 	$Subject;

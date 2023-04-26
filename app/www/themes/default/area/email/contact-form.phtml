@@ -1,8 +1,9 @@
 <?php
 
 /**
- * @var string $Email
  * @var string $Name
+ * @var string $Email
+ * @var string $Phone
  * @var string $Subject
  * @var string $Message
  */
@@ -27,6 +28,13 @@ $From = function(?string $Name, ?string $Email): string {
 	<strong>From:</strong>
 	<?php echo htmlentities($From($Name, $Email)) ?>
 </div>
+
+<?php if($Phone): ?>
+<div>
+	<strong>Phone:</strong>
+	<?php echo htmlentities($Phone) ?>
+</div>
+<?php endif; ?>
 
 <div style="margin-top: 24px;">
 	<div7>

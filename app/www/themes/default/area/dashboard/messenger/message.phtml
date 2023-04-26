@@ -43,7 +43,7 @@ jQuery(function() {
 <div class="container pt-0 pb-6">
 
 	<div class="row">
-		<div class="col-4">
+		<div class="col-4 d-none d-md-block">
 			<?php foreach($Threads as $OtherThread): ?>
 			<div class="row mb-2">
 				<div class="col-12">
@@ -51,23 +51,13 @@ jQuery(function() {
 				</div>
 			</div>
 			<?php endforeach; unset($OtherThread); ?>
-			<div class="row mb-2">
-				<div class="col-12">
-					<a href="" class="btn btn-block btn-dark text-transform-none">Some Other Message Thread</a>
-				</div>
-			</div>
-			<div class="row mb-2">
-				<div class="col-12">
-					<a href="" class="btn btn-block btn-dark text-transform-none">Another Message</a>
-				</div>
-			</div>
 		</div>
 
-		<div class="col-8">
+		<div class="col-12 col-md-8">
 			<div class="jumbotron rounded pt-2 pb-2 mb-4">
 				<div class="row tight justify-content-center align-items-center">
 					<div class="col-auto"><i class="mdi mdi-account-circle font-size-largerer"></i></div>
-					<div class="col-auto"><?php $Printer($Thread->GetOtherUserAlias($User->ID)) ?></div>
+					<div class="col-auto"><span class="fw-bold"><?php $Printer($Thread->GetOtherUserAlias($User->ID)) ?></span></div>
 				</div>
 			</div>
 

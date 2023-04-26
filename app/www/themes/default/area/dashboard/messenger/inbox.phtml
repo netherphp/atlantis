@@ -16,12 +16,25 @@
 	?>
 </div>
 
+
 <div class="container pt-0 pb-6">
 
-	<?php foreach($Threads as $Thread): ?>
-	<div class="col-12">
-		<a href="<?php $Printer($Thread->GetDashboardURL()) ?>"><?php $Printer($Thread->GetSubject()) ?></a>
+	<div class="row">
+		<div class="col-12 col-md-4">
+			<?php foreach($Threads as $OtherThread): ?>
+			<div class="row mb-2">
+				<div class="col-12">
+					<a href="<?php $Printer($OtherThread->GetDashboardURL()) ?>" class="btn btn-block btn-primary text-transform-none"><?php $Printer($OtherThread->GetSubject()) ?></a>
+				</div>
+			</div>
+			<?php endforeach; unset($OtherThread); ?>
+		</div>
+
+		<div class="col-8 d-none d-md-block">
+			<div class="jumbotron rounded text-center p-4 mb-4">
+				Click a message on the sidebar to open it.
+			</div>
+		</div>
 	</div>
-	<?php endforeach; unset($Thread); ?>
 
 </div>

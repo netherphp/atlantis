@@ -18,11 +18,9 @@ $Surface
 ?>
 
 <?php foreach($Items as $Item): /** @var Atlantis\Struct\ContactEntry $Item */ ?>
-<div class="row">
-	<div class="col-12 col-md-auto mb-2 mb-md-0">
-		<a href="/dashboard/contact/view/<?php $Printer($Item->ID) ?>"><?php $Printer($Item->DateSent->Get(Common\Values::DateFormatFancyDateTime)) ?></a>
-	</div>
+<div class="row align-items-center">
 	<div class="col-12 col-md mb-2 mb-md-0">
+		<div class="font-size-smallerer mb-1"><a href="/dashboard/contact/view/<?php $Printer($Item->ID) ?>" class="border-0"><?php $Printer($Item->DateSent->Get(Common\Values::DateFormatFancyDateTime)) ?></a></div>
 		<div class="fw-bold"><a href="/dashboard/contact/view/<?php $Printer($Item->ID) ?>"><?php $Printer($Item->Subject) ?></a></div>
 		<div class="fst-italic text-muted"><?php $Printer($Item->Name) ?> &lt;<?php $Printer($Item->Email) ?>&gt;</div>
 	</div>

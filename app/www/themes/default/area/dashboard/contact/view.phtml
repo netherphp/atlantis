@@ -30,6 +30,10 @@ $Surface
 		<?php $Printer($Message->Name) ?>
 		<?php $Printer($Message->Email) ?>
 	</div>
+	<div>
+		<strong>Phone:</strong>
+		<a href="tel:<?php $Printer(preg_replace('/[^0-9]/', '', $Message->Phone)) ?>"><?php $Printer($Message->Phone) ?></a>
+	</div>
 </div>
 
 <div class="jumbotron rounded p-4">
