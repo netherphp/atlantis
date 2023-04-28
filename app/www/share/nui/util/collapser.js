@@ -1,5 +1,17 @@
 
 /*
+<div class="Collapser">
+	<header>
+		<div>
+			Title
+		</div>
+		<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+	</header>
+	<section>
+		Content
+	</section>
+</div>
+
 jQuery(function(){
 
 	jQuery('.Collapser')

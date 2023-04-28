@@ -30,17 +30,38 @@ use Nether\Sensei\Util;
 </div>
 
 <?php foreach($Codebase->Namespaces as $Namespace): ?>
-<div class="mb-8">
-	<div class="text-muted fw-bold font-size-largest font-family-monotype letter-space-loose mb-1">
-		<span class="font-family-monotype Block Namespace">namespace</span>
-		<?php echo Nether\Sensei\Util::GenerateNamespaceLinkChainHTML($Namespace->Name) ?>
-	</div>
-	<?php foreach($Namespace->Classes as $Class): ?>
-	<div class="font-family-monotype letter-space-loose mb-1">
-		<span class="font-family-monotype Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
-		<a href="/docs/<?php $Printer($Class->GetURI('.class')) ?>"><?php $Printer($Class->GetBaseName()) ?></a>
-	</div>
-	<?php endforeach; ?>
+<div class="Collapser">
+	<header>
+		<div class="font-size-smaller text-muted fw-bold font-family-monotype mb-1">
+			<div><span class="font-family-monotype Block Namespace">namespace</span></div>
+			<?php echo Nether\Sensei\Util::GenerateNamespaceLinkChainHTML($Namespace->Name) ?>
+		</div>
+		<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+	</header>
+	<section>
+		<?php foreach($Namespace->Classes as $Class): ?>
+		<div class="font-family-monotype mb-1">
+			<span class="font-family-monotype Block <?php $Printer(ucfirst($Class->GetTypeWord())) ?>"><?php $Printer($Class->GetTypeWord()) ?></span>
+			<a href="/docs/<?php $Printer($Class->GetURI('.class')) ?>"><?php $Printer($Class->GetBaseName()) ?></a>
+		</div>
+		<?php endforeach; ?>
+	</section>
 </div>
 <?php endforeach; unset($Namespace, $Class); ?>
+
+<script type="module">
+import Collapser from '/share/nui/util/collapser.js';
+
+jQuery(function(){
+
+	jQuery('.Collapser')
+	.each(function(){
+		new Collapser(this);
+		return;
+	});
+
+	return;
+});
+</script>
+
 
