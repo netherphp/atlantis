@@ -1,5 +1,5 @@
 /*//
-@date 2023-04-28 19:29:45 UTC
+@date 2023-04-28 21:31:03 UTC
 @files 16 [
     "src\/imports.css",
     "src\/main.css",
@@ -1286,10 +1286,10 @@ strong {
 	--SenseiProperty: #3da87f;
 	--SenseiMethod: #55ad61;
 
-	--TextLight: #eeeeee;
-	--TextDark: #222222;
-	--ColourDark: #222222;
-	--ColourLight: #eeeeee;
+	--SenseiTextLight: #eeeeee;
+	--SenseiTextDark: #222222;
+	--SenseiColourDark: #222222;
+	--SenseiColourLight: #eeeeee;
 }
 
 .border-colour-namespace { border-color: var(--SenseiNamespace) !important; }
@@ -1321,7 +1321,7 @@ strong {
 .Tag.Attribute { border-color: var(--SenseiAttribute); }
 
 .TagText {
-	color: var(--SenseiGrey);
+	color: var(--SenseiTextLight);
 }
 
 .TagText.Primary { color: var(--SenseiGreen); }
@@ -1339,8 +1339,8 @@ strong {
 
 .Block {
 	background-color: var(--SenseiGrey);
-	color: var(--theme-dark);
 	border-radius: 2px;
+	color: var(--SenseiTextLight);
 	font-weight: bold;
 	line-height: 1em;
 	padding: 1px 6px;
@@ -1350,7 +1350,7 @@ strong {
 
 .Block:link,
 .Block:visited {
-	color: var(--theme-dark);
+	color: var(--SenseiTextLight) !important;
 	border-bottom: 0px !important;
 	text-decoration: none !important;
 }
