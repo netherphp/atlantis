@@ -1,5 +1,5 @@
 /*//
-@date 2023-04-25 03:23:01 UTC
+@date 2023-04-28 19:29:45 UTC
 @files 16 [
     "src\/imports.css",
     "src\/main.css",
@@ -834,7 +834,7 @@ strong {
 	border-left: 4px solid var(--theme-quaternary );
 }
 
-.hr-hide-last hr:last-of-type {
+.hr-hide-last > hr:last-of-type {
 	display: none;
 }
 

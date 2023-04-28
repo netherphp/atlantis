@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @var Nether\Email\Struct\LibraryConfigInfo $LibInfo
+ */
+
+
+$Surface->Area('admin/breadcrumbs', [ 'Trail' => [
+	'Storage Config Info' => NULL
+]]);
+
+?>
+
+<div class="jumbotron p-4 mb-4 hr-hide-last">
+	<div class="fw-bold font-size-larger">Storage Library Config</div>
+	<hr />
+	<?php foreach($LibInfo->ConfigKeys as $ConstInfo => $ValueInfo): ?>
+	<div class="row">
+		<div class="col-12 mb-2">
+			<span class="fw-bold font-family-mono"><?php $Printer($ConstInfo) ?></span>
+		</div>
+		<div class="col-12 mb-2">
+			<code><?php $Printer($ValueInfo) ?></code>
+		</div>
+	</div>
+	<hr />
+	<?php endforeach; ?>
+</div>
+
+<?php foreach($LibInfo->Services as $Service): ?>
+<div class="jumbotron p-4 mb-4 hr-hide-last">
+	<div class="fw-bold font-size-larger"><?php $Printer($Service->Class) ?></div>
+	<hr />
+	<?php foreach($Service->ConfigKeys as $ConstInfo => $ValueInfo): ?>
+	<div class="row">
+		<div class="col-12 mb-2">
+			<span class="fw-bold font-family-mono"><?php $Printer($ConstInfo) ?></span>
+		</div>
+		<div class="col-12 mb-2">
+			<code><?php $Printer($ValueInfo) ?></code>
+		</div>
+	</div>
+	<hr />
+	<?php endforeach; ?>
+</div>
+<?php endforeach; ?>
+
+

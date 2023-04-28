@@ -537,6 +537,6 @@
 	border-left: 4px solid var(--theme-quaternary );
 }
 
-.hr-hide-last hr:last-of-type {
+.hr-hide-last > hr:last-of-type {
 	display: none;
 }

@@ -1,0 +1,121 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Storage;
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ */
+
+$Extra = (
+	($App->Storage->GetLocations())
+	->Filter(
+		fn(Storage\Adaptor $L)
+		=> $L->Name !== 'Default' && $L->Name !== 'Temp'
+	)
+);
+
+$StorageIcon = function(?string $Class): string {
+
+	return match($Class) {
+		Storage\Adaptors\DOBucket::class
+		=> '<i class="si si-digitalocean"></i>',
+
+		Storage\Adaptors\S3Bucket::class
+		=> '<i class="mdi mdi-pail"></i>',
+
+		default
+		=> '<i class="mdi mdi-harddisk"></i>'
+	};
+};
+
+?>
+
+<div class="PrettyModernBox">
+	<h3>
+		<span class="text-transform-none">Storage</span>
+		<hr />
+	</h3>
+
+	<div class="row tight align-items-center mb-6">
+		<div class="col-auto">
+			<a href="/ops/storage/config" class="btn btn-dark">
+				<i class="mdi mdi-cog"></i>
+				Config Info
+			</a>
+		</div>
+	</div>
+
+
+	<div class="hr-hide-last">
+
+		<div class="row align-items-center">
+			<div class="col">
+				<span class="fw-bold">Atlantis Storage:</span>
+			</div>
+		</div>
+		<hr />
+
+		<!-- DEFAULT STORAGE -->
+		<div class="mb-6">
+			<div class="row align-items-center">
+				<div class="col">
+					<?php echo $StorageIcon(NULL) ?>
+					Default:
+				</div>
+				<div class="col-auto">
+					<?php if($App->Storage->HasLocation('Default')): ?>
+					<i class="mdi mdi-check text-success"></i>
+					<code><?php $Printer($App->Storage->Location('Default')->Root) ?></code>
+					<?php else: ?>
+					<i class="mdi mdi-close text-danger"></i>
+					<?php endif; ?>
+				</div>
+			</div>
+			<hr />
+			<!-- TEMP STORAGE -->
+			<div class="row align-items-center">
+				<div class="col">
+					<?php echo $StorageIcon(NULL) ?>
+					Temp:
+				</div>
+				<div class="col-auto">
+					<?php if($App->Storage->HasLocation('Temp')): ?>
+					<i class="mdi mdi-check text-success"></i>
+					<code><?php $Printer($App->Storage->Location('Temp')->Root) ?></code>
+					<?php else: ?>
+					<i class="mdi mdi-close text-danger"></i>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- EXTRA STORAGE -->
+		<div class="row align-items-center">
+			<div class="col">
+				<span class="fw-bold">Additional Storage Locations:</span>
+			</div>
+			<div class="col-auto">
+				<?php $Printer($Extra->Count()) ?>
+			</div>
+		</div>
+		<hr />
+
+		<?php foreach($Extra as $Location): ?>
+		<div class="row align-items-center">
+			<div class="col-12 col-md">
+				<?php echo $StorageIcon($Location::class) ?>
+				<?php $Printer($Location->GetAdaptorDescription()) ?>
+			</div>
+			<div class="col-12 col-md-auto">
+				<code><?php $Printer($Location::class) ?></code>
+			</div>
+		</div>
+		<hr />
+		<?php endforeach; unset($Location); ?>
+
+
+	</div>
+
+</div>
