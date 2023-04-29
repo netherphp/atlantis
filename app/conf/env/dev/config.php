@@ -53,6 +53,7 @@ use Nether\Database;
 		Hostname: 'DEV-DB-HOST',
 		Database: 'DEV-DB-NAME',
 		Username: 'DEV-DB-PASSWORD-HURR',
-		Password: 'DEV-DB-PASSWORD-DURR'
+		Password: 'DEV-DB-PASSWORD-DURR',
+		Auto: FALSE
 	)
 ]);

@@ -112,8 +112,8 @@ extends Atlantis\ProtectedAPI {
 			////////
 
 			$this->Flow(static::KiOnUploadComplete, [
-				'UUID' => $this->Data->UUID,
-				'Name' => $File['name'],
+				'UUID'   => $UUID,
+				'Name'   => $File['name'],
 				'Source' => $Storage->GetFileObject($FinalResting)
 			]);
 		}

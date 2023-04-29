@@ -39,19 +39,33 @@ extends Atlantis\PublicWeb {
 	ViewWillAnswerRequest(string $Alias, Avenue\Struct\ExtraData $Data):
 	int {
 
-		$Page = Atlantis\Page\Entity::GetByField('Alias', $Alias);
-
-		if(!$Page)
-		$Page = Atlantis\Page\Entity::FromStaticFile($this->App, $Alias);
-
-		if(!$Page)
-		return Avenue\Response::CodeNope;
+		$Data['Page'] = NULL;
 
 		////////
 
-		$Data['Page'] = $Page;
+		if($this->App->Config[Atlantis\Library::ConfPageEnableDB]) {
+			$Data['Page'] = Atlantis\Page\Entity::GetByField(
+				'Alias',
+				$Alias
+			);
 
-		return Avenue\Response::CodeOK;
+			if($Data['Page'])
+			return Avenue\Response::CodeOK;
+		}
+
+		if($this->App->Config[Atlantis\Library::ConfPageEnableStatic]) {
+			$Data['Page'] = Atlantis\Page\Entity::FromStaticFile(
+				$this->App,
+				$Alias
+			);
+
+			if($Data['Page'])
+			return Avenue\Response::CodeOK;
+		}
+
+		////////
+
+		return Avenue\Response::CodeNope;
 	}
 
 	////////////////////////////////////////////////////////////////

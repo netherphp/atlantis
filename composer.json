@@ -39,7 +39,8 @@
 	},
 	"require-dev": {
 		"netherphp/standards": "^0.2.8",
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+		"phpunit/phpunit": "^9.6"
 	},
 	"bin": [
 		"bin/atlantis",

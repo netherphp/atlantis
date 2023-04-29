@@ -55,6 +55,10 @@ implements
 	ConfContactSubject      = 'Nether.Atlantis.Contact.Subject';
 
 	const
+	ConfPageEnableDB        = 'Nether.Atlantis.Page.EnableDatabase',
+	ConfPageEnableStatic    = 'Nether.Atlantis.Page.EnableStatic';
+
+	const
 	WebServerTypeNone     = NULL,
 	WebServerTypeApache24 = 'apache24';
 
@@ -80,6 +84,8 @@ implements
 			static::ConfUserAllowSignupGank => FALSE,
 			static::ConfUserEmailActivate   => TRUE,
 			static::ConfUserRequireAlias    => FALSE,
+			static::ConfPageEnableDB        => FALSE,
+			static::ConfPageEnableStatic    => TRUE,
 			static::ConfContactTo           => NULL,
 			static::ConfContactBCC          => NULL,
 			static::ConfContactSubject      => 'Contact from Website'
