@@ -1,5 +1,9 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+
 use PHPUnit\Framework\TestCase;
 
 define('ProjectRewt', Nether\Common\Filesystem\Util::Pathify(
@@ -11,7 +15,38 @@ class RouteTest
 extends TestCase {
 
 	static public function
-	ConfigureRequest(string $Method='GET', string $Host='atlantis.dev', string $Path='/'):
+	Autoload(string $Class):
+	void {
+
+		if(str_starts_with($Class, 'Routes')) {
+			$Class = preg_replace('#^Routes\\\\#', 'routes\\', $Class);
+
+			require(Common\Filesystem\Util::Pathify(
+				ProjectRewt,
+				sprintf(
+					'%s.php',
+					str_replace('\\', '/', $Class)
+				)
+			));
+		}
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	SetupAutoloader():
+	void {
+
+		spl_autoload_register('RouteTest::Autoload');
+
+		return;
+	}
+
+	static public function
+	SetupRequestEnv(string $Method='GET', string $Host='atlantis.dev', string $Path='/'):
 	void {
 
 		$_SERVER['REQUEST_METHOD'] = $Method;
@@ -21,6 +56,46 @@ extends TestCase {
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	BuildRouteScanner():
+	Avenue\RouteScanner {
+
+		$Scan = new Avenue\RouteScanner(Common\Filesystem\Util::Pathify(
+			ProjectRewt, 'routes'
+		));
+
+		return $Scan;
+	}
+
+	static public function
+	BuildAtlantis():
+	Atlantis\Engine {
+
+		$App = new Atlantis\Engine(ProjectRewt);
+		$Scan = static::BuildRouteScanner();
+
+		$App->Router->AddHandlers($Scan->Generate());
+
+		return $App;
+	}
+
+	static public function
+	RunAtlantis(Atlantis\Engine $App):
+	string {
+
+		ob_start();
+
+		$App->Run();
+
+		return ob_get_clean();
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	/**
 	 * @test
 	 * @runInSeparateProcess
@@ -29,19 +104,20 @@ extends TestCase {
 	TestBasic():
 	void {
 
-		static::ConfigureRequest();
+		static::SetupAutoloader();
+		static::SetupRequestEnv();
+		$App = static::BuildAtlantis();
+		$Out = static::RunAtlantis($App);
 
-		$App = new Nether\Atlantis\Engine(ProjectRewt);
-		$App->Run();
+		$Handler = $App->Router->GetCurrentHandler();
 
-		Nether\Common\Dump::Var($App->Router->GetHandlers());
-		Nether\Common\Dump::Var($App->Router->Request);
-		Nether\Common\Dump::Var($App->Router->Response);
+		//print_r($Handler);
 
-		$this->AssertTrue(TRUE);
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Home', $Handler->Class);
+		$this->AssertEquals('Index', $Handler->Method);
 
 		return;
 	}
-
 
 }
