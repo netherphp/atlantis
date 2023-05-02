@@ -12,21 +12,13 @@ jobs:
     steps:
       - name: Checkout Source.
         uses: actions/checkout@v2
-      - name: Setup PHP 8.0
-        if: ${{ matrix.php-versions == '8.0' }}
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-          coverage: none
-          extensions: mbstring, intl
-          tools: phpunit
       - name: Setup PHP 8.1
         if: ${{ matrix.php-versions == '8.1' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
-          extensions: mbstring, intl
+          extensions: mbstring, intl, sodium
           tools: phpunit
       - name: Run PHPUnit
         run: |
