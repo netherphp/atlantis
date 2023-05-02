@@ -22,7 +22,7 @@ extends PublicWeb {
 					$this->Request->GetURL()
 				));
 
-				$this->Handler->Method = 'HandleUserSessionRequired';
+				$this->Handler->Method = '__RewireDoNothing';
 
 				return Avenue\Response::CodeFound;
 			}
@@ -31,13 +31,6 @@ extends PublicWeb {
 		}
 
 		return Avenue\Response::CodeOK;
-	}
-
-	public function
-	HandleUserSessionRequired():
-	void {
-
-		return;
 	}
 
 	////////////////////////////////////////////////////////////////

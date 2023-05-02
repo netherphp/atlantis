@@ -42,6 +42,16 @@ as html pages. //*/
 	////////////////////////////////////////////////////////////////
 
 	public function
+	__RewireDoNothing():
+	void {
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
 	OnWillConfirmReady(?Avenue\Struct\ExtraData $ExtraData):
 	int {
 
@@ -314,7 +324,10 @@ as html pages. //*/
 			->Area('error/error');
 		}
 
-		exit(0);
+
+		$this->Handler->Method = '__RewireDoNothing';
+		//exit(0);
+
 		return;
 	}
 

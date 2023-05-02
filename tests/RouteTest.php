@@ -23,7 +23,8 @@ extends Nether\User\EntitySession {
 			'Alias'       => 'geordi-laforge',
 			'TimeCreated' => time(),
 			'TimeBanned'  => 0,
-			'Activated'   => 1
+			'Activated'   => 1,
+			'Admin'       => 0
 		]);
 
 		return;
@@ -36,6 +37,20 @@ extends Nether\User\EntitySession {
 		$this->AccessTypes = new Common\Datastore;
 
 		parent::OnReady($Args);
+
+		return;
+	}
+
+}
+
+class TestUserAdmin
+extends TestUserNormal {
+
+	public function
+	__Construct() {
+
+		parent::__Construct();
+		$this->Admin = 1;
 
 		return;
 	}
@@ -220,7 +235,7 @@ extends TestCase {
 
 		$this->AssertEquals('GET', $Handler->Verb);
 		$this->AssertEquals('Routes\\Test', $Handler->Class);
-		$this->AssertEquals('HandleUserSessionRequired', $Handler->Method);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
 		$this->AssertFalse(str_contains(
 			$App->Router->Response->Content,
 			'user access granted'
@@ -258,6 +273,109 @@ extends TestCase {
 		$this->AssertTrue(str_contains(
 			$App->Router->Response->Content,
 			'user access granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeOK, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAdminFail1():
+	void {
+
+		// without a user this route should fail to render its normal
+		// content and issue a redirect to the login.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/admin');
+
+		$App = static::BuildAtlantis();
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'admin access granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeFound, $App->Router->Response->Code);
+		$this->AssertTrue($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function
+	TestRouteRequireAdminFail2():
+	void {
+
+		//$this->AssertFalse(FALSE);
+		//return;
+
+		// without a user this route should fail to render its normal
+		// content and die with a 403
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/admin');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserNormal;
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'admin access granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeForbidden, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAdminPass():
+	void {
+
+		// without a user this route should fail to render its normal
+		// content and issue a redirect to the login.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/admin');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserAdmin;
+		$Out = static::RunAtlantis($App);
+
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('HandleRequireAdmin', $Handler->Method);
+		$this->AssertTrue(str_contains(
+			$App->Router->Response->Content,
+			'admin access granted'
 		));
 
 		$this->AssertEquals(Avenue\Response::CodeOK, $App->Router->Response->Code);
