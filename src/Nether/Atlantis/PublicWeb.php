@@ -62,6 +62,9 @@ as html pages. //*/
 
 		$Code = $this->OnWillConfirmReady($ExtraData);
 
+		($this->App->Router->Response)
+		->SetCode($Code);
+
 		($this->App->Surface)
 		->Queue('BuildGlobalScope', $this->BuildGlobalScope(...), TRUE)
 		->Set('Page.Title', NULL)

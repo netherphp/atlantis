@@ -22,6 +22,8 @@ extends PublicWeb {
 					$this->Request->GetURL()
 				));
 
+				$this->Handler->Method = 'HandleUserSessionRequired';
+
 				return Avenue\Response::CodeFound;
 			}
 
@@ -29,6 +31,13 @@ extends PublicWeb {
 		}
 
 		return Avenue\Response::CodeOK;
+	}
+
+	public function
+	HandleUserSessionRequired():
+	void {
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
+use Nether\User;
 
 use PHPUnit\Framework\TestCase;
 
@@ -10,6 +11,36 @@ define('ProjectRewt', Nether\Common\Filesystem\Util::Pathify(
 	dirname(__FILE__, 2),
 	'app'
 ));
+
+class TestUserNormal
+extends Nether\User\EntitySession {
+
+	public function
+	__Construct() {
+
+		parent::__Construct([
+			'ID'          => 42,
+			'Alias'       => 'geordi-laforge',
+			'TimeCreated' => time(),
+			'TimeBanned'  => 0,
+			'Activated'   => 1
+		]);
+
+		return;
+	}
+
+	protected function
+	OnReady(Common\Prototype\ConstructArgs $Args):
+	void {
+
+		$this->AccessTypes = new Common\Datastore;
+
+		parent::OnReady($Args);
+
+		return;
+	}
+
+}
 
 class RouteTest
 extends TestCase {
@@ -106,16 +137,131 @@ extends TestCase {
 
 		static::SetupAutoloader();
 		static::SetupRequestEnv();
+
 		$App = static::BuildAtlantis();
 		$Out = static::RunAtlantis($App);
-
 		$Handler = $App->Router->GetCurrentHandler();
-
-		//print_r($Handler);
 
 		$this->AssertEquals('GET', $Handler->Verb);
 		$this->AssertEquals('Routes\\Home', $Handler->Class);
 		$this->AssertEquals('Index', $Handler->Method);
+		$this->AssertNull($App->User);
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteDoesNotExist():
+	void {
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/does-not-exist');
+
+		$App = static::BuildAtlantis();
+		$Out = static::RunAtlantis($App);
+
+		// @todo 2023-05-02 the code from the handler needs to be set in
+		// the response by the avenue router and this needs to be updated
+		// to check CodeNotFound afterwards.
+
+		$this->AssertEquals(
+			Avenue\Response::CodeOK,
+			$App->Router->Response->Code
+		);
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRoutePublic():
+	void {
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/public');
+
+		$App = static::BuildAtlantis();
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals(Avenue\Response::CodeOK, $App->Router->Response->Code);
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('HandlePublic', $Handler->Method);
+
+		return;
+	}
+
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireUserFail():
+	void {
+
+		// without a user this route should fail to render its normal
+		// content and issue a redirect to the login.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/user');
+
+		$App = static::BuildAtlantis();
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('HandleUserSessionRequired', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'user access granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeFound, $App->Router->Response->Code);
+		$this->AssertTrue($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireUserPass():
+	void {
+
+		// without a user this route should fail to render its normal
+		// content and issue a redirect to the login.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/user');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserNormal;
+		$Out = static::RunAtlantis($App);
+
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('HandleRequireUser', $Handler->Method);
+		$this->AssertTrue(str_contains(
+			$App->Router->Response->Content,
+			'user access granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeOK, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
 
 		return;
 	}
