@@ -311,11 +311,13 @@ as html pages. //*/
 	void {
 
 		if($Err !== 0) {
+			if($this->App->Router->Response->Code === Avenue\Response::CodeOK)
+			$this->App->Router->Response->SetCode(Avenue\Response::CodeForbidden);
+
+			////////
+
 			$Title ??= 'Error';
 			$Msg ??= 'There was an error processing your request.';
-
-			($this->App->Router->Response)
-			->SetCode(Avenue\Response::CodeForbidden);
 
 			($this->App->Surface)
 			->Set('Error', $Err)
