@@ -358,9 +358,6 @@ extends TestCase {
 	TestRouteRequireAdminPass():
 	void {
 
-		// without a user this route should fail to render its normal
-		// content and issue a redirect to the login.
-
 		static::SetupAutoloader();
 		static::SetupRequestEnv(Path: '/test/admin');
 
