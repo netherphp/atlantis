@@ -1,5 +1,9 @@
 # Nether Atlantis
 
+[![Packagist](https://img.shields.io/packagist/v/netherphp/atlantis.svg?style=for-the-badge)](https://packagist.org/packages/netherphp/atlantis)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/netherphp/atlantis/phpunit.yml?style=for-the-badge)](https://github.com/netherphp/atlantis/actions)
+[![codecov](https://img.shields.io/codecov/c/gh/netherphp/atlantis?style=for-the-badge&token=VQC48XNBS2)](https://codecov.io/gh/netherphp/atlantis)
+
 The most simple way to get going:
 
 1. `git clone https://github.com/netherphp/project myapp`

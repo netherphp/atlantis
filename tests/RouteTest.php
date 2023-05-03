@@ -7,13 +7,16 @@ use Nether\User;
 
 use PHPUnit\Framework\TestCase;
 
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
 define('ProjectRewt', Nether\Common\Filesystem\Util::Pathify(
 	dirname(__FILE__, 2),
 	'app'
 ));
 
 class TestUserNormal
-extends Nether\User\EntitySession {
+extends User\EntitySession {
 
 	public function
 	__Construct() {
@@ -56,6 +59,9 @@ extends TestUserNormal {
 	}
 
 }
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
 class RouteTest
 extends TestCase {
@@ -191,6 +197,9 @@ extends TestCase {
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	// RouteAccessType annotation tests ////////////////////////////
+
 	/**
 	 * @test
 	 * @runInSeparateProcess
@@ -198,6 +207,8 @@ extends TestCase {
 	public function
 	TestRoutePublic():
 	void {
+
+		// this is an open route that has no requirements for access.
 
 		static::SetupAutoloader();
 		static::SetupRequestEnv(Path: '/test/public');
@@ -214,7 +225,6 @@ extends TestCase {
 		return;
 	}
 
-
 	/**
 	 * @test
 	 * @runInSeparateProcess
@@ -223,8 +233,8 @@ extends TestCase {
 	TestRouteRequireUserFail():
 	void {
 
-		// without a user this route should fail to render its normal
-		// content and issue a redirect to the login.
+		// without a valid user session this route should terminate itself
+		// by redirecting to the login page.
 
 		static::SetupAutoloader();
 		static::SetupRequestEnv(Path: '/test/user');
@@ -252,11 +262,11 @@ extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function
-	TestRouteRequireUserPass():
+	TestRouteRequireUserSuccess():
 	void {
 
-		// without a user this route should fail to render its normal
-		// content and issue a redirect to the login.
+		// with a valid user session this route should run without any
+		// hinderance and return a normal result.
 
 		static::SetupAutoloader();
 		static::SetupRequestEnv(Path: '/test/user');
@@ -289,8 +299,8 @@ extends TestCase {
 	TestRouteRequireAdminFail1():
 	void {
 
-		// without a user this route should fail to render its normal
-		// content and issue a redirect to the login.
+		// without a valid user admin session this route should terminate
+		// itself with a redirect to the login page.
 
 		static::SetupAutoloader();
 		static::SetupRequestEnv(Path: '/test/admin');
@@ -316,17 +326,13 @@ extends TestCase {
 	/**
 	 * @test
 	 * @runInSeparateProcess
-	 * @preserveGlobalState disabled
 	 */
 	public function
 	TestRouteRequireAdminFail2():
 	void {
 
-		//$this->AssertFalse(FALSE);
-		//return;
-
-		// without a user this route should fail to render its normal
-		// content and die with a 403
+		// with a valid user but not a valid admin session this route
+		// should terminate itself with a forbidden.
 
 		static::SetupAutoloader();
 		static::SetupRequestEnv(Path: '/test/admin');
@@ -355,7 +361,7 @@ extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function
-	TestRouteRequireAdminPass():
+	TestRouteRequireAdminSuccess():
 	void {
 
 		static::SetupAutoloader();
