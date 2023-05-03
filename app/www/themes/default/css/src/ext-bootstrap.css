@@ -2,6 +2,13 @@
 	--DropdownMaxHeight: 300px;
 }
 
+[data-bs-theme="dark"] .on-dark-hide { display: none; }
+[data-bs-theme="dark"] .on-dark-invert { filter: invert(); }
+
+
+[data-bs-theme="light"] .on-light-hide { display: none; }
+[data-bs-theme="light"] .on-light-invert { filter: invert(); }
+
 /*******************************************************************************
 **** font stuff ***************************************************************/
 
