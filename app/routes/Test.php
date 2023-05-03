@@ -37,4 +37,15 @@ extends Atlantis\ProtectedWeb {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/test/at1')]
+	#[Atlantis\Meta\RouteAccessType('AccessType1')]
+	public function
+	HandleRequireAT1():
+	void {
+
+		echo 'user access with type granted';
+
+		return;
+	}
+
 }

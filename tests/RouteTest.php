@@ -387,4 +387,187 @@ extends TestCase {
 		return;
 	}
 
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAccessTypeFail1():
+	void {
+
+		// without a valid user session this route should terminate itself
+		// by redirecting to the login page.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/at1');
+
+		$App = static::BuildAtlantis();
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'user access with type granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeFound, $App->Router->Response->Code);
+		$this->AssertTrue($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAccessTypeFail2():
+	void {
+
+		// with a valid user but no defined access type this route should
+		// terminate with a forbidden.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/at1');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserNormal;
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'user access with type granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeForbidden, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAccessTypeFail3():
+	void {
+
+		// with a valid user but an invalid access type for the requirement
+		// it should terminate with a forbidden.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/at1');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserNormal;
+		$App->User->GetAccessTypes()->Push('AccessType1', -1);
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'user access with type granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeForbidden, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAccessTypeFail4():
+	void {
+
+		// with a valid user but an invalid access type for the requirement
+		// it should terminate with a forbidden.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/at1');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserNormal;
+
+		$App->User->GetAccessTypes()->Shove(
+			'AccessType1',
+			new User\EntityAccessType([
+				'Key'   => 'AccessType1',
+				'Value' => -1
+			])
+		);
+
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('__RewireDoNothing', $Handler->Method);
+		$this->AssertFalse(str_contains(
+			$App->Router->Response->Content,
+			'user access with type granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeForbidden, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
+	/**
+	 * @test
+	 * @runInSeparateProcess
+	 */
+	public function
+	TestRouteRequireAccessTypeSuccess():
+	void {
+
+		// with a valid user with a valid access type this route should
+		// execute itself unhindered.
+
+		static::SetupAutoloader();
+		static::SetupRequestEnv(Path: '/test/at1');
+
+		$App = static::BuildAtlantis();
+		$App->User = new TestUserNormal;
+
+		$App->User->GetAccessTypes()->Shove(
+			'AccessType1',
+			new User\EntityAccessType([
+				'Key'   => 'AccessType1',
+				'Value' => 1
+			])
+		);
+
+		$Out = static::RunAtlantis($App);
+		$Handler = $App->Router->GetCurrentHandler();
+
+		$this->AssertEquals('GET', $Handler->Verb);
+		$this->AssertEquals('Routes\\Test', $Handler->Class);
+		$this->AssertEquals('HandleRequireAT1', $Handler->Method);
+		$this->AssertTrue(str_contains(
+			$App->Router->Response->Content,
+			'user access with type granted'
+		));
+
+		$this->AssertEquals(Avenue\Response::CodeOK, $App->Router->Response->Code);
+		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
+
+		return;
+	}
+
 }
