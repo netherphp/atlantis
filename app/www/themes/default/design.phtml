@@ -39,7 +39,14 @@ $Surface
 	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/simple-icons.min.css?v={$CacheBuster}") ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("{$Surface->Get('Theme.Page.MainCSS')}?v={$CacheBuster}") ?>" />
 
-	<!-- <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script> -->
+	<!-- Additional Styles -->
+	<?php foreach($Surface->Get('Theme.Page.Styles') as $StyleURL): ?><link rel="stylesheet" type="text/css" href="<?php $Printer($StyleURL) ?>" />
+	<?php endforeach; unset($StyleURL); ?>
+
+	<!-- Additional Scripts -->
+	<?php foreach($Surface->Get('Theme.Page.Scripts') as $ScriptURL): ?><script type="text/javascript" src="<?php $Printer($ScriptURL) ?>"></script>
+	<?php endforeach; unset($ScriptURL); ?>
+
 </head>
 <body>
 

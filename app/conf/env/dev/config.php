@@ -24,7 +24,8 @@ use Nether\Database;
 // PROJECT CONFIG.
 
 ($Config)
-->Set(Atlantis\Library::ConfProjectDomain, 'localhost');
+->Set(Atlantis\Library::ConfProjectDomain, 'localhost')
+->Set(Atlantis\Library::ConfContactTo, 'someone@whatever.tld');
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

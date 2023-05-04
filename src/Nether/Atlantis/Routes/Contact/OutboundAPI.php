@@ -94,6 +94,7 @@ extends Atlantis\PublicAPI {
 
 		}
 
+		if(Atlantis\Struct\ContactEntry::HasDB())
 		Atlantis\Struct\ContactEntry::Insert([
 			'IP'      => $InputIP,
 			'Name'    => $InputName,
