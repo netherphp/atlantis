@@ -1,0 +1,41 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+
+/**
+ * @var Atlantis\Struct\ContactEntry $Message
+ */
+
+$Surface
+->Set('Page.Title', "Contact Us Message #{$Message->ID}")
+->Area('dashboard/nav', [ 'Trail' => [
+	'Contact Us'
+	=> '/dashboard/contact/list',
+
+	"Message #{$Message->ID}"
+	=> NULL
+]]);
+
+?>
+
+<div class="jumbotron rounded p-4 mb-4">
+	<div>
+		<strong>Date:</strong>
+		<?php $Printer($Message->DateSent->Get(Common\Values::DateFormatFancyDateTime)) ?>
+	</div>
+	<div>
+		<strong>From:</strong>
+		<?php $Printer($Message->Name) ?>
+		<?php $Printer($Message->Email) ?>
+	</div>
+	<div>
+		<strong>Phone:</strong>
+		<a href="tel:<?php $Printer(preg_replace('/[^0-9]/', '', $Message->Phone)) ?>"><?php $Printer($Message->Phone) ?></a>
+	</div>
+</div>
+
+<div class="jumbotron rounded p-4">
+	<?php $Printer(nl2br($Message->Message)) ?>
+</div>

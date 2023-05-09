@@ -342,7 +342,7 @@ describes and contains the editable pane.
 	constructor(main) {
 
 		this.main = main;
-		this.element = jQuery('<div />').addClass('Viewport');
+		this.element = jQuery('<div />').addClass('Viewport form-control');
 
 		return;
 	};

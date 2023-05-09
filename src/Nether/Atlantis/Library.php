@@ -63,7 +63,8 @@ implements
 	WebServerTypeApache24 = 'apache24';
 
 	const
-	AccessContactLogView = 'Nether.Contact.Log.View';
+	AccessContactLogManage = 'Nether.Atlantis.ContactLog.Manage',
+	AccessPageManage       = 'Nether.Atlantis.Page.Manage';
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -99,6 +100,9 @@ implements
 	void {
 
 		$App = $Argv['App'];
+		$Scan = NULL;
+
+		////////
 
 		$App->User = User\EntitySession::Get();
 
@@ -114,23 +118,13 @@ implements
 
 		////////
 
-		if($App->Router->GetSource() === 'dirscan') {
-			$RouterPath = dirname(__FILE__);
-			$Scanner = new Avenue\RouteScanner("{$RouterPath}/Routes");
-			$Map = $Scanner->Generate();
+		$Scan = new Atlantis\Util\LibraryRouteScanner($App);
 
-			////////
+		$Scan->AddPath(
+			Common\Filesystem\Util::Pathify(dirname(__FILE__), 'Routes')
+		);
 
-			$Map['Verbs']->Each(
-				fn(Datastore $Handlers)
-				=> $App->Router->AddHandlers($Handlers)
-			);
-
-			$Map['Errors']->Each(
-				fn(Avenue\Meta\RouteHandler $Handler, int $Code)
-				=> $App->Router->AddErrorHandler($Code, $Handler)
-			);
-		}
+		$Scan->Commit();
 
 		return;
 	}
@@ -147,8 +141,17 @@ implements
 
 		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
 
-		if($App->User->HasAccessType(static::AccessContactLogView))
+		if($App->User->HasAccessTypeOrAdmin(static::AccessContactLogManage))
 		$Sidebar->Push(new Atlantis\Dashboard\AtlantisContactLogSidebar);
+
+		////////
+
+		if($App->Config[Atlantis\Library::ConfPageEnableDB]) {
+			if($App->User->HasAccessTypeOrAdmin(static::AccessPageManage))
+			$Sidebar->Push(new Atlantis\Dashboard\AtlantisPageSidebar);
+		}
+
+		////////
 
 		if($App->User->IsAdmin())
 		$Sidebar
@@ -167,8 +170,12 @@ implements
 
 		$List->MergeRight([
 			new Atlantis\User\AccessTypeDef(
-				static::AccessContactLogView, 1,
+				static::AccessContactLogManage, 1,
 				'Allow the user to view the Contact Us log.'
+			),
+			new Atlantis\User\AccessTypeDef(
+				static::AccessPageManage, 1,
+				'Allow the user to manage Pages on the site.'
 			)
 		]);
 

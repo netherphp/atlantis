@@ -1,23 +1,22 @@
 <?php
 
-use Nether\Atlantis;
-
 /**
- * @var Atlantis\Page\Entity $Page
+ * @var Nether\User\Entity $User
+ * @var Nether\Atlantis\Page\Entity $Page
  */
-
-mysqli_real_connect(mysql: mysqli_init(), hostname: 'banana');
 
 ?>
 
-<div class="container">
-	<h1><?php $Printer($Page->Title) ?></h1>
+<?php echo $Page->GetContent() ?>
 
-	<?php
+<?php if($User && $User->HasAccessTypeOrAdmin( Nether\Atlantis\Library::AccessPageManage )): ?>
+<script type="module">
+import Page from '/share/atlantis/page.js?v=<?php $Printer($CacheBuster) ?>';
+jQuery(function() {
 
-	if($Page->Editor === 'html')
-	echo $Page->Content;
+	Page.BindEditCommands();
 
-	?>
-
-</div>
+	return;
+});
+</script>
+<?php endif; ?>

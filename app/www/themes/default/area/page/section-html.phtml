@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\User\Entity $User
+ * @var Nether\Atlantis\Page\Entity $Page
+ * @var Nether\Atlantis\Page\Section $Section
+ */
+
+?>
+
+<div class="AtlantisPageSection position-relative <?php $Printer($Section->StyleBG) ?> <?php $Printer($Section->StylePad) ?>" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
+	<?php if($Section->Contain): ?><div class="container position-relative"><?php endif; ?>
+
+		<?php if($User && $User->HasAccessTypeOrAdmin( Nether\Atlantis\Library::AccessPageManage )): ?>
+		<div class="position-absolute position-top position-right pr-4">
+			<div class="dropdown">
+				<button class="position-absolute position-top position-right btn btn-secondary dropdown-toggle zindex-medium" type="button" data-bs-toggle="dropdown">
+					Admin
+				</button>
+				<div class="dropdown-menu zindex-high rounded p-2">
+					<div class="dropdown-item p-0 mb-2">
+						<div class="btn btn-block btn-secondary text-align-left CmdPageEdit" data-section-id="<?php $Printer($Section->ID) ?>">
+							<i class="mdi mdi-pencil"></i>
+							Edit
+						</div>
+					</div>
+					<div class="dropdown-item p-0">
+						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionNew" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
+							<i class="mdi mdi-plus"></i>
+							Add Section After...
+						</div>
+					</div>
+					<hr />
+					<div class="dropdown-item p-0 mb-2">
+						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionMoveUp" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
+							<i class="mdi mdi-menu-up"></i>
+							Move Up
+						</div>
+					</div>
+					<div class="dropdown-item p-0">
+						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionMoveDown" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
+							<i class="mdi mdi-menu-down"></i>
+							Move Down
+						</div>
+					</div>
+					<hr />
+					<div class="dropdown-item p-0 mb-0">
+						<div class="btn btn-block btn-danger text-align-left CmdPageSectionDelete" data-section-id="<?php $Printer($Section->ID) ?>">
+							<i class="mdi mdi-close"></i>
+							Delete Section
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<?php if($Section->Subtitle): ?><div class="ArticlePrelabel"><?php $Printer($Section->Subtitle) ?></div><?php endif; ?>
+		<?php if($Section->Title): ?><h1><?php $Printer($Section->Title) ?></h1><?php endif; ?>
+
+		<?php echo $Section->Content ?>
+
+	<?php if($Section->Contain): ?></div><?php endif; ?>
+</div>
+

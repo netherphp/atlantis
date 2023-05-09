@@ -9,10 +9,13 @@ use Nether\Database;
 class Prototype
 extends Database\Prototype {
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
+	#[Database\Meta\PrimaryKey]
+	public int
+	$ID;
 
-	#[Database\Meta\TypeChar(Size: 36, Nullable: FALSE)]
+	#[Database\Meta\TypeChar(Size: 36)]
+	#[Database\Meta\FieldIndex]
 	public string
 	$UUID;
 
@@ -53,6 +56,16 @@ extends Database\Prototype {
 			fn(Media\TagLink $Link)
 			=> $Link->Tag
 		);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	DescribeForPublicAPI():
+	array {
+
+		return (array)$this;
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@ build and manage a modal popup.
 		this.title = this.element.find('.modal-header > strong');
 		this.body = this.element.find('.modal-body');
 		this.footer = this.element.find('.modal-footer');
+		this.width = null;
 
 		(this.element)
 		.on(
@@ -50,6 +51,7 @@ build and manage a modal popup.
 
 	destroy() {
 
+		this.api.hide();
 		this.api.dispose();
 
 		this.element.remove();
@@ -116,6 +118,17 @@ build and manage a modal popup.
 		}
 
 		return;
+	};
+
+	setWidth(val) {
+
+		if(val === null)
+		val = '';
+
+		(this.element.find('.modal-dialog'))
+		.css('--bs-modal-width', val);
+
+		return this;
 	};
 
 	onCancel() {

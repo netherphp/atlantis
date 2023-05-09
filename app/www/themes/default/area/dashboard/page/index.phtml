@@ -1,0 +1,83 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+
+/**
+ * @var Database\Struct\PrototypeFindResult $Pages
+ */
+
+($Surface)
+->Set('Page.Title', 'Site Pages')
+->Area('dashboard/nav', [ 'Trail' => [
+	'Site Pages' => NULL
+]]);
+
+($Surface)
+->Area('dashboard/toolbar', [
+	'Right' => [
+		new Atlantis\UI\ToolbarButton(
+			'New Page', 'mdi-plus',
+			'btn-primary CmdPageNew'
+		)
+	]
+]);
+
+?>
+
+<div class="hr-hide-last">
+	<?php foreach($Pages as $Page): /** @var Atlantis\Page\Entity $Page */ ?>
+	<div class="row tight">
+		<div class="col">
+			<a href="<?php $Printer($Page->GetPublicURL()) ?>"><?php $Printer($Page->Title) ?></a>
+		</div>
+		<div class="col-auto">
+			<a href="<?php $Printer($Page->GetPublicURL()) ?>" class="btn btn-secondary CmdPageEdit">
+				View Page
+			</a>
+		</div>
+		<div class="col-auto">
+			<button class="btn btn-danger CmdPageDelete" data-page-id="<?php $Printer($Page->ID) ?>">
+				<i class="mdi mdi-close mr-0"></i>
+			</button>
+		</div>
+	</div>
+	<hr />
+	<?php endforeach; unset($Page); ?>
+</div>
+
+<?php if(!$Pages->Count()): ?>
+<div class="jumbotron rounded p-4">
+	<div class="text-center fst-italic">
+		There are no pages yet.
+	</div>
+</div>
+<?php endif; ?>
+
+<script type="module">
+import Page from '/share/atlantis/page.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function() {
+
+	jQuery('.CmdPageNew')
+	.bind('click', function(){
+
+		Page.DialogPageNew();
+		return;
+	});
+
+	jQuery('.CmdPageDelete')
+	.bind('click', function(){
+
+		let that = jQuery(this);
+		let pageID = that.attr('data-page-id');
+
+		Page.DialogPageDelete(pageID);
+		return;
+	});
+
+	return;
+});
+</script>
+

@@ -6,7 +6,7 @@ use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
 
-class PageHandler
+class PageWeb
 extends Atlantis\PublicWeb {
 
 	#[Avenue\Meta\RouteHandler('/::Alias::', Verb: 'GET')]
@@ -18,16 +18,12 @@ extends Atlantis\PublicWeb {
 		($this->Surface)
 		->Set('Page.Title', $Page->Title);
 
-		////////
-
-		if($Page->Editor === 'static') {
-			echo $Page->Content;
-			return;
-		}
+		if(!$Page->HasContent())
+		$Page->Render($this->App);
 
 		////////
 
-		$this->Surface->Wrap(
+		$this->Surface->Area(
 			$this->GetViewArea(),
 			[ 'Page'=> $Page ]
 		);
