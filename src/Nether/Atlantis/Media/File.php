@@ -101,10 +101,23 @@ extends Atlantis\Prototype {
 	Drop():
 	static {
 
+		// delete the folder that contains all the image sizes.
+		// example: data/upl/<part1-time-based-uuid>/<rest-of-uuid>
+
 		$File = $this->GetFile();
 		$File->DeleteParentDirectory();
 
+		// delete the folder that contained this folder, but only if that
+		// folder is now empty. the first level of folder will get shared
+		// by things uploaded in rapid succession to save inodes or wtfe.
+		// example: data/upl/<part1-time-based-uuid>/<rest-of-uuid>
 
+		$ParentDir = $File->Storage->GetDirPath(
+			$File->GetParentDirectory()
+		);
+
+		if($File->Storage->Count($ParentDir) === 0)
+		$File->Storage->Delete($ParentDir);
 
 		parent::Drop();
 		return $this;

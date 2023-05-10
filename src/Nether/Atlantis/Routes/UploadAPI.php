@@ -122,7 +122,8 @@ extends Atlantis\ProtectedAPI {
 
 		unlink($File['tmp_name']);
 
-		$this->SetPayload([
+		$this
+		->SetPayload([
 			'UUID'        => $UUID,
 			'Name'        => $File['name'],
 			'ChunkSize'   => $Size,
@@ -153,11 +154,30 @@ extends Atlantis\ProtectedAPI {
 		if(!$File->Exists())
 		throw new Atlantis\Error\Media\InvalidUpload($this->Data->UUID);
 
+		////////
+
 		$this->Flow(static::KiOnUploadFinalise, [
 			'UUID' => $this->Data->UUID,
 			'Name' => $this->Data->Name,
 			'Source' => $File
 		]);
+
+		////////
+
+		$Libs = $this->App->Library->Distill(
+			fn(Common\Library $Lib)
+			=> $Lib instanceof Atlantis\Plugins\UploadHandlerInterface
+		);
+
+		$Libs->Each(
+			fn(Atlantis\Plugins\UploadHandlerInterface $Lib)
+			=> $Lib->OnUploadFinalise(
+				$this->App,
+				$this->Data->UUID,
+				$this->Data->Name,
+				$File
+			)
+		);
 
 		return;
 	}

@@ -49,15 +49,9 @@ extends Atlantis\Prototype {
 	public string
 	$Subtitle;
 
-	/*
-	#[Database\Meta\TypeVarChar(Size: 12, Default: 'html')]
-	public string
-	$Editor;
-
 	#[Database\Meta\TypeText]
 	public string
-	$Content;
-	*/
+	$ExtraJSON;
 
 	////////
 
@@ -71,6 +65,10 @@ extends Atlantis\Prototype {
 	#[Common\Meta\PropertyFactory('FromTime', 'TimeUpdated')]
 	public Common\Date
 	$DateUpdated;
+
+	#[Common\Meta\PropertyFactory('NewFromJSON', 'ExtraJSON')]
+	public Common\Datastore
+	$ExtraData;
 
 	////////
 
@@ -89,6 +87,34 @@ extends Atlantis\Prototype {
 
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	Update(iterable $Dataset):
+	static {
+
+		$Dataset = new Common\Datastore($Dataset);
+
+		if($Dataset->HasKey('ExtraJSON')) {
+
+			// if boolean true then we updated the extra data structure
+			// and should import the data from there.
+
+			if($Dataset['ExtraJSON'] === TRUE)
+			$Dataset['ExtraJSON'] = json_encode($this->ExtraData);
+
+			// if it is something that can be encoded into a datastruct
+			// then encode it.
+
+			elseif(is_iterable($Dataset['ExtraJSON']))
+			$Dataset['ExtraJSON'] = json_encode($Dataset['ExtraJSON']);
+
+		}
+
+		return parent::Update($Dataset);
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -212,7 +212,7 @@ extends ModalDialog {
 		console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
-		let api = new API.Request('POSTFINAL', '/api/media/entity');
+		let api = new API.Request('POSTFINAL', this.url);
 		let finish = {
 			'UUID': this.req.response.Payload.UUID,
 			'Name': this.req.response.Payload.Name,
