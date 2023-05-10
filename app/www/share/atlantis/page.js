@@ -556,6 +556,23 @@ class Page {
 			return;
 		});
 
+		jQuery('.CmdPageSectionMoveUp, .CmdPageSectionMoveDown')
+		.on('click', function() {
+
+			let that = jQuery(this);
+			let sectID = that.attr('data-section-id');
+			let move = that.attr('data-move');
+
+			let api = new API.Request('MOVE', '/api/page/section');
+			let data = { ID: sectID, Move: move };
+
+			(api.send(data))
+			.then(api.reload)
+			.then(api.catch);
+
+			return;
+		});
+
 		return;
 	};
 

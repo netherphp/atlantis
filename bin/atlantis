@@ -23,6 +23,18 @@ extends Console\Client {
 	AppName    = 'Nether Atlantis',
 	AppVersion = '5.0.0-dev';
 
+	protected Atlantis\Engine
+	$App;
+
+	protected function
+	OnReady():
+	void {
+
+		$this->App = Atlantis;
+
+		return;
+	}
+
 	#[Console\Meta\Command]
 	#[Console\Meta\Info('Start a fresh project from scratch.')]
 	public function
@@ -350,6 +362,34 @@ extends Console\Client {
 				$this->PrintLn();
 			}
 		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Error(1, 'no Temp location defined')]
+	#[Console\Meta\Error(2, 'no Default location defined')]
+	public function
+	SetupUpload():
+	int {
+
+		$Temp = $this->App->Storage->Location('Temp');
+		$Data = $this->App->Storage->Location('Default');
+		$Dink = Common\Filesystem\Util::Pathify(
+			$this->App->GetProjectRoot(),
+			'www', 'data'
+		);
+
+		if(!$Temp)
+		$this->Quit(1);
+
+		if(!$Data)
+		$this->Quit(2);
+
+		Common\Filesystem\Util::MkDir($Temp->GetPath('upl'));
+		Common\Filesystem\Util::MkDir($Data->GetPath('upl'));
+
+		symlink(dirname($Data->GetPath('upl')), $Dink);
 
 		return 0;
 	}

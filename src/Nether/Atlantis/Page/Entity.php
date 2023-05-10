@@ -135,14 +135,14 @@ extends Atlantis\Prototype {
 	}
 
 	public function
-	Render(Atlantis\Engine $App):
+	Render(Atlantis\Engine $App, bool $Force=FALSE):
 	string {
 
 		$Sect = NULL;
 
 		////////
 
-		if(!isset($this->Sections))
+		if(!isset($this->Sections) || $Force)
 		$this->Sections = $this->GetSections();
 
 		////////
@@ -155,6 +155,33 @@ extends Atlantis\Prototype {
 		}
 
 		return $this->Content;
+	}
+
+	public function
+	Write(Atlantis\Engine $App, ?string $Path=NULL):
+	static {
+
+		$Key ??= $App->Config[Atlantis\Library::ConfPageStaticStorageKey];
+		$Path ??= $App->Config[Atlantis\Library::ConfPageStaticStoragePath];
+
+		$Filename = sprintf(
+			'%s/%s.phtml',
+			$Path,
+			Common\Datafilters::SlottableKey($this->Alias)
+		);
+
+		////////
+
+		$Location = $App->Storage->Location($Key);
+
+		if(!$Location)
+		throw new Exception("Page library unable to find {$Key} storage.");
+
+		////////
+
+		$Location->Put($Filename, $this->GetContent());
+
+		return $this;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -218,17 +245,28 @@ extends Atlantis\Prototype {
 	generate a page entity from a static file on disk.
 	//*/
 
+		$StorageKey = (
+			$App->Config[Atlantis\Library::ConfPageStaticStorageKey]
+			?? 'Default'
+		);
+
+		$StoragePrefix = (
+			$App->Config[Atlantis\Library::ConfPageStaticStoragePath]
+			?? 'pages/static'
+		);
+
 		$Path = sprintf(
-			'pages/static/%s.phtml',
+			'%s/%s.phtml',
+			$StoragePrefix,
 			Common\Datafilters::SlottableKey($Alias)
 		);
 
-		$Location = $App->Storage->Location('Default');
+		$Location = $App->Storage->Location($StorageKey);
 
 		////////
 
 		if(!$Location)
-		throw new Exception('Page library unable to find Default storage.');
+		throw new Exception("Page library unable to find {$StorageKey} storage.");
 
 		if(!($Location instanceof Storage\Adaptors\Local))
 		throw new Exception('Page library only works with local filesystem adaptor.');

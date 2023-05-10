@@ -102,11 +102,11 @@ extends Atlantis\Prototype {
 	static {
 
 		$File = $this->GetFile();
-
-		parent::Drop();
-
 		$File->DeleteParentDirectory();
 
+
+
+		parent::Drop();
 		return $this;
 	}
 

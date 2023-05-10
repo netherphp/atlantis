@@ -103,7 +103,6 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -138,6 +137,8 @@ extends Atlantis\ProtectedAPI {
 		($this->Data)
 		->PageID(Common\Datafilters::TypeInt(...))
 		->AfterID(Common\Datafilters::TypeInt(...))
+		->Title(Common\Datafilters::TrimmedText(...))
+		->Subtitle(Common\Datafilters::TrimmedText(...))
 		->StyleBG(Common\Datafilters::TypeStringNullable(...))
 		->StylePad(Common\Datafilters::TypeStringNullable(...))
 		->Type([
@@ -157,6 +158,8 @@ extends Atlantis\ProtectedAPI {
 		$Dataset = [
 			'PageID'   => $this->Data->PageID,
 			'Type'     => $this->Data->Type,
+			'Title'    => $this->Data->Title,
+			'Subtitle' => $this->Data->Subtitle,
 			'StyleBG'  => $this->Data->StyleBG,
 			'StylePad' => $this->Data->StylePad,
 			'Sorting'  => 0
@@ -208,6 +211,11 @@ extends Atlantis\ProtectedAPI {
 		if(!$Section)
 		$this->Quit(1, 'no section ID found');
 
+		$Page = Atlantis\Page\Entity::GetByID($Section->PageID);
+
+		if(!$Page)
+		$this->Quit(2, 'page not found');
+
 		////////
 
 		$Section->Update([
@@ -236,9 +244,68 @@ extends Atlantis\ProtectedAPI {
 		if(!$Section)
 		$this->Quit(1, 'section ID not found');
 
+		$Page = Atlantis\Page\Entity::GetByID($Section->PageID);
+
+		if(!$Page)
+		$this->Quit(2, 'page not found');
+
 		////////
 
 		$Section->Drop();
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/page/section', Verb: 'MOVE')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	HandleSectionSortingMove():
+	void {
+
+		($this->Data)
+		->ID(Common\Datafilters::TypeInt(...))
+		->Move(Common\Datafilters::TypeInt(...));
+
+		////////
+
+		$Section = Atlantis\Page\Section::GetByID($this->Data->ID);
+
+		if(!$Section)
+		$this->Quit(1, 'no section by ID found');
+
+		$Page = Atlantis\Page\Entity::GetByID($Section->PageID);
+
+		if(!$Page)
+		$this->Quit(2, 'page not found');
+
+		////////
+
+		$Sections = $Page->GetSections();
+
+		$Sections
+		->Each(function(Atlantis\Page\Section $S) {
+			// update the sorting value.
+
+			if($S->ID === $this->Data->ID)
+			$S->Sorting += $this->Data->Move;
+
+			return;
+		})
+		->SortKeys(function(int $A, int $B) use($Sections) {
+			// sort by the index unless the sorting value is the same
+			// in which case flip them.
+
+			if($Sections[$A]->Sorting === $Sections[$B]->Sorting)
+			return $B <=> $A;
+
+			return $A <=> $B;
+		})
+		->Reindex()
+		->Each(function(Atlantis\Page\Section $S, int $K) {
+			$S->Update([ 'Sorting' => ($K + 1) ]);
+			return;
+		});
+
 		return;
 	}
 

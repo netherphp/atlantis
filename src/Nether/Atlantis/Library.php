@@ -55,8 +55,10 @@ implements
 	ConfContactSubject      = 'Nether.Atlantis.Contact.Subject';
 
 	const
-	ConfPageEnableDB        = 'Nether.Atlantis.Page.EnableDatabase',
-	ConfPageEnableStatic    = 'Nether.Atlantis.Page.EnableStatic';
+	ConfPageEnableDB          = 'Nether.Atlantis.Page.EnableDatabase',
+	ConfPageEnableStatic      = 'Nether.Atlantis.Page.EnableStatic',
+	ConfPageStaticStorageKey  = 'Nether.Atlantis.Page.StaticStorageKey',
+	ConfPageStaticStoragePath = 'Nether.Atlantis.Page.StaticStoragePath';
 
 	const
 	WebServerTypeNone     = NULL,
@@ -74,22 +76,24 @@ implements
 	void {
 
 		static::$Config->BlendRight([
-			static::ConfLogFormat           => 'default',
-			static::ConfPassMinLen          => 10,
-			static::ConfPassReqAlphaLower   => TRUE,
-			static::ConfPassReqAlphaUpper   => TRUE,
-			static::ConfPassReqNumeric      => TRUE,
-			static::ConfPassReqSpecial      => TRUE,
-			static::ConfUserAllowLogin      => FALSE,
-			static::ConfUserAllowSignup     => FALSE,
-			static::ConfUserAllowSignupGank => FALSE,
-			static::ConfUserEmailActivate   => TRUE,
-			static::ConfUserRequireAlias    => FALSE,
-			static::ConfPageEnableDB        => FALSE,
-			static::ConfPageEnableStatic    => TRUE,
-			static::ConfContactTo           => NULL,
-			static::ConfContactBCC          => NULL,
-			static::ConfContactSubject      => 'Contact from Website'
+			static::ConfLogFormat             => 'default',
+			static::ConfPassMinLen            => 10,
+			static::ConfPassReqAlphaLower     => TRUE,
+			static::ConfPassReqAlphaUpper     => TRUE,
+			static::ConfPassReqNumeric        => TRUE,
+			static::ConfPassReqSpecial        => TRUE,
+			static::ConfUserAllowLogin        => FALSE,
+			static::ConfUserAllowSignup       => FALSE,
+			static::ConfUserAllowSignupGank   => FALSE,
+			static::ConfUserEmailActivate     => TRUE,
+			static::ConfUserRequireAlias      => FALSE,
+			static::ConfPageEnableDB          => FALSE,
+			static::ConfPageEnableStatic      => TRUE,
+			static::ConfPageStaticStorageKey  => 'Default',
+			static::ConfPageStaticStoragePath => 'pages/static',
+			static::ConfContactTo             => NULL,
+			static::ConfContactBCC            => NULL,
+			static::ConfContactSubject        => 'Contact from Website'
 		]);
 
 		return;

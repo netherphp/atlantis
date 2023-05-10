@@ -33,13 +33,13 @@
 					</div>
 					<hr />
 					<div class="dropdown-item p-0 mb-2">
-						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionMoveUp" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
+						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionMoveUp" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>" data-move="-1">
 							<i class="mdi mdi-menu-up"></i>
 							Move Up
 						</div>
 					</div>
 					<div class="dropdown-item p-0">
-						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionMoveDown" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
+						<div class="btn btn-block btn-secondary text-align-left CmdPageSectionMoveDown" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>" data-move="1">
 							<i class="mdi mdi-menu-down"></i>
 							Move Down
 						</div>
@@ -63,4 +63,3 @@
 
 	<?php if($Section->Contain): ?></div><?php endif; ?>
 </div>
-

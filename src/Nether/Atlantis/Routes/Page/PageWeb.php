@@ -39,9 +39,9 @@ extends Atlantis\PublicWeb {
 
 		////////
 
-		if($this->App->Config[Atlantis\Library::ConfPageEnableDB]) {
-			$Data['Page'] = Atlantis\Page\Entity::GetByField(
-				'Alias',
+		if($this->App->Config[Atlantis\Library::ConfPageEnableStatic]) {
+			$Data['Page'] = Atlantis\Page\Entity::FromStaticFile(
+				$this->App,
 				$Alias
 			);
 
@@ -49,9 +49,9 @@ extends Atlantis\PublicWeb {
 			return Avenue\Response::CodeOK;
 		}
 
-		if($this->App->Config[Atlantis\Library::ConfPageEnableStatic]) {
-			$Data['Page'] = Atlantis\Page\Entity::FromStaticFile(
-				$this->App,
+		if($this->App->Config[Atlantis\Library::ConfPageEnableDB]) {
+			$Data['Page'] = Atlantis\Page\Entity::GetByField(
+				'Alias',
 				$Alias
 			);
 
