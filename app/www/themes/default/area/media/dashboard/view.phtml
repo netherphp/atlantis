@@ -19,6 +19,11 @@ $Surface
 
 $File = $Item->GetFile();
 
+$App->Storage->Put('Bukket', 'test/thing/file.txt', 'this is a test');
+$App->Storage->Put('Bukket', 'test/thing/file2.txt', 'this is a test 2');
+var_dump($App->Storage->Count('Bukket', 'test/thing'));
+var_dump($App->Storage->Count('Bukket', 'nottest/thing'));
+
 ?>
 
 <div class="row justify-content-center">

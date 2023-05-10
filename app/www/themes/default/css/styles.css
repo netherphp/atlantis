@@ -1,5 +1,5 @@
 /*//
-@date 2023-04-28 21:31:03 UTC
+@date 2023-05-10 01:44:57 UTC
 @files 16 [
     "src\/imports.css",
     "src\/main.css",
@@ -298,6 +298,13 @@ strong {
 :root {
 	--DropdownMaxHeight: 300px;
 }
+
+[data-bs-theme="dark"] .on-dark-hide { display: none; }
+[data-bs-theme="dark"] .on-dark-invert { filter: invert(); }
+
+
+[data-bs-theme="light"] .on-light-hide { display: none; }
+[data-bs-theme="light"] .on-light-invert { filter: invert(); }
 
 /*******************************************************************************
 **** font stuff ***************************************************************/
@@ -1009,7 +1016,7 @@ strong {
 
 /* responsive *****************************************************************/
 
-@media(min-width:768px) {
+@media(min-width:992px) {
 	.PageHeaderMenu {
 		height: auto;
 	}
