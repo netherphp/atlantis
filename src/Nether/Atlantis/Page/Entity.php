@@ -50,8 +50,8 @@ extends Atlantis\Prototype {
 	$Subtitle;
 
 	#[Database\Meta\TypeText]
-	public string
-	$ExtraJSON;
+	public ?string
+	$ExtraJSON = NULL;
 
 	////////
 
