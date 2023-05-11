@@ -1,5 +1,5 @@
 /*//
-@date 2023-05-10 01:44:57 UTC
+@date 2023-05-11 00:41:24 UTC
 @files 16 [
     "src\/imports.css",
     "src\/main.css",
@@ -1102,7 +1102,7 @@ strong {
 //// src/elements/editor-html.css ////////////////////////////////////////////*/
 
 .Editor {
-	background-color: var(--theme-light-glass);
+	background-color: var(--theme-body-bg-alt);
 	border-radius: 6px;
 	padding: 6px;
 }
@@ -1113,13 +1113,15 @@ strong {
 }
 
 .Editor .Viewport {
-	background-color: var(--bs-body-bg);
 	border-radius: 6px;
 	padding: 6px;
+
+	max-height: 40vh;
+	overflow-y: scroll;
 }
 
 .Editor .Viewport:focus-visible {
-	outline: 0px solid var(--bs-body-bg);
+	outline: 2px solid var(--theme-primary-alt);
 }
 
 .Editor .Toolbar {
@@ -1160,8 +1162,12 @@ strong {
 
 .Editor .Debug {
 	font-size: 0.8rem;
-	margin-top: 10px;
+	padding-top: 16px;
 	white-space: break-word;
+
+	display: none;
+	max-height: 10vh;
+	overflow-y: scroll;
 }
 
 .EditorItem {

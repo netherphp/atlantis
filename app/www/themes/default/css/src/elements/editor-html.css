@@ -1,6 +1,6 @@
 
 .Editor {
-	background-color: var(--theme-light-glass);
+	background-color: var(--theme-body-bg-alt);
 	border-radius: 6px;
 	padding: 6px;
 }
@@ -11,13 +11,15 @@
 }
 
 .Editor .Viewport {
-	background-color: var(--bs-body-bg);
 	border-radius: 6px;
 	padding: 6px;
+
+	max-height: 40vh;
+	overflow-y: scroll;
 }
 
 .Editor .Viewport:focus-visible {
-	outline: 0px solid var(--bs-body-bg);
+	outline: 2px solid var(--theme-primary-alt);
 }
 
 .Editor .Toolbar {
@@ -58,8 +60,12 @@
 
 .Editor .Debug {
 	font-size: 0.8rem;
-	margin-top: 10px;
+	padding-top: 16px;
 	white-space: break-word;
+
+	display: none;
+	max-height: 10vh;
+	overflow-y: scroll;
 }
 
 .EditorItem {

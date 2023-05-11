@@ -369,6 +369,9 @@ extends Console\Client {
 	#[Console\Meta\Command]
 	#[Console\Meta\Error(1, 'no Temp location defined')]
 	#[Console\Meta\Error(2, 'no Default location defined')]
+	#[Console\Meta\Error(3, '%s already exists as a directory')]
+	#[Console\Meta\Error(4, '%s already exists as a file')]
+	#[Console\Meta\Error(5, '%s is a symlink but pointing to the wrong place %s (expected %s)')]
 	public function
 	SetupUpload():
 	int {
@@ -380,16 +383,42 @@ extends Console\Client {
 			'www', 'data'
 		);
 
+		////////
+
 		if(!$Temp)
 		$this->Quit(1);
 
 		if(!$Data)
 		$this->Quit(2);
 
-		Common\Filesystem\Util::MkDir($Temp->GetPath('upl'));
-		Common\Filesystem\Util::MkDir($Data->GetPath('upl'));
+		Common\Filesystem\Util::MkDir($Temp->Root);
+		Common\Filesystem\Util::MkDir($Data->Root);
 
-		symlink(dirname($Data->GetPath('upl')), $Dink);
+		////////
+
+		if(file_exists($Dink)) {
+			if(!is_link($Dink)) {
+				if(is_dir($Dink))
+				$this->Quit(3, $Dink);
+				else
+				$this->Quit(4, $Dink);
+			}
+
+			if(!Common\Filesystem\Util::IsLinkTo($Dink, $Data->Root))
+			$this->Quit(5, $Dink, readlink($Dink), $Data->Root);
+		}
+
+		if(!file_exists($Dink))
+		symlink($Data->Root, $Dink);
+
+		////////
+
+		$this->FormatLn(
+			'%s Symlink %s => %s',
+			$this->FormatPrimary('[SetupUpload]'),
+			$Dink,
+			readlink($Dink)
+		);
 
 		return 0;
 	}
@@ -873,12 +902,117 @@ extends Console\Client {
 	}
 
 	#[Console\Meta\Command]
+	#[Console\Meta\Info('Empty out the temporary upload directory.')]
+	#[Console\Meta\Toggle('--commit', 'Actually do the cleaning.')]
+	public function
+	CleanUplTmp():
+	int {
+
+		$Commit = $this->GetOption('commit');
+		$Temp = $this->App->Storage->Location('Temp');
+		$Iter = new Common\Filesystem\Indexer($Temp->Root, TRUE);
+		$Index = new Common\Datastore;
+
+		foreach($Iter as $Item) {
+			$Path = $Item->GetPath();
+
+			$this->PrintLn($Path);
+
+			if(is_dir($Path))
+			$Index->Push($Path);
+		}
+
+		$this->FormatLn(
+			'%s found %d temp directories',
+			$this->FormatPrimary('[CleanUplTmp]'),
+			$Index->Count()
+		);
+
+		if(!$Commit) {
+			$this->PrintLn($this->FormatSecondary('use --commit to get it done'));
+			return 0;
+		}
+
+		$Index->Each(fn(string $Path)=> Common\Filesystem\Util::RmDir($Path));
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Clean the upload data directory of anything not referenced by the database.')]
+	#[Console\Meta\Toggle('--commit', 'Actually do the cleaning.')]
 	public function
 	CleanUplDir():
 	int {
 
-		$Storage = Atlantis->Storage->Get('Default');
+		$Commit = $this->GetOption('commit');
 
+		// generate an index of all the directories in the upload path.
+
+		$Data = $this->App->Storage->Location('Default');
+		$Iter = new Common\Filesystem\Indexer(
+			Common\Filesystem\Util::Pathify($Data->Root, 'upl')
+		);
+
+		$Index = new Common\Datastore;
+		$Path = NULL;
+		$Shard = NULL;
+
+		foreach($Iter as $Item) {
+			/** @var SplFileInfo $Item */
+
+			$Path = explode(DIRECTORY_SEPARATOR, $Item->GetPathname());
+			$Shard = array_pop($Path);
+
+			$Index->Shove($Shard, $Item->GetPathname());
+		}
+
+		// flag the items in the index that should not be deleted.
+
+		$Page = 1;
+		$PageCount = PHP_INT_MAX;
+		$Path = NULL;
+		$Shard = NULL;
+
+		while($Page <= $PageCount) {
+			$Result = Atlantis\Media\File::Find([
+				'Type' => Atlantis\Media\File::TypeImg,
+				'Page' => $Page
+			]);
+
+			foreach($Result as $File) {
+				/** @var Atlantis\Media\File $File */
+
+				if(!Common\Datafilters::UUID($File->UUID))
+				continue;
+
+				$Path = explode('-', $File->UUID);
+				$Shard = array_shift($Path);
+
+				if($Index->HasKey($Shard))
+				$Index[$Shard] = NULL;
+			}
+
+			$PageCount = $Result->PageCount;
+			$Page += 1;
+		}
+
+		$Index->Filter(fn(?string $Item)=> $Item !== NULL);
+
+		////////
+
+		$this->FormatLn(
+			'%s found %d unreferenced directories',
+			$this->FormatPrimary('[CleanUplDir]'),
+			$Index->Count()
+		);
+
+		if(!$Commit) {
+			$this->PrintLn($this->FormatSecondary('use --commit to get it done'));
+			return 0;
+		}
+
+		$Index->Each(fn(string $Item) => Common\Filesystem\Util::RmDir($Item));
 
 		return 0;
 	}

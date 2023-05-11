@@ -4,17 +4,27 @@ use Nether\Blog;
 
 /**
   * @var Blog\Blog $Blog
+  * @var ?bool $CacheBust
   */
+
+$CacheBust ??= FALSE;
+$HeaderImageURL = $Blog->GetHeaderURL();
+$IconImageURL = $Blog->GetIconURL();
+
+if($CacheBust) {
+	$HeaderImageURL .= sprintf('?v=%s', Nether\Common\UUID::V4());
+	$IconImageURL .= sprintf('?v=%s', Nether\Common\UUID::V4());
+}
 
 ?>
 
 <div class="BlogHeader">
-	<div class="BlogHeaderWash position-absolutely wallpapered" style="background-image:url(<?php $Printer($Blog->GetHeaderURL()) ?>);"></div>
+	<div class="BlogHeaderWash position-absolutely wallpapered" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);"></div>
 	<div class="BlogHeaderContainer container position-relative">
-		<div class="wallpapered bg-black box-shadow-wofty p-4" style="background-image:url(<?php $Printer($Blog->GetHeaderURL()) ?>);">
+		<div class="wallpapered bg-black box-shadow-wofty p-4" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
 			<div class="row align-items-center">
 				<div class="col-4 col-sm-3 col-md-2">
-					<div class="ratiobox square rounded wallpapered bg-body-secondary box-shadow-wofty" style="background-image:url(<?php $Printer($Blog->GetIconURL()) ?>);">
+					<div class="ratiobox square rounded wallpapered bg-body-secondary box-shadow-wofty" style="background-image:url(<?php $Printer($IconImageURL) ?>);">
 						<a href="<?php $Printer($Blog->GetURL()) ?>" class="position-absolutely text-decoration-none"></a>
 					</div>
 				</div>

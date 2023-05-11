@@ -212,14 +212,20 @@ extends ModalDialog {
 		console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
+		////////
+
 		let api = new API.Request('POSTFINAL', this.url);
 		let finish = {
 			'UUID': this.req.response.Payload.UUID,
-			'Name': this.req.response.Payload.Name,
-			'Finish': 1
+			'Name': this.req.response.Payload.Name
 		};
 
+		for(const dkey in this.dataset)
+		finish[dkey] = this.dataset[dkey];
+
 		console.log('finish');
+
+		////////
 
 		(api.send(finish))
 		.then(function(result) {
