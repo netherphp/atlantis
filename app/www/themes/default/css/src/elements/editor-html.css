@@ -71,3 +71,15 @@
 .EditorItem {
 	user-select: none;
 }
+
+.EditorContent blockquote {
+	margin-left: 3rem;
+}
+
+.EditorContent ul > li {
+	margin-bottom: 16px;
+}
+
+.EditorContent ul > li:last-of-type {
+	margin-bottom: 0px;
+}
