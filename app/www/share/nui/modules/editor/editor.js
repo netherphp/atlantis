@@ -1,6 +1,6 @@
-import '/share/atlantis/lib/squire/squire-raw.js';
-import ModalDialog from '/share/nui/modules/modal/modal.js';
-import * as Toolbarr from '/share/nui/modules/editor/toolbar.js';
+import '../../../atlantis/lib/squire/squire-raw.js';
+import ModalDialog from '../modal/modal.js';
+import * as Toolbarr from './toolbar.js';
 
 // requires:
 // - jQuery
@@ -342,7 +342,7 @@ describes and contains the editable pane.
 	constructor(main) {
 
 		this.main = main;
-		this.element = jQuery('<div />').addClass('Viewport form-control');
+		this.element = jQuery('<div />').addClass('Viewport EditorContent form-control');
 
 		return;
 	};
@@ -643,6 +643,74 @@ class ToolbarButtonBold
 extends ToolbarButtonTag {
 	constructor(editor) {
 		super(editor, 'Bold', 'mdi mdi-fw mdi-format-bold', 'b');
+		return;
+	};
+};
+
+class ToolbarButtonBulletList
+extends ToolbarButtonTag {
+	constructor(editor) {
+		super(editor, 'Bullet List', 'mdi mdi-fw mdi-format-list-bulleted', 'ul');
+		return;
+	};
+
+	onClick(ev) {
+
+		ev.preventDefault();
+		this.editor.viewport.element.focus();
+		this.editor.api.makeUnorderedList();
+
+		return;
+	};
+};
+
+class ToolbarButtonNumberedList
+extends ToolbarButtonTag {
+	constructor(editor) {
+		super(editor, 'Numbered List', 'mdi mdi-fw mdi-format-list-numbered', 'ul');
+		return;
+	};
+
+	onClick(ev) {
+
+		ev.preventDefault();
+		this.editor.viewport.element.focus();
+		this.editor.api.makeOrderedList();
+
+		return;
+	};
+};
+
+class ToolbarButtonIndent
+extends ToolbarButtonTag {
+	constructor(editor) {
+		super(editor, 'Increase Indent', 'mdi mdi-fw mdi-format-indent-increase', 'blockquote');
+		return;
+	};
+
+	onClick(ev) {
+
+		ev.preventDefault();
+		this.editor.viewport.element.focus();
+		this.editor.api.increaseQuoteLevel();
+
+		return;
+	};
+};
+
+class ToolbarButtonDedent
+extends ToolbarButtonTag {
+	constructor(editor) {
+		super(editor, 'Decrease Indent', 'mdi mdi-fw mdi-format-indent-decrease', 'blockquote');
+		return;
+	};
+
+	onClick(ev) {
+
+		ev.preventDefault();
+		this.editor.viewport.element.focus();
+		this.editor.api.decreaseQuoteLevel();
+
 		return;
 	};
 };
@@ -956,11 +1024,13 @@ extends ToolbarButton {
 
 	onClick() {
 
-		(new EditorHyperlinkDialog(this.editor))
+		let diag = (new EditorHyperlinkDialog(this.editor))
 		.setTitle('Insert Hyperlink...')
 		.addButton('Cancel', 'btn-dark', 'cancel')
 		.addButton('Save', 'btn-primary', 'accept')
 		.fillFromCurrent();
+
+		diag.show();
 
 		return false;
 	};
@@ -996,6 +1066,10 @@ extends Toolbar {
 			new ToolbarButtonItalic(this.editor),
 			new ToolbarButtonUnderline(this.editor),
 			new ToolbarDropdownHeading(this.editor),
+			new ToolbarButtonBulletList(this.editor),
+			new ToolbarButtonNumberedList(this.editor),
+			new ToolbarButtonIndent(this.editor),
+			new ToolbarButtonDedent(this.editor),
 			new ToolbarButtonImage(this.editor),
 			new ToolbarButtonHyperlink(this.editor),
 			new ToolbarButtonClear(this.editor)

@@ -59,7 +59,9 @@
 		<?php if($Section->Subtitle): ?><div class="ArticlePrelabel"><?php $Printer($Section->Subtitle) ?></div><?php endif; ?>
 		<?php if($Section->Title): ?><h1><?php $Printer($Section->Title) ?></h1><?php endif; ?>
 
+		<div class="EditorContent">
 		<?php echo $Section->Content ?>
+		</div>
 
 	<?php if($Section->Contain): ?></div><?php endif; ?>
 </div>
