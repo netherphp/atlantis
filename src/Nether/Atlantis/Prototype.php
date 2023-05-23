@@ -78,4 +78,20 @@ extends Database\Prototype {
 		return parent::GetByField('UUID', $UUID);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	Insert(iterable $Input):
+	?static {
+
+		$Output = new Common\Datastore($Input);
+
+		$Output->BlendRight([
+			'UUID' => ($Output['UUID'] ?? Common\UUID::V7())
+		]);
+
+		return static::Insert($Output);
+	}
+
 }
