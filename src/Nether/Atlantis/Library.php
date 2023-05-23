@@ -218,10 +218,12 @@ implements
 			$File->GetExtension()
 		);
 
+		// move the file to where it needs to live.
+
 		$Storage->Put($Path, $File->Read());
 		$File->DeleteParentDirectory();
 
-		////////
+		// track the file in the database.
 
 		$File = $Storage->GetFileObject($Path);
 
