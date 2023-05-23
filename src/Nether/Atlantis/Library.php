@@ -5,6 +5,7 @@ namespace Nether\Atlantis;
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
+use Nether\Storage;
 use Nether\User;
 
 use Nether\Common\Datastore;
@@ -13,7 +14,8 @@ class Library
 extends Common\Library
 implements
 	Atlantis\Plugins\DashboardSidebarInterface,
-	Atlantis\Plugins\AccessTypeDefineInterface {
+	Atlantis\Plugins\AccessTypeDefineInterface,
+	Atlantis\Plugins\UploadHandlerInterface {
 
 	const
 	ConfProjectID             = 'Project.Key',
@@ -182,6 +184,57 @@ implements
 				'Allow the user to manage Pages on the site.'
 			)
 		]);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	OnUploadFinalise(Engine $App, string $UUID, string $Name, string $Type, Storage\File $File):
+	void {
+
+		$Type = $Type ?: 'default';
+
+		switch($Type) {
+			case 'default':
+				$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
+			break;
+		}
+
+		return;
+	}
+
+	protected function
+	OnUploadFinaliseDefault(Engine $App, string $UUID, string $Name, Storage\File $File):
+	void {
+
+		$Storage = $App->Storage->Location('Default');
+
+		$Path = sprintf(
+			'upl/%s/original.%s',
+			join('/', explode('-', $UUID, 2)),
+			$File->GetExtension()
+		);
+
+		$Storage->Put($Path, $File->Read());
+		$File->DeleteParentDirectory();
+
+		////////
+
+		$File = $Storage->GetFileObject($Path);
+
+		$Entity = Atlantis\Media\File::Insert([
+			'UUID'   => $UUID,
+			'UserID' => $App->User?->ID,
+			'Name'   => $Name,
+			'Type'   => $File->GetType(),
+			'Size'   => $File->GetSize(),
+			'URL'    => $File->GetStorageURL()
+		]);
+
+		$Entity->GenerateExtraFiles();
 
 		return;
 	}

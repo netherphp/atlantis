@@ -3,6 +3,7 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
+use Nether\Storage;
 use Nether\User;
 
 (function(){
@@ -376,48 +377,50 @@ extends Console\Client {
 	SetupUpload():
 	int {
 
-		$Temp = $this->App->Storage->Location('Temp');
-		$Data = $this->App->Storage->Location('Default');
-		$Dink = Common\Filesystem\Util::Pathify(
-			$this->App->GetProjectRoot(),
-			'www', 'data'
+		$Storage = $this->App->Storage->Location('Default');
+
+		if(!($Storage instanceof Storage\Adaptors\Local))
+		throw new Exception('only supports local storage atm.');
+
+		$Source = $Storage->GetPath('upl');
+		$Link = Common\Filesystem\Util::Pathify(
+			$this->App->GetWebRoot(),
+			'data', 'upl'
 		);
 
-		////////
+		$PDir = dirname($Link);
 
-		if(!$Temp)
-		$this->Quit(1);
+		if(is_file($PDir))
+		$this->Quit(4, $PDir);
 
-		if(!$Data)
-		$this->Quit(2);
-
-		Common\Filesystem\Util::MkDir($Temp->Root);
-		Common\Filesystem\Util::MkDir($Data->Root);
+		if(!is_dir($PDir))
+		Common\Filesystem\Util::MkDir($PDir);
 
 		////////
 
-		if(file_exists($Dink)) {
-			if(!is_link($Dink)) {
-				if(is_dir($Dink))
-				$this->Quit(3, $Dink);
-				else
-				$this->Quit(4, $Dink);
+		if(file_exists($Link)) {
+			if(is_link($Link)) {
+				if(readlink($Link) !== $Source)
+				$this->Quit(5, $Link, readlink($Link), $Source);
 			}
 
-			if(!Common\Filesystem\Util::IsLinkTo($Dink, $Data->Root))
-			$this->Quit(5, $Dink, readlink($Dink), $Data->Root);
+			elseif(is_dir($Link))
+			$this->Quit(3, $Link);
+
+			elseif(is_file($Link))
+			$this->Quit(4, $Link);
 		}
 
-		if(!file_exists($Dink))
-		symlink($Data->Root, $Dink);
+		else
+		symlink($Source, $Link);
 
 		////////
 
 		$this->FormatLn(
-			'%s Symlink %s => %s',
+			'%s Source=> %s, Link=> %s',
 			$this->FormatPrimary('[SetupUpload]'),
-			$Dink,
-			readlink($Dink)
+			$Source,
+			$Link
 		);
 
 		return 0;

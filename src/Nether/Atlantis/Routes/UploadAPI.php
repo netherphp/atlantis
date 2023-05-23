@@ -52,6 +52,11 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
+		$Type = Common\Datafilters::TrimmedText(
+			$this->Data->Type
+			?: 'default'
+		);
+
 		$UUID = Common\Datafilters::TrimmedText(
 			$this->Data->UUID
 			?: Common\UUID::V7()
@@ -109,13 +114,7 @@ extends Atlantis\ProtectedAPI {
 			$Storage->Rename($TempResting, $FinalResting);
 			$Storage->Chmod($FinalResting, 0666);
 
-			////////
-
-			$this->Flow(static::KiOnUploadComplete, [
-				'UUID'   => $UUID,
-				'Name'   => $File['name'],
-				'Source' => $Storage->GetFileObject($FinalResting)
-			]);
+			$Source = $Storage->GetFileObject($FinalResting);
 		}
 
 		////////
@@ -139,6 +138,10 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
+		->Type([
+			Common\Datafilters::TrimmedText(...),
+			fn(Common\Struct\DatafilterItem $V)=> $V->Value ?: 'default'
+		])
 		->UUID(Common\Datafilters::UUID(...));
 
 		////////
@@ -156,14 +159,6 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		$this->Flow(static::KiOnUploadFinalise, [
-			'UUID' => $this->Data->UUID,
-			'Name' => $this->Data->Name,
-			'Source' => $File
-		]);
-
-		////////
-
 		$Libs = $this->App->Library->Distill(
 			fn(Common\Library $Lib)
 			=> $Lib instanceof Atlantis\Plugins\UploadHandlerInterface
@@ -171,11 +166,16 @@ extends Atlantis\ProtectedAPI {
 
 		$Libs->Each(
 			fn(Atlantis\Plugins\UploadHandlerInterface $Lib)
-			=> $Lib->OnUploadFinalise(
-				$this->App,
-				$this->Data->UUID,
-				$this->Data->Name,
-				$File
+			=> (
+				$File->Exists()
+				? $Lib->OnUploadFinalise(
+					$this->App,
+					$this->Data->UUID,
+					$this->Data->Name,
+					$this->Data->Type,
+					$File
+				)
+				: FALSE
 			)
 		);
 

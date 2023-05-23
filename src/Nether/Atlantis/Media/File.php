@@ -23,16 +23,6 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE, Nullable: FALSE)]
-	#[Database\Meta\PrimaryKey]
-	public int
-	$ID;
-
-	#[Database\Meta\TypeChar(Size: 36, Nullable: FALSE)]
-	#[Database\Meta\FieldIndex(Unique: TRUE)]
-	public string
-	$UUID;
-
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	#[Database\Meta\ForeignKey('Users', 'ID', Delete: 'SET NULL')]
 	public int
@@ -530,9 +520,9 @@ extends Atlantis\Prototype {
 	?static {
 
 		$Input = new Common\Datastore($Input);
+
 		$Input->BlendRight([
 			'Type'        => 'file',
-			'UUID'        => Common\UUID::V7(),
 			'TimeCreated' => time()
 		]);
 

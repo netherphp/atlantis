@@ -47,6 +47,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		$this->ChunkPost();
+
 		return;
 	}
 
@@ -55,30 +56,16 @@ extends Atlantis\Routes\UploadAPI {
 	EntityPostFinal():
 	void {
 
-		error_log('PAGE HIT');
+		$this->ChunkFinalise();
 
-		$this->Queue(
-			static::KiOnUploadFinalise,
-			$this->OnUploadDone(...),
-			FALSE
-		);
+		////////
 
-		try { $this->ChunkFinalise(); }
-		catch(Atlantis\Error\Media\InvalidUpload $Error) {
-			if(!$this->Data->UUID)
-			$this->Quit(1, 'no upload uuid specified');
+		$Entity = Atlantis\Media\File::GetByUUID($this->Data->UUID);
 
-			////////
+		if(!$Entity)
+		$this->Quit(2, 'invalid or unhandled upload');
 
-			$Entity = Atlantis\Media\File::GetByUUID($this->Data->UUID);
-
-			if(!$Entity)
-			$this->Quit(2, 'invalid upload');
-
-			////////
-
-			$this->Quit(42, 'timeout? big gif? file is in but thumbnailing probably failed.');
-		}
+		$this->SetPayload([ 'File'=> $Entity ]);
 
 		return;
 	}
@@ -311,7 +298,7 @@ extends Atlantis\Routes\UploadAPI {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	OnUploadDone(string $UUID, string $Name, Storage\File $Source):
+	_OnUploadDone(string $UUID, string $Name, Storage\File $Source):
 	void {
 
 		$Storage = $this->PrepareStorageLocation('Default');

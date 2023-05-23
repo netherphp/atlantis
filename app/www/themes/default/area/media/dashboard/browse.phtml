@@ -42,9 +42,9 @@ import UploadButton from '/share/nui/modules/uploader/uploader.js';
 jQuery(function() {
 
 	new UploadButton('#UploadMedia', {
-		'url': '/api/media/entity',
-		'dataset': { },
-		'onSuccess': 'reload'
+		url: '/api/media/entity',
+		dataset: { type: 'default' },
+		onSuccess: 'reload'
 	});
 
 	return;

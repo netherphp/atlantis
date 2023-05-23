@@ -85,13 +85,13 @@ extends Database\Prototype {
 	Insert(iterable $Input):
 	?static {
 
-		$Output = new Common\Datastore($Input);
+		$Input = new Common\Datastore($Input);
 
-		$Output->BlendRight([
-			'UUID' => ($Output['UUID'] ?? Common\UUID::V7())
+		$Input->BlendRight([
+			'UUID' => ($Input['UUID'] ?: Common\UUID::V7())
 		]);
 
-		return static::Insert($Output);
+		return parent::Insert($Input);
 	}
 
 }
