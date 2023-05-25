@@ -23,49 +23,16 @@ extends Atlantis\Routes\UploadAPI {
 		if(!$this->Data->ID)
 		$this->Quit(1, 'no ID specified');
 
+		////////
+
 		$Entity = Atlantis\Media\File::GetByID($this->Data->ID);
 
 		if(!$Entity)
 		$this->Quit(2, 'not entity found');
 
-		$this->SetPayload([
-			'ID'          => $Entity->ID,
-			'Name'        => $Entity->Name,
-			'Type'        => $Entity->Type,
-			'DateCreated' => $Entity->DateCreated,
-			'URL'         => $Entity->GetPublicURL(),
-			'ExtraFiles'  => $Entity->ExtraFiles->Keys()
-		]);
-
-		return;
-	}
-
-	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'POST')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
-	public function
-	EntityPost():
-	void {
-
-		$this->ChunkPost();
-
-		return;
-	}
-
-	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'POSTFINAL')]
-	public function
-	EntityPostFinal():
-	void {
-
-		$this->ChunkFinalise();
-
 		////////
 
-		$Entity = Atlantis\Media\File::GetByUUID($this->Data->UUID);
-
-		if(!$Entity)
-		$this->Quit(2, 'invalid or unhandled upload');
-
-		$this->SetPayload([ 'File'=> $Entity ]);
+		$this->SetPayload($Entity->DescribeForPublicAPI());
 
 		return;
 	}
@@ -91,6 +58,45 @@ extends Atlantis\Routes\UploadAPI {
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'POST')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	public function
+	EntityPost():
+	void {
+
+		$this->ChunkPost();
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'POSTFINAL')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	public function
+	EntityPostFinal():
+	void {
+
+		$this->ChunkFinalise();
+
+		////////
+
+		$Entity = Atlantis\Media\File::GetByUUID($this->Data->UUID);
+
+		if(!$Entity)
+		$this->Quit(2, 'invalid or unhandled upload');
+
+		////////
+
+		$this->SetPayload($Entity->DescribeForPublicAPI());
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'TAGSGET')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
@@ -235,6 +241,9 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'REGEN')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function
@@ -265,7 +274,7 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
-	#[Atlantis\Meta\RouteHandler('/api/media/entitye', Verb: 'GET')]
+	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'SEARCH')]
 	public function
 	EntitySearch():
 	void {
@@ -290,55 +299,6 @@ extends Atlantis\Routes\UploadAPI {
 				=> $File->GetEntityInfo()
 			)
 		]);
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	public function
-	_OnUploadDone(string $UUID, string $Name, Storage\File $Source):
-	void {
-
-		$Storage = $this->PrepareStorageLocation('Default');
-
-		$Path = sprintf(
-			'upl/%s/original.%s',
-			join('/', explode('-',$UUID, 2)),
-			$Source->GetExtension()
-		);
-
-		////////
-
-		error_log('BEFORE DELETE');
-
-		$Storage->Put($Path, $Source->Read());
-		$Source->DeleteParentDirectory();
-
-
-		error_log('AFTER DELETE');
-
-		////////
-
-		$File = $Storage->GetFileObject($Path);
-		$this->SetPayload([ 'File'=> $File ]);
-
-		$Entity = Atlantis\Media\File::Insert([
-			'UUID'   => $UUID,
-			'UserID' => $this->User->ID,
-			'Name'   => $Name,
-			'Type'   => $File->GetType(),
-			'Size'   => $File->GetSize(),
-			'URL'    => $File->GetStorageURL()
-		]);
-
-		// gifs can take a moment.
-		//set_time_limit(30);
-
-		error_log('BEFORE GENERATE');
-		$Entity->GenerateExtraFiles();
-		error_log('AFTER GENERATE');
 
 		return;
 	}

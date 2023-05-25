@@ -37,8 +37,11 @@ use Nether\Surface;
 					);
 				}
 
-				else
-				echo $Post->ContentHTML;
+				else {
+					echo '<div class="EditorContent">';
+					echo $Post->ContentHTML;
+					echo '</div>';
+				}
 
 				?>
 				</div>

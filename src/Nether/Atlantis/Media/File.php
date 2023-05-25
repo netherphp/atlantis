@@ -113,6 +113,21 @@ extends Atlantis\Prototype {
 		return $this;
 	}
 
+	public function
+	DescribeForPublicAPI():
+	array {
+
+		return [
+			'ID'          => $this->ID,
+			'UUID'        => $this->UUID,
+			'Name'        => $this->Name,
+			'Type'        => $this->Type,
+			'DateCreated' => $this->DateCreated->Get(),
+			'URL'         => $this->GetPublicURL(),
+			'ExtraFiles'  => $this->ExtraFiles->Keys()
+		];
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

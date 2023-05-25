@@ -71,13 +71,13 @@ jQuery(function() {
 
 	new UploadButton('#BlogSettingsUploadHeader', {
 		'url': '/api/blog/entity/header',
-		'dataset': { 'ID': bid },
+		'dataset': { 'ID': bid, 'Type': 'bloghead' },
 		'onSuccess': ()=> location.reload()
 	});
 
 	new UploadButton('#BlogSettingsUploadIcon', {
 		'url': '/api/blog/entity/icon',
-		'dataset': { 'ID': bid },
+		'dataset': { 'ID': bid, 'Type': 'blogicon' },
 		'onSuccess': ()=> location.reload()
 	});
 

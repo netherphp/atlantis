@@ -83,3 +83,23 @@
 .EditorContent ul > li:last-of-type {
 	margin-bottom: 0px;
 }
+
+.EditorContent .float-start {
+	margin-bottom: 0.5rem;
+	margin-right: 0.5rem;
+}
+
+.EditorContent .EditorItemImage {
+	border-radius: 6px;
+}
+
+.EditorContent .break-clear {
+	border: 0px;
+}
+
+.EditorContent.Viewport .break-clear {
+	background: #a00;
+	border-radius: 6px;
+	padding: 16px;
+	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+}

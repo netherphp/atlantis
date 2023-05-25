@@ -1,5 +1,6 @@
 import '../../../atlantis/lib/squire/squire-raw.js';
 import ModalDialog from '../modal/modal.js';
+import UploadButton from '../uploader/uploader.js';
 import * as Toolbarr from './toolbar.js';
 
 // requires:
@@ -394,6 +395,7 @@ describes and contains a toolbar buttons.
 		.addClass('ToolbarButton btn btn-dark')
 		.on('click', this.onClick.bind(this));
 
+		this.onReady();
 		return;
 	}
 
@@ -437,6 +439,11 @@ describes and contains a toolbar buttons.
 			this.tag.tag,
 			this.tag.attribs
 		);
+	};
+
+	onReady() {
+
+		return;
 	};
 
 	onUpdate() {
@@ -754,11 +761,55 @@ extends ToolbarDropdown {
 	};
 };
 
+class ToolbarButtonHR
+extends ToolbarButtonTag {
+	constructor(editor) {
+		super(editor, 'HR Break', 'mdi mdi-fw mdi-line-scan', 'hr', { 'class': 'break break-hr' });
+		return;
+	};
+};
+
+class ToolbarButtonBreak
+extends ToolbarButtonTag {
+	constructor(editor) {
+		super(editor, 'Clear Break', 'mdi mdi-fw mdi-scan-helper', 'hr', { 'class': 'break break-clear' });
+		return;
+	};
+};
+
 class ToolbarButtonImage
 extends ToolbarButton {
 
 	constructor(editor) {
 		super(editor, 'Image', 'mdi mdi-fw mdi-image-area', 'img');
+		return;
+	};
+
+	onReady() {
+
+		this.uploader = new UploadButton(this.element, {
+			url: '/api/media/entity',
+			dataset: { type: 'default' },
+			onSuccess: this.onSuccess.bind(this)
+		});
+
+		return;
+	};
+
+	onSuccess(result) {
+
+		(this.editor.api)
+		.focus();
+
+		let select = window.getSelection();
+		let node = select.anchorNode;
+		let img = jQuery(TemplateEditorImagePlaceholder);
+
+		img.attr('src', result.payload.URL);
+		node.before(img.get(0));
+
+		this.
+
 		return;
 	};
 
@@ -770,16 +821,7 @@ extends ToolbarButton {
 		//(this.editor.api)
 		//.insertHTML(TemplateEditorImagePlaceholder);
 
-		(this.editor.api)
-		.focus();
-
-		let select = window.getSelection();
-		let node = select.anchorNode;
-
-		node.before(
-			jQuery(TemplateEditorImagePlaceholder)
-			.get(0)
-		);
+		console.log('click');
 
 		return false;
 	};
@@ -813,10 +855,9 @@ extends ToolbarButton {
 		if(!this.editor.selected)
 		return false;
 
-		this.editor.selected
-		.css('float', 'left')
-		.css('margin-right', '0.5rem')
-		.css('margin-bottom', '0.5rem');
+		(this.editor.selected)
+		.addClass('float-start')
+		.removeClass('float-end');
 
 		return false;
 	};
@@ -834,10 +875,9 @@ extends ToolbarButton {
 		if(!this.editor.selected)
 		return false;
 
-		this.editor.selected
-		.css('float', 'right')
-		.css('margin-left', '0.5rem')
-		.css('margin-bottom', '0.5rem');
+		(this.editor.selected)
+		.addClass('float-end')
+		.removeClass('float-start');
 
 		return false;
 	};
@@ -855,8 +895,8 @@ extends ToolbarButton {
 		if(!this.editor.selected)
 		return false;
 
-		this.editor.selected
-		.css('float', 'none');
+		(this.editor.selected)
+		.removeClass('float-right float-left');
 
 		return false;
 	};
@@ -1072,6 +1112,8 @@ extends Toolbar {
 			new ToolbarButtonDedent(this.editor),
 			new ToolbarButtonImage(this.editor),
 			new ToolbarButtonHyperlink(this.editor),
+			new ToolbarButtonHR(this.editor),
+			new ToolbarButtonBreak(this.editor),
 			new ToolbarButtonClear(this.editor)
 		];
 

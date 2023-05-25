@@ -230,7 +230,7 @@ extends ModalDialog {
 		(api.send(finish))
 		.then(function(result) {
 			if(typeof self.onSuccess === 'function') {
-				(self.onSuccess)();
+				(self.onSuccess)(result);
 			}
 
 			if(typeof self.onSuccess === 'string') {
