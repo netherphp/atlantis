@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Common\Datastore $Verbs
+ * @var Nether\Common\Datastore $Endpoints
+ */
+
+$Surface->Area('admin/breadcrumbs', [ 'Trail' => [
+	'API Tool' => '/ops/api'
+]]);
+
+$CurrentVerb ??= 'GET';
+$CurrentEndpoint ??= '/api/user/entity';
+
+//Nether\Common\Dump::Var($Endpoints, TRUE);
+
+?>
+
+<div class="row justify-content-center mb-4">
+	<div class="col-12 col-md-12 col-lg-12">
+
+		<form id="ToolSend">
+			<div class="row tight align-items-center">
+
+				<!-- ENDPOINT ITEMS -->
+
+				<div class="col-12 col-md-4 mb-2">
+					<div class="fw-bold mb-2">Verb:</div>
+					<select name="Verb" class="form-control form-select">
+						<?php foreach($Verbs as $Verb): ?>
+						<option value="<?php $Printer(strtoupper($Verb)) ?>" <?php $Printer($Selected($CurrentVerb === $Verb)) ?>><?php $Printer($Verb) ?></option>
+						<?php endforeach; unset($Verb); ?>
+					</select>
+				</div>
+
+				<div class="col-12 col-md-8 mb-2">
+					<div class="fw-bold mb-2">Endpoint:</div>
+					<input type="text" class="form-control" name="Endpoint" list="EndpointList" value="<?php $Printer($CurrentEndpoint) ?>" />
+					<datalist id="EndpointList">
+						<?php foreach($Endpoints as $Endpoint): ?>
+						<option value="<?php $Printer($Endpoint) ?>"><?php $Printer($Endpoint) ?></option>
+						<?php endforeach; unset($Endpoint); ?>
+					</datalist>
+				</div>
+
+				<!-- DATA SET ITEMS -->
+
+				<div class="col-12 mb-2">
+					<div class="fw-bold">
+						Dataset:
+						<button type="button" class="btn btn-link link-primary btn-sm font-size-large p-0 pt-1 pb-1 BtnDataAppend">
+							<i class="mdi mdi-plus-circle mr-0"></i>
+						</button>
+					</div>
+
+					<div id="DatasetList">
+						<div class="jumbotron rounded p-2 text-center fst-italic">
+							No Data Items
+						</div>
+					</div>
+				</div>
+				<div class="col-12 mb-4"></div>
+
+				<!-- FORM SUBMIT -->
+
+				<div class="col-auto">
+					<button id="ToolSendCommit" type="submit" class="btn btn-primary btn-block">
+						<i class="mdi mdi-fw mdi-cube-send mr-2"></i> Send
+					</button>
+				</div>
+				<div class="col-12 mb-4"></div>
+
+				<div class="col-12">
+					<pre id="ToolSendOutput" class="jumbotron rounded p-2"></pre>
+				</div>
+
+			</div>
+		</form>
+
+	</div>
+</div>
+
+<script type="module">
+import Tool from '/share/atlantis/admin/apitool.js?v=<?php $Printer($CacheBuster) ?>';
+
+jQuery(function() {
+	new Tool;
+	return;
+});
+</script>

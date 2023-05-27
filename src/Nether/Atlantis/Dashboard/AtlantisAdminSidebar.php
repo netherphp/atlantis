@@ -14,7 +14,8 @@ extends SidebarGroup {
 
 		($this->Items)
 		->Push(new SidebarGroupItem('System Admin', '/ops', 'mdi-account-hard-hat'))
-		->Push(new SidebarGroupItem('Manage Users', '/ops/users/list', 'mdi-account-group'));
+		->Push(new SidebarGroupItem('API Tool', '/ops/api', 'mdi-account-hard-hat'))
+		->Push(new SidebarGroupItem('Manage Users', '/ops/users/list', 'mdi-api'));
 
 		return;
 	}

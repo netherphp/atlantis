@@ -20,7 +20,21 @@ extends Atlantis\ProtectedAPI {
 	EntityGet():
 	void {
 
-		$this->SetMessage('GET');
+		$ID = Common\Datafilters::TypeInt($this->Data->ID);
+
+		if(!$ID)
+		$this->Quit(1, 'no user id provided');
+
+		////////
+
+		$Entity = User\Entity::GetByID($ID);
+
+		if(!$Entity)
+		$this->Quit(2, 'no user entity found');
+
+		$this->SetPayload([
+			'User' => $Entity
+		]);
 
 		return;
 	}
