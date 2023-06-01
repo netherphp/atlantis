@@ -31,3 +31,9 @@ $Surface
 <hr />
 <?php endforeach; ?>
 
+<?php if(!$Items || !$Items->Count()): ?>
+<div class="jumbotron rounded p-4 fst-italic">
+	No items here yet.
+</div>
+<?php endif; ?>
+

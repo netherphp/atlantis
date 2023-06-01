@@ -1,0 +1,81 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
+/** @constant Nether\Atlantis\Engine Atlantis */
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+class Atlantacron
+extends Console\Client {
+
+	const
+	AppName    = 'Atlantis Crontab Tool',
+	AppVersion = '5.0.0-dev',
+	AppDebug   = TRUE;
+
+	#[Console\Meta\Command('list')]
+	#[Console\Meta\Info('Show all the things currently in the Crontab.')]
+	public function
+	ListCrontabEntries():
+	int {
+
+		$File = Common\Struct\CrontabFile::FetchViaSystemUser();
+		$Now = Common\Date::FromDateString('now');
+		$Line = NULL;
+
+		$File
+		->Filter(Common\Struct\CrontabFile::CleanCrontabLine(...))
+		->Revalue();
+
+		////////
+
+		$this
+		->FormatLn(
+			'%s %s',
+			$this->FormatPrimary('Current Time:'),
+			$Now->Get(Common\Values::DateFormatYMDT24VZ)
+		)
+		->PrintLn();
+
+		$this
+		->FormatLn(
+			$this->FormatPrimary('Crontab Entries (%d):'),
+			$File->Count()
+		)
+		->PrintLn();
+
+		foreach($File as $Line) {
+			/** @var Common\Struct\CrontabEntry $Line */
+
+			$this->FormatLn(
+				'%s %s %s %s %s',
+				$this->FormatPrimary('['),
+				$this->FormatSecondary($Line->GetTimerAsWords()),
+				$this->FormatPrimary('|'),
+				$this->FormatSecondary($Line->GetTimerAsTimeframe()),
+				$this->FormatPrimary(']')
+			);
+
+			$this
+			->FormatLn('%s %s', $this->FormatSecondary('$'), $Line->Command)
+			->PrintLn();
+		}
+
+		//Common\Dump::Var($File);
+
+		return 0;
+	}
+
+}
+
+exit((new Atlantacron)->Run());

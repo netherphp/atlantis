@@ -44,7 +44,8 @@
 	},
 	"bin": [
 		"bin/atlantis",
-		"bin/atlantis-ssl"
+		"bin/atlantis-ssl",
+		"bin/atlantis-cron"
 	],
 	"autoload": {
 		"psr-0": {

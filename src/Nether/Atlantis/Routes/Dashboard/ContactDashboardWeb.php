@@ -10,7 +10,7 @@ class ContactDashboardWeb
 extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/contact/list')]
-	#[Atlantis\Meta\RouteAccessType('Nether.Contact.Log.View', 'eq', 1)]
+	#[Atlantis\Meta\RouteAccessType(Atlantis\Library::AccessContactLogManage, 'eq', 1)]
 	public function
 	HandleList():
 	void {
@@ -33,7 +33,7 @@ extends Atlantis\ProtectedWeb {
 	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/contact/view/:MessageID:')]
-	#[Atlantis\Meta\RouteAccessType('Nether.Contact.Log.View', 'eq', 1)]
+	#[Atlantis\Meta\RouteAccessType('Nether.Atlantis.ContactLog.Manage', 'eq', 1)]
 	public function
 	HandleView(int $MessageID):
 	void {
