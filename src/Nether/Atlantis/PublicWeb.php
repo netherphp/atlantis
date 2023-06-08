@@ -138,33 +138,17 @@ as html pages. //*/
 		$Dataset['Router'] = $this->App->Router;
 		$Dataset['Route'] = $this;
 		$Dataset['User'] = $this->App->User;
-		$Dataset['CacheBuster'] = md5(microtime(TRUE));
+		$Dataset['Util'] = new Atlantis\Struct\TemplateHelper($this->App);
 
-		// printing callables.
+		// deprecated references.
 
-		$Dataset['Printer'] = Util::PrintHTML(...);
-
-		// returning callables.
-
-		$Dataset['Encoder'] = Filter::EncodeHTML(...);
-		$Dataset['Selected'] = Util::GetSelectedHTML(...);
-		$Dataset['Checked'] = Util::GetCheckedHTML(...);
-
-		// theme callables that a bit cheeky.
-
-		$Dataset['GetThemeURL'] = (
-			function(string $In, ?string $Theme=NULL) use($Dataset) {
-				$Theme ??= $Dataset['App']->Surface->GetTheme();
-				return "/themes/{$Theme}/{$In}";
-			}
-		);
-
-		$Dataset['ThemeURL'] = (
-			function(string $In, ?string $Theme=NULL) use($Dataset) {
-				echo $Dataset['GetThemeURL']($In, $Theme);
-				return;
-			}
-		);
+		$Dataset['CacheBuster'] = $Dataset['Util']->GetCacheBuster();
+		$Dataset['Printer'] = $Dataset['Util']->Print(...);
+		$Dataset['Encoder'] = $Dataset['Util']->Encode(...);
+		$Dataset['Selected'] = $Dataset['Util']->GetSelectedHTML(...);
+		$Dataset['Checked'] = $Dataset['Util']->GetCheckedHTML(...);
+		$Dataset['GetThemeURL'] = $Dataset['Util']->GetThemeURL(...);
+		$Dataset['ThemeURL'] = $Dataset['Util']->ThemeURL(...);
 
 		return;
 	}
@@ -328,7 +312,14 @@ as html pages. //*/
 
 
 		$this->Handler->Method = '__RewireDoNothing';
-		//exit(0);
+
+		// after some back and forth i think this needs to just be made
+		// super stupid such that if it detects the unit testing suite it
+		// should not do this. the rewire trick works, but only if it was
+		// a WillConfirmAnswer method and not the method itself.
+
+		if(!defined('UNIT_TEST_GO_BRRRT'))
+		exit(0);
 
 		return;
 	}

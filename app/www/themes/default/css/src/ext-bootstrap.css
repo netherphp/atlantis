@@ -519,8 +519,6 @@
 	z-index: 9010;
 }
 
-
-
 .clickthru,
 .clickthrough {
 	pointer-events: none;
@@ -544,7 +542,7 @@
 	border-left: 4px solid var(--theme-tertiary);
 }
 
-.quotron-quaternary  {
+.quotron-quaternary {
 	border-left: 4px solid var(--theme-quaternary );
 }
 

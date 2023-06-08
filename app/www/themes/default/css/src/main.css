@@ -78,7 +78,7 @@
 	--theme-font-normal-weight: 300;
 	--theme-font-mono-weight: 300;
 
-	--theme-body-bg: #F6F6F6;
+	--theme-body-bg: #FAFAFA;
 	--theme-body-bg-alt: #EAEAEA;
 	--theme-body-bg-alt2: #F0F0F0;
 	--theme-body-bg-alt0: var(--theme-body-bg);
@@ -86,7 +86,7 @@
 
 	--theme-body-fg: #161616;
 
-	--theme-dark-glass: #CCCCCC88;
+	--theme-dark-glass: #cccccc34;
 
 	--theme-header-bg: #FFFFFF;
 	--theme-footer-bg: #FFFFFF;
@@ -223,7 +223,7 @@ strong {
 }
 
 .jumbotron {
-	background-color: var(--theme-dark-bg-glass);
+	background-color: var(--theme-dark-glass);
 }
 
 .dropdown-menu li {
@@ -250,14 +250,20 @@ strong {
 	vertical-align: middle;
 }
 
-.bg-alt0 {
+/*******************************************************************************
+**** alternating background rows **********************************************/
+
+.bg-alt0,
+.bg-alt-rows > div:nth-of-type(3n+1) {
 	background-color: var(--theme-body-bg-alt0);
 }
 
-.bg-alt1 {
+.bg-alt1,
+.bg-alt-rows > div:nth-of-type(3n+2) {
 	background-color: var(--theme-body-bg-alt1);
 }
 
-.bg-alt2 {
+.bg-alt2,
+.bg-alt-rows > div:nth-of-type(3n+3) {
 	background-color: var(--theme-body-bg-alt2);
 }

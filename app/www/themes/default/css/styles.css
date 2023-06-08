@@ -1,11 +1,13 @@
 /*//
-@date 2023-05-11 00:41:24 UTC
-@files 16 [
+@date 2023-06-08 00:09:23 UTC
+@files 18 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-materialdesignicons.css",
     "src\/ext-simpleicons.css",
+    "src\/ext-litepicker.css",
+    "src\/ext-swiper.css",
     "src\/design\/footer.css",
     "src\/design\/header.css",
     "src\/elements\/article.css",
@@ -108,7 +110,7 @@
 	--theme-font-normal-weight: 300;
 	--theme-font-mono-weight: 300;
 
-	--theme-body-bg: #F6F6F6;
+	--theme-body-bg: #FAFAFA;
 	--theme-body-bg-alt: #EAEAEA;
 	--theme-body-bg-alt2: #F0F0F0;
 	--theme-body-bg-alt0: var(--theme-body-bg);
@@ -116,7 +118,7 @@
 
 	--theme-body-fg: #161616;
 
-	--theme-dark-glass: #CCCCCC88;
+	--theme-dark-glass: #cccccc34;
 
 	--theme-header-bg: #FFFFFF;
 	--theme-footer-bg: #FFFFFF;
@@ -253,7 +255,7 @@ strong {
 }
 
 .jumbotron {
-	background-color: var(--theme-dark-bg-glass);
+	background-color: var(--theme-dark-glass);
 }
 
 .dropdown-menu li {
@@ -280,15 +282,21 @@ strong {
 	vertical-align: middle;
 }
 
-.bg-alt0 {
+/*******************************************************************************
+**** alternating background rows **********************************************/
+
+.bg-alt0,
+.bg-alt-rows > div:nth-of-type(3n+1) {
 	background-color: var(--theme-body-bg-alt0);
 }
 
-.bg-alt1 {
+.bg-alt1,
+.bg-alt-rows > div:nth-of-type(3n+2) {
 	background-color: var(--theme-body-bg-alt1);
 }
 
-.bg-alt2 {
+.bg-alt2,
+.bg-alt-rows > div:nth-of-type(3n+3) {
 	background-color: var(--theme-body-bg-alt2);
 }
 
@@ -690,6 +698,10 @@ strong {
 	transition: width 100ms;
 }
 
+.break {
+	clear: both;
+}
+
 .bg-body-primary {
 	--bs-bg-opacity: 1;
 	background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important
@@ -812,8 +824,6 @@ strong {
 	z-index: 9010;
 }
 
-
-
 .clickthru,
 .clickthrough {
 	pointer-events: none;
@@ -837,7 +847,7 @@ strong {
 	border-left: 4px solid var(--theme-tertiary);
 }
 
-.quotron-quaternary  {
+.quotron-quaternary {
 	border-left: 4px solid var(--theme-quaternary );
 }
 
@@ -879,6 +889,54 @@ strong {
 
 .btn > .si:first-child {
 	margin-right: 0.25em;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-litepicker.css //////////////////////////////////////////////////*/
+
+.litepicker select {
+	background: #FFF !important;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	color: #444 !important;
+	padding: 4px;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-swiper.css //////////////////////////////////////////////////////*/
+
+.swiper-wrapper {
+	margin-bottom: 10px !important;
+	align-items: stretch !important;
+}
+
+.swiper-scrollbar {
+	position: relative !important;
+}
+
+.swiper-scrollbar-drag {
+	background-color: var(--theme-primary);
+}
+
+.swiper-pagination {
+	gap: 10px;
+	position: relative !important;
+}
+
+.swiper-pagination-bullet {
+	margin: 4px !important;
+	opacity: 0.75 !important;
+	height: 14px !important;
+	width: 14px !important;
+}
+
+.swiper .swiper-button-container {
+	opacity: 0;
+	transition: opacity 100ms;
+}
+
+.swiper:hover .swiper-button-container {
+	opacity: 100;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1172,6 +1230,38 @@ strong {
 
 .EditorItem {
 	user-select: none;
+}
+
+.EditorContent blockquote {
+	margin-left: 3rem;
+}
+
+.EditorContent ul > li {
+	margin-bottom: 16px;
+}
+
+.EditorContent ul > li:last-of-type {
+	margin-bottom: 0px;
+}
+
+.EditorContent .float-start {
+	margin-bottom: 0.5rem;
+	margin-right: 0.5rem;
+}
+
+.EditorContent .EditorItemImage {
+	border-radius: 6px;
+}
+
+.EditorContent .break-clear {
+	border: 0px;
+}
+
+.EditorContent.Viewport .break-clear {
+	background: #a00;
+	border-radius: 6px;
+	padding: 16px;
+	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

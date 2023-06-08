@@ -24,4 +24,8 @@
 		<exclude>
 		</exclude>
 	</coverage>
+
+	<php>
+		<const name="UNIT_TEST_GO_BRRRT" value="TRUE" />
+	</php>
 </phpunit>
