@@ -172,6 +172,16 @@ class Util {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	IfOneOrMore(int $Count, mixed $Singular, mixed $Plural):
+	mixed {
+
+		return match($Count) {
+			1       => $Singular,
+			default => $Plural
+		};
+	}
+
+	static public function
 	IsReCaptchaValid(Atlantis\Engine $App):
 	bool {
 

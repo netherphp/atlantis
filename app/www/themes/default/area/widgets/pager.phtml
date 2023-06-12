@@ -1,0 +1,50 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Database;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Database\Struct\PrototypeFindResult $Results
+ * @var string $BaseURL
+ */
+
+$BaseURL ??= '';
+
+?>
+
+<div class="row justify-content-center align-items-center">
+
+	<?php if($Results->Page > 1): ?>
+	<div class="col-auto">
+		<a class="fw-bold" href="<?php $Util->Print($BaseURL) ?>?<?php $Util->Print($Route->QueryBlender([ 'page'=> ($Results->Page-1) ])) ?>">
+			<i class="mdi mdi-chevron-left"></i>
+			Prev
+		</a>
+	</div>
+	<?php endif; ?>
+
+	<div class="col-auto">
+		Page
+		<?php $Util->Print($Results->Page) ?>
+		of
+		<?php $Util->Print(max(1, $Results->PageCount)) ?>
+	</div>
+
+	<?php if($Results->Page < $Results->PageCount): ?>
+	<div class="col-auto">
+		<a class="fw-bold" href="<?php $Util->Print($BaseURL) ?>?<?php $Util->Print($Route->QueryBlender([ 'page'=> ($Results->Page+1) ])) ?>">
+			Next
+			<i class="mdi mdi-chevron-right"></i>
+		</a>
+	</div>
+	<?php endif; ?>
+
+</div>

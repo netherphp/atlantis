@@ -55,6 +55,7 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\PropertyFactory('FromTime', 'TimeCreated')]
 	public Common\Date
 	$DateCreated;
 
@@ -68,7 +69,7 @@ extends Atlantis\Prototype {
 	OnReady(Common\Prototype\ConstructArgs $Args):
 	void {
 
-		$this->DateCreated = Common\Date::FromTime($this->TimeCreated);
+		//$this->DateCreated = Common\Date::FromTime($this->TimeCreated);
 		$this->ExtraFiles = new Common\Datastore;
 
 		if(isset($this->ExtraFilesJSON)) {

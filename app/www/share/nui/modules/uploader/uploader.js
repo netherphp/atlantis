@@ -328,7 +328,7 @@ class UploadButtonOptions {
 		this.url = (
 			typeof input.url !== 'undefined'
 			? input.url
-			: '/api/upload/chunk'
+			: '/api/media/entity'
 		);
 
 		this.method = (

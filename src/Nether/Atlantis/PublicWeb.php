@@ -280,13 +280,13 @@ as html pages. //*/
 	}
 
 	public function
-	IsUserAdmin(int $Min):
+	IsUserAdmin(int $MinLvl=1):
 	bool {
 
 		return (
 			TRUE
 			&& ($this->App->User instanceof User\Entity)
-			&& ($this->App->User->Admin >= $Min)
+			&& ($this->App->User->Admin >= $MinLvl)
 		);
 	}
 
@@ -322,6 +322,13 @@ as html pages. //*/
 		exit(0);
 
 		return;
+	}
+
+	public function
+	QueryBlender(array $Input):
+	string {
+
+		return $this->Data->GetQueryString($Input);
 	}
 
 }

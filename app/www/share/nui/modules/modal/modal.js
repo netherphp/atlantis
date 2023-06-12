@@ -93,9 +93,12 @@ build and manage a modal popup.
 
 	setBody(body) {
 
-		(this.body)
-		.empty()
-		.html(body);
+		this.body.empty();
+
+		//if(body instanceof jQuery)
+		this.body.append(body);
+		//else
+		//this.body.html(body);
 
 		return this;
 	};

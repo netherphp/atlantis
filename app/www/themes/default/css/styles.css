@@ -1,5 +1,5 @@
 /*//
-@date 2023-06-08 00:09:23 UTC
+@date 2023-06-09 00:12:27 UTC
 @files 18 [
     "src\/imports.css",
     "src\/main.css",
@@ -223,9 +223,9 @@ strong {
 
 .form-control,
 .form-select {
-	background-color: var(--theme-light-bg-glass);
-	border-color: var(--theme-light-bg-glass);
-	transition: background-color 200ms;
+	-background-color: var(--theme-light-bg-glass);
+	-border-color: var(--theme-light-bg-glass);
+	-transition: background-color 200ms;
 }
 
 .form-control:focus {

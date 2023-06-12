@@ -191,9 +191,9 @@ strong {
 
 .form-control,
 .form-select {
-	background-color: var(--theme-light-bg-glass);
-	border-color: var(--theme-light-bg-glass);
-	transition: background-color 200ms;
+	-background-color: var(--theme-light-bg-glass);
+	-border-color: var(--theme-light-bg-glass);
+	-transition: background-color 200ms;
 }
 
 .form-control:focus {

@@ -88,7 +88,7 @@ extends ModalDialog {
 		btn
 		.remove()
 		.removeClass('btn-primary')
-		.addClass('btn-secondary')
+		.addClass('btn-secondary text-transform-none')
 		.off('click.tagdiag')
 		.on('click.tagdiag', ()=> this.onTagClick(btn));
 
@@ -179,7 +179,7 @@ extends ModalDialog {
 		if(this.tagbin.find(`[data-tag-key=${query.toLowerCase()}]`).length === 0)
 		output.append(
 			jQuery('<button />')
-			.addClass('btn btn-secondary mb-2 mr-2')
+			.addClass('btn btn-secondary text-transform-none mb-2 mr-2')
 			.attr('data-tag-id', 'null')
 			.attr('data-tag-key', query.toLowerCase())
 			.attr('data-tag-name', query)

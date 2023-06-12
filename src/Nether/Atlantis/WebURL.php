@@ -24,7 +24,10 @@ implements Stringable {
 	__Construct(string $Path='/', ?string $Host=NULL, ?string $Proto=NULL) {
 
 		if($Host === NULL)
-		$Host = $_SERVER['HTTP_HOST'];
+		$Host = (
+			Library::Get(Library::ConfProjectDomain)
+			?? $_SERVER['HTTP_HOST']
+		);
 
 		$this->Set($Path, $Host, $Proto);
 		return;
