@@ -331,4 +331,11 @@ as html pages. //*/
 		return $this->Data->GetQueryString($Input);
 	}
 
+	public function
+	QueryCooker(array $Input):
+	string {
+
+		return sprintf('?%s', $this->QueryBlender($Input));
+	}
+
 }

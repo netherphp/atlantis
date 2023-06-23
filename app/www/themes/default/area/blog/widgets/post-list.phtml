@@ -1,0 +1,61 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $Posts
+ */
+
+?>
+
+<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
+<div>
+	<div class="fw-bold text-uppercase font-size-small">
+		<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+	</div>
+	<h3 class="font-size-larger mb-3">
+		<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+	</h3>
+	<div class="opacity-100">
+		<?php foreach($Post->GetTags() as $Tag): ?>
+		<a href="/tag/<?php $Util->Print($Tag->Tag->Alias) ?>" class="btn btn-outline-dark p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Tag->Name) ?></a>
+		<?php endforeach; ?>
+	</div>
+	<div class="mt-2">
+		<?php
+
+		echo match($Post->Editor) {
+			'link'
+			=> $Surface->GetArea('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE ]),
+
+			default
+			=> $Surface->GetArea('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE ])
+		};
+
+		?>
+	</div>
+
+	<?php if($Post->Editor !== 'link'): ?>
+	<div class="mt-2">
+		<a href="<?php $Printer($Post->GetURL()) ?>" class="fw-bold">Continue Reading...</a>
+	</div>
+	<?php endif; ?>
+
+	<div class="d-none mt-4 opacity-50">
+		<i class="mdi mdi-fw mdi-clock-time-four"></i> n Min Read
+	</div>
+</div>
+<hr class="mt-6 mb-6" />
+<?php endforeach; ?>

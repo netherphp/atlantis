@@ -1,0 +1,58 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Blog\BlogUser $BlogUser
+ * @var Blog\Blog $Blog
+ * @var Blog\Post $Post
+ */
+
+$Full ??= TRUE;
+
+$Link = Blog\Struct\EditorLink::FromJSON($Post->Content);
+$OutboundURL = $Full ? $Link->URL : $Post->GetURL();
+$OutboundTab = $Full ? 'target="_blank"' : '';
+
+?>
+
+<div class="<?php $Util->Print($Full ? 'jumbotron rounded mb-4' : '') ?>">
+	<div class="row">
+		<div class="col-12 col-md-3 mb-4 mb-md-0">
+			<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
+				<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?> class="position-absolutely"></a>
+			</div>
+		</div>
+		<div class="col-12 col-md mb-0">
+			<div class="mb-1">
+				<span class="fw-bold text-uppercase">Source:</span>
+				<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print(Atlantis\Util::DomainFromURL($Link->URL)) ?></a>
+			</div>
+			<div class="mb-3">
+				<span class="fw-bold text-uppercase">Date:</span>
+				<?php $Util->Print(Common\Date::FromDateString($Link->Date)->Get(Common\Values::DateFormatFancyDate)) ?>
+			</div>
+			<div class="EditorContent">
+				<?php echo $Link->Excerpt ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php if($Full): ?>
+<div class="EditorContent">
+	<?php echo $Link->Content ?>
+</div>
+<?php endif; ?>

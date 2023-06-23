@@ -1,20 +1,37 @@
 <?php
 
+// phpcs:disable
+
+use Nether\Atlantis;
+use Nether\Avenue;
 use Nether\Blog;
 use Nether\Common;
-use Nether\Database;
 use Nether\Surface;
+use Nether\User;
 
 /**
-  * @var Surface\Engine $Surface
-  * @var Blog\Blog $Blog
-  * @var Blog\Post $Post
-  * @var ?Blog\BlogUser $BlogUser
-  */
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Blog\BlogUser $BlogUser
+ * @var Blog\Blog $Blog
+ * @var Blog\Post $Post
+ */
 
 ?>
 
 <?php $Surface->Area('blog/blog-header', $__SCOPE) ?>
+
+<hr id="BlogPostInfo"
+    class="d-none"
+    data-blog-id="<?php $Util->Print($Post->BlogID) ?>"
+    data-post-id="<?php $Util->Print($Post->ID) ?>"
+    data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
+    />
 
 <div class="pt-4 pb-4">
 	<div class="container">
@@ -37,11 +54,11 @@ use Nether\Surface;
 					);
 				}
 
-				else {
-					echo '<div class="EditorContent">';
-					echo $Post->ContentHTML;
-					echo '</div>';
-				}
+				elseif($Post->Editor === 'link')
+				$Surface->Area('blog/views/link', $__SCOPE);
+
+				else
+				$Surface->Area('blog/views/html', $__SCOPE);
 
 				?>
 				</div>
@@ -58,6 +75,12 @@ use Nether\Surface;
 						Edit
 					</a>
 					<hr class="mt-2 mb-2" />
+
+					<a href="#" class="btn btn-outline-light btn-block text-align-left CmdPostEditTags">
+						<i class="mdi mdi-fw mdi-tag"></i>
+						Manage Tags
+					</a>
+					<hr class="mt-2 mb-2" />
 					<?php endif; ?>
 				</div>
 				<?php endif; ?>
@@ -68,3 +91,26 @@ use Nether\Surface;
 	</div>
 </div>
 
+<?php if($BlogUser->CanEdit()): ?>
+<script type="module">
+import TagDialog from '/share/atlantis/tag-dialog.js';
+
+jQuery(function() {
+
+	let info = jQuery('#BlogPostInfo');
+	let blog = { id: info.attr('data-blog-id') };
+	let post = { id: info.attr('data-post-id'), uuid: info.attr('data-post-uuid') };
+
+	jQuery('.CmdPostEditTags')
+	.on('click', function(){
+
+		let diag = new TagDialog(post.uuid, 'blogpost');
+		diag.show();
+
+		return false;
+	});
+
+	return;
+});
+</script>
+<?php endif; ?>

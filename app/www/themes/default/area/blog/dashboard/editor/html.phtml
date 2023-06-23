@@ -1,0 +1,88 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+?>
+
+<div class="BlogPostEditor">
+	<form id="BlogPostEditor" data-post-id="<?php $Printer($Post ? $Post->ID : 'null') ?>">
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Blog</div>
+			<div>
+				<select name="BlogID" class="form-select">
+					<?php foreach($Blogs as $Blog): ?>
+					<option value="<?php $Printer($Blog->ID) ?>" <?php echo $Selected($Blog->ID === $Route->Data->ID) ?>><?php $Printer($Blog->Title) ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Title</div>
+			<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Content</div>
+			<div id="Editor" class="Editor d-none"><?php echo $Post ? $Post->Content : '' ?></div>
+		</div>
+
+		<div class="mb-4">
+			<button type="submit" class="btn btn-primary">
+				<i class="mdi mdi-fw mdi-content-save"></i>
+				Save
+			</button>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+import Editor from '/share/nui/modules/editor/editor.js';
+import FormUtil from '/share/nui/util/form.js';
+import API from '/share/nui/api/json.js';
+
+jQuery(function(){
+
+	let editor = new Editor('#Editor');
+
+	jQuery('#BlogPostEditor')
+	.on('submit', function() {
+
+		let that = jQuery(this);
+		let pid = that.attr('data-post-id');
+		let api = new API.Request('POST', '/api/blog/post');
+		let form = new FormUtil(this);
+
+		(form.read())
+		.set('Editor', editor.type)
+		.set('Content', editor.getContent());
+
+		if(pid !== 'null') {
+			api.setMethod('PATCH');
+			form.set('ID', pid);
+		}
+
+		(api.send(form))
+		.then(api.goto)
+		.catch(api.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

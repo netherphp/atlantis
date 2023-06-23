@@ -8,6 +8,7 @@ use Nether\Common;
 use Nether\Storage;
 use Nether\User;
 
+use Exception;
 use Nether\Common\Datastore;
 
 class Library
@@ -120,7 +121,7 @@ implements
 
 		////////
 
-		Atlantis\Media\TagLink::RegisterType(Atlantis\Media\FileTagLink::class);
+		Atlantis\Media\FileTagLink::RegisterType();
 
 		////////
 
@@ -201,6 +202,12 @@ implements
 			case 'default':
 				$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
 			break;
+			case 'tagcover':
+				$this->OnUploadFinaliseTagCover($App, $UUID, $Name, $File);
+			break;
+			case 'tagphoto':
+				$this->OnUploadFinaliseTagPhoto($App, $UUID, $Name, $File);
+			break;
 		}
 
 		return;
@@ -240,6 +247,82 @@ implements
 
 		return;
 	}
+
+	protected function
+	OnUploadFinaliseTagCover(Engine $App, string $UUID, string $Name, Storage\File $File):
+	void {
+
+		$Media = NULL;
+		$Tag = NULL;
+		$TagID = (int)$App->Router->Request->Data->Get('TagID');
+
+		////////
+
+		if(!$TagID)
+		throw new Exception('field TagID is required for upload type "tagcover"');
+
+		////////
+
+		$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
+
+		$Media = Media\File::GetByUUID($UUID);
+
+		if(!$Media)
+		throw new Exception(sprintf('media not found %s', $UUID));
+
+		////////
+
+		$Tag = Tag\Entity::GetByID($TagID);
+
+		if(!$Tag)
+		throw new Exception(sprintf('tag not found %d', $TagID));
+
+		////////
+
+		$Tag->Update([ 'CoverImageID'=> $Media->ID ]);
+
+		return;
+	}
+
+	protected function
+	OnUploadFinaliseTagPhoto(Engine $App, string $UUID, string $Name, Storage\File $File):
+	void {
+
+		$Media = NULL;
+		$Tag = NULL;
+		$TagID = (int)$App->Router->Request->Data->Get('TagID');
+
+		////////
+
+		if(!$TagID)
+		throw new Exception('field TagID is required for upload type "tagphoto"');
+
+		////////
+
+		$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
+
+		$Media = Media\File::GetByUUID($UUID);
+
+		if(!$Media)
+		throw new Exception(sprintf('media not found %s', $UUID));
+
+		////////
+
+		$Tag = Tag\Entity::GetByID($TagID);
+
+		if(!$Tag)
+		throw new Exception(sprintf('tag not found %d', $TagID));
+
+		////////
+
+		Tag\EntityPhoto::Insert([
+			'EntityID' => $Tag->ID,
+			'PhotoID'  => $Media->ID
+		]);
+
+		return;
+	}
+
 
 }
 

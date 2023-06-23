@@ -10,7 +10,7 @@
 // being widespread enough yet though unfortunately.
 
 (document.head)
-.innerHTML += `<link type="text/css" rel="stylesheet" href="/share/atlantis/lib/simplelightbox/simplelightbox.min.css" />`;
+.innerHTML += `<link type="text/css" rel="stylesheet" href="/themes/default/lib/css/simplelightbox.min.css" />`;
 
 ////////
 

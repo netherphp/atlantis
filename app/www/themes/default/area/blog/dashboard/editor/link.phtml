@@ -1,0 +1,152 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Blog\Post $Post
+ */
+
+$Link = (
+	$Post
+	? Blog\Struct\EditorLink::FromJSON($Post->Content)
+	: NULL
+);
+
+?>
+
+<div class="BlogPostEditor">
+	<form id="BlogPostEditor" data-post-id="<?php $Printer($Post ? $Post->ID : 'null') ?>">
+
+		<div class="<?php $Util->Print($Blogs->Count() === 1 ? 'd-none' : '') ?> mb-4">
+			<div class="fw-bold text-uppercase">Blog</div>
+			<div>
+				<select name="BlogID" class="form-select">
+					<?php foreach($Blogs as $Blog): ?>
+					<option value="<?php $Printer($Blog->ID) ?>" <?php echo $Selected($Blog->ID === $Route->Data->ID) ?>><?php $Printer($Blog->Title) ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Title</div>
+			<input type="text" name="Title" class="form-control" value="<?php $Printer($Link ? $Link->Title : '') ?>" />
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Date</div>
+			<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">URL</div>
+			<input type="text" name="URL" class="form-control" value="<?php $Printer($Link ? $Link->URL : '') ?>" />
+		</div>
+
+		<div class="mb-4">
+			<div class="row">
+				<div class="col-4 mb-0">
+					<div id="BlogPostCoverImage" data-id="<?php $Util->Print($Post && $Post->CoverImageID ? $Post->CoverImageID : 0) ?>" style="background-image:url(<?php $Util->Print($Post && $Post->CoverImageID ? $Post->GetCoverImageURL() : '') ?>);" class="ratiobox widescreen wallpapered rounded bg-dark"></div>
+				</div>
+				<div class="col-12 mb-2"></div>
+
+				<div class="col-4">
+					<button type="button" class="CmdPhotoUpload btn btn-secondary btn-block text-align-left">
+						<i class="mdi mdi-upload"></i> Upload Photo...
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Source Excerpt/Highlight</div>
+			<div id="EditorExcerpt" class="Editor d-none"><?php echo $Link ? $Link->Excerpt : '' ?></div>
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Additional Post Content</div>
+			<div id="EditorContent" class="Editor d-none"><?php echo $Link ? $Link->Content : '' ?></div>
+		</div>
+
+		<div class="mb-4">
+			<button type="submit" class="btn btn-primary">
+				<i class="mdi mdi-fw mdi-content-save"></i>
+				Save
+			</button>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+import Editor from '/share/nui/modules/editor/editor.js';
+import FormUtil from '/share/nui/util/form.js';
+import API from '/share/nui/api/json.js';
+import UploadButton from '/share/nui/modules/uploader/uploader.js';
+
+jQuery(function(){
+
+	let editor = jQuery('#BlogPostEditor');
+	let cover = jQuery('#BlogPostCoverImage');
+	let content = new Editor('#EditorContent');
+	let excerpt = new Editor('#EditorExcerpt');
+
+	let pid = editor.attr('data-post-id');
+
+	////////
+
+	new UploadButton('.CmdPhotoUpload', {
+		'title': 'Upload Photo...',
+		'dataset': { 'ID': pid, 'Type': 'posthead' },
+		'onSuccess': function(result) {
+			cover
+			.css('background-image', `url(${result.payload.URL})`)
+			.attr('data-id', result.payload.ID);
+
+			this.destroy();
+			return;
+		}
+	});
+
+	////////
+
+	editor
+	.on('submit', function() {
+
+		let that = jQuery(this);
+		let pid = that.attr('data-post-id');
+		let api = new API.Request('POST', '/api/blog/post');
+		let form = new FormUtil(this);
+
+		(form.read())
+		.set('Editor', 'link')
+		.set('CoverImageID', cover.attr('data-id'))
+		.set('Excerpt', excerpt.getContent())
+		.set('Content', content.getContent());
+
+		if(pid !== 'null') {
+			api.setMethod('PATCH');
+			form.set('ID', pid);
+		}
+
+		(api.send(form))
+		.then(api.goto)
+		.catch(api.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

@@ -1,5 +1,5 @@
 /*//
-@date 2023-06-09 00:12:27 UTC
+@date 2023-06-21 21:44:24 UTC
 @files 18 [
     "src\/imports.css",
     "src\/main.css",
@@ -111,8 +111,8 @@
 	--theme-font-mono-weight: 300;
 
 	--theme-body-bg: #FAFAFA;
-	--theme-body-bg-alt: #EAEAEA;
-	--theme-body-bg-alt2: #F0F0F0;
+	--theme-body-bg-alt: #F0F0F0;
+	--theme-body-bg-alt2: #EAEAEA;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt1: var(--theme-body-bg-alt);
 
@@ -254,10 +254,6 @@ strong {
 	box-shadow: 0px 0px 72px #000;
 }
 
-.jumbotron {
-	background-color: var(--theme-dark-glass);
-}
-
 .dropdown-menu li {
 	margin-bottom: 6px;
 }
@@ -298,6 +294,14 @@ strong {
 .bg-alt2,
 .bg-alt-rows > div:nth-of-type(3n+3) {
 	background-color: var(--theme-body-bg-alt2);
+}
+
+/*******************************************************************************
+**** alternating background rows **********************************************/
+
+.jumbotron {
+	background-color: var(--theme-body-bg-alt1);
+	padding: 1rem;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -754,11 +758,6 @@ strong {
 
 .blockquote-edged-primary {
 	border-left-color: var(--ColourPrimaryAccent);
-}
-
-.jumbotron {
-	background: var(--theme-dark-bg-glass);
-	padding: 1em;
 }
 
 .rounded-extra { border-radius: 10px; }

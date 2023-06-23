@@ -1,5 +1,5 @@
-import ModalDialog from '/share/nui/modules/modal/modal.js';
-import API from '/share/nui/api/json.js';
+import ModalDialog from '../modal/modal.js';
+import API from '../../api/json.js';
 
 let UploaderTemplate = `
 	<div class="row">

@@ -107,7 +107,7 @@ extends Atlantis\Routes\UploadAPI {
 		($this->Data)
 		->EntityUUID(Common\Datafilters::TrimmedText(...));
 
-		$Result = Atlantis\Media\TagLink::Find([
+		$Result = Atlantis\Tag\EntityLink::Find([
 			'EntityUUID' => $this->Data->EntityUUID,
 			'Sort'       => 'tag-name-az',
 			'Limit'      => 20
@@ -117,7 +117,7 @@ extends Atlantis\Routes\UploadAPI {
 		$Link = NULL;
 
 		foreach($Result as $Link) {
-			/** @var Atlantis\Media\TagLink $Link */
+			/** @var Atlantis\Tag\EntityLink $Link */
 
 			$Tags[] = [
 				'ID'    => $Link->Tag->ID,
@@ -164,7 +164,7 @@ extends Atlantis\Routes\UploadAPI {
 		////////
 
 		try {
-			$EInfo = Atlantis\Media\TagLink::GetTypeEntityInfo($EType);
+			$EInfo = Atlantis\Tag\EntityLink::GetTypeEntityInfo($EType);
 		}
 
 		catch(Exception $Error) {
@@ -187,7 +187,7 @@ extends Atlantis\Routes\UploadAPI {
 		$Links = $Entity->GetTagLinks();
 
 		$Existing = $Links->Map(
-			fn(Atlantis\Media\TagLink $Link)
+			fn(Atlantis\Tag\EntityLink $Link)
 			=> $Link->TagID
 		);
 
@@ -199,10 +199,10 @@ extends Atlantis\Routes\UploadAPI {
 		$Add->MergeRight(
 			$TagsToMake
 			->Map(function(string $Name) {
-				$Tag = Atlantis\Media\Tag::GetByField('Name', $Name);
+				$Tag = Atlantis\Tag\Entity::GetByField('Name', $Name);
 
 				if(!$Tag)
-				$Tag = Atlantis\Media\Tag::Insert([ 'Name' => $Name ]);
+				$Tag = Atlantis\Tag\Entity::Insert([ 'Name' => $Name ]);
 
 				return $Tag->ID;
 			})

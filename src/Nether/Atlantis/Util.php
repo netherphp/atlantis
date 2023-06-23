@@ -172,6 +172,18 @@ class Util {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	DomainFromURL(string $URL):
+	string {
+
+		$Domain = parse_url($URL, PHP_URL_HOST);
+
+		if($Domain === FALSE)
+		return 'Unknown';
+
+		return $Domain;
+	}
+
+	static public function
 	IfOneOrMore(int $Count, mixed $Singular, mixed $Plural):
 	mixed {
 

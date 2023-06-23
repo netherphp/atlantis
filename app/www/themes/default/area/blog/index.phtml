@@ -23,30 +23,7 @@ use Nether\Database;
 			<div class="col-12 col-md mb-6 mb-md-0 pr-0 pr-md-4">
 				<h2 class="PrettyBrandText font-size-normal mb-4">Latest Posts</h2>
 
-
-				<?php foreach($Posts as $Post): /** @var Nether\Blog\Post $Post */ ?>
-				<div>
-					<div><?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDateTime)) ?></div>
-					<h3 class="font-size-larger">
-						<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
-					</h3>
-					<div class="opacity-50 mt-4">
-						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Eventually</a>
-						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Tags</a>
-						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Here</a>
-					</div>
-					<div class="mt-2">
-						<?php $Printer($Post->GetExcerpt()) ?>
-					</div>
-					<div class="mt-2">
-						<a href="<?php $Printer($Post->GetURL()) ?>" class="fw-bold">Continue Reading...</a>
-					</div>
-					<div class="mt-4 opacity-50">
-						<i class="mdi mdi-fw mdi-clock-time-four"></i> n Min Read
-					</div>
-				</div>
-				<hr class="mt-4 mb-4" />
-				<?php endforeach; ?>
+				<?php $Surface->Area('blog/widgets/post-list', [ 'Posts'=> $Posts ]) ?>
 
 				<?php if(!$Posts->Total): ?>
 				<div class="jumbotron text-center rounded p-4">

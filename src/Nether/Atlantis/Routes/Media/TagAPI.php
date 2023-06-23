@@ -4,33 +4,18 @@ namespace Nether\Atlantis\Routes\Media;
 
 use Nether\Atlantis;
 use Nether\Common;
-use Nether\Storage;
-
-use Exception;
 
 class TagAPI
 extends Atlantis\Routes\UploadAPI {
 
+	#[Atlantis\Meta\RouteHandler('/api/tag/entity', Verb: 'GET')]
 	#[Atlantis\Meta\RouteHandler('/api/media/tag', Verb: 'GET')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function
 	TagGet():
 	void {
 
-		($this->Data)
-		->ID(Common\Datafilters::TypeIntNullable(...));
-
-		////////
-
-		if(!$this->Data->ID)
-		$this->Quit(1, 'no ID specified');
-
-		$Tag = Atlantis\Media\Tag::GetByID($this->Data->ID);
-
-		if(!$Tag)
-		$this->Quit(2, 'tag not found');
-
-		////////
+		$Tag = $this->FetchTagByField();
 
 		$this->SetPayload([
 			'ID'    => $Tag->ID,
@@ -42,6 +27,7 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/tag/entity', Verb: 'SEARCH')]
 	#[Atlantis\Meta\RouteHandler('/api/media/tag', Verb: 'SEARCH')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function
@@ -51,7 +37,7 @@ extends Atlantis\Routes\UploadAPI {
 		($this->Data)
 		->Query(Common\Datafilters::TrimmedText(...));
 
-		$Result = Atlantis\Media\Tag::Find([
+		$Result = Atlantis\Tag\Entity::Find([
 			'NameLike' => $this->Data->Query,
 			'Sort'     => 'tag-name-az',
 			'Limit'    => 20
@@ -61,7 +47,7 @@ extends Atlantis\Routes\UploadAPI {
 		$Tag = NULL;
 
 		foreach($Result as $Tag) {
-			/** @var Atlantis\Media\Tag $Tag */
+			/** @var Atlantis\Tag\Entity $Tag */
 
 			$Tags[] = [
 				'ID'    => $Tag->ID,
@@ -78,8 +64,9 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/tag/entity', Verb: 'POST')]
 	#[Atlantis\Meta\RouteHandler('/api/media/tag', Verb: 'POST')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	TagPost():
 	void {
@@ -87,17 +74,24 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/tag/entity', Verb: 'PATCH')]
 	#[Atlantis\Meta\RouteHandler('/api/media/tag', Verb: 'PATCH')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	TagPatch():
 	void {
 
+		$Tag = $this->FetchTagByField();
+		$Tag->Update($Tag->Patch($this->Data));
+
+		$this->SetPayload($Tag->DescribeForPublicAPI());
+
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/tag/entity', Verb: 'DELETE')]
 	#[Atlantis\Meta\RouteHandler('/api/media/tag', Verb: 'DELETE')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	TagDelete():
 	void {
@@ -105,13 +99,38 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/tag/entity', Verb: 'ENABLE')]
 	#[Atlantis\Meta\RouteHandler('/api/media/tag', Verb: 'ENABLE')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	TagEnable():
 	void {
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	FetchTagByField(string $Field='ID'):
+	Atlantis\Tag\Entity {
+
+		$ID = Common\Datafilters::TypeIntNullable($this->Data->Get($Field));
+
+		if(!$ID)
+		$this->Quit(1, 'no ID specified');
+
+		////////
+
+		$Tag = Atlantis\Tag\Entity::GetByID($ID);
+
+		if(!$Tag)
+		$this->Quit(2, 'tag not found');
+
+		////////
+
+		return $Tag;
 	}
 
 }

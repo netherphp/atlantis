@@ -451,11 +451,6 @@
 	border-left-color: var(--ColourPrimaryAccent);
 }
 
-.jumbotron {
-	background: var(--theme-dark-bg-glass);
-	padding: 1em;
-}
-
 .rounded-extra { border-radius: 10px; }
 
 .th-shrink,

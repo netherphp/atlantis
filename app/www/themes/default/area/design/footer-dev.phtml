@@ -57,7 +57,7 @@ use Nether\Database;
 			<span class="opacity-70">user[</span>
 			<?php if($User): ?>
 			<?php $Printer($User->ID) ?><span class="opacity-70">, </span>
-			<?php $Printer($User->Alias) ?>
+			<?php $Printer($User->Alias ?? $User->Email) ?>
 			<?php else: ?>
 			not logged in
 			<?php endif; ?>

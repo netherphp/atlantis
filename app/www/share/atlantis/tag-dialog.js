@@ -99,6 +99,9 @@ extends ModalDialog {
 		this.tagbin.find('span').remove();
 		this.tagbin.append(btn);
 
+		this.query.val('');
+		this.querybin.empty();
+
 		console.log(`[onSearchTagClick] tag remove: ${tid}`);
 		return;
 	};
@@ -171,12 +174,12 @@ extends ModalDialog {
 					return;
 				})
 			);
-
-			query
 		}
 
-		if(output.find(`[data-tag-key=${query.toLowerCase()}]`).length === 0)
-		if(this.tagbin.find(`[data-tag-key=${query.toLowerCase()}]`).length === 0)
+		console.log(query);
+
+		if(output.find(`[data-tag-key="${query.toLowerCase()}"]`).length === 0)
+		if(this.tagbin.find(`[data-tag-key="${query.toLowerCase()}"]`).length === 0)
 		output.append(
 			jQuery('<button />')
 			.addClass('btn btn-secondary text-transform-none mb-2 mr-2')

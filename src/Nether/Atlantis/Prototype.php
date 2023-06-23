@@ -27,7 +27,8 @@ extends Database\Prototype {
 	static {
 
 		parent::Drop();
-		Atlantis\Media\TagLink::DeleteByEntity($this->UUID);
+
+		Tag\EntityLink::DeleteByEntity($this->UUID);
 
 		return $this;
 	}
@@ -39,7 +40,7 @@ extends Database\Prototype {
 	GetTagLinks():
 	Common\Datastore {
 
-		$Result = Media\TagLink::Find([
+		$Result = Tag\EntityLink::Find([
 			'EntityUUID' => $this->UUID
 		]);
 
@@ -53,7 +54,7 @@ extends Database\Prototype {
 		$Links = $this->GetTagLinks();
 
 		return $Links->Map(
-			fn(Media\TagLink $Link)
+			fn(Tag\EntityLink $Link)
 			=> $Link->Tag
 		);
 	}

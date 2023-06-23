@@ -2,18 +2,14 @@
 
 namespace Nether\Atlantis\Media;
 
+use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
 
 class FileTagLink
 extends TagLink {
 
-	const
-	LinkType = 'file';
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
+	#[Atlantis\Meta\TagEntityProperty('file')]
 	public File
 	$Entity;
 
@@ -21,7 +17,7 @@ extends TagLink {
 	////////////////////////////////////////////////////////////////
 
 	protected function
-	OnReady(Common\Prototype\ConstructArgs $Args):
+	_OnReady(Common\Prototype\ConstructArgs $Args):
 	void {
 		parent::OnReady($Args);
 
