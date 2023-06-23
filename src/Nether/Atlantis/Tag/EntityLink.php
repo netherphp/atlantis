@@ -332,4 +332,36 @@ required data in.
 		return parent::Insert($Input);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	KeepTheEntity(self $Link):
+	mixed {
+	/*//
+	@date 2023-06-23
+	little helper to give remapper lists context.
+	//*/
+
+		$Prop = current(static::GetPropertiesWithAttribute(
+			Atlantis\Meta\TagEntityProperty::class
+		));
+
+		if(!$Prop)
+		throw new Exception('no TagEntityProperty found');
+
+		return $Link->{$Prop->Name};
+	}
+
+	static public function
+	KeepTheTag(self $Link):
+	mixed {
+	/*//
+	@date 2023-06-23
+	little helper to give remapper lists context.
+	//*/
+
+		return $Link->Tag;
+	}
+
 }

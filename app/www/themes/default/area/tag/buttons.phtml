@@ -1,0 +1,28 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $Tags
+ * @var ?string $URL
+ */
+
+$URL ??= '/tag/:Alias:';
+
+?>
+
+<div class="opacity-100">
+	<?php foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
+	<a href="<?php $Util->Print(str_replace(':Alias:', $Tag->Alias, $URL)) ?>" class="btn btn-outline-dark p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
+	<?php endforeach; ?>
+</div>

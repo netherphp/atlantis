@@ -22,39 +22,32 @@ use Nether\User;
 
 <?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
 <div>
-	<div class="fw-bold text-uppercase font-size-small">
-		<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
-	</div>
-	<h3 class="font-size-larger mb-3">
-		<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
-	</h3>
-	<div class="opacity-100">
-		<?php foreach($Post->GetTags() as $Tag): ?>
-		<a href="/tag/<?php $Util->Print($Tag->Tag->Alias) ?>" class="btn btn-outline-dark p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Tag->Name) ?></a>
-		<?php endforeach; ?>
-	</div>
-	<div class="mt-2">
-		<?php
+	<div class="row">
+		<div class="col-12 col-md-3 mb-4 mb-md-0">
+			<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
+				<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
+			</div>
+		</div>
+		<div class="col-12 col-md mb-0 mb-md-0">
+			<div class="fw-bold text-uppercase font-size-small">
+				<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+			</div>
+			<h3 class="font-size-larger mb-3">
+				<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+			</h3>
 
-		echo match($Post->Editor) {
-			'link'
-			=> $Surface->GetArea('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE ]),
+			<div class="mb-3">
+				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+			</div>
 
-			default
-			=> $Surface->GetArea('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE ])
-		};
+			<?php match($Post->Editor) {
+				'link'
+				=> $Surface->Area('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE ]),
 
-		?>
-	</div>
-
-	<?php if($Post->Editor !== 'link'): ?>
-	<div class="mt-2">
-		<a href="<?php $Printer($Post->GetURL()) ?>" class="fw-bold">Continue Reading...</a>
-	</div>
-	<?php endif; ?>
-
-	<div class="d-none mt-4 opacity-50">
-		<i class="mdi mdi-fw mdi-clock-time-four"></i> n Min Read
+				default
+				=> $Surface->Area('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE ])
+			}; ?>
+		</div>
 	</div>
 </div>
 <hr class="mt-6 mb-6" />

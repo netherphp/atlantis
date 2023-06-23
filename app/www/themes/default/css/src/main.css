@@ -265,9 +265,14 @@ strong {
 }
 
 /*******************************************************************************
-**** alternating background rows **********************************************/
+**** restoration of the jumbotron *********************************************/
 
 .jumbotron {
 	background-color: var(--theme-body-bg-alt1);
 	padding: 1rem;
+}
+
+.jumbotron-outline {
+	background-color: transparent;
+	border: 4px solid var(--theme-body-bg-alt1);
 }

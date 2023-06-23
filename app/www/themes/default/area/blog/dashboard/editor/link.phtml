@@ -40,47 +40,41 @@ $Link = (
 			</div>
 		</div>
 
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">Title</div>
-			<input type="text" name="Title" class="form-control" value="<?php $Printer($Link ? $Link->Title : '') ?>" />
-		</div>
+		<div class="row mb-6">
+			<div class="col-12 col-md mb-4 mb-md-0">
+				<div class="fw-bold text-uppercase">Post Title</div>
+				<input type="text" name="Title" class="form-control" value="<?php $Printer($Link ? $Link->Title : '') ?>" />
+			</div>
+			<div class="col-12 col-md-3 mb-0 mb-md-0">
+				<div class="fw-bold text-uppercase">Post Photo</div>
+					<div id="BlogPostCoverImage" class="ratiobox widescreen wallpapered rounded bg-dark mb-2" data-id="<?php $Util->Print($Post && $Post->CoverImageID ? $Post->CoverImageID : 0) ?>" style="background-image:url(<?php $Util->Print($Post && $Post->CoverImageID ? $Post->GetCoverImageURL() : '') ?>);"></div>
 
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">Date</div>
-			<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
-		</div>
-
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">URL</div>
-			<input type="text" name="URL" class="form-control" value="<?php $Printer($Link ? $Link->URL : '') ?>" />
-		</div>
-
-		<div class="mb-4">
-			<div class="row">
-				<div class="col-4 mb-0">
-					<div id="BlogPostCoverImage" data-id="<?php $Util->Print($Post && $Post->CoverImageID ? $Post->CoverImageID : 0) ?>" style="background-image:url(<?php $Util->Print($Post && $Post->CoverImageID ? $Post->GetCoverImageURL() : '') ?>);" class="ratiobox widescreen wallpapered rounded bg-dark"></div>
-				</div>
-				<div class="col-12 mb-2"></div>
-
-				<div class="col-4">
 					<button type="button" class="CmdPhotoUpload btn btn-secondary btn-block text-align-left">
-						<i class="mdi mdi-upload"></i> Upload Photo...
+						<i class="mdi mdi-upload"></i> Upload...
 					</button>
 				</div>
 			</div>
 		</div>
 
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">Source Excerpt/Highlight</div>
-			<div id="EditorExcerpt" class="Editor d-none"><?php echo $Link ? $Link->Excerpt : '' ?></div>
-		</div>
+			<div class="mb-6">
+				<div class="fw-bold text-uppercase">Source Date</div>
+				<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
+			</div>
+			<div class="mb-6">
+				<div class="fw-bold text-uppercase">Source URL</div>
+				<input type="text" name="URL" class="form-control" value="<?php $Printer($Link ? $Link->URL : '') ?>" />
+			</div>
+			<div class="mb-6">
+				<div class="fw-bold text-uppercase">Source Excerpt/Highlight</div>
+				<div id="EditorExcerpt" class="Editor d-none"><?php echo $Link ? $Link->Excerpt : '' ?></div>
+			</div>
 
-		<div class="mb-4">
+		<div class="mb-6">
 			<div class="fw-bold text-uppercase">Additional Post Content</div>
 			<div id="EditorContent" class="Editor d-none"><?php echo $Link ? $Link->Content : '' ?></div>
 		</div>
 
-		<div class="mb-4">
+		<div class="mb-0">
 			<button type="submit" class="btn btn-primary">
 				<i class="mdi mdi-fw mdi-content-save"></i>
 				Save

@@ -180,6 +180,9 @@ class Util {
 		if($Domain === FALSE)
 		return 'Unknown';
 
+		if(str_starts_with($Domain, 'www.'))
+		$Domain = preg_replace('/^www\./', '', $Domain);
+
 		return $Domain;
 	}
 

@@ -39,8 +39,14 @@ use Nether\User;
 		<div class="row">
 			<div class="col-12 col-md-8 mb-4 mb-md-0">
 
-				<h2><?php $Printer($Post->Title) ?></h2>
-				<hr class="opacity-20" />
+				<div class="fw-bold text-uppercase font-size-small">
+					<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+				</div>
+				<h3 class="font-size-larger mb-3">
+					<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+				</h3>
+
+				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
 
 				<div class="letter-space-reading">
 				<?php

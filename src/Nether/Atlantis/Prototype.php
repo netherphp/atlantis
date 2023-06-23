@@ -19,6 +19,11 @@ extends Database\Prototype {
 	public string
 	$UUID;
 
+	////////
+
+	protected Database\Struct\PrototypeFindResult
+	$TagLinks;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -37,14 +42,24 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	GetTagLinks():
-	Common\Datastore {
+	FetchTagLinks():
+	Database\Struct\PrototypeFindResult {
 
 		$Result = Tag\EntityLink::Find([
 			'EntityUUID' => $this->UUID
 		]);
 
 		return $Result;
+	}
+
+	public function
+	GetTagLinks():
+	Common\Datastore {
+
+		if(!isset($this->TagLinks))
+		$this->TagLinks = $this->FetchTagLinks();
+
+		return $this->TagLinks;
 	}
 
 	public function

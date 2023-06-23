@@ -1,0 +1,46 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $Posts
+ */
+
+?>
+
+<div class="hr-hide-last">
+	<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
+	<div>
+		<div class="row align-items-center">
+			<div class="col-12 col-md-2 mb-4 mb-md-0">
+				<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
+					<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
+				</div>
+			</div>
+			<div class="col-12 col-md mb-0 mb-md-0">
+				<div class="fw-bold text-uppercase font-size-small">
+					<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+				</div>
+				<div class="fw-bold font-size-large mb-3">
+					<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+				</div>
+
+				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+			</div>
+		</div>
+	</div>
+	<hr class="mt-3 mb-3" />
+	<?php endforeach; ?>
+</div>
