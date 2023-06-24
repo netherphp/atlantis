@@ -132,6 +132,7 @@ extends Atlantis\Prototype {
 	void {
 
 		$Input['NameLike'] ??= NULL;
+		$Input['Alias'] ??= NULL;
 
 		return;
 	}
@@ -143,6 +144,30 @@ extends Atlantis\Prototype {
 		if($Input['NameLike'] !== NULL) {
 			$SQL->Where('Main.Name LIKE :NameLikeLike');
 			$Input['NameLikeLike'] = "%%{$Input['NameLike']}%%";
+		}
+
+		if($Input['Alias'] !== NULL) {
+			if(is_array($Input['Alias']))
+			$SQL->Where('Main.Alias IN(:Alias)');
+
+			else
+			$SQL->Where('Main.Alias=:Alias');
+		}
+
+		return;
+	}
+
+	static protected function
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		switch($Input['Sort']) {
+			case 'title-az':
+				$SQL->Sort('Main.Name', $SQL::SortAsc);
+			break;
+			case 'title-za':
+				$SQL->Sort('Main.Name', $SQL::SortDesc);
+			break;
 		}
 
 		return;

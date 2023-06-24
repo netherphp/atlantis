@@ -15,7 +15,7 @@ use Nether\User;
  * @var User\EntitySession $User
  *
  * @var Atlantis\PublicWeb $Route
- * @var Blog\Post $Post
+ * @var ?Blog\Post $Post
  */
 
 $Link = (
@@ -27,8 +27,9 @@ $Link = (
 ?>
 
 <div class="BlogPostEditor">
-	<form id="BlogPostEditor" data-post-id="<?php $Printer($Post ? $Post->ID : 'null') ?>">
+	<form id="BlogPostEditor" data-editor="link" data-post-id="<?php $Printer($Post ? $Post->ID : 'null') ?>">
 
+		<!-- BLOG SELECTOR -->
 		<div class="<?php $Util->Print($Blogs->Count() === 1 ? 'd-none' : '') ?> mb-4">
 			<div class="fw-bold text-uppercase">Blog</div>
 			<div>
@@ -40,14 +41,15 @@ $Link = (
 			</div>
 		</div>
 
+		<!-- TITLE AND IMAGE -->
 		<div class="row mb-6">
 			<div class="col-12 col-md mb-4 mb-md-0">
 				<div class="fw-bold text-uppercase">Post Title</div>
-				<input type="text" name="Title" class="form-control" value="<?php $Printer($Link ? $Link->Title : '') ?>" />
+				<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
 			</div>
 			<div class="col-12 col-md-3 mb-0 mb-md-0">
 				<div class="fw-bold text-uppercase">Post Photo</div>
-					<div id="BlogPostCoverImage" class="ratiobox widescreen wallpapered rounded bg-dark mb-2" data-id="<?php $Util->Print($Post && $Post->CoverImageID ? $Post->CoverImageID : 0) ?>" style="background-image:url(<?php $Util->Print($Post && $Post->CoverImageID ? $Post->GetCoverImageURL() : '') ?>);"></div>
+					<div id="BlogPostCoverImage" class="ratiobox widescreen wallpapered rounded bg-light mb-2" data-id="<?php $Util->Print($Post && $Post->CoverImageID ? $Post->CoverImageID : 0) ?>" style="background-image:url(<?php $Util->Print($Post && $Post->CoverImageID ? $Post->GetCoverImageURL() : '/share/gfx/misc/no-image.png') ?>);"></div>
 
 					<button type="button" class="CmdPhotoUpload btn btn-secondary btn-block text-align-left">
 						<i class="mdi mdi-upload"></i> Upload...
@@ -56,6 +58,8 @@ $Link = (
 			</div>
 		</div>
 
+		<!-- LINK FIELDS -->
+		<div class="mb-6">
 			<div class="mb-6">
 				<div class="fw-bold text-uppercase">Source Date</div>
 				<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
@@ -64,29 +68,33 @@ $Link = (
 				<div class="fw-bold text-uppercase">Source URL</div>
 				<input type="text" name="URL" class="form-control" value="<?php $Printer($Link ? $Link->URL : '') ?>" />
 			</div>
-			<div class="mb-6">
+			<div class="mb-0">
 				<div class="fw-bold text-uppercase">Source Excerpt/Highlight</div>
 				<div id="EditorExcerpt" class="Editor d-none"><?php echo $Link ? $Link->Excerpt : '' ?></div>
 			</div>
+		</div>
 
+		<!-- POST CONTENT -->
 		<div class="mb-6">
 			<div class="fw-bold text-uppercase">Additional Post Content</div>
 			<div id="EditorContent" class="Editor d-none"><?php echo $Link ? $Link->Content : '' ?></div>
 		</div>
 
+		<!-- --- --->
 		<div class="mb-0">
 			<button type="submit" class="btn btn-primary">
 				<i class="mdi mdi-fw mdi-content-save"></i>
 				Save
 			</button>
 		</div>
+
 	</form>
 </div>
 
 <script type="module">
-import Editor from '/share/nui/modules/editor/editor.js';
-import FormUtil from '/share/nui/util/form.js';
 import API from '/share/nui/api/json.js';
+import FormUtil from '/share/nui/util/form.js';
+import Editor from '/share/nui/modules/editor/editor.js';
 import UploadButton from '/share/nui/modules/uploader/uploader.js';
 
 jQuery(function(){
@@ -119,7 +127,6 @@ jQuery(function(){
 	.on('submit', function() {
 
 		let that = jQuery(this);
-		let pid = that.attr('data-post-id');
 		let api = new API.Request('POST', '/api/blog/post');
 		let form = new FormUtil(this);
 

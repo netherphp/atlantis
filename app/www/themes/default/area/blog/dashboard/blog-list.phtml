@@ -6,19 +6,17 @@
  * @var Nether\Database\Struct\PrototypeFindResult $BlogUsers
  */
 
-
-
-$Surface
+($Surface)
 ->Set('Page.Title', 'Manage Blogs - Dashboard')
 ->Area('dashboard/nav', [ 'Trail' => [
-	'Blog'           => NULL,
-	'Manage Blogs'   => NULL
+	'Blog'           => '/dashboard/blog/list',
+	'Manage Blogs'   => '/dashboard/blog/list'
 ]]);
 
 ?>
 
 <?php foreach($BlogUsers as $Blog): /** @var Nether\Blog\BlogUser $Blog */ ?>
-<div class="row align-items-center mb-4">
+<div class="row tight align-items-center mb-4">
 	<div class="col-auto">
 		<div class="font-size-largerer">
 			<?php if($Blog->CanAdmin()): ?>
@@ -36,6 +34,11 @@ $Surface
 	<div class="col-auto">
 		<a href="<?php $Printer($Blog->Blog->GetURL()) ?>" class="btn btn-primary">View</a>
 	</div>
+	<?php if($Blog->CanWrite()): ?>
+	<div class="col-auto">
+		<a href="<?php $Printer($Blog->Blog->GetWriteURL()) ?>" class="btn btn-primary">Write</a>
+	</div>
+	<?php endif; ?>
 	<?php if($Blog->CanAdmin()): ?>
 	<div class="col-auto">
 		<a href="<?php $Printer($Blog->Blog->GetSettingsURL()) ?>" class="btn btn-primary">Settings</a>

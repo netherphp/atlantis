@@ -24,7 +24,7 @@ use Nether\User;
 
 ?>
 
-<?php $Surface->Area('blog/blog-header', $__SCOPE) ?>
+<?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
 <hr id="BlogPostInfo"
     class="d-none"
@@ -76,17 +76,20 @@ use Nether\User;
 				<!-- SIDEBAR: MANAGE -->
 				<div class="quotron hr-hide-last mb-6">
 					<?php if($BlogUser->CanWrite()): ?>
-					<a href="<?php $Printer($Post->GetEditURL()) ?>" class="btn btn-outline-light btn-block text-align-left">
+					<a href="<?php $Printer($Post->GetEditURL()) ?>" class="btn btn-outline-light btn-block text-align-left mb-2 CmdPostEdit">
 						<i class="mdi mdi-fw mdi-pencil"></i>
 						Edit
 					</a>
-					<hr class="mt-2 mb-2" />
 
-					<a href="#" class="btn btn-outline-light btn-block text-align-left CmdPostEditTags">
+					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-2 CmdPostEditTags">
 						<i class="mdi mdi-fw mdi-tag"></i>
 						Manage Tags
 					</a>
-					<hr class="mt-2 mb-2" />
+
+					<a href="#" class="btn btn-outline-danger btn-block text-align-left mb-2 CmdPostDelete" data-post-id="<?php $Util->Print($Post->ID) ?>">
+						<i class="mdi mdi-fw mdi-trash-can"></i>
+						Delete Post
+					</a>
 					<?php endif; ?>
 				</div>
 				<?php endif; ?>
@@ -99,6 +102,8 @@ use Nether\User;
 
 <?php if($BlogUser->CanEdit()): ?>
 <script type="module">
+import API from '/share/nui/api/json.js';
+import DialogUtil from '/share/nui/util/dialog.js';
 import TagDialog from '/share/atlantis/tag-dialog.js';
 
 jQuery(function() {
@@ -115,6 +120,44 @@ jQuery(function() {
 
 		return false;
 	});
+
+	jQuery('.CmdPostDelete')
+	.on('click', function() {
+
+		let pid = this.dataset.postId;
+
+		let diag = new DialogUtil.Window({
+			body: `Really delete post <span class="fst-italic">#${pid}</span>?`,
+			title: 'Delete Post',
+			labelAccept: 'Yes',
+			fields: [ new DialogUtil.Field('hidden', 'ID', null, pid) ],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('DELETE', '/api/blog/post', data);
+
+				(api.send())
+				.then(api.goto)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', '/api/blog/post',
+			{ ID: pid },
+			true,
+			function(self, result) {
+				console.log(result);
+				self.body.find('span').text(result.payload.Post.Title);
+				return;
+			}
+		);
+
+		return false;
+	});
+
 
 	return;
 });
