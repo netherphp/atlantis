@@ -77,13 +77,16 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	GetCoverImageURL():
+	GetCoverImageURL(string $Size='md'):
 	?string {
 
 		if(!isset($this->CoverImage))
 		return NULL;
 
-		return $this->CoverImage->GetPublicURL();
+		$URL = $this->CoverImage->GetPublicURL();
+		$URL = str_replace('original.', "{$Size}.", $URL);
+
+		return $URL;
 	}
 
 	public function

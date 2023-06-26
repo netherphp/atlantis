@@ -47,6 +47,10 @@ use Nether\User;
 				default
 				=> $Surface->Area('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE ])
 			}; ?>
+
+			<div class="pt-4">
+				<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
+			</div>
 		</div>
 	</div>
 </div>

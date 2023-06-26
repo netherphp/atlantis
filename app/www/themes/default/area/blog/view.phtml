@@ -100,7 +100,7 @@ use Nether\User;
 	</div>
 </div>
 
-<?php if($BlogUser->CanEdit()): ?>
+<?php if($BlogUser && $BlogUser->CanEdit()): ?>
 <script type="module">
 import API from '/share/nui/api/json.js';
 import DialogUtil from '/share/nui/util/dialog.js';

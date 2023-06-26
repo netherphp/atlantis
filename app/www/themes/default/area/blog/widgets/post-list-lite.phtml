@@ -23,7 +23,7 @@ use Nether\User;
 <div class="hr-hide-last">
 	<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
 	<div>
-		<div class="row align-items-center">
+		<div class="row align-items-start">
 			<div class="col-12 col-md-2 mb-4 mb-md-0">
 				<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
 					<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
@@ -34,10 +34,14 @@ use Nether\User;
 					<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
 				</div>
 				<div class="fw-bold font-size-large mb-3">
-					<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+					<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
 				</div>
 
 				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+
+				<div class="pt-2">
+					<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
+				</div>
 			</div>
 		</div>
 	</div>
