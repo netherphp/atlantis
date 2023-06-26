@@ -14,15 +14,23 @@ use Nether\User;
  *
  * @var Atlantis\PublicWeb $Route
  * @var Common\Datastore $Tags
+ * @var Common\Datastore $Pre
  * @var ?string $URL
  */
 
+$Pre ??= NULL;
 $URL ??= '/tag/:Alias:';
 
 ?>
 
 <div class="opacity-100">
-	<?php foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
+
+	<?php if($Pre) foreach($Pre as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
+	<a href="<?php $Util->Print($Tag->Alias) ?>" class="btn <?php $Util->Print($Tag->Type) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
+	<?php endforeach; ?>
+
+	<?php if($Tags) foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
 	<a href="<?php $Util->Print(str_replace(':Alias:', $Tag->Alias, $URL)) ?>" class="btn btn-outline-dark p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
 	<?php endforeach; ?>
+
 </div>

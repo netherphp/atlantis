@@ -18,11 +18,24 @@ use Nether\User;
  * @var Common\Datastore $Posts
  */
 
+$GetPreTags = function(Blog\Post $Post): Common\Datastore {
+
+	$Output = new Common\Datastore;
+
+	if(!$Post->Enabled)
+	$Output->Push(Atlantis\Tag\Entity::New(
+		Name: 'DRAFT',
+		Type: 'btn-primary'
+	));
+
+	return $Output;
+};
+
 ?>
 
 <?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
 <div>
-	<div class="row">
+	<div class="row <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
 		<div class="col-12 col-md-3 mb-4 mb-md-0">
 			<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
 				<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
@@ -37,7 +50,7 @@ use Nether\User;
 			</h3>
 
 			<div class="mb-3">
-				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+				<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 			</div>
 
 			<?php match($Post->Editor) {

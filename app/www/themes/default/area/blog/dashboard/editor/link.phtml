@@ -44,8 +44,17 @@ $Link = (
 		<!-- TITLE AND IMAGE -->
 		<div class="row mb-6">
 			<div class="col-12 col-md mb-4 mb-md-0">
-				<div class="fw-bold text-uppercase">Post Title</div>
-				<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
+				<div class="mb-4">
+					<div class="fw-bold text-uppercase">Post Title</div>
+					<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
+				</div>
+				<div class="mb-0">
+					<div class="fw-bold text-uppercase">Post Visibility</div>
+					<select name="Enabled" class="form-select">
+						<option value="0" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 0)) ?>>Draft: Only Admins Can See</option>
+						<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 1)) ?>>Published</option>
+					</select>
+				</div>
 			</div>
 			<div class="col-12 col-md-3 mb-0 mb-md-0">
 				<div class="fw-bold text-uppercase">Post Photo</div>

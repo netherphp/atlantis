@@ -22,6 +22,19 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
+$GetPreTags = function(Blog\Post $Post): Common\Datastore {
+
+	$Output = new Common\Datastore;
+
+	if(!$Post->Enabled)
+	$Output->Push(Atlantis\Tag\Entity::New(
+		Name: 'DRAFT',
+		Type: 'btn-primary'
+	));
+
+	return $Output;
+};
+
 ?>
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
@@ -46,7 +59,7 @@ use Nether\User;
 					<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
 				</h3>
 
-				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+				<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 
 				<div class="letter-space-reading">
 				<?php

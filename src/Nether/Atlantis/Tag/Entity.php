@@ -209,4 +209,22 @@ extends Atlantis\Prototype {
 		return parent::Insert($Input);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	New(string $Type=NULL, string $Name=NULL, string $Alias=NULL):
+	static {
+
+		//$Type ??= 'unknown';
+		//$Name ??= 'Unknown';
+		//$Alias ??= Common\Datafilters::SlottableKey($Name);
+
+		return new static([
+			'Type'  => $Type,
+			'Name'  => $Name,
+			'Alias' => $Alias
+		]);
+	}
+
 }
