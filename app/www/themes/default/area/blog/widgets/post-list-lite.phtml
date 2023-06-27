@@ -18,12 +18,25 @@ use Nether\User;
  * @var Common\Datastore $Posts
  */
 
+$GetPreTags = function(Blog\Post $Post): Common\Datastore {
+
+	$Output = new Common\Datastore;
+
+	if(!$Post->Enabled)
+	$Output->Push(Atlantis\Tag\Entity::New(
+		Name: 'DRAFT',
+		Type: 'btn-primary'
+	));
+
+	return $Output;
+};
+
 ?>
 
 <div class="hr-hide-last">
 	<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
 	<div>
-		<div class="row align-items-start">
+		<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
 			<div class="col-12 col-md-2 mb-4 mb-md-0">
 				<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
 					<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
@@ -37,7 +50,7 @@ use Nether\User;
 					<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
 				</div>
 
-				<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+				<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 
 				<div class="pt-2">
 					<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>

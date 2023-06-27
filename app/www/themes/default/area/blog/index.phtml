@@ -7,6 +7,7 @@ use Nether\Database;
 /**
   * @var Blog\Blog $Blog
   * @var ?Blog\BlogUser $BlogUser
+  * @var Database\Struct\PrototypeFindResult $BlogTags
   * @var Database\Struct\PrototypeFindResult $Posts
   * @var Common\Datastore $Popular
   */
@@ -68,15 +69,17 @@ use Nether\Database;
 				</div>
 
 				<!-- SIDEBAR: TAGS -->
+				<?php if($BlogTags && $BlogTags->Count()): ?>
 				<div class="quotron mb-6">
-					<div class="fw-bold text-uppercase">Tags</div>
+					<div class="fw-bold text-uppercase">Tags (<?php $Util->Print($BlogTags->Count()) ?>)</div>
 					<hr class="mt-2 mb-3" />
 					<div>
-						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Eventually</a>
-						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Tags</a>
-						<a href="" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2">Here</a>
+						<?php foreach($BlogTags as $BlogTag): ?>
+						<a href="/tag/<?php $Util->Print($BlogTag->Alias) ?>" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2"><?php $Util->Print($BlogTag->Name) ?></a>
+						<?php endforeach; unset($BlogTag); ?>
 					</div>
 				</div>
+				<?php endif; ?>
 
 				<!-- SIDEBAR: POPULAR POSTS -->
 				<div class="quotron mb-6">

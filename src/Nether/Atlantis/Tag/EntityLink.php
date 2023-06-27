@@ -101,6 +101,17 @@ required data in.
 	static public function
 	RegisterType():
 	void {
+	/*//
+	@deprecated 2023-06-26
+	//*/
+
+		static::Register();
+		return;
+	}
+
+	static public function
+	Register():
+	void {
 
 		/** @var Common\Prototype\PropertyInfo $Prop */
 
@@ -124,6 +135,21 @@ required data in.
 		self::$TypeList[$Type] = static::class;
 
 		return;
+	}
+
+	static public function
+	GetTypeByLinkClass(string $Class):
+	?string {
+
+		$Out = key(array_filter(
+			static::$TypeList,
+			fn(string $C)=> $C === $Class
+		));
+
+		if(!is_string($Out))
+		return NULL;
+
+		return $Out;
 	}
 
 	static public function
@@ -210,7 +236,13 @@ required data in.
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['Type'] ??= NULL;
+		$Type = (
+			isset($Input['LinkClass'])
+			? static::GetTypeByLinkClass($Input['LinkClass'])
+			: static::GetTypeByLinkClass(static::class)
+		);
+
+		$Input['Type'] ??= $Type;
 		$Input['TagID'] ??= NULL;
 		$Input['EntityUUID'] ??= NULL;
 		$Input['Sort'] ??= 'tag-name-az';
