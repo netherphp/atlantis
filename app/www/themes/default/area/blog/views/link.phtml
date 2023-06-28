@@ -20,40 +20,98 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
+$GetPreTags = function(Blog\Post $Post): Common\Datastore {
+
+	$Output = new Common\Datastore;
+
+	if(!$Post->Enabled)
+	$Output->Push(Atlantis\Tag\Entity::New(
+		Name: 'DRAFT',
+		Type: 'btn-primary'
+	));
+
+	return $Output;
+};
+
 $Full ??= TRUE;
 
 $Link = Blog\Struct\EditorLink::FromJSON($Post->Content);
 $OutboundURL = $Full ? $Link->URL : $Post->GetURL();
 $OutboundTab = $Full ? 'target="_blank"' : '';
-$Domain = Atlantis\Util::DomainFromURL($Link->URL);
+$OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 
 ?>
 
-<div class="<?php $Util->Print($Full ? 'jumbotron jumbotron-outline rounded mb-4' : '') ?>">
-	<div class="mb-1">
-		<span class="fw-bold text-uppercase">Source:</span>
-		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($Domain) ?></a>
-	</div>
-	<div class="mb-3">
-		<span class="fw-bold text-uppercase">Date:</span>
-		<?php $Util->Print(Common\Date::FromDateString($Link->Date)->Get(Common\Values::DateFormatFancyDate)) ?>
-	</div>
-	<div class="EditorContent">
-		<?php echo $Link->Excerpt ?>
-	</div>
+<!-- POST HEADING -->
+<div class="mb-4">
 
-	<?php if($Full): ?>
-	<div class="text-align-center pt-4 font-size-large fw-bold">
-		<a class="btn btn-primary" href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>>
-			<i class="mdi mdi-open-in-new"></i>
-			Read on <?php $Util->Print($Domain) ?>
-		</a>
+	<!-- POST IMAGE -->
+	<?php if($Full && $Post->CoverImageID): ?>
+	<div class="mb-4">
+		<img class="rounded w-100" src="<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
 	</div>
 	<?php endif; ?>
+
+	<h3 class="font-size-larger mb-3">
+		<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+	</h3>
+
+	<div class="mb-1">
+		<span class="fw-bold text-uppercase">Date Shared:</span>
+		<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
+	</div>
+	<div class="mb-1">
+		<span class="fw-bold text-uppercase">Date Posted:</span>
+		<?php $Util->Print(Common\Date::FromDateString($Link->Date)->Get(Common\Values::DateFormatFancyDate)) ?>
+	</div>
+	<div class="mb-2">
+		<span class="fw-bold text-uppercase">Source:</span>
+		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($OutboundDomain) ?></a>
+	</div>
+	<div class="mb-0">
+		<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
+	</div>
 </div>
 
-<?php if($Full): ?>
-<div class="EditorContent">
-	<?php echo $Link->Content ?>
+<!-- POST CONTENT: Link Preview -->
+<div class="<?php $Util->Print($Full ? 'mb-8' : '') ?>">
+	<div class="EditorContent">
+		<div class="">
+			<?php if($Full): ?>
+			<h3 class="text-uppercase font-size-larger mb-0">
+				Excerpt
+			</h3>
+			<hr class="mt-1 mb-3" />
+			<?php endif; ?>
+			<div class="fst-italic">
+				<?php while(str_ends_with($Link->Excerpt, '<div><br></div>')) $Link->Excerpt = preg_replace('/<div><br><\/div>$/', '', $Link->Excerpt); echo $Link->Excerpt; ?>
+			</div>
+			<?php if($Full): ?>
+			<div class="text-align-center pt-4 fw-bold">
+				<div class="font-size-large mb-1">
+					<a class="btn btn-primary btn-lg font-size-large" href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>>
+						<i class="mdi mdi-open-in-new"></i>
+						View Full Article...
+					</a>
+				</div>
+				<div class="font-size-small fw-normal text-muted">
+					<?php $Util->Print($OutboundDomain) ?>
+				</div>
+			</div>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>
+
+<?php if($Full && $Link->Content): ?>
+<!-- POST CONTENT: Additional Content -->
+<div class="mb-6">
+	<h3 class="text-uppercase font-size-larger mb-0">
+		More Information
+	</h3>
+	<hr class="mt-1 mb-3" />
+	<div class="EditorContent">
+		<?php echo $Link->Content ?>
+	</div>
 </div>
 <?php endif; ?>

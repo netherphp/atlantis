@@ -22,19 +22,6 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
-$GetPreTags = function(Blog\Post $Post): Common\Datastore {
-
-	$Output = new Common\Datastore;
-
-	if(!$Post->Enabled)
-	$Output->Push(Atlantis\Tag\Entity::New(
-		Name: 'DRAFT',
-		Type: 'btn-primary'
-	));
-
-	return $Output;
-};
-
 ?>
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
@@ -52,34 +39,18 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 		<div class="row">
 			<div class="col-12 col-md-8 mb-4 mb-md-0">
 
-				<div class="fw-bold text-uppercase font-size-small">
-					<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
-				</div>
-				<h3 class="font-size-larger mb-3">
-					<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
-				</h3>
-
-				<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
-
 				<div class="letter-space-reading">
+
 				<?php
+				match($Post->Editor) {
+					'link'
+					=> $Surface->Area('blog/views/link', $__SCOPE),
 
-				if($Post->Editor === 'editorjs') {
-					$Content = Common\Struct\EditorJS\Content::FromString($Post->Content);
-
-					$Content->Blocks->Each(
-						fn(Common\Struct\EditorJS\Block $Block)
-						=> print($Block)
-					);
-				}
-
-				elseif($Post->Editor === 'link')
-				$Surface->Area('blog/views/link', $__SCOPE);
-
-				else
-				$Surface->Area('blog/views/html', $__SCOPE);
-
+					default
+					=> $Surface->Area('blog/views/html', $__SCOPE)
+				};
 				?>
+
 				</div>
 
 			</div>
@@ -170,7 +141,6 @@ jQuery(function() {
 
 		return false;
 	});
-
 
 	return;
 });

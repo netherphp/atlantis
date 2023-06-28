@@ -20,10 +20,45 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
+$GetPreTags = function(Blog\Post $Post): Common\Datastore {
+
+	$Output = new Common\Datastore;
+
+	if(!$Post->Enabled)
+	$Output->Push(Atlantis\Tag\Entity::New(
+		Name: 'DRAFT',
+		Type: 'btn-primary'
+	));
+
+	return $Output;
+};
+
 $Full ??= TRUE;
 
 ?>
 
+<!-- POST HEADING -->
+<div class="mb-4">
+	<h3 class="font-size-larger mb-4">
+		<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
+	</h3>
+	<div class="mb-1">
+		<span class="fw-bold text-uppercase">Date Posted:</span>
+		<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
+	</div>
+	<div class="mb-0">
+		<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
+	</div>
+</div>
+
+<!-- POST IMAGE -->
+<?php if($Full && $Post->CoverImageID): ?>
+<div class="pt-4 mb-4">
+	<img class="rounded w-100" src="<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
+</div>
+<?php endif; ?>
+
+<!-- POST CONTENT -->
 <div class="EditorContent">
 	<?php echo $Full ? $Post->Content : $Post->GetExcerpt() ?>
 </div>

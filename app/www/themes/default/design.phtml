@@ -39,6 +39,18 @@ $Surface
 	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/simple-icons.min.css?v={$CacheBuster}") ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("{$Surface->Get('Theme.Page.MainCSS')}?v={$CacheBuster}") ?>" />
 
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="<?php $Util->Print($Router->Request->GetURL()) ?>" />
+	<meta property="og:title" content="<?php $Surface->Show('Page.Title') ?>" />
+	<meta property="og:image" content="<?php $Surface->Show('Page.ImageURL') ?>" />
+	<meta property="og:description" content="" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:domain" content="<?php $Util->Print($Router->Request->Domain) ?>" />
+	<meta name="twitter:title" content="<?php $Surface->Show('Page.Title') ?>" />
+	<meta name="twitter:image" content="<?php $Surface->Show('Page.ImageURL') ?>" />
+	<meta name="twitter:creator" content="" />
+
 	<!-- Additional Styles -->
 	<?php foreach($Surface->Get('Theme.Page.Styles') as $StyleURL): ?><link rel="stylesheet" type="text/css" href="<?php $Printer($StyleURL) ?>" />
 	<?php endforeach; unset($StyleURL); ?>

@@ -22,7 +22,6 @@ use Nether\Database;
 
 			<!-- THE ZONE -->
 			<div class="col-12 col-md mb-6 mb-md-0 pr-0 pr-md-4">
-				<h2 class="PrettyBrandText font-size-normal mb-4">Latest Posts</h2>
 
 				<?php $Surface->Area('blog/widgets/post-list', [ 'Posts'=> $Posts ]) ?>
 
@@ -62,11 +61,13 @@ use Nether\Database;
 				<?php endif; ?>
 
 				<!-- SIDEBAR: ABOUT -->
+				<?php if($Blog->Details): ?>
 				<div class="quotron mb-6">
 					<div class="fw-bold text-uppercase">About</div>
 					<hr class="mt-2 mb-2" />
 					<div><?php echo nl2br($Encoder($Blog->Details)) ?></div>
 				</div>
+				<?php endif; ?>
 
 				<!-- SIDEBAR: TAGS -->
 				<?php if($BlogTags && $BlogTags->Count()): ?>

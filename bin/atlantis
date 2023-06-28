@@ -1023,6 +1023,47 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('serve')]
+	#[Console\Meta\Info('Run the HTTP Test Server built into PHP.')]
+	#[Console\Meta\Error(1, 'Returned Error Code %d')]
+	public function
+	RunLocalTestServer():
+	int {
+
+		$Host = $this->GetOption('Host') ?? 'localhost';
+		$Port = $this->GetOption('Port') ?? '80';
+
+		$Path = (
+			$this->GetOption('Webroot')
+			?? $this->App->FromProjectRoot('www')
+		);
+
+		$Command = sprintf(
+			'php -S %s:%s -t %s',
+			$Host, $Port, $Path
+		);
+
+		////////
+
+		$this->FormatLn(
+			'%s %s',
+			$this->FormatPrimary('[Atlantis]'),
+			$Command
+		);
+
+		////////
+
+		$Cmd = $this->ExecuteCommandLine($Command, TRUE);
+
+		if($Cmd->Error)
+		$this->Quit(1, $Cmd->Error);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Console\Meta\Command]
 	#[Console\Meta\Info('Run git command in all repos.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]

@@ -33,7 +33,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 ?>
 
-<div class="hr-hide-last">
+<div class="-hr-hide-last">
 	<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
 	<div>
 		<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
@@ -58,6 +58,6 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 			</div>
 		</div>
 	</div>
-	<hr class="mt-3 mb-3" />
+	<hr class="mt-5 mb-5" />
 	<?php endforeach; ?>
 </div>
