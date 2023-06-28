@@ -1047,7 +1047,7 @@ extends Console\Client {
 
 		$this->FormatLn(
 			'%s %s',
-			$this->FormatPrimary('[Atlantis]'),
+			$this->FormatPrimary('[RunLocalTestServer]'),
 			$Command
 		);
 
