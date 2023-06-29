@@ -10,9 +10,6 @@ use Nether\User;
 	return;
 })();
 
-define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
-/** @constant Nether\Atlantis\Engine Atlantis */
-
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
@@ -23,14 +20,23 @@ extends Console\Client {
 	AppName    = 'Atlantis SSL Tool',
 	AppVersion = '5.0.0-dev';
 
-	#[Console\Meta\Command]
+	protected function
+	OnReady():
+	void {
+
+		$this->App = new Nether\Atlantis\Engine($this->GetProjectDirectory());
+
+		return;
+	}
+
+	#[Console\Meta\Command('check')]
 	#[Console\Meta\Info('Check the status of an SSL cert for a domain.')]
 	#[Console\Meta\Arg('domain')]
 	#[Console\Meta\Error(1, 'no domain specified')]
 	#[Console\Meta\Error(2, 'cert lookup failure: %s')]
 	#[Console\Meta\Error(3, 'cert unexpected format: %s')]
 	public function
-	Check():
+	HandleCheckCert():
 	int {
 
 		$Domain = $this->GetInput(1);
@@ -152,6 +158,51 @@ extends Console\Client {
 		}
 
 		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('run')]
+	public function
+	HandleUpdateCert():
+	int {
+
+		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
+		$UseSudo = TRUE;
+		$UseRehash = TRUE;
+		$Command = NULL;
+		$Output = NULL;
+		$Error = NULL;
+
+		if($UseSudo && $this->Sudo())
+		return 0;
+
+		$Acme = new Nether\Atlantis\Struct\AcmeConfig($App);
+
+		////////
+
+		$Command = sprintf(
+			'%s run %s 2>&1',
+			$Acme->Phar,
+			$App->GetEnvConfigRoot($Filename)
+		);
+
+		////////
+
+		$Result = $this->ExecuteCommandLine($Command);
+
+		if($Result->Error) {
+			$this->PrintLn($this->FormatPrimary('Command Output:'));
+			$Result->Print('> ');
+			return $Result->Error;
+		}
+
+		if($UseRehash)
+		$this->WebserverRehash();
+
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////

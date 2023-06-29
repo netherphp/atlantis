@@ -32,6 +32,7 @@ use Nether\User;
 ->Set(Atlantis\Library::ConfProjectDomain, 'whatever.tld')
 ->Set(Atlantis\Library::ConfProjectDescShort, 'Example project built on Nether Atlantis')
 ->Set(Atlantis\Library::ConfProjectWebserver, Atlantis\Library::WebServerTypeApache24)
+->Set(Atlantis\Library::ConfProjectWebCertType, Atlantis\Library::WebCertTypeAcmePHP)
 ->Set(Atlantis\Library::ConfContactTo, 'someone@whatever.tld');
 
 ////////////////////////////////////////////////////////////////////////////////

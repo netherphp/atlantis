@@ -28,7 +28,8 @@ implements
 	ConfProjectDefineConsts   = 'Project.DefineConstants',
 	ConfProjectInitWithConfig = 'Project.InitWithConfig',
 	ConfProjectWebRoot        = 'Project.WebRoot',
-	ConfProjectWebserver      = 'Project.WebServerType';
+	ConfProjectWebserver      = 'Project.WebServerType',
+	ConfProjectWebCertType    = 'Project.WebCertType';
 
 	const
 	ConfAcmePhar       = 'AcmePHP.Phar',
@@ -66,6 +67,9 @@ implements
 	const
 	WebServerTypeNone     = NULL,
 	WebServerTypeApache24 = 'apache24';
+
+	const
+	WebCertTypeAcmePHP = 'acmephp';
 
 	const
 	AccessContactLogManage = 'Nether.Atlantis.ContactLog.Manage',
