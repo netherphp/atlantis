@@ -243,10 +243,10 @@ extends Console\Client {
 
 		return match($Version) {
 			default => sprintf(
-				'env php %s acmephp-run --rehash --sudo',
+				'env php %s renew',
 				Common\Filesystem\Util::Pathify(
 					$this->App->GetProjectRoot(),
-					'vendor', 'bin', 'atlantis'
+					'vendor', 'bin', 'atlantis-ssl'
 				)
 			)
 		};

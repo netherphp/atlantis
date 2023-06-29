@@ -20,6 +20,9 @@ extends Console\Client {
 	AppName    = 'Atlantis SSL Tool',
 	AppVersion = '5.0.0-dev';
 
+	protected Atlantis\Engine
+	$App;
+
 	protected function
 	OnReady():
 	void {
@@ -163,29 +166,49 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('run')]
+	#[Console\Meta\Command('renew')]
+	#[Console\Meta\Info('Renew the certificate for the currently configured Environment.')]
+	#[Console\Meta\Error(1, 'Renewal Failure')]
 	public function
-	HandleUpdateCert():
+	HandleRenewCert():
 	int {
 
-		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
 		$UseSudo = TRUE;
 		$UseRehash = TRUE;
-		$Command = NULL;
-		$Output = NULL;
-		$Error = NULL;
+		$WebCertType = $this->App->Config[Atlantis\Library::ConfProjectWebCertType];
 
 		if($UseSudo && $this->Sudo())
 		return 0;
 
-		$Acme = new Nether\Atlantis\Struct\AcmeConfig($App);
+		////////
+
+		$Result = match($WebCertType) {
+			default => $this->HandleRenewCert_ViaAcmePHP()
+		};
+
+		if(!$Result)
+		$this->Quit(1);
 
 		////////
+
+		if($UseRehash)
+		$this->RehashWebserver($UseSudo);
+
+		return 0;
+	}
+
+	protected function
+	HandleRenewCert_ViaAcmePHP():
+	bool {
+
+		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
+		$Acme = new Atlantis\Struct\AcmeConfig($this->App);
+		$Result = NULL;
 
 		$Command = sprintf(
 			'%s run %s 2>&1',
 			$Acme->Phar,
-			$App->GetEnvConfigRoot($Filename)
+			$this->App->GetEnvConfigRoot($Filename)
 		);
 
 		////////
@@ -195,18 +218,32 @@ extends Console\Client {
 		if($Result->Error) {
 			$this->PrintLn($this->FormatPrimary('Command Output:'));
 			$Result->Print('> ');
-			return $Result->Error;
+			return FALSE;
 		}
 
-		if($UseRehash)
-		$this->WebserverRehash();
-
-
-		return;
+		return TRUE;
 	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	protected function
+	RehashWebserver(bool $UseSudo=FALSE):
+	void {
+
+		$Command = sprintf(
+			'%s webserver-rehash %s',
+			Common\Filesystem\Util::Pathify(
+				$this->App->GetProjectRoot(),
+				'vendor', 'bin', 'atlantis'
+			),
+			($UseSudo ? '--sudo' : '')
+		);
+
+		$this->ExecuteCommandLine($Command);
+
+		return;
+	}
 
 	protected function
 	GetProjectDirectory():
