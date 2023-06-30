@@ -9,6 +9,10 @@ use Nether\Common;
 use FilesystemIterator;
 use Generator;
 use Exception;
+use Imagick;
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
 class Util {
 
@@ -228,6 +232,117 @@ class Util {
 		$ReResult = $ReCaptcha->Verify($Response, $RemoteAddr);
 
 		return (Bool)$ReResult->IsSuccess();
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	IsFormatSupported(string $What):
+	bool {
+
+		if(static::IsFormatSupportedByImagick($What))
+		return TRUE;
+
+		if(static::IsFormatSupportedByGD($What))
+		return TRUE;
+
+		return FALSE;
+	}
+
+	static public function
+	IsFormatSupportedByImagick(string $What):
+	bool {
+
+		return in_array(
+			strtoupper($What),
+			Imagick::QueryFormats()
+		);
+	}
+
+	static public function
+	IsFormatSupportedByGD(string $What):
+	bool {
+
+		$Fmts = gd_info();
+		$What = strtoupper($What);
+
+		$Keys = NULL;
+		$Claim = NULL;
+		$Buff = NULL;
+
+		////////
+
+		// if GD clearly does not know what it is...
+
+		$Keys = new Common\Datastore([
+			sprintf('%s Support', $What),
+			sprintf('%s Read Support', $What)
+		]);
+
+		$Claim = $Keys->Accumulate(FALSE, (
+			fn(bool $Prev, string $K)
+			=> ((isset($Fmts[$K]) && $Fmts[$K]) ?: $Prev)
+		));
+
+		if(!$Claim)
+		return FALSE;
+
+		////////
+
+		// problem #1 - PHP-GD lies about the support on the high level
+		// with its configuration values. they are stating if it was built
+		// with the apis enabled only. it is possible to get this far but
+		// not actually support what it said it does.
+
+		$ImageWriteFunc = match($What) {
+			'AVIF'  => 'imageavif',
+			'BMP'   => 'imagebmp',
+			'GIF'   => 'imagegif',
+			'JPG'   => 'imagejpeg',
+			'JPEG'  => 'imagejpeg',
+			'PNG'   => 'imagepng',
+			default => NULL
+		};
+
+		if($ImageWriteFunc === NULL || !function_exists($ImageWriteFunc))
+		return FALSE;
+
+		////////
+
+		// problem #2 - image[avif|jpeg|png] will report a success while
+		// spamming old school warnings to the logs regarding failure. so
+		// the only way to truely know is to actually write something
+		// and see if it is ok.
+
+		$Buff = new Common\Overbuffer;
+
+		$Claim = $Buff->Exec(function() use($ImageWriteFunc) {
+			$GD = imagecreate(1, 1);
+
+			$Lie = @$ImageWriteFunc($GD, NULL);
+			imagedestroy($GD);
+
+			return $Lie;
+		});
+
+		// if it says it failed then we accept that.
+
+		if(!$Claim)
+		return FALSE;
+
+		// but now we have to call its bluff and check for some
+		// known failure states.
+
+		if($Buff->Length() === 0)
+		return FALSE;
+
+		if($Buff->Length() === 1 && $Buff->Get() === '1')
+		return FALSE;
+
+		////////
+
+		return TRUE;
 	}
 
 }

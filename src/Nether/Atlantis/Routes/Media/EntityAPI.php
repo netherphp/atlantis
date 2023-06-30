@@ -7,6 +7,8 @@ use Nether\Common;
 use Nether\Storage;
 
 use Exception;
+use Imagick;
+use GdImage;
 
 class EntityAPI
 extends Atlantis\Routes\UploadAPI {
@@ -79,7 +81,11 @@ extends Atlantis\Routes\UploadAPI {
 	EntityPostFinal():
 	void {
 
-		$this->ChunkFinalise();
+		try { $this->ChunkFinalise(); }
+		catch(Exception $Error) {
+			$this->Quit(1, $Error->GetMessage());
+			return;
+		}
 
 		////////
 
@@ -91,6 +97,18 @@ extends Atlantis\Routes\UploadAPI {
 		////////
 
 		$this->SetPayload($Entity->DescribeForPublicAPI());
+
+		return;
+	}
+
+	protected function
+	OnFinaliseInspectFile(Storage\File $File):
+	void {
+
+		if($File->GetType() === $File::TypeImg) {
+			if(!Atlantis\Util::IsFormatSupported($File->GetExtension()))
+			throw new Atlantis\Error\Media\UnsupportedFormat($File->GetExtension());
+		}
 
 		return;
 	}
@@ -261,7 +279,13 @@ extends Atlantis\Routes\UploadAPI {
 		if(!$Entity)
 		$this->Quit(2, 'not entity found');
 
-		$Entity->GenerateExtraFiles();
+		try {
+			$Entity->GenerateExtraFiles();
+		}
+
+		catch(Exception $Error) {
+			$this->Quit(3, $Error->GetMessage());
+		}
 
 		$this->SetPayload([
 			'ID'          => $Entity->ID,

@@ -157,6 +157,10 @@ extends Atlantis\ProtectedAPI {
 		if(!$File->Exists())
 		throw new Atlantis\Error\Media\InvalidUpload($this->Data->UUID);
 
+		// see if there is a reason to bail.
+
+		$this->OnFinaliseInspectFile($File);
+
 		////////
 
 		$Libs = $this->App->Library->Distill(
@@ -178,6 +182,13 @@ extends Atlantis\ProtectedAPI {
 				: FALSE
 			)
 		);
+
+		return;
+	}
+
+	protected function
+	OnFinaliseInspectFile(Storage\File $File):
+	void {
 
 		return;
 	}

@@ -292,6 +292,7 @@ extends Atlantis\Prototype {
 
 		catch(Exception $E) {
 			$this->CleanExtraFiles();
+			throw $E;
 		}
 
 		return $this;
@@ -350,13 +351,46 @@ extends Atlantis\Prototype {
 		};
 
 		$Data = NULL;
+		$Tmp = NULL;
+		$GD = NULL;
 
 		try {
 			if(!($Data = $File->Read()))
 			throw new Exception('failed to read data');
 
 			$Img = new Imagick;
-			$Img->ReadImageBlob($File->Read());
+
+			// handle supporting file formats that our imagick build does
+			// not seem to have at the moment.
+
+			if($File->GetExtension() === 'avif') {
+
+				// gd reports avif support is enabled. but then dies
+				// when using it saying it is not supported. it looks
+				// like libavif is needed and there is not one in the
+				// ubuntu focal. need to upgrade the os.
+
+				throw new Exception('AVIF not supported yet');
+
+				// save the avif locally...
+				$Tmp = Common\Filesystem\Util::MkTempFile();
+				file_put_contents($Tmp, $File->Read());
+
+				// so gd can open it and resave it...
+				$GD = imagecreatefromavif($Tmp);
+				imagejpeg($GD, $Tmp);
+				imagedestroy($GD);
+
+				// so imagick can read it
+				$Img->ReadImageBlob(file_get_contents($Tmp));
+				unlink($Tmp);
+				unset($Tmp, $GD);
+			}
+
+			else {
+				$Img->ReadImageBlob($File->Read());
+			}
+
 			$Img->ResetIterator();
 			$Img->StripImage();
 			$IP = $Img->GetImagePage();
