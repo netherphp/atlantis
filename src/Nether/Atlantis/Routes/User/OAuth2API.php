@@ -80,6 +80,8 @@ extends Atlantis\PublicWeb {
 
 			$Token = $this->FetchAuthToken($Client, $AuthCode);
 
+			//var_dump($Token);
+
 			if(!$Token)
 			$this->Quit(2, sprintf('Unable to process %s Auth Code', static::AuthName));
 
@@ -262,7 +264,12 @@ extends Atlantis\PublicWeb {
 			);
 		}
 
-		catch(Throwable $Error) { }
+		catch(Throwable $Error) {
+			error_log("[OAuth2API.FetchAuthToken] {$Error->GetMessage()}");
+			error_log($Error->GetTraceAsString());
+			error_log(get_class($Error));
+			error_log(json_encode($Error));
+		}
 
 		return $Token;
 	}

@@ -337,9 +337,6 @@ class Util {
 		if($Buff->Length() === 0)
 		return FALSE;
 
-		if($Buff->Length() === 1 && $Buff->Get() === '1')
-		return FALSE;
-
 		////////
 
 		return TRUE;

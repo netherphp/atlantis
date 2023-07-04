@@ -11,9 +11,6 @@ use Nether\User;
 	return;
 })();
 
-define('Atlantis', new Nether\Atlantis\Engine(getcwd()));
-/** @constant Nether\Atlantis\Engine Atlantis */
-
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
@@ -31,10 +28,277 @@ extends Console\Client {
 	OnReady():
 	void {
 
-		$this->App = Atlantis;
+		$this->App = new Atlantis\Engine(getcwd());
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command]
+	public function
+	Setup():
+	int {
+
+		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
+			Common\Filesystem\Util::Pathify(
+				$this->App->GetProjectRoot(),
+				'atlantis.json'
+			)
+		);
+
+		$this
+		->SetupProjectDirs($Project)
+		->SetupProjectLinks($Project);
+
+		$Project->Write();
+
+		return 0;
+	}
+
+	protected function
+	SetupProjectDirs(Atlantis\Struct\AtlantisProjectJSON $Project):
+	static {
+
+		$Dir = NULL;
+		$Status = FALSE;
+		$Fullpath = NULL;
+
+		$this->PrintLn($this->FormatPrimary('[Atlantis::SetupProjectDirs]'));
+
+		foreach($Project->Dirs as $Dir) {
+			/** @var Common\Filesystem\Directory $Dir */
+
+			$Status = NULL;
+			$Message = NULL;
+
+			$Fullpath = (
+				Common\Filesystem\Util::IsAbsolutePath($Dir->Path, '/')
+				? $Dir->Path
+				: $this->App->FromProjectRoot($Dir->Path)
+			);
+
+			////////
+
+			if(file_exists($Fullpath) && is_dir($Fullpath)) {
+				$Status = TRUE;
+
+				if(is_link($Fullpath)) {
+					$Status = 4;
+					$Message = sprintf(
+						'Exists as a link to %s',
+						readlink($Fullpath)
+					);
+				}
+
+				goto LoopReport;
+			}
+
+			if(file_exists($Fullpath) && !is_dir($Fullpath)) {
+				$Status = FALSE;
+				$Message = 'Exists as a file';
+
+				goto LoopReport;
+			}
+
+			if(!file_exists($Fullpath)) {
+				$Status = Common\Filesystem\Util::MkDir(
+					$Fullpath,
+					$Dir->Mode
+				);
+
+				if(!is_dir($Fullpath)) {
+					$Status = FALSE;
+					$Message = sprintf(
+						'Failed to create %s',
+						$Fullpath
+					);
+
+					goto LoopReport;
+				}
+			}
+
+			if(!is_readable($Fullpath)) {
+				$Status = 4;
+				$Message = 'Dir not readable.';
+
+				goto LoopReport;
+			}
+
+			if(!is_writable($Fullpath)) {
+				$Status = 4;
+				$Message = 'Dir not writable.';
+
+				goto LoopReport;
+			}
+
+			////////
+
+			LoopReport:
+			$this->FormatLn(
+				'%s %s%s',
+				static::EmojiForStatus($Status),
+				$Fullpath,
+				( $Message ? " ({$Message})": '')
+			);
+		}
+
+		$this->PrintLn();
+		return $this;
+	}
+
+	protected function
+	SetupProjectLinks(Atlantis\Struct\AtlantisProjectJSON $Project):
+	static {
+
+		$Link = NULL;
+		$Status = NULL;
+		$Fullpath = NULL;
+		$Sourcepath = NULL;
+		$ErrorMessage = NULL;
+
+		$this->PrintLn($this->FormatPrimary('[Atlantis::SetupProjectLinks]'));
+
+		foreach($Project->Links as $Link) {
+			/** @var Common\Filesystem\Symlink $Link */
+
+			$Status = NULL;
+			$ErrorMessage = NULL;
+
+			$Fullpath = (
+				Common\Filesystem\Util::IsAbsolutePath($Link->Path)
+				? $Link->Path
+				: $this->App->FromProjectRoot($Link->Path)
+			);
+
+			$Sourcepath = (
+				Common\Filesystem\Util::IsAbsolutePath($Link->Source)
+				? $Link->Source
+				: $this->App->FromProjectRoot($Link->Source)
+			);
+
+			////////
+
+			if(is_link($Fullpath)) {
+				if(Common\Filesystem\Util::IsLinkTo($Fullpath, $Sourcepath)) {
+					$Status = TRUE;
+					goto LoopReport;
+				}
+
+				$Status = FALSE;
+				$ErrorMessage = sprintf(
+					'Link (%s) does not point to %s',
+					readlink($Fullpath),
+					$Sourcepath
+				);
+
+				goto LoopReport;
+			}
+
+			if(is_dir($Fullpath)) {
+				$Status = FALSE;
+				$ErrorMessage = sprintf(
+					'%s exists as a real directory',
+					$Fullpath
+				);
+
+				goto LoopReport;
+			}
+
+			if(file_exists($Fullpath)) {
+				$Status = FALSE;
+				$ErrorMessage = sprintf(
+					'%s exists as a real file',
+					$Fullpath
+				);
+
+				goto LoopReport;
+			}
+
+			if(!symlink($Sourcepath, $Fullpath)) {
+				$Status = FALSE;
+				$ErrorMessage = sprintf(
+					'Failed to create symlink(1) %s',
+					$Fullpath
+				);
+
+				goto LoopReport;
+			};
+
+			if(!is_link($Sourcepath, $Fullpath)) {
+				$Status = FALSE;
+				$ErrorMessage = sprintf(
+					'Failed to create symlink(2) %s',
+					$Fullpath
+				);
+
+				goto LoopReport;
+			};
+
+			if(!Common\Filesystem\Util::IsLinkTo($Fullpath, $Sourcepath)) {
+				$Status = FALSE;
+				$ErrorMessage = sprintf(
+					'Created symlink (%s) but it seems wrong (%s)',
+					$Fullpath,
+					$Sourcepath
+				);
+
+				goto LoopReport;
+			}
+
+			if(!is_readable($Fullpath)) {
+				$Status = 4;
+				$Message = 'Link not readable.';
+
+				goto LoopReport;
+			}
+
+			if(!is_writable($Fullpath)) {
+				$Status = 4;
+				$Message = 'Link not writable.';
+
+				goto LoopReport;
+			}
+
+			$Status = TRUE;
+
+			////////
+
+			LoopReport:
+			$this->FormatLn(
+				'%s %s => %s%s',
+				static::EmojiForStatus($Status),
+				$Sourcepath,
+				$Fullpath,
+				( $ErrorMessage ? " ({$ErrorMessage})": '')
+			);
+		}
+
+		$this->PrintLn();
+		return $this;
+	}
+
+	static public function
+	EmojiForStatus(mixed $Status):
+	string {
+
+		if($Status === TRUE)
+		return '🟢';
+
+		if($Status === FALSE)
+		return '🔴';
+
+		if(is_int($Status))
+		return ['⚫', '⚪', '🟤', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣'][$Status];
+
+		////////
+
+		return '⚫';
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command]
 	#[Console\Meta\Info('Start a fresh project from scratch.')]

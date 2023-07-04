@@ -16,12 +16,17 @@ use Nether\Database;
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
-<div class="pt-4 pb-4">
+<div class="container pt-4">
+	<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
+	<hr class="mt-1" />
+</div>
+
+<div class="pt-0 pb-4">
 	<div class="container">
 		<div class="row">
 
 			<!-- THE ZONE -->
-			<div class="col-12 col-md mb-6 mb-md-0 pr-0 pr-md-4">
+			<div class="col-12 col-md mb-6 mb-md-0">
 
 				<?php $Surface->Area('blog/widgets/post-list', [ 'Posts'=> $Posts ]) ?>
 
@@ -30,8 +35,8 @@ use Nether\Database;
 					<div class="fst-italic">There are no posts here yet.</div>
 				</div>
 				<?php else: ?>
-				<div class="text-center">
-					[pagination widget]
+				<div class="text-center mb-4">
+					<?php $Surface->Area('widgets/pager', [ 'Results'=> $Posts, 'BaseURL'=> $Blog->GetURL() ]) ?>
 				</div>
 				<?php endif; ?>
 			</div>
@@ -41,21 +46,19 @@ use Nether\Database;
 
 				<?php if($BlogUser): ?>
 				<!-- SIDEBAR: MANAGE -->
-				<div class="quotron hr-hide-last mb-6">
+				<div class="quotron mb-6">
 					<?php if($BlogUser->CanWrite()): ?>
-					<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light btn-block text-align-left">
-						<i class="mdi mdi-fw mdi-text-box-edit"></i>
-						Write
+					<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light btn-block mb-2 text-align-left">
+						<i class="mdi mdi-fw mdi-plus-thick"></i>
+						New Post
 					</a>
-					<hr class="mt-2 mb-2" />
 					<?php endif; ?>
 
 					<?php if($BlogUser->CanAdmin()): ?>
-					<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light btn-block text-align-left">
+					<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light btn-block mb-2 text-align-left">
 						<i class="mdi mdi-fw mdi-cog"></i>
 						Blog Settings
 					</a>
-					<hr class="mt-2 mb-2" />
 					<?php endif; ?>
 				</div>
 				<?php endif; ?>
@@ -100,7 +103,7 @@ use Nether\Database;
 				</div>
 
 				<!-- SIDEBAR: BLOG STATS -->
-				<div class="quotron mb-6">
+				<div class="d-none quotron mb-6">
 					<div class="row tight align-items-center">
 						<div class="col-auto"><i class="mdi mdi-fw mdi-file-document font-size-larger"></i></div>
 						<div class="col fw-bold">Posts</div>

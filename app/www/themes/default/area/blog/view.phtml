@@ -33,13 +33,22 @@ use Nether\User;
     data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
     />
 
-<div class="pt-4 pb-4">
+<div class="container pt-4">
+	<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
+	<hr class="mt-1" />
+</div>
+
+<div class="pt-0 pb-4">
 	<div class="container">
 
 		<div class="row">
-			<div class="col-12 col-md-8 mb-4 mb-md-0">
+			<div class="col-12 col-md-8 mb-4 mb-md-0 letter-space-reading">
 
-				<div class="letter-space-reading">
+				<?php if(!$Post->Enabled): ?>
+				<div class="alert alert-primary text-center p-2 mb-4">
+					This post is in DRAFT mode.
+				</div>
+				<?php endif; ?>
 
 				<?php
 				match($Post->Editor) {
@@ -51,24 +60,39 @@ use Nether\User;
 				};
 				?>
 
-				</div>
-
 			</div>
 			<div class="col-12 col-md-4 mb-4 mb-md-0">
 
 				<?php if($BlogUser): ?>
 				<!-- SIDEBAR: MANAGE -->
-				<div class="quotron hr-hide-last mb-6">
+				<div class="quotron mb-6">
 					<?php if($BlogUser->CanWrite()): ?>
 					<a href="<?php $Printer($Post->GetEditURL()) ?>" class="btn btn-outline-light btn-block text-align-left mb-2 CmdPostEdit">
 						<i class="mdi mdi-fw mdi-pencil"></i>
-						Edit
+						Edit Post
 					</a>
-
 					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-2 CmdPostEditTags">
 						<i class="mdi mdi-fw mdi-tag"></i>
-						Manage Tags
+						Edit Tags
 					</a>
+
+					<?php $Surface->Area('blog/widgets/view-sidebar-manage', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
+
+					<hr class="mb-2 mb-3" />
+
+					<?php if(!$Post->Enabled): ?>
+					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-0 CmdPostPublish" data-value="1">
+						<i class="mdi mdi-fw mdi-eye"></i>
+						Publish Post
+					</a>
+					<?php else: ?>
+					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-0 CmdPostPublish" data-value="0">
+						<i class="mdi mdi-fw mdi-eye-off"></i>
+						Set To Draft Mode
+					</a>
+					<?php endif; ?>
+
+					<hr class="mb-2 mb-3" />
 
 					<a href="#" class="btn btn-outline-danger btn-block text-align-left mb-2 CmdPostDelete" data-post-id="<?php $Util->Print($Post->ID) ?>">
 						<i class="mdi mdi-fw mdi-trash-can"></i>
@@ -87,8 +111,8 @@ use Nether\User;
 <?php if($BlogUser && $BlogUser->CanEdit()): ?>
 <script type="module">
 import API from '/share/nui/api/json.js';
+import TagAbuser from '/share/local/tag-abuser.js';
 import DialogUtil from '/share/nui/util/dialog.js';
-import TagDialog from '/share/atlantis/tag-dialog.js';
 
 jQuery(function() {
 
@@ -99,11 +123,12 @@ jQuery(function() {
 	jQuery('.CmdPostEditTags')
 	.on('click', function(){
 
-		let diag = new TagDialog(post.uuid, 'blogpost');
+		let diag = new TagAbuser(post.uuid, 'blogpost');
 		diag.show();
 
 		return false;
 	});
+
 
 	jQuery('.CmdPostDelete')
 	.on('click', function() {
@@ -141,6 +166,60 @@ jQuery(function() {
 
 		return false;
 	});
+
+	jQuery('.CmdPostPublish')
+	.on('click', function() {
+
+		let that = jQuery(this);
+		let state = parseInt(that.attr('data-value'));
+		let msg = null;
+
+		////////
+
+		if(state === 0)
+		msg = `<div class="fw-bold mb-2">SET DRAFT MODE?</div>`;
+		else
+		msg = `<div class="fw-bold mb-2">SET PUBLISHED MODE?</div>`;
+
+		msg += `<div class="InfoPostTitle fst-italic">#${post.id}</div>`;
+
+		////////
+
+		let diag = new DialogUtil.Window({
+			body: msg,
+			title: 'Update Post',
+			labelAccept: 'Yes',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, post.id),
+				new DialogUtil.Field('hidden', 'Enabled', null, state)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', '/api/blog/post', data);
+
+				(api.send())
+				.then(api.goto)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', '/api/blog/post',
+			{ ID: post.id },
+			true,
+			function(self, result) {
+				console.log(result);
+				self.body.find('.InfoPostTitle').text(result.payload.Post.Title);
+				return;
+			}
+		);
+
+		return false;
+	});
+
 
 	return;
 });
