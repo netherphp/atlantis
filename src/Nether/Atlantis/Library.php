@@ -15,6 +15,7 @@ class Library
 extends Common\Library
 implements
 	Atlantis\Plugins\DashboardSidebarInterface,
+	Atlantis\Plugins\DashboardElementInterface,
 	Atlantis\Plugins\AccessTypeDefineInterface,
 	Atlantis\Plugins\UploadHandlerInterface {
 
@@ -168,6 +169,20 @@ implements
 		$Sidebar
 		->Push(new Atlantis\Dashboard\AtlantisAdminSidebar)
 		->Push(new Atlantis\Dashboard\AtlantisMediaSidebar);
+
+		return;
+	}
+
+	public function
+	OnDashboardElement(Atlantis\Engine $App, Datastore $Elements):
+	void {
+
+		if(!$App->User)
+		return;
+
+		$Elements
+		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App))
+		->Push(new Atlantis\Dashboard\AtlantisMediaElement($App));
 
 		return;
 	}

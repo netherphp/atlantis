@@ -1,17 +1,39 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
 use Nether\Atlantis\Dashboard\SidebarGroup;
 use Nether\Atlantis\Dashboard\SidebarGroupItem;
 
 /**
- * @var Nether\Atlantis\Engine $App
- * @var Nether\Surface\Engine $Surface
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\Routes\User\UserSessionWeb $Route
  * @var Nether\Common\Datastore $SidebarItems
+ * @var Nether\Common\Datastore $MainItems
  */
+
 
 $Surface->Area('dashboard/nav');
 
 ?>
+
+<div class="row mb-8">
+	<?php foreach($MainItems as $Element): /** @var Atlantis\Dashboard\Element $Element */ ?>
+	<div class="<?php $Util->Print($Element->GetBootstrapColumnClasses()) ?>">
+		<?php $Surface->Area($Element->Area, array_merge($__SCOPE, [ 'Element'=> $Element ])) ?>
+	</div>
+	<?php endforeach; ?>
+</div>
+
+<hr class="mt-8 mb-8" />
 
 <div class="row">
 	<?php foreach($SidebarItems as $Group): /** @var SidebarGroup $Group */ ?>
@@ -22,10 +44,10 @@ $Surface->Area('dashboard/nav');
 			<div class="row tight">
 				<?php foreach($Group->Items as $Key => $Item): /** @var SidebarGroupItem $Item */ ?>
 				<div class="col-6 col-md-4 mb-2">
-						<a href="<?php $Printer($Item->URL) ?>" class="btn btn-dark btn-left text-ellipsis">
-							<div class="text-align-center font-size-mostest-large"><i class="mdi mdi-fw <?php $Printer($Item->Icon ?? 'mdi-blank') ?>"></i></div>
-							<div class="text-align-center"><?php $Printer($Item->Title) ?></div>
-						</a>
+					<a href="<?php $Printer($Item->URL) ?>" class="btn btn-dark btn-left text-ellipsis">
+						<div class="text-align-center font-size-mostest-large"><i class="mdi mdi-fw <?php $Printer($Item->Icon ?? 'mdi-blank') ?>"></i></div>
+						<div class="text-align-center"><?php $Printer($Item->Title) ?></div>
+					</a>
 				</div>
 				<?php endforeach; ?>
 			</div>

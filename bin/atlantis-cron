@@ -82,17 +82,17 @@ extends Console\Client {
 		////////
 
 		$this
-		->FormatLn(
+		->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('Current Time:'),
 			$Now->Get(Common\Values::DateFormatYMDT24VZ)
-		)
-		->FormatLn(
+		))
+		->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('Crontab Entries:'),
 			$File->Count()
-		)
-		->FormatLn(
+		))
+		->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('Atlantis SSL Entry:'),
 			(
@@ -100,23 +100,23 @@ extends Console\Client {
 				? 'OK'
 				: $this->FormatErrorPrimary('NOT FOUND')
 			)
-		)
+		))
 		->PrintLn();
 
 		foreach($File as $Line) {
 			/** @var Common\Struct\CrontabEntry $Line */
 
-			$this->FormatLn(
+			$this->PrintLn(sprintf(
 				'%s %s %s%s%s',
 				$this->FormatPrimary('>'),
 				$this->FormatSecondary($Line->GetTimerAsWords()),
 				$this->FormatPrimary('('),
 				$this->FormatSecondary($Line->GetTimerAsTimeframe()),
 				$this->FormatPrimary(')')
-			);
+			));
 
 			$this
-			->FormatLn('%s %s', $this->Formatter->Bold('$'), $Line->Command)
+			->PrintLn(sprintf('%s %s', $this->Formatter->Bold('$'), $Line->Command))
 			->PrintLn();
 		}
 
@@ -144,27 +144,27 @@ extends Console\Client {
 		$Row->SetupDailyTime($Time, $UseLocalTime);
 
 		$this
-		->FormatLn(
+		->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('Crontab:'),
 			$Row->GetAsCrontab()
-		)
-		->FormatLn(
+		))
+		->PrintLn(sprintf(
 			'%s %s (in %s)',
 			$this->FormatSecondary('Runs At:'),
 			$Row->GetTimerAsWords(),
 			$Row->GetTimerAsTimeframe()
-		);
+		));
 
 		////////
 
 		if($ShouldAdd && $HasAtlantisSSL) {
 			$this
-			->FormatLn(
+			->PrintLn(sprintf(
 				'%s %s',
 				$this->FormatSecondary('Result:'),
 				'Entry for SSL renewals already found in Crontab.'
-			)
+			))
 			->PrintLn();
 
 			return 0;
@@ -181,22 +181,22 @@ extends Console\Client {
 
 			if(!$HasAtlantisSSL) {
 				$this
-				->FormatLn(
+				->PrintLn(sprintf(
 					'%s %s',
 					$this->FormatErrorPrimary('ERROR:'),
 					'The entry to add via Crontab did not stick.'
-				)
+				))
 				->PrintLn();
 
 				return 1;
 			}
 
 			$this
-			->FormatLn(
+			->PrintLn(sprintf(
 				'%s %s',
 				$this->FormatSecondary('Result:'),
 				'The entry has been added to Crontab.'
-			)
+			))
 			->PrintLn();
 		}
 
@@ -217,11 +217,11 @@ extends Console\Client {
 
 			if($Count === $Crontab->Count()) {
 				$this
-				->FormatLn(
+				->PrintLn(sprintf(
 					'%s %s',
 					$this->FormatErrorPrimary('ERROR:'),
 					'Did not find any entries to remove.'
-				)
+				))
 				->PrintLn();
 
 				return 1;

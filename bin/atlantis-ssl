@@ -136,7 +136,7 @@ extends Console\Client {
 
 			if($Output['Code'] !== NULL)
 			if($Key === 'Domain' || $Key === 'Status') {
-				$this->FormatLn(
+				$this->PrintLn(sprintf(
 					'%s %s',
 					$this->FormatPrimary("{$Key}:"),
 					match($Output['Code']) {
@@ -146,18 +146,18 @@ extends Console\Client {
 						3=> $this->Formatter->BoldMagenta(strtoupper($Val)),
 						default=> strtoupper($Val)
 					}
-				);
+				));
 
 				continue;
 			}
 
-			$this->FormatLn(
+			$this->PrintLn(sprintf(
 				'%s %s',
 				$this->FormatPrimary("{$Key}:"),
 				$Val !== NULL
 				? $Val
 				: $this->FormatErrorPrimary('ERROR')
-			);
+			));
 		}
 
 		return 0;

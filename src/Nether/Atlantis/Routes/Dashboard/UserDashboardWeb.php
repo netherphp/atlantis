@@ -6,38 +6,8 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 
-use Nether\Common\Datastore;
-
 class UserDashboardWeb
 extends Atlantis\ProtectedWeb {
-
-	public function
-	OnReady(?Datastore $Input):
-	void {
-
-		parent::OnReady($Input);
-
-		$this->App->Queue(
-			'Atlantis.Dashboard.SidebarItems',
-			$this->OnSidebarItems(...)
-		);
-
-		return;
-	}
-
-	protected function
-	OnSidebarItems(Datastore $Items):
-	void {
-
-		$Lib = NULL;
-
-		foreach($this->App->Library as $Lib) {
-			if($Lib instanceof Atlantis\Plugins\DashboardSidebarInterface)
-			$Lib->OnDashboardSidebar($this->App, $Items);
-		}
-
-		return;
-	}
 
 	#[Atlantis\Meta\RouteHandler('/dashboard')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
@@ -45,20 +15,8 @@ extends Atlantis\ProtectedWeb {
 	PageDashboard():
 	void {
 
-		$SidebarItems = new Datastore;
-		$MainItems = new Datastore;
-
-		////////
-
-		$this->App->Flow(
-			'Atlantis.Dashboard.SidebarItems',
-			[ 'Items'=> $SidebarItems ]
-		);
-
-		//$this->App->Flow(
-		//	'Atlantis.Dashboard.Items',
-		//	[ 'Items'=> $MainItems ]
-		//);
+		$SidebarItems = $this->FetchSidebarItems();
+		$MainItems = $this->FetchMainItems();
 
 		$SidebarItems->Sort(
 			function(Atlantis\Dashboard\SidebarGroup $A, Atlantis\Dashboard\SidebarGroup $B) {
@@ -69,10 +27,14 @@ extends Atlantis\ProtectedWeb {
 			}
 		);
 
-		//$MainItems->Sort(
-		//	fn(SidebarGroup $A, SidebarGroup $B)
-		//	=> $B->Priority <=> $A->Priority
-		//);
+		$MainItems->Sort(
+			function(Atlantis\Dashboard\Element $A, Atlantis\Dashboard\Element $B) {
+				if($A->Priority !== $B->Priority)
+				return $B->Priority <=> $A->Priority;
+
+				return $A->Title <=> $B->Title;
+			}
+		);
 
 		($this->App->Surface)
 		->Wrap('dashboard/index', [
@@ -82,6 +44,9 @@ extends Atlantis\ProtectedWeb {
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/email')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
@@ -166,6 +131,39 @@ extends Atlantis\ProtectedWeb {
 		->Wrap('dashboard/auth', []);
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	FetchSidebarItems():
+	Common\Datastore {
+
+		$Lib = NULL;
+		$Items = new Common\Datastore;
+
+		foreach($this->App->Library as $Lib) {
+			if($Lib instanceof Atlantis\Plugins\DashboardSidebarInterface)
+			$Lib->OnDashboardSidebar($this->App, $Items);
+		}
+
+		return $Items;
+	}
+
+	protected function
+	FetchMainItems():
+	Common\Datastore {
+
+		$Lib = NULL;
+		$Items = new Common\Datastore;
+
+		foreach($this->App->Library as $Lib) {
+			if($Lib instanceof Atlantis\Plugins\DashboardElementInterface)
+			$Lib->OnDashboardElement($this->App, $Items);
+		}
+
+		return $Items;
 	}
 
 }

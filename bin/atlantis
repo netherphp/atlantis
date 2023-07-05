@@ -19,7 +19,8 @@ extends Console\Client {
 
 	const
 	AppName    = 'Nether Atlantis',
-	AppVersion = '5.0.0-dev';
+	AppVersion = '5.0.0-dev',
+	AppDebug   = TRUE;
 
 	protected Atlantis\Engine
 	$App;
@@ -49,6 +50,7 @@ extends Console\Client {
 		);
 
 		$this
+		->PrintLn()
 		->SetupProjectDirs($Project)
 		->SetupProjectLinks($Project);
 
@@ -65,7 +67,10 @@ extends Console\Client {
 		$Status = FALSE;
 		$Fullpath = NULL;
 
-		$this->PrintLn($this->FormatPrimary('[Atlantis::SetupProjectDirs]'));
+		$this->FormatLn(
+			'Atlantis::SetupProjectDirs',
+			Bold: TRUE, Underline: TRUE, Lines: 2
+		);
 
 		foreach($Project->Dirs as $Dir) {
 			/** @var Common\Filesystem\Directory $Dir */
@@ -137,14 +142,13 @@ extends Console\Client {
 
 			LoopReport:
 			$this->FormatLn(
-				'%s %s%s',
-				static::EmojiForStatus($Status),
-				$Fullpath,
-				( $Message ? " ({$Message})": '')
+				sprintf('>> %s', $Fullpath),
+				...$this->GetFormatForStatus($Status)
 			);
+
+			$this->PrintLn();
 		}
 
-		$this->PrintLn();
 		return $this;
 	}
 
@@ -156,15 +160,19 @@ extends Console\Client {
 		$Status = NULL;
 		$Fullpath = NULL;
 		$Sourcepath = NULL;
-		$ErrorMessage = NULL;
+		$Message = NULL;
 
-		$this->PrintLn($this->FormatPrimary('[Atlantis::SetupProjectLinks]'));
+		$this
+		->FormatLn(
+			'Atlantis::SetupProjectLinks',
+			Bold: TRUE, Underline: TRUE, Lines: 2
+		);
 
 		foreach($Project->Links as $Link) {
 			/** @var Common\Filesystem\Symlink $Link */
 
 			$Status = NULL;
-			$ErrorMessage = NULL;
+			$Message = NULL;
 
 			$Fullpath = (
 				Common\Filesystem\Util::IsAbsolutePath($Link->Path)
@@ -266,35 +274,27 @@ extends Console\Client {
 			////////
 
 			LoopReport:
+
 			$this->FormatLn(
-				'%s %s => %s%s',
-				static::EmojiForStatus($Status),
-				$Sourcepath,
-				$Fullpath,
-				( $ErrorMessage ? " ({$ErrorMessage})": '')
+				sprintf('>> %s', $Fullpath),
+				...$this->GetFormatForStatus($Status)
 			);
+
+			$this->FormatLn(
+				sprintf('   %s', $Sourcepath),
+				...$this->GetFormatForStatus($Status, 'alt3')
+			);
+
+			if($Message)
+			$this->FormatLn(
+				sprintf('   %s', $Message),
+				...$this->GetFormatForStatus(NULL)
+			);
+
+			$this->PrintLn();
 		}
 
-		$this->PrintLn();
 		return $this;
-	}
-
-	static public function
-	EmojiForStatus(mixed $Status):
-	string {
-
-		if($Status === TRUE)
-		return '🟢';
-
-		if($Status === FALSE)
-		return '🔴';
-
-		if(is_int($Status))
-		return ['⚫', '⚪', '🟤', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣'][$Status];
-
-		////////
-
-		return '⚫';
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -321,11 +321,11 @@ extends Console\Client {
 	InitGitIgnore():
 	int {
 
-		$this->FormatLn(
+		$this->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('[Atlantis]'),
 			'Setup Git Ignore...'
-		);
+		));
 
 		$File = Common\Filesystem\Util::Pathify(getcwd(), '.gitignore');
 		$Ignore = new Atlantis\Util\GitIgnoreTool($File);
@@ -352,11 +352,11 @@ extends Console\Client {
 	InitCommonFiles():
 	int {
 
-		$this->FormatLn(
+		$this->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('[Atlantis]'),
 			'Setup Common Files...'
-		);
+		));
 
 		$Force = (bool)$this->GetOption('y');
 		$CWD = getcwd();
@@ -418,16 +418,16 @@ extends Console\Client {
 
 		($this)
 		->PrintLn($this->FormatPrimary("[{$Method}]"))
-		->FormatLn(
+		->PrintLn(sprintf(
 			'%s: %s',
 			$this->FormatSecondary('Source'),
 			$SourceDir
-		)
-		->FormatLn(
+		))
+		->PrintLn(sprintf(
 			'%s: %s',
 			$this->FormatSecondary('Dest'),
 			$DestDir
-		);
+		));
 
 		if(is_link($DestDir)) {
 			$Existing = 'link';
@@ -461,21 +461,21 @@ extends Console\Client {
 			// handle dropping in the new.
 
 			if($Link) {
-				$this->FormatLn(
+				$this->PrintLn(sprintf(
 					'%s %s',
 					$this->FormatSecondary('Linking'),
 					$DestDir
-				);
+				));
 
 				symlink($SourceDir, $DestDir);
 			}
 
 			else {
-				$this->FormatLn(
+				$this->PrintLn(sprintf(
 					'%s %s...',
 					$this->FormatSecondary('Copying'),
 					$DestDir
-				);
+				));
 
 				Atlantis\Util::Copy($SourceDir, $DestDir);
 			}
@@ -548,16 +548,16 @@ extends Console\Client {
 
 			($this)
 			->PrintLn($this->FormatPrimary("[{$Method}]"))
-			->FormatLn(
+			->PrintLn(sprintf(
 				'%s: %s',
 				$this->FormatSecondary('Source'),
 				$SourceDir
-			)
-			->FormatLn(
+			))
+			->PrintLn(sprintf(
 				'%s: %s',
 				$this->FormatSecondary('Dest'),
 				$DestDir
-			);
+			));
 
 			////////
 
@@ -566,15 +566,15 @@ extends Console\Client {
 
 				($this)
 				->PrintLn()
-				->FormatLn(
+				->PrintLn(sprintf(
 					'%s',
 					$this->FormatErrorPrimary('CURRENTLY EXISTS AS A SYMLINK')
-				)
-				->FormatLn(
+				))
+				->PrintLn(sprintf(
 					'%s %s',
 					$this->FormatErrorSecondary('!!'),
 					$this->FormatErrorSecondary(readlink($DestDir))
-				);
+				));
 			}
 
 			elseif(is_dir($DestDir)) {
@@ -582,10 +582,7 @@ extends Console\Client {
 
 				($this)
 				->PrintLn()
-				->FormatLn(
-					'%s',
-					$this->FormatErrorPrimary('CURRENTLY EXISTS AS A DIRECTORY')
-				);
+				->PrintLn($this->FormatErrorPrimary('CURRENTLY EXISTS AS A DIRECTORY'));
 			}
 
 			////////
@@ -605,21 +602,21 @@ extends Console\Client {
 				// handle dropping in the new.
 
 				if($Link) {
-					$this->FormatLn(
+					$this->PrintLn(sprintf(
 						'%s %s...',
 						$this->FormatSecondary('Symlinking'),
 						$DestDir
-					);
+					));
 
 					symlink($SourceDir, $DestDir);
 				}
 
 				else {
-					$this->FormatLn(
+					$this->PrintLn(sprintf(
 						'%s %s...',
 						$this->FormatSecondary('Copying'),
 						$DestDir
-					);
+					));
 
 					Atlantis\Util::Copy($SourceDir, $DestDir);
 				}
@@ -680,12 +677,12 @@ extends Console\Client {
 
 		////////
 
-		$this->FormatLn(
+		$this->PrintLn(sprintf(
 			'%s Source=> %s, Link=> %s',
 			$this->FormatPrimary('[SetupUpload]'),
 			$Source,
 			$Link
-		);
+		));
 
 		return 0;
 	}
@@ -842,7 +839,7 @@ extends Console\Client {
 
 		$this
 		->PrintLn($this->FormatSecondary('[Info] Put the P8 file here:'))
-		->FormatLn('conf/env/%s/keys/apple-authkey.p8', Atlantis->GetProjectEnv())
+		->PrintLn(sprintf('conf/env/%s/keys/apple-authkey.p8', Atlantis->GetProjectEnv()))
 		->PrintLn();
 
 		if(!Atlantis->Config[User\Library::ConfAppleID]) {
@@ -1100,11 +1097,11 @@ extends Console\Client {
 				'Page' => $Page
 			]);
 
-			$this->FormatLn(
+			$this->PrintLn(sprintf(
 				'==== Page %d of %d ====',
 				$Result->Page,
 				$Result->PageCount
-			);
+			));
 
 			foreach($Result as $File) {
 				/** @var Atlantis\Media\File $File */
@@ -1112,7 +1109,7 @@ extends Console\Client {
 				if($Which && $File->UUID !== $Which)
 				continue;
 
-				$this->FormatLn(sprintf(
+				$this->PrintLn(sprintf(
 					'%s [%s] [%s]',
 					$this->FormatPrimary('> Regenerating'),
 					$File->ID,
@@ -1121,7 +1118,7 @@ extends Console\Client {
 
 				////////
 
-				$this->FormatLn(sprintf(
+				$this->PrintLn(sprintf(
 					'%s [%s] [%s]',
 					$this->FormatPrimary('> Cleaning Extra Files'),
 					$File->ID,
@@ -1130,14 +1127,14 @@ extends Console\Client {
 
 				$Timer->Reset();
 				$TotalTime += $Timer(fn()=> $File->CleanExtraFiles());
-				$this->FormatLn(
+				$this->PrintLn(sprintf(
 					$this->FormatSecondary('> %.3fs'),
 					$Timer->Time,
-				);
+				));
 
 				////////
 
-				$this->FormatLn(sprintf(
+				$this->PrintLn(sprintf(
 					'%s [%s] [%s]',
 					$this->FormatPrimary('> Rendering Extra Files'),
 					$File->ID,
@@ -1146,17 +1143,17 @@ extends Console\Client {
 
 				$Timer->Reset();
 				$TotalTime += $Timer(fn()=> $File->GenerateExtraFiles());
-				$this->FormatLn(
+				$this->PrintLn(sprintf(
 					$this->FormatSecondary('> %.3fs'),
 					$Timer->Time,
-				);
+				));
 
 				////////
 
-				$this->FormatLn(
+				$this->PrintLn(sprintf(
 					$this->FormatSecondary('> Run Time: %.3fs'),
 					$TotalTime
-				);
+				));
 
 				$this->PrintLn();
 			}
@@ -1189,11 +1186,11 @@ extends Console\Client {
 			$Index->Push($Path);
 		}
 
-		$this->FormatLn(
+		$this->PrintLn(sprintf(
 			'%s found %d temp directories',
 			$this->FormatPrimary('[CleanUplTmp]'),
 			$Index->Count()
-		);
+		));
 
 		if(!$Commit) {
 			$this->PrintLn($this->FormatSecondary('use --commit to get it done'));
@@ -1268,11 +1265,11 @@ extends Console\Client {
 
 		////////
 
-		$this->FormatLn(
+		$this->PrintLn(sprintf(
 			'%s found %d unreferenced directories',
 			$this->FormatPrimary('[CleanUplDir]'),
 			$Index->Count()
-		);
+		));
 
 		if(!$Commit) {
 			$this->PrintLn($this->FormatSecondary('use --commit to get it done'));
@@ -1309,11 +1306,11 @@ extends Console\Client {
 
 		////////
 
-		$this->FormatLn(
+		$this->PrintLn(sprintf(
 			'%s %s',
 			$this->FormatPrimary('[RunLocalTestServer]'),
 			$Command
-		);
+		));
 
 		////////
 
