@@ -278,6 +278,9 @@ application instance.
 	FromProjectRoot(string $Path):
 	string {
 
+		if(Common\Filesystem\Util::IsAbsolutePath($Path))
+		return $Path;
+
 		$Output = sprintf(
 			'%s%s%s',
 			$this->ProjectRoot,

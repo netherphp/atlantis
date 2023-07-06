@@ -38,9 +38,19 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command]
+	#[Console\Meta\Toggle('--dirs', 'Only setup directories.')]
+	#[Console\Meta\Toggle('--links', 'Only setup symlinks.')]
+	#[Console\Meta\Toggle('--rewrite', 'Rewrite/Update the config file.')]
 	public function
 	Setup():
 	int {
+
+		$OptDirs = $this->GetOption('Dirs') ?? FALSE;
+		$OptLinks = $this->GetOption('Links') ?? FALSE;
+		$OptRewrite = $this->GetOption('Rewrite') ?? FALSE;
+
+		if(!$OptDirs && !$OptLinks && !$OptRewrite)
+		$OptDirs = $OptLinks = TRUE;
 
 		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
 			Common\Filesystem\Util::Pathify(
@@ -49,13 +59,20 @@ extends Console\Client {
 			)
 		);
 
-		$this
-		->PrintLn()
-		->SetupProjectDirs($Project)
-		->SetupProjectLinks($Project);
+		$this->PrintLn();
 
-		$Project->Write();
+		if($OptDirs)
+		$this->SetupProjectDirs($Project);
 
+		if($OptLinks)
+		$this->SetupProjectLinks($Project);
+
+		if($OptRewrite) {
+			$this->PrintLn('Rewriting atlantis.json...');
+			$Project->Write();
+		}
+
+		$this->PrintLn();
 		return 0;
 	}
 
@@ -64,8 +81,10 @@ extends Console\Client {
 	static {
 
 		$Dir = NULL;
-		$Status = FALSE;
-		$Fullpath = NULL;
+		$Path = NULL;
+		$Reports = new Common\Datastore;
+
+		////////
 
 		$this->FormatLn(
 			'Atlantis::SetupProjectDirs',
@@ -75,80 +94,63 @@ extends Console\Client {
 		foreach($Project->Dirs as $Dir) {
 			/** @var Common\Filesystem\Directory $Dir */
 
-			$Status = NULL;
-			$Message = NULL;
+			$Path = $this->App->FromProjectRoot($Dir->Path);
 
-			$Fullpath = (
-				Common\Filesystem\Util::IsAbsolutePath($Dir->Path, '/')
-				? $Dir->Path
-				: $this->App->FromProjectRoot($Dir->Path)
-			);
+			if(is_link($Path)) {
+				$Reports->Push((object)[
+					'Prefix'=> 'HM', 'Dir'=> $Dir, 'Status'=> 'primary',
+					'Message'=> sprintf('exists as symlink to %s', readlink($Path))
+				]);
 
-			////////
-
-			if(file_exists($Fullpath) && is_dir($Fullpath)) {
-				$Status = TRUE;
-
-				if(is_link($Fullpath)) {
-					$Status = 4;
-					$Message = sprintf(
-						'Exists as a link to %s',
-						readlink($Fullpath)
-					);
-				}
-
-				goto LoopReport;
+				continue;
 			}
 
-			if(file_exists($Fullpath) && !is_dir($Fullpath)) {
-				$Status = FALSE;
-				$Message = 'Exists as a file';
+			if(is_dir($Path)) {
+				$Reports->Push((object)[
+					'Prefix'=> 'OK', 'Dir'=> $Dir, 'Status'=> TRUE
+				]);
 
-				goto LoopReport;
+				continue;
 			}
 
-			if(!file_exists($Fullpath)) {
-				$Status = Common\Filesystem\Util::MkDir(
-					$Fullpath,
-					$Dir->Mode
-				);
+			if(!file_exists($Path))
+			if(Common\Filesystem\Util::MkDir($Path, $Dir->Mode)) {
+				$Reports->Push((object)[
+					'Prefix'  => 'OK', 'Dir'=> $Dir, 'Status'=> TRUE,
+					'Message' => 'NEW'
+				]);
 
-				if(!is_dir($Fullpath)) {
-					$Status = FALSE;
-					$Message = sprintf(
-						'Failed to create %s',
-						$Fullpath
-					);
-
-					goto LoopReport;
-				}
+				continue;
 			}
 
-			if(!is_readable($Fullpath)) {
-				$Status = 4;
-				$Message = 'Dir not readable.';
+			$Reports->Push((object)[
+				'Prefix' => 'ER',
+				'Dir'    => $Dir,
+				'Status' => FALSE
+			]);
 
-				goto LoopReport;
-			}
-
-			if(!is_writable($Fullpath)) {
-				$Status = 4;
-				$Message = 'Dir not writable.';
-
-				goto LoopReport;
-			}
-
-			////////
-
-			LoopReport:
-			$this->FormatLn(
-				sprintf('>> %s', $Fullpath),
-				...$this->GetFormatForStatus($Status)
-			);
-
-			$this->PrintLn();
+			continue;
 		}
 
+		$Reports->Each(function(object $Row) {
+
+			$Fmt1 = $this->GetFormatForStatus($Row->Status);
+			$Fmt2 = $this->GetFormatForStatus($Row->Status, 'alt1');
+
+			$this->PrintLn(sprintf(
+				'[%s] %s%s',
+				$this->Format($Row->Prefix, ...$Fmt1),
+				$Row->Dir->Path,
+				(property_exists($Row, 'Message')
+					? $this->Format(" ({$Row->Message})", ...$Fmt2)
+					: ''
+				)
+			));
+
+			return;
+		});
+
+		$this->PrintLn();
 		return $this;
 	}
 
@@ -157,13 +159,13 @@ extends Console\Client {
 	static {
 
 		$Link = NULL;
-		$Status = NULL;
-		$Fullpath = NULL;
-		$Sourcepath = NULL;
-		$Message = NULL;
+		$Path = NULL;
+		$Source = NULL;
+		$Reports = new Common\Datastore;
 
-		$this
-		->FormatLn(
+		////////
+
+		$this->FormatLn(
 			'Atlantis::SetupProjectLinks',
 			Bold: TRUE, Underline: TRUE, Lines: 2
 		);
@@ -171,130 +173,200 @@ extends Console\Client {
 		foreach($Project->Links as $Link) {
 			/** @var Common\Filesystem\Symlink $Link */
 
-			$Status = NULL;
-			$Message = NULL;
+			$Path = $this->App->FromProjectRoot($Link->Path);
+			$Source = $this->App->FromProjectRoot($Link->Source);
 
-			$Fullpath = (
-				Common\Filesystem\Util::IsAbsolutePath($Link->Path)
-				? $Link->Path
-				: $this->App->FromProjectRoot($Link->Path)
-			);
+			if(is_link($Path)) {
+				if(Common\Filesystem\Util::IsLinkTo($Path, $Source)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'OK', 'Link'=> $Link, 'Status'=> TRUE
+					]);
 
-			$Sourcepath = (
-				Common\Filesystem\Util::IsAbsolutePath($Link->Source)
-				? $Link->Source
-				: $this->App->FromProjectRoot($Link->Source)
-			);
-
-			////////
-
-			if(is_link($Fullpath)) {
-				if(Common\Filesystem\Util::IsLinkTo($Fullpath, $Sourcepath)) {
-					$Status = TRUE;
-					goto LoopReport;
+					continue;
 				}
 
-				$Status = FALSE;
-				$ErrorMessage = sprintf(
-					'Link (%s) does not point to %s',
-					readlink($Fullpath),
-					$Sourcepath
-				);
+				$Reports->Push((object)[
+					'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+					'Message'=> sprintf('exists as symlink to %s', readlink($Path))
+				]);
 
-				goto LoopReport;
+				continue;
 			}
 
-			if(is_dir($Fullpath)) {
-				$Status = FALSE;
-				$ErrorMessage = sprintf(
-					'%s exists as a real directory',
-					$Fullpath
-				);
+			if(is_dir($Path)) {
+				$Reports->Push((object)[
+					'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+					'Message'=> 'exists as normal directory'
+				]);
 
-				goto LoopReport;
+				continue;
 			}
 
-			if(file_exists($Fullpath)) {
-				$Status = FALSE;
-				$ErrorMessage = sprintf(
-					'%s exists as a real file',
-					$Fullpath
-				);
+			if(is_file($Path)) {
+				$Reports->Push((object)[
+					'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+					'Message'=> 'exists as normal file'
+				]);
 
-				goto LoopReport;
+				continue;
 			}
 
-			if(!symlink($Sourcepath, $Fullpath)) {
-				$Status = FALSE;
-				$ErrorMessage = sprintf(
-					'Failed to create symlink(1) %s',
-					$Fullpath
-				);
+			if(symlink($Source, $Path)) {
+				$Reports->Push((object)[
+					'Prefix'  => 'OK',
+					'Link'    => $Link,
+					'Status'  => TRUE,
+					'Message' => 'NEW'
+				]);
 
-				goto LoopReport;
-			};
-
-			if(!is_link($Sourcepath, $Fullpath)) {
-				$Status = FALSE;
-				$ErrorMessage = sprintf(
-					'Failed to create symlink(2) %s',
-					$Fullpath
-				);
-
-				goto LoopReport;
-			};
-
-			if(!Common\Filesystem\Util::IsLinkTo($Fullpath, $Sourcepath)) {
-				$Status = FALSE;
-				$ErrorMessage = sprintf(
-					'Created symlink (%s) but it seems wrong (%s)',
-					$Fullpath,
-					$Sourcepath
-				);
-
-				goto LoopReport;
+				continue;
 			}
 
-			if(!is_readable($Fullpath)) {
-				$Status = 4;
-				$Message = 'Link not readable.';
+			$Reports->Push((object)[
+				'Prefix' => 'ER',
+				'Link'   => $Link,
+				'Status' => FALSE
+			]);
 
-				goto LoopReport;
-			}
-
-			if(!is_writable($Fullpath)) {
-				$Status = 4;
-				$Message = 'Link not writable.';
-
-				goto LoopReport;
-			}
-
-			$Status = TRUE;
-
-			////////
-
-			LoopReport:
-
-			$this->FormatLn(
-				sprintf('>> %s', $Fullpath),
-				...$this->GetFormatForStatus($Status)
-			);
-
-			$this->FormatLn(
-				sprintf('   %s', $Sourcepath),
-				...$this->GetFormatForStatus($Status, 'alt3')
-			);
-
-			if($Message)
-			$this->FormatLn(
-				sprintf('   %s', $Message),
-				...$this->GetFormatForStatus(NULL)
-			);
-
-			$this->PrintLn();
+			continue;
 		}
 
+		$Reports->Each(function(object $Row) {
+
+			$Fmt1 = $this->GetFormatForStatus($Row->Status);
+			$Fmt2 = $this->GetFormatForStatus($Row->Status, 'alt1');
+
+			$this->PrintLn(sprintf(
+				'[%s] %s%s',
+				$this->Format($Row->Prefix, ...$Fmt1),
+				$Row->Link->Path,
+				(property_exists($Row, 'Message')
+					? $this->Format(" ({$Row->Message})", ...$Fmt2)
+					: ''
+				)
+			));
+
+			return;
+		});
+
+		$this->PrintLn();
 		return $this;
+	}
+
+	#[Console\Meta\Command('dir-add')]
+	#[Console\Meta\Info('Adds Directory config to atlantis.json. Run SETUP to apply changes.')]
+	#[Console\Meta\Arg('path', 'The directory to create.')]
+	#[Console\Meta\Error(1, 'The Path must be specified.')]
+	#[Console\Meta\Error(2, 'There is already an item with that Path configured.')]
+	public function
+	ProjectDirAdd():
+	int {
+
+		$Path = rtrim(($this->GetInput(1) ?: ''), DIRECTORY_SEPARATOR);
+		$Project = NULL;
+		$Old = NULL;
+
+		if(!$Path)
+		$this->Quit(1);
+
+		////////
+
+		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
+			Common\Filesystem\Util::Pathify(
+				$this->App->GetProjectRoot(),
+				'atlantis.json'
+			)
+		);
+
+		// if there is an old entry with this path name already then it
+		// should bail, unless both the path and the source are the same
+		// as what is already configured then i want it to just accept you
+		// for who you are.
+
+		$Old = $Project->Dirs->Distill(
+			fn(Common\Filesystem\Directory $L)
+			=> $L->Path === $Path
+		);
+
+		if(!$Old->Count()) {
+			$Project->Dirs->Push(new Common\Filesystem\Directory([
+				'Path'   => $Path
+			]));
+
+			$Project->Write();
+		}
+
+		$this
+		->PrintLn()
+		->FormatLn(sprintf('>> %s', $Path), ...$this->GetFormatForStatus(TRUE))
+		->PrintLn();
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('link-add')]
+	#[Console\Meta\Info('Adds Symlink config to atlantis.json. Run SETUP to apply changes.')]
+	#[Console\Meta\Arg('path', 'The symlink to create.')]
+	#[Console\Meta\Arg('source', 'Where the symlink points.')]
+	#[Console\Meta\Error(1, 'Path and Source both must be specified.')]
+	#[Console\Meta\Error(2, 'There is already an Item with that path configured.')]
+	public function
+	ProjectSymlinkAdd():
+	int {
+
+		$Path = rtrim(($this->GetInput(1) ?: ''), DIRECTORY_SEPARATOR);
+		$Source = rtrim(($this->GetInput(2) ?: ''), DIRECTORY_SEPARATOR);
+		$Project = NULL;
+		$Old = NULL;
+
+		if(!$Path || !$Source)
+		$this->Quit(1);
+
+		////////
+
+		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
+			Common\Filesystem\Util::Pathify(
+				$this->App->GetProjectRoot(),
+				'atlantis.json'
+			)
+		);
+
+		// if there is an old entry with this path name already then it
+		// should bail, unless both the path and the source are the same
+		// as what is already configured then i want it to just accept you
+		// for who you are.
+
+		$Old = $Project->Links->Distill(
+			fn(Common\Filesystem\Symlink $L)
+			=> $L->Path === $Path
+		);
+
+		if(!$Old->Count()) {
+			$Project->Links->Push(new Common\Filesystem\Symlink([
+				'Path'   => $Path,
+				'Source' => $Source
+			]));
+
+			$Project->Write();
+		}
+
+		else {
+			$Old->Filter(
+				fn(Common\Filesystem\Symlink $L)
+				=> $L->Source === $Source
+			);
+
+			if($Old->Count() === 0)
+			$this->Quit(2, $Path);
+		}
+
+		$this
+		->PrintLn()
+		->FormatLn(sprintf('>> %s', $Path), ...$this->GetFormatForStatus(TRUE))
+		->FormatLn(sprintf('=> %s', $Source), ...$this->GetFormatForStatus(TRUE, 'alt1'))
+		->PrintLn();
+
+		return 0;
 	}
 
 	////////////////////////////////////////////////////////////////

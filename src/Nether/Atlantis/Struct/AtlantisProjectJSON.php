@@ -60,7 +60,20 @@ extends Common\Prototype {
 	Write():
 	static {
 
+		$this->Dirs->Sort(
+			fn(Common\Filesystem\Directory $A, Common\Filesystem\Directory $B)
+			=> $A->Path <=> $B->Path
+		);
+
+		$this->Links->Sort(
+			fn(Common\Filesystem\Symlink $A, Common\Filesystem\Symlink $B)
+			=> $A->Path <=> $B->Path
+		);
+
+		$this->File['Dirs'] = $this->Dirs->Values();
+		$this->File['Links'] = $this->Links->Values();
 		$this->File->Write();
+
 		return $this;
 	}
 
