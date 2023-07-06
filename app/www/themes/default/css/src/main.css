@@ -17,11 +17,11 @@
 	flavour */
 
 	--theme-font-normal-family: 'Poppins', 'Segoe UI', 'Helvetica', sans-serif;
-	--theme-font-normal-weight: 300;
+	--theme-font-normal-weight: 400;
 	--theme-font-normal-letter-spacing: 0.03rem;
 
 	--theme-font-mono-family: 'Consolas', 'Menlo', monospace;
-	--theme-font-mono-weight: 300;
+	--theme-font-mono-weight: 400;
 	--theme-font-mono-letter-spacing: 0.02em;
 
 	/* these should be generically neutral colours as they will be used for
@@ -61,7 +61,7 @@
 	--theme-form-fg: #fff;
 	--theme-form-border: #666;
 
-	--bs-body-color: #fdfdfd;
+	--bs-body-color: var(--theme-body-fg);
 	--bs-body-color-rgb: 253, 253, 253;
 	--bs-code-color: var(--theme-primary-alt);
 	--bs-link-hover-color: var(--theme-primary-alt);
@@ -79,8 +79,8 @@
 
 [data-bs-theme="light"] {
 
-	--theme-font-normal-weight: 300;
-	--theme-font-mono-weight: 300;
+	--theme-font-normal-weight: 400;
+	--theme-font-mono-weight: 400;
 
 	--theme-body-bg: #FAFAFA;
 	--theme-body-bg-alt: #F0F0F0;
@@ -95,7 +95,7 @@
 	--theme-header-bg: #FFFFFF;
 	--theme-footer-bg: #FFFFFF;
 
-	--bs-body-color: #080808;
+	--bs-body-color: var(--theme-body-fg);
 	--bs-body-color-rgb: 4, 4, 4;
 
 	--bs-body-bg-rgb: 242, 242, 242;
