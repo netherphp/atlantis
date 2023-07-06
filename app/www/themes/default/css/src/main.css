@@ -28,7 +28,7 @@
 	various page elements for division and such */
 
 	--theme-body-bg: #161616;
-	--theme-body-bg-alt: #0D0D0D;
+	--theme-body-bg-alt: #0F0F0F;
 	--theme-body-bg-alt2: #111111;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt1: var(--theme-body-bg-alt);
@@ -56,6 +56,10 @@
 	--theme-header-bg: #040404;
 	--theme-header-color: #FBFBFB;
 	--theme-footer-bg: #040404;
+
+	--theme-form-bg: #222;
+	--theme-form-fg: #fff;
+	--theme-form-border: #666;
 
 	--bs-body-color: #fdfdfd;
 	--bs-body-color-rgb: 253, 253, 253;
@@ -189,11 +193,11 @@ strong {
 /*******************************************************************************
 **** form stuff ***************************************************************/
 
-.form-control,
-.form-select {
-	-background-color: var(--theme-light-bg-glass);
-	-border-color: var(--theme-light-bg-glass);
-	-transition: background-color 200ms;
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+	background-color: var(--theme-form-bg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-fg);
 }
 
 .form-control:focus {
