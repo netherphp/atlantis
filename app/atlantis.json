@@ -1,0 +1,38 @@
+{
+	"Dirs": [
+		{
+			"Path": "data\/upl",
+			"Mode": "0o777"
+		},
+		{
+			"Path": "www\/data",
+			"Mode": "0o777"
+		},
+		{
+			"Path": "www\/share",
+			"Mode": "0o777"
+		}
+	],
+	"Links": [
+		{
+			"Path": "www\/data\/upl",
+			"Source": "data\/upl",
+			"Mode": "0o777"
+		},
+		{
+			"Path": "www\/share\/atlantis",
+			"Source": "vendor\/netherphp\/atlantis\/app\/www\/share\/atlantis",
+			"Mode": "0o777"
+		},
+		{
+			"Path": "www\/share\/nui",
+			"Source": "vendor\/netherphp\/atlantis\/app\/www\/share\/nui",
+			"Mode": "0o777"
+		},
+		{
+			"Path": "www\/themes\/default",
+			"Source": "vendor\/netherphp\/atlantis\/app\/www\/themes\/default",
+			"Mode": "0o777"
+		}
+	]
+}
