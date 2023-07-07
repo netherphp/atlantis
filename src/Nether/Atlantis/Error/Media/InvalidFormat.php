@@ -4,7 +4,7 @@ namespace Nether\Atlantis\Error\Media;
 
 use Exception;
 
-class InvalidUpload
+class InvalidFormat
 extends Exception {
 
 	public function
