@@ -71,6 +71,9 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 	<div class="mb-0">
 		<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 	</div>
+
+	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
+
 </div>
 
 <!-- POST CONTENT: Link Preview -->
@@ -114,4 +117,8 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 		<?php echo $Link->Content ?>
 	</div>
 </div>
+<?php endif; ?>
+
+<?php if($Full): ?>
+<?php $Surface->Area('blog/widgets/view-post-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
 <?php endif; ?>

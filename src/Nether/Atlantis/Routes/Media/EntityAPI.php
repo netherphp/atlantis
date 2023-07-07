@@ -160,14 +160,14 @@ extends Atlantis\Routes\UploadAPI {
 		($this->Data)
 		->EntityType(Common\Datafilters::TrimmedText(...))
 		->EntityUUID(Common\Datafilters::TrimmedText(...))
-		->TagID(fn(Common\Struct\DatafilterItem $Item)=> array_map(
-			Common\Datafilters::TypeInt(...),
-			Common\Datafilters::ArrayOf($Item->Value)
-		))
-		->TagName(fn(Common\Struct\DatafilterItem $Item)=> array_map(
-			Common\Datafilters::TrimmedText(...),
-			Common\Datafilters::ArrayOf($Item->Value)
-		));
+		->TagID(
+			Common\Datafilters::ArrayOfNullable(...),
+			Common\Datafilters::TypeInt(...)
+		)
+		->TagName(
+			Common\Datafilters::ArrayOfNullable(...),
+			Common\Datafilters::TrimmedText(...)
+		);
 
 		////////
 

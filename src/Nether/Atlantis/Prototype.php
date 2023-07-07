@@ -11,11 +11,13 @@ extends Database\Prototype {
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
 	#[Database\Meta\PrimaryKey]
+	#[Common\Meta\PropertyListable]
 	public int
 	$ID;
 
 	#[Database\Meta\TypeChar(Size: 36)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
 	public string
 	$UUID;
 
@@ -94,6 +96,25 @@ extends Database\Prototype {
 		return parent::GetByField('UUID', $UUID);
 	}
 
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static protected function
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(isset($Input['UUID'])) {
+			if(is_array($Input['UUID']))
+			$SQL->Where('Main.UUID IN(:UUID)');
+
+			else
+			$SQL->Where('Main.UUID=:UUID');
+		}
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -108,6 +129,16 @@ extends Database\Prototype {
 		]);
 
 		return parent::Insert($Input);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	MapForPublicAPI(self $Inst):
+	array {
+
+		return $Inst->DescribeForPublicAPI();
 	}
 
 }

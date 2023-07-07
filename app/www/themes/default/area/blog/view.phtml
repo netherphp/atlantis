@@ -111,7 +111,7 @@ use Nether\User;
 <?php if($BlogUser && $BlogUser->CanEdit()): ?>
 <script type="module">
 import API from '/share/nui/api/json.js';
-import TagAbuser from '/share/local/tag-abuser.js';
+import TagDialog from '/share/atlantis/tag-dialog.js';
 import DialogUtil from '/share/nui/util/dialog.js';
 
 jQuery(function() {
@@ -123,7 +123,7 @@ jQuery(function() {
 	jQuery('.CmdPostEditTags')
 	.on('click', function(){
 
-		let diag = new TagAbuser(post.uuid, 'blogpost');
+		let diag = new TagDialog(post.uuid, 'blogpost');
 		diag.show();
 
 		return false;
