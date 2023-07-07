@@ -37,6 +37,11 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	// the SETUP methods are going to become the new init/bootstrap/config
+	// toolchain using mostly things from the atlantis.json file. all
+	// additions to this chain should be built so that it can be repeated
+	// without resetting something that might have been customised.
+
 	#[Console\Meta\Command]
 	#[Console\Meta\Toggle('--dirs', 'Only setup directories.')]
 	#[Console\Meta\Toggle('--links', 'Only setup symlinks.')]
@@ -252,6 +257,12 @@ extends Console\Client {
 		$this->PrintLn();
 		return $this;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// methods for manipulating the atlantis.json file that lives in the
+	// project directory.
 
 	#[Console\Meta\Command('dir-add')]
 	#[Console\Meta\Info('Adds Directory config to atlantis.json. Run SETUP to apply changes.')]
