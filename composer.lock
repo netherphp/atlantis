@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c799831619e842af18335d649ef88978",
+    "content-hash": "bb327b2b3ecaf285c4676b6d3ac2e407",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1325,20 +1325,21 @@
         },
         {
             "name": "netherphp/common",
-            "version": "v5.0.17",
+            "version": "v5.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/common.git",
-                "reference": "d3774d16901c36dc77019c07deb999276fd30e0c"
+                "reference": "18c0a5b348e8eeb3f0ff215a58eca951c776893b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/common/zipball/d3774d16901c36dc77019c07deb999276fd30e0c",
-                "reference": "d3774d16901c36dc77019c07deb999276fd30e0c",
+                "url": "https://api.github.com/repos/netherphp/common/zipball/18c0a5b348e8eeb3f0ff215a58eca951c776893b",
+                "reference": "18c0a5b348e8eeb3f0ff215a58eca951c776893b",
                 "shasum": ""
             },
             "require": {
                 "fileeye/mimemap": "^2.0",
+                "monolog/monolog": "^3.3",
                 "php": "^8.1",
                 "ramsey/uuid": "^4.7"
             },
@@ -1372,9 +1373,9 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/common/issues",
-                "source": "https://github.com/netherphp/common/tree/v5.0.17"
+                "source": "https://github.com/netherphp/common/tree/v5.0.20"
             },
-            "time": "2023-03-26T08:45:26+00:00"
+            "time": "2023-05-11T01:57:14+00:00"
         },
         {
             "name": "netherphp/console",
