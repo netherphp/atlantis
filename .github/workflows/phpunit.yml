@@ -19,11 +19,10 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
           extensions: mbstring, intl, sodium
-          tools: phpunit
       - name: Run PHPUnit
         run: |
           composer install
-          phpunit tests --bootstrap vendor/autoload.php --coverage-clover ./coverage.xml
+          php vendor/bin/phpunit tests --bootstrap vendor/autoload.php --coverage-clover ./coverage.xml
       - name: Push to Codecov Probably
         if: ${{ matrix.php-versions == '8.1' && matrix.operating-system == 'ubuntu-latest' }}
         uses: codecov/codecov-action@v3
