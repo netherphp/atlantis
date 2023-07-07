@@ -18,6 +18,8 @@ use Nether\User;
  * @var Common\Datastore $Posts
  */
 
+$BlogUser ??= NULL;
+
 $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 	$Output = new Common\Datastore;
@@ -45,10 +47,10 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 			<?php match($Post->Editor) {
 				'link'
-				=> $Surface->Area('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE ]),
+				=> $Surface->Area('blog/views/link', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post, 'Full'=> FALSE ]),
 
 				default
-				=> $Surface->Area('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE ])
+				=> $Surface->Area('blog/views/html', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post, 'Full'=> FALSE ])
 			}; ?>
 
 			<div class="pt-4">

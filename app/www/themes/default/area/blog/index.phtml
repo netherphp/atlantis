@@ -28,7 +28,7 @@ use Nether\Database;
 			<!-- THE ZONE -->
 			<div class="col-12 col-md mb-6 mb-md-0">
 
-				<?php $Surface->Area('blog/widgets/post-list', [ 'Posts'=> $Posts ]) ?>
+				<?php $Surface->Area('blog/widgets/post-list', [ 'BlogUser'=> $BlogUser, 'Posts'=> $Posts ]) ?>
 
 				<?php if(!$Posts->Total): ?>
 				<div class="jumbotron text-center rounded p-4">
