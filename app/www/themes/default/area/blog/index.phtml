@@ -16,10 +16,30 @@ use Nether\Database;
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
-<div class="container pt-4">
-	<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
+<div class="container pt-4 pb-4">
+	<div class="row">
+		<div class="col">
+			<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
+		</div>
+		<div class="col-auto">
+			<?php if($BlogUser->CanWrite()): ?>
+			<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light mb-2 text-align-left">
+				<i class="mdi mdi-fw mdi-plus-thick"></i>
+				New Post
+			</a>
+			<?php endif; ?>
+
+			<?php if($BlogUser->CanAdmin()): ?>
+			<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light mb-2 text-align-left">
+				<i class="mdi mdi-fw mdi-cog"></i>
+			</a>
+			<?php endif; ?>
+		</div>
+	</div>
 	<hr class="mt-1" />
 </div>
+
+
 
 <div class="pt-0 pb-4">
 	<div class="container">
@@ -42,7 +62,7 @@ use Nether\Database;
 			</div>
 
 			<!-- SIDEBAR -->
-			<div class="col-12 col-md-4">
+			<div class="d-none col-12 col-md-4">
 
 				<?php if($BlogUser): ?>
 				<!-- SIDEBAR: MANAGE -->
