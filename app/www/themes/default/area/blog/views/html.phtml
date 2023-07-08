@@ -49,6 +49,9 @@ $Full ??= TRUE;
 	<div class="mb-0">
 		<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 	</div>
+
+	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
+
 </div>
 
 <!-- POST IMAGE -->
@@ -59,6 +62,10 @@ $Full ??= TRUE;
 <?php endif; ?>
 
 <!-- POST CONTENT -->
-<div class="EditorContent">
+<div class="EditorContent mb-6">
 	<?php echo $Full ? $Post->Content : $Post->GetExcerpt() ?>
 </div>
+
+<?php if($Full): ?>
+<?php $Surface->Area('blog/widgets/view-post-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
+<?php endif; ?>

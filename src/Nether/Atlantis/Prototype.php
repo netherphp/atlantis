@@ -101,6 +101,15 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static protected function
+	FindExtendOptions(Common\Datastore $Input):
+	void {
+
+
+
+		return;
+	}
+
+	static protected function
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 

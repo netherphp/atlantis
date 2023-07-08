@@ -33,31 +33,33 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 ?>
 
-<div class="-hr-hide-last">
-	<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
-	<div>
-		<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
-			<div class="col-12 col-md-2 mb-4 mb-md-0">
-				<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
-					<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
-				</div>
+<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
+<div>
+	<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
+		<div class="col-12 col-md-2 mb-4 mb-md-0">
+			<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
+				<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
 			</div>
-			<div class="col-12 col-md mb-0 mb-md-0">
-				<div class="fw-bold text-uppercase font-size-small">
-					<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
-				</div>
-				<div class="fw-bold font-size-large mb-3">
-					<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
-				</div>
+		</div>
+		<div class="col-12 col-md mb-0 mb-md-0">
+			<div class="fw-bold text-uppercase font-size-small">
+				<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+			</div>
+			<div class="fw-bold font-size-large mb-1">
+				<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
+			</div>
 
-				<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
+			<div class="mb-2"><?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?></div>
 
-				<div class="pt-2">
-					<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
-				</div>
+			<div class="EditorContent mb-2">
+				<?php echo $Post->GetExcerpt() ?>
+			</div>
+
+			<div>
+				<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
 			</div>
 		</div>
 	</div>
-	<hr class="mt-5 mb-5" />
-	<?php endforeach; ?>
 </div>
+<hr class="mt-5 mb-5" />
+<?php endforeach; ?>
