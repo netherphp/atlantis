@@ -57,7 +57,9 @@ implements
 	ConfUserRequireAlias    = 'Nether.Atlantis.Users.RequireAlias',
 	ConfContactTo           = 'Nether.Atlantis.Contact.To',
 	ConfContactBCC          = 'Nether.Atlantis.Contact.BCC',
-	ConfContactSubject      = 'Nether.Atlantis.Contact.Subject';
+	ConfContactSubject      = 'Nether.Atlantis.Contact.Subject',
+	ConfErrorDisplay        = 'Nether.Atlantis.Error.Display',
+	ConfErrorLogPath        = 'Nether.Atlantis.Error.LogPath';
 
 	const
 	ConfPageEnableDB          = 'Nether.Atlantis.Page.EnableDatabase',
@@ -99,9 +101,13 @@ implements
 			static::ConfPageEnableStatic      => TRUE,
 			static::ConfPageStaticStorageKey  => 'Default',
 			static::ConfPageStaticStoragePath => 'pages/static',
+
 			static::ConfContactTo             => NULL,
 			static::ConfContactBCC            => NULL,
-			static::ConfContactSubject        => 'Contact from Website'
+			static::ConfContactSubject        => 'Contact from Website',
+
+			static::ConfErrorDisplay          => NULL,
+			static::ConfErrorLogPath          => NULL
 		]);
 
 		return;

@@ -1,84 +1,168 @@
-# Nether Atlantis
+# **Atlantis** (NetherPHP Web App)
 
 [![Packagist](https://img.shields.io/packagist/v/netherphp/atlantis.svg?style=for-the-badge)](https://packagist.org/packages/netherphp/atlantis)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/netherphp/atlantis/phpunit.yml?style=for-the-badge)](https://github.com/netherphp/atlantis/actions)
 [![codecov](https://img.shields.io/codecov/c/gh/netherphp/atlantis?style=for-the-badge&token=VQC48XNBS2)](https://codecov.io/gh/netherphp/atlantis)
 
-The most simple way to get going:
 
-1. `git clone https://github.com/netherphp/project myapp`
-2. `cd myapp`
+
+## **PREAMBLE**
+
+Currently requires `minimum-stability: 'dev'` as this project and libraries are quite early in their refresh. There is a project bootstrapping repository to minimise the effort to get started at this stage.
+
+
+
+## **POST-PREAMBLE**
+
+The `atlantis` command works because we add `./vendor/bin` to our shell PATH. Add `bin` and `vendor/bin` to `PATH` so we can use library installed and custom built apps locally. Else call it via `vendor/bin/atlantis`.
+
+**Not-Windows:**
+```bash
+export PATH=$PATH:./bin:./vendor/bin
+```
+
+**Not-Windows (Forever):**
+* Usually by adding this stuff to the end of `.bashrc` or `.bash_profile` - I can never remember and I swear it changes every other install which one Ubuntu prefer today.
+
+**Windows:**
+```bat
+set PATH=%PATH%;.\bin;.\vendor\bin
+```
+
+**Windows (Forever):**
+* Hit the Windows key, type `environ`, and hit enter.
+* Click `Environment Variables` button at bottom of window that opens.
+* Use that window's little window to add the paths to your user's PATH.
+
+
+
+## **INSTALL AND SETUP**
+
+This is the quickest way to get it going with the way it is right now.
+
+1. `git clone https://github.com/netherphp/project MyApp`
+2. `cd MyApp`
 3. `rm -rf .git`
 4. `composer require netherphp/atlantis`
 5. `atlantis init -y`
-
-> Currently requires `minimum-stability: 'dev'` this project and its libraries are quite early on in their refresh. This is already taken into account if bootstrapped from the `project` repo.
-
-> The `atlantis` command works because we add `./vendor/bin` to our shell PATH. Else you'd need to be calling it via `vendor/bin/atlantis`.
-
-By default the default theme and shared resources will be copied into the public web dir. To recopy them from the package after updates:
-
-6. `atlantis setup-theme`
-7. `atlantis setup-share`
-
-To convert the default theme and shared resources into a symlink so that updates seem more magic:
-
-6. `atlantis setup-theme --link`
-7. `atlantis setup-share --link`
+6. `atlantis setup`
 
 
 
-# Default Project Structure
+## **PROJECT STRUCTURE OVERVIEW**
 
-Running the `init` command will generate a project in the current directory with the following default structure.
+Running the `init` command will generate a project in the current directory with the following default structure:
 
-### `/conf/config.json`
+### **CONFIGURATION**
 
-Global project configuration. Things that need to be shared between all environments like app name name and the like go in here.
+* `/atlantis.json`
 
-### `/conf/env/dev/config.json`
+  Mostly contains low level configuration for setup and checking of the server, things > that the app does not need to know except once in forever.
 
-Environment specific configuration. The environment is defined by an `env.lock` file in the `ProjectRoot`. The default value is `dev` which will then cause this config file to be applied after loading the global config.
+* `/conf/config.json`
 
-### `/core/Local`
+  Global project configuration. Things that need to be shared between all environments like app name go here.
 
-Default namespace for autoloading. You can immediately start creating classes here like `Local\Whatever` as `core/Local/Whatever.php` for your app and they will be loadable.
+* `/conf/env/dev/config.json`
 
-### `/routes/Home.php`
+  Environment specific configuration. The environment is defined by an `env.lock` file in the `ProjectRoot`. The default value is `dev` causing this config file to be applied after loading the global config.
 
-Default homepage route handler as an example.
+### **CORE APP STUFF**
 
-### `/www/index.php`
+* `/core/Local`
 
-Default route handler. This should be pretty decent for most projects you probably should not need to be adding things here.
+  Default namespace for autoloading. You can immediately start creating classes here like `Local\Whatever` as `core/Local/Whatever.php` for your app and they will be loadable.
 
-### `/www/themes/default`
+* `/routes/Home.php`
 
-Default web theme so that the example looks cool out of the box. By default this theme is configured to be the bottom of the theme stack.
+  Default homepage route handler as an example.
 
-### `/www/themes/local`
+* `/www/index.php`
 
-Default local theme. Any area files you create here will overwrite requests to theme files from the default theme. Surface uses a Theme Stack so you can configure multiple themes to fall through until a template is found. The default is that it will check `local` first before falling back to checking `default` for area files.
+  Default router application for the webserver to funnel requests into. Should not technically need to be edited.
 
-### `/www/share/atlantis`
+* `/www/themes/default`
 
-Shared resources that Atlantis' front-end depends on.
+  Default web theme for the application.
+
+* `/www/themes/local`
+
+  Local web theme for the application. Overrides anything from the default theme without having to edit the default theme, if the structure is mimicked.
+
+* `/www/share/atlantis`
+
+  Shared resources that the front-end depends on.
+
+* `/www/share/nui`
+
+  Shared more resources that the front-end depends on.
 
 
 
-# Generating A Static Route Map
+## **PERFORMANCE: STATIC ROUTE MAP**
 
-By default when you hit your project it will scan the `routes` directory and figure out what needs to happen on the fly. This is good for quick devving but to make it faster for production you can generate a static route file.
+By default the project will scan the `routes` directory and generate a route map on the fly. Good for teh quick dev but loading a pre-compiled static route map is much faster. These are kept as a `routes.phson` file in the project root. If it exists it will be loaded.
 
-`nave gen routes`
+Any time application routing changes such as a Domain, Path, Verb, or Method Arguments, the static route file will need to be recompiled.
 
-This will create a `routes.phson` file in the `ProjectRoot` which the router will then use instead of directory scanning.
+```shell
+$ nave gen --atlantis
+```
 
 
 
-# Credits
+## **SSL NOTES**
 
-The following libraries are used in this project via direct inclusion (aka copy paste) rather than installed via Composer:
+SSL info should be put inside the `conf/env/<env>/config.php` file. An AcmePHP YML file can then be generated:
+
+```sh
+$ atlantis acmephp-config
+```
+
+And then the cert can be fetched and/or renewed:
+
+```sh
+$ atlantis-ssl renew
+```
+
+There is a tool that can generate a `crontab` entry to automate SSL renewals.
+
+```sh
+$ atlantis-cron ssl
+
+Crontab: 20 4 * * * env php /opt/sar-dev/vendor/bin/atlantis-ssl renew
+Runs At: 2023-07-10 23:20:00 CDT (in 6hr 47min)
+```
+
+There is a tool that can check if it thinks the cron automation will work.
+
+```sh
+$ atlantis-cron list
+
+Current Time: 2023-07-10 16:34:35 CDT
+Crontab Entries: 12
+Atlantis SSL Entry: OK
+
+[...dump of all cron items...]
+```
+
+There is a tool that can tell you about SSL for any domain. It also has a `--json` option to spit out in JSON format instead of human readable.
+
+```sh
+$ atlantis-ssl check pegasusgate.net
+
+Domain: PEGASUSGATE.NET
+Status: OK
+Code: 1
+Date: 2023-06-17
+ExpireDate: 2023-09-15
+ExpireTimeframe: 2m 5d
+Source: OpenSSL
+```
+
+# **CREDITS**
+
+The following libraries are used in this project via direct inclusion and are self managed rather than installed via Composer:
 
 * jQuery (DOM, https://jquery.com/)
 * Bootstrap (Frontend framework, https://getbootstrap.com/)

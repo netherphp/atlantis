@@ -87,7 +87,8 @@ application instance.
 		->DetermineEnvironment()
 		->LoadDefaultConfig()
 		->LoadProjectConfig()
-		->LoadEnvironmentConfig();
+		->LoadEnvironmentConfig()
+		->SetupEnvironment();
 
 		if($Conf !== NULL)
 		$this->Config->MergeRight($Conf->GetData());
@@ -393,6 +394,48 @@ application instance.
 
 		if(strlen($EnvData))
 		$this->ProjectEnv = $EnvData;
+
+		////////
+
+		return $this;
+	}
+
+	protected function
+	SetupEnvironment():
+	static {
+
+		$ErrLogPath = $this->Config[Library::ConfErrorLogPath];
+		$ErrDisplay = $this->Config[Library::ConfErrorDisplay];
+
+		////////
+
+		// default behaviour is to set the error log to be within the app
+		// logs folder. it can also be forced to a specific path if given
+		// one.
+
+		ini_set('error_log', match(TRUE) {
+			$ErrLogPath === NULL
+			=> $this->FromProjectRoot('logs/error.log'),
+
+			is_string($ErrLogPath)
+			=> $this->FromProjectRoot($ErrLogPath),
+
+			default
+			=> NULL
+		});
+
+		////////
+
+		// default behaviour is to show errors on dev but not on prod
+		// environments. it can also be forced on or off in the config.
+
+		ini_set('display_errors', match(TRUE) {
+			$ErrDisplay === NULL
+			=> $this->IsDev(),
+
+			default
+			=> (bool)$ErrDisplay
+		});
 
 		////////
 
