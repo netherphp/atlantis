@@ -88,7 +88,14 @@ extends Database\Prototype {
 	DescribeForPublicAPI():
 	array {
 
-		return (array)$this;
+		$Props = array_map(
+			(fn(Common\Prototype\PropertyInfo $P)=> $this->{$P->Name}),
+			static::GetPropertiesWithAttribute(
+				Common\Meta\PropertyListable::class
+			)
+		);
+
+		return $Props;
 	}
 
 	////////////////////////////////////////////////////////////////

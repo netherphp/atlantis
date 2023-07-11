@@ -78,6 +78,10 @@ implements
 	AccessContactLogManage = 'Nether.Atlantis.ContactLog.Manage',
 	AccessPageManage       = 'Nether.Atlantis.Page.Manage';
 
+	const
+	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',
+	PageTagViewURL = 'Nether.Atlantis.Tag.PageViewURL';
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -107,7 +111,10 @@ implements
 			static::ConfContactSubject        => 'Contact from Website',
 
 			static::ConfErrorDisplay          => NULL,
-			static::ConfErrorLogPath          => NULL
+			static::ConfErrorLogPath          => NULL,
+
+			static::PageTagIndexURL           => '/tags',
+			static::PageTagViewURL            => '/tag/:Alias:'
 		]);
 
 		return;

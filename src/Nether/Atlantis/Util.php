@@ -176,18 +176,19 @@ class Util {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	DomainFromURL(string $URL):
+	DomainFromURL(?string $URL):
 	string {
 
+		$URL ??= '';
 		$Domain = parse_url($URL, PHP_URL_HOST);
 
-		if($Domain === FALSE)
+		if(!is_string($Domain))
 		return 'Unknown';
 
 		if(str_starts_with($Domain, 'www.'))
 		$Domain = preg_replace('/^www\./', '', $Domain);
 
-		return $Domain;
+		return $Domain ?: '';
 	}
 
 	static public function

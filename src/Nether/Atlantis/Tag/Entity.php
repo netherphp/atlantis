@@ -90,6 +90,15 @@ extends Atlantis\Prototype {
 	}
 
 	public function
+	GetPageURL():
+	string {
+
+		$BaseURL = Atlantis\Library::Get(Atlantis\Library::PageTagURL);
+
+		return $BaseURL;
+	}
+
+	public function
 	FetchPhotos():
 	Database\Struct\PrototypeFindResult {
 

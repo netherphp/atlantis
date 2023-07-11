@@ -99,6 +99,7 @@ in-page dialog windows.
 		if(this.config.body)
 		output.append(
 			jQuery('<div />')
+			.addClass('mb-3')
 			.append(this.config.body)
 		);
 

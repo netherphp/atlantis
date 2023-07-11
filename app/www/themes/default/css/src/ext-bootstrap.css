@@ -501,6 +501,10 @@
 	border: 0px;
 }
 
+.modal-header {
+	padding-bottom: 0px;
+}
+
 .modal-header .btn {
 	display: inline-block;
 	padding-top: 0.20rem;

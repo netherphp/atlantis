@@ -1,5 +1,5 @@
 /*//
-@date 2023-07-06 02:27:08 UTC
+@date 2023-07-11 22:30:18 UTC
 @files 18 [
     "src\/imports.css",
     "src\/main.css",
@@ -817,6 +817,10 @@ strong {
 .modal-header,
 .modal-footer {
 	border: 0px;
+}
+
+.modal-header {
+	padding-bottom: 0px;
 }
 
 .modal-header .btn {
