@@ -186,6 +186,9 @@ implements
 		if(!$App->User)
 		return;
 
+		if($App->User->IsAdmin())
+		$Elements->Push(new Atlantis\Dashboard\AtlantisTagsElement($App));
+
 		$Elements
 		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App))
 		->Push(new Atlantis\Dashboard\AtlantisMediaElement($App));

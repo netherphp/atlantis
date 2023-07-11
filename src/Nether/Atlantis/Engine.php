@@ -239,22 +239,6 @@ application instance.
 		return $this->ProjectTime;
 	}
 
-	#[Common\Meta\Deprecated('2023-07-10', 'use FromConfRoot')]
-	public function
-	GetConfigRoot(?string $File=NULL):
-	string {
-
-		return $this->FromConfRoot($File);
-	}
-
-	#[Common\Meta\Deprecated('2023-07-10', 'use FromEnvConf')]
-	public function
-	GetEnvConfigRoot(?string $File=NULL):
-	string {
-
-		return $this->FromEnvConf($File);
-	}
-
 	public function
 	GetWebRoot():
 	string {
@@ -273,17 +257,6 @@ application instance.
 
 	#[Common\Meta\Date('2023-07-10')]
 	public function
-	FromEnvConf(?string $File=NULL):
-	string {
-
-		$File ??= '';
-		$Path = sprintf('env/%s/%s', $this->GetProjectEnv(), $File);
-
-		return $this->FromConfRoot(rtrim($Path, '/'));
-	}
-
-	#[Common\Meta\Date('2023-07-10')]
-	public function
 	FromConfRoot(?string $File=NULL):
 	string {
 
@@ -291,6 +264,17 @@ application instance.
 		$Path = sprintf('conf/%s', $File);
 
 		return $this->FromProjectRoot(rtrim($Path, '/'));
+	}
+
+	#[Common\Meta\Date('2023-07-10')]
+	public function
+	FromConfEnv(?string $File=NULL):
+	string {
+
+		$File ??= '';
+		$Path = sprintf('env/%s/%s', $this->GetProjectEnv(), $File);
+
+		return $this->FromConfRoot(rtrim($Path, '/'));
 	}
 
 	#[Common\Meta\Date('2023-07-10')]
@@ -579,6 +563,29 @@ application instance.
 		return $this;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Deprecated('2023-07-10', 'use FromConfRoot')]
+	public function
+	GetConfigRoot(?string $File=NULL):
+	string {
+
+		return $this->FromConfRoot($File);
+	}
+
+	#[Common\Meta\Deprecated('2023-07-10', 'use FromEnvConf')]
+	public function
+	GetEnvConfigRoot(?string $File=NULL):
+	string {
+
+		return $this->FromConfEnv($File);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

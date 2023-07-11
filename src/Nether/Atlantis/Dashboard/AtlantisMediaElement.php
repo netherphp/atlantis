@@ -23,7 +23,7 @@ extends Atlantis\Dashboard\Element {
 	OnReady():
 	void {
 
-		$this->Columns = 'full';
+		$this->Columns = 'half';
 		$this->Priority = -999;
 
 		return;

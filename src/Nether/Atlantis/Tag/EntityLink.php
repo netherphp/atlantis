@@ -329,6 +329,9 @@ required data in.
 			':EntityUUID' => $EntityUUID
 		]);
 
+		if(!$Result->IsOK())
+		throw new Exception($Result->GetError());
+
 		return;
 	}
 

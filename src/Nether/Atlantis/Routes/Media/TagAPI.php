@@ -71,6 +71,36 @@ extends Atlantis\Routes\UploadAPI {
 	TagPost():
 	void {
 
+		($this->Data)
+		->Name(Common\Datafilters::TrimmedText(...));
+
+		$Name = $this->Data->Name;
+		$Alias = Common\Datafilters::SlottableKey($Name);
+		$Old = NULL;
+
+		////////
+
+		$Old = Atlantis\Tag\Entity::GetByField('Name', $Name);
+
+		if($Old)
+		$this->Quit(1, "A tag with this name ({$Name}) already exists.");
+
+		$Old = Atlantis\Tag\Entity::GetByField('Alias', $Alias);
+
+		if($Old)
+		$this->Quit(2, "A tag with this alias ({$Alias}) already exists.");
+
+		////////
+
+		$Tag = Atlantis\Tag\Entity::Insert([
+			'Name'  => $Name,
+			'Alias' => $Alias
+		]);
+
+		$this
+		->SetGoto("/tag/{$Tag->Alias}")
+		->SetPayload($Tag->DescribeForPublicAPI());
+
 		return;
 	}
 
@@ -95,6 +125,9 @@ extends Atlantis\Routes\UploadAPI {
 	public function
 	TagDelete():
 	void {
+
+		$Tag = $this->FetchTagbyField();
+		$Tag->Drop();
 
 		return;
 	}

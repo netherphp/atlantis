@@ -19,9 +19,10 @@ use Nether\User;
 
 ?>
 
-<div class="row">
+
+
 	<?php foreach($Element->Blogs as $BlogUser): /** @var Blog\BlogUser $Blog */ ?>
-	<div class="col mb-4">
+
 		<div class="jumbotron rounded">
 
 			<!-- BLOG TITLE -->
@@ -34,13 +35,13 @@ use Nether\User;
 			<div class="row mb-4">
 				<div class="col-12 col-md-auto mb-2 mb-md-0">
 					<div>
-						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format(1234)) ?></div>
+						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format(0)) ?></div>
 						<div class="font-size-smallest text-uppercase text-muted">Views Last 24hr</div>
 					</div>
 				</div>
 				<div class="col-12 col-md-auto mb-0 mb-md-0">
 					<div>
-						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format(1024)) ?></div>
+						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format(0)) ?></div>
 						<div class="font-size-smallest text-uppercase text-muted">Unique Visitors</div>
 					</div>
 				</div>
@@ -67,32 +68,6 @@ use Nether\User;
 			</div>
 
 		</div>
-	</div>
+
 	<?php endforeach; ?>
-
-	<?php if($Element->UserCanAdmin): ?>
-	<div class="col-12 col-md-4 mb-4">
-		<div class="jumbotron rounded">
-			<div class="fw-bold text-uppercase">
-				Admin: Blog
-			</div>
-			<hr class="mt-0 mb-2" />
-
-			<div class="mb-2">
-				<a href="/dashboard/blog/new" class="btn btn-secondary btn-block text-align-left">
-					<i class="mdi mdi-newspaper-variant"></i>
-					Create New Blog
-				</a>
-			</div>
-			<div class="mb-0">
-				<a href="/dashboard/blog/list" class="btn btn-secondary btn-block text-align-left">
-					<i class="mdi mdi-format-list-text"></i>
-					Manage Blogs
-				</a>
-			</div>
-		</div>
-	</div>
-	<?php endif; ?>
-
-</div>
 

@@ -104,7 +104,7 @@ extends Common\Prototype {
 	static {
 
 		$ProjectFile = $App->FromProjectRoot('atlantis.json');
-		$EnvFile = $App->FromEnvConf('atlantis.json');
+		$EnvFile = $App->FromConfEnv('atlantis.json');
 
 		// load in the base config
 

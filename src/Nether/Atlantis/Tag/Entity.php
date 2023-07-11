@@ -134,8 +134,10 @@ extends Atlantis\Prototype {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['NameLike'] ??= NULL;
 		$Input['Alias'] ??= NULL;
+		$Input['Type'] ??= 'tag';
+
+		$Input['NameLike'] ??= NULL;
 
 		return;
 	}
@@ -144,10 +146,8 @@ extends Atlantis\Prototype {
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
-		if($Input['NameLike'] !== NULL) {
-			$SQL->Where('Main.Name LIKE :NameLikeLike');
-			$Input['NameLikeLike'] = "%%{$Input['NameLike']}%%";
-		}
+		if($Input['Type'] !== NULL)
+		$SQL->Where('Main.Type=:Type');
 
 		if($Input['Alias'] !== NULL) {
 			if(is_array($Input['Alias']))
@@ -155,6 +155,11 @@ extends Atlantis\Prototype {
 
 			else
 			$SQL->Where('Main.Alias=:Alias');
+		}
+
+		if($Input['NameLike'] !== NULL) {
+			$SQL->Where('Main.Name LIKE :NameLikeLike');
+			$Input['NameLikeLike'] = "%%{$Input['NameLike']}%%";
 		}
 
 		return;
@@ -165,9 +170,12 @@ extends Atlantis\Prototype {
 	void {
 
 		switch($Input['Sort']) {
+			case 'name-az':
 			case 'title-az':
 				$SQL->Sort('Main.Name', $SQL::SortAsc);
 			break;
+
+			case 'name-za':
 			case 'title-za':
 				$SQL->Sort('Main.Name', $SQL::SortDesc);
 			break;
@@ -188,7 +196,8 @@ extends Atlantis\Prototype {
 			'TimeCreated' => time(),
 			'UUID'        => Common\UUID::V7(),
 			'Alias'       => NULL,
-			'Name'        => NULL
+			'Name'        => NULL,
+			'Type'        => NULL
 		]);
 
 		////////
@@ -203,6 +212,9 @@ extends Atlantis\Prototype {
 
 		if(!$Input['Alias'])
 		$Input['Alias'] = Common\UUID::V7();
+
+		if(!$Input['Type'])
+		$Input['Type'] = 'tag';
 
 		////////
 

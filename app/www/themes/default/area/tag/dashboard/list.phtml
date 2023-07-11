@@ -1,0 +1,183 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Database\Struct\PrototypeFindResult $Tags
+ */
+
+$Surface
+->Set('Page.Title', 'Manage Tags - Dashboard')
+->Area('media/dashboard/scripts', $__SCOPE)
+->Area('dashboard/nav', [ 'Trail' => [
+	'Tags' => '/dashboard/tag/list'
+]]);
+
+?>
+
+<div class="row align-items-center">
+	<div class="col">
+		<span class="fw-bold text-uppercase">
+			<?php $Util->Print($Tags->Total) ?> Tags Found
+		</span>
+	</div>
+	<div class="col-auto">
+		<div class="btn btn-dark CmdTagNew">
+			<i class="mdi mdi-plus"></i>
+			New Tag
+		</div>
+	</div>
+</div>
+<hr />
+
+<?php foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<div class="ratiobox square wallpapered rounded" style="width:48px; background-image:url(<?php $Util->Print($Tag->GetCoverImageURL()) ?>);">
+		</div>
+	</div>
+	<div class="col">
+		<a href="<?php $Util->Print(sprintf('/tag/%s', $Tag->Alias)) ?>"><?php $Util->Print($Tag->Name) ?></a>
+	</div>
+	<div class="col-auto">
+		<div class="btn btn-dark CmdTagEdit" data-tag-id="<?php $Util->Print($Tag->ID) ?>">
+			<i class="mdi mdi-pencil"></i>
+			Edit
+		</div>
+	</div>
+	<div class="col-auto">
+		<button class="btn btn-danger CmdTagDelete" data-tag-id="<?php $Util->Print($Tag->ID) ?>">
+			<i class="mdi mdi-close mr-0"></i>
+		</button>
+	</div>
+</div>
+<hr />
+<?php endforeach; ?>
+
+<div>
+	<?php $Surface->Area('widgets/pager', [ 'Results'=> $Tags ]) ?>
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import DialogUtil from '/share/nui/util/dialog.js';
+
+jQuery(function() {
+
+	jQuery('.CmdTagNew')
+	.on('click', function(){
+
+		let diag = new DialogUtil.Window({
+			title: 'New Tag',
+			labelAccept: 'Add',
+			fields: [
+				new DialogUtil.Field('text', 'Name', null)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('POST', '/api/tag/entity', data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.show();
+
+		return false;
+	});
+
+	jQuery('.CmdTagEdit')
+	.on('click', function(){
+
+		let tag = { id: parseInt(this.dataset.tagId) };
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Tag',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, tag.id),
+				new DialogUtil.Field('text', 'Name', null)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', '/api/tag/entity', data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', '/api/tag/entity',
+			{ ID: tag.id },
+			true
+		);
+
+		return false;
+	});
+
+	jQuery('.CmdTagDelete')
+	.on('click', function() {
+
+		let tag = { id: parseInt(this.dataset.tagId) };
+
+		let diag = new DialogUtil.Window({
+			title: 'Confirm Tag Delete',
+			body: '<blockquote class="quotron">Loading...</blockquote>',
+			labelAccept: 'Yes',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, tag.id)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('DELETE', '/api/tag/entity', data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', '/api/tag/entity',
+			{ ID: tag.id },
+			true,
+			function(d, result) {
+
+				diag.body.find('blockquote')
+				.html(`Delete ${result.payload.Name}? This cannot be undone.`);
+
+				return;
+			}
+		);
+
+		return;
+	});
+
+	return;
+});
+</script>
+

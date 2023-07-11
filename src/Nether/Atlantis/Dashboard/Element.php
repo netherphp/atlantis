@@ -55,13 +55,16 @@ class Element {
 
 		return match($this->Columns) {
 			3, '3', 'full', 'three'
-			=> 'col-12 col-md-12',
+			=> 'col-12',
 
 			2, '2', 'two', 'two-third'
 			=> 'col-12 col-md-8',
 
 			1, '1', 'one', 'one-third'
 			=> 'col-12 col-md-4',
+
+			'half'
+			=> 'col-12 col-md-6',
 
 			'auto'
 			=> 'col-auto',

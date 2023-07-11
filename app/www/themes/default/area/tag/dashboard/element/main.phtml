@@ -1,0 +1,43 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Dashboard\AtlantisTagsElement $Element
+ */
+
+?>
+
+<div class="jumbotron rounded">
+	<div class="fw-bold text-uppercase">
+		<a href="/tags/">Tags</a>
+	</div>
+	<hr class="mt-0 mb-2" />
+
+	<div class="row mb-4">
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold"><?php $Util->Print($Element->TagCount) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Total Tags</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-2">
+		<a href="/dashboard/tags" class="btn btn-dark btn-block text-align-left">
+			<i class="mdi mdi-tag-multiple"></i>
+			Manage Tags
+		</a>
+	</div>
+</div>

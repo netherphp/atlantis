@@ -33,9 +33,14 @@ extends Database\Prototype {
 	Drop():
 	static {
 
-		parent::Drop();
-
+		// remove entries from nfk tag table.
 		Tag\EntityLink::DeleteByEntity($this->UUID);
+
+		// remove entries from nfk obj relationship table.
+		Struct\EntityRelationship::DeleteByUUID($this->UUID);
+
+		// bye.
+		parent::Drop();
 
 		return $this;
 	}
