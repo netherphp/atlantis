@@ -57,7 +57,7 @@ Running the `init` command will generate a project in the current directory with
 
 * `/atlantis.json`
 
-  Mostly contains low level configuration for setup and checking of the server, things > that the app does not need to know except once in forever.
+  Mostly contains low level configuration for setup and checking of the server, things the app does not need to know except once in forever.
 
 * `/conf/config.json`
 

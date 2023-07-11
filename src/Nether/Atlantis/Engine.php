@@ -239,27 +239,20 @@ application instance.
 		return $this->ProjectTime;
 	}
 
+	#[Common\Meta\Deprecated('2023-07-10', 'use FromConfRoot')]
 	public function
 	GetConfigRoot(?string $File=NULL):
 	string {
 
-		return sprintf(
-			'%s/conf%s',
-			$this->ProjectRoot,
-			($File ? "/{$File}" : '')
-		);
+		return $this->FromConfRoot($File);
 	}
 
+	#[Common\Meta\Deprecated('2023-07-10', 'use FromEnvConf')]
 	public function
 	GetEnvConfigRoot(?string $File=NULL):
 	string {
 
-		return sprintf(
-			'%s/conf/env/%s%s',
-			$this->ProjectRoot,
-			$this->ProjectEnv,
-			($File ? "/{$File}" : '')
-		);
+		return $this->FromEnvConf($File);
 	}
 
 	public function
@@ -275,21 +268,52 @@ application instance.
 		return $WebRoot;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-07-10')]
 	public function
-	FromProjectRoot(string $Path):
+	FromEnvConf(string $File=NULL):
 	string {
 
-		if(Common\Filesystem\Util::IsAbsolutePath($Path))
+		$File ??= '';
+		$Path = sprintf('env/%s/%s', $this->GetProjectEnv(), $File);
+
+		return $this->FromConfRoot(rtrim($Path, '/'));
+	}
+
+	#[Common\Meta\Date('2023-07-10')]
+	public function
+	FromConfRoot(?string $File=NULL):
+	string {
+
+		$File ??= '';
+		$Path = sprintf('conf/%s', $File);
+
+		return $this->FromProjectRoot(rtrim($Path, '/'));
+	}
+
+	#[Common\Meta\Date('2023-07-10')]
+	public function
+	FromProjectRoot(?string $File=NULL):
+	string {
+
+		$File ??= '';
+		$Path = NULL;
+
+		////////
+
+		if($File && Common\Filesystem\Util::IsAbsolutePath($File))
+		return $File;
+
+		////////
+
+		$Path = rtrim(sprintf(
+			'%s/%s',
+			$this->ProjectRoot, Util::Repath($File)
+		));
+
 		return $Path;
-
-		$Output = sprintf(
-			'%s%s%s',
-			$this->ProjectRoot,
-			DIRECTORY_SEPARATOR,
-			Util::Repath($Path)
-		);
-
-		return $Output;
 	}
 
 	////////////////////////////////////////////////////////////////

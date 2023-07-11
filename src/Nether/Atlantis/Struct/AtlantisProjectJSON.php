@@ -2,6 +2,7 @@
 
 namespace Nether\Atlantis\Struct;
 
+use Nether\Atlantis;
 use Nether\Common;
 
 class AtlantisProjectJSON
@@ -57,7 +58,7 @@ extends Common\Prototype {
 	}
 
 	public function
-	Write():
+	Sort():
 	static {
 
 		$this->Dirs->Sort(
@@ -69,6 +70,15 @@ extends Common\Prototype {
 			fn(Common\Filesystem\Symlink $A, Common\Filesystem\Symlink $B)
 			=> $A->Path <=> $B->Path
 		);
+
+		return $this;
+	}
+
+	public function
+	Write():
+	static {
+
+		$this->Sort();
 
 		$this->File['Dirs'] = $this->Dirs->Values();
 		$this->File['Links'] = $this->Links->Values();
@@ -87,6 +97,30 @@ extends Common\Prototype {
 		return new static([
 			'File' => Common\Datastore::NewFromFile($Filename)
 		]);
+	}
+
+	static public function
+	FromApp(Atlantis\Engine $App):
+	static {
+
+		$ProjectFile = $App->FromProjectRoot('atlantis.json');
+		$EnvFile = $App->FromEnvConf('atlantis.json');
+
+		// load in the base config
+
+		$Data = Common\Datastore::FromStackMerged(
+			file_exists($ProjectFile)
+			? Common\Datastore::FromFile($ProjectFile)
+			: NULL,
+
+			file_exists($EnvFile)
+			? Common\Datastore::FromFile($EnvFile)
+			: NULL
+		);
+
+		////////
+
+		return new static([ 'File'=> $Data ]);
 	}
 
 }

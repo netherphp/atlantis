@@ -57,12 +57,7 @@ extends Console\Client {
 		if(!$OptDirs && !$OptLinks && !$OptRewrite)
 		$OptDirs = $OptLinks = TRUE;
 
-		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
-			Common\Filesystem\Util::Pathify(
-				$this->App->GetProjectRoot(),
-				'atlantis.json'
-			)
-		);
+		$Project = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
 
 		$this->PrintLn();
 
@@ -282,12 +277,7 @@ extends Console\Client {
 
 		////////
 
-		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
-			Common\Filesystem\Util::Pathify(
-				$this->App->GetProjectRoot(),
-				'atlantis.json'
-			)
-		);
+		$Project = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
 
 		// if there is an old entry with this path name already then it
 		// should bail, unless both the path and the source are the same
@@ -335,12 +325,7 @@ extends Console\Client {
 
 		////////
 
-		$Project = Atlantis\Struct\AtlantisProjectJSON::FromFile(
-			Common\Filesystem\Util::Pathify(
-				$this->App->GetProjectRoot(),
-				'atlantis.json'
-			)
-		);
+		$Project = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
 
 		// if there is an old entry with this path name already then it
 		// should bail, unless both the path and the source are the same
