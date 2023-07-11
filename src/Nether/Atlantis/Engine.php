@@ -273,7 +273,7 @@ application instance.
 
 	#[Common\Meta\Date('2023-07-10')]
 	public function
-	FromEnvConf(string $File=NULL):
+	FromEnvConf(?string $File=NULL):
 	string {
 
 		$File ??= '';
