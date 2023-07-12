@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.275.5",
+            "version": "3.275.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "d46961b82e857f77059c0c78160719ecb26f6cc6"
+                "reference": "a048b1d7110f62fb67cc69b93efc24e62ea8b64b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d46961b82e857f77059c0c78160719ecb26f6cc6",
-                "reference": "d46961b82e857f77059c0c78160719ecb26f6cc6",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a048b1d7110f62fb67cc69b93efc24e62ea8b64b",
+                "reference": "a048b1d7110f62fb67cc69b93efc24e62ea8b64b",
                 "shasum": ""
             },
             "require": {
@@ -151,9 +151,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.275.5"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.275.6"
             },
-            "time": "2023-07-07T18:20:11+00:00"
+            "time": "2023-07-11T04:45:11+00:00"
         },
         {
             "name": "brick/math",
@@ -1322,12 +1322,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/common.git",
-                "reference": "3ddf9253052567e396e7f17c3e920bf98a9f04b8"
+                "reference": "5965bbb407fa93d91cad0e8ff9a1ac5612e433f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/common/zipball/3ddf9253052567e396e7f17c3e920bf98a9f04b8",
-                "reference": "3ddf9253052567e396e7f17c3e920bf98a9f04b8",
+                "url": "https://api.github.com/repos/netherphp/common/zipball/5965bbb407fa93d91cad0e8ff9a1ac5612e433f6",
+                "reference": "5965bbb407fa93d91cad0e8ff9a1ac5612e433f6",
                 "shasum": ""
             },
             "require": {
@@ -1370,7 +1370,7 @@
                 "issues": "https://github.com/netherphp/common/issues",
                 "source": "https://github.com/netherphp/common/tree/master"
             },
-            "time": "2023-07-10T22:03:30+00:00"
+            "time": "2023-07-12T02:36:16+00:00"
         },
         {
             "name": "netherphp/console",
@@ -1437,12 +1437,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/database.git",
-                "reference": "dde264f40d4d19abb20cc6a2282565deb83bdda9"
+                "reference": "6b66455817a1a736c1e56c260588ed9a2585a7c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/database/zipball/dde264f40d4d19abb20cc6a2282565deb83bdda9",
-                "reference": "dde264f40d4d19abb20cc6a2282565deb83bdda9",
+                "url": "https://api.github.com/repos/netherphp/database/zipball/6b66455817a1a736c1e56c260588ed9a2585a7c8",
+                "reference": "6b66455817a1a736c1e56c260588ed9a2585a7c8",
                 "shasum": ""
             },
             "require": {
@@ -1487,7 +1487,7 @@
                 "issues": "https://github.com/netherphp/database/issues",
                 "source": "https://github.com/netherphp/database/tree/redux"
             },
-            "time": "2023-07-07T22:43:26+00:00"
+            "time": "2023-07-12T02:36:17+00:00"
         },
         {
             "name": "netherphp/email",
