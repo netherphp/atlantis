@@ -215,11 +215,14 @@ required data in.
 	JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
 	void {
 
+		parent::JoinExtendTables($SQL, $JAlias, $TPre);
+
 		$Table = static::GetTableInfo();
 		$TPre = $Table->GetPrefixedAlias($TPre);
 		$JAlias = $Table->GetPrefixedAlias($JAlias);
 
 		Entity::JoinMainTables($SQL, $JAlias, 'TagID', $TPre);
+		//Entity::JoinExtendTables($SQL, $JAlias, $TPre);
 
 		return;
 	}
@@ -228,10 +231,13 @@ required data in.
 	JoinExtendFields(Database\Verse $SQL, ?string $TPre = NULL):
 	void {
 
+		parent::JoinExtendFields($SQL, $TPre);
+
 		$Table = static::GetTableInfo();
 		$TPre = $Table->GetPrefixedAlias($TPre);
 
 		Entity::JoinMainFields($SQL, $TPre);
+		//Entity::JoinExtendFields($SQL, $TPre);
 
 		return;
 	}

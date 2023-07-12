@@ -1,5 +1,5 @@
 /*//
-@date 2023-07-11 22:30:18 UTC
+@date 2023-07-12 01:25:38 UTC
 @files 18 [
     "src\/imports.css",
     "src\/main.css",
@@ -464,6 +464,10 @@ strong {
 .line-clamp-6 { height: calc(var(--LocalLineHeight) * 6); }
 .line-clamp-7 { height: calc(var(--LocalLineHeight) * 7); }
 .line-clamp-8 { height: calc(var(--LocalLineHeight) * 8); }
+
+.dropdown-menu {
+	z-index: 9011;
+}
 
 .dropdown-menu.dropdown-menu-scrolled {
 	max-height: var(--DropdownMaxHeight);

@@ -139,7 +139,8 @@ implements
 
 		////////
 
-		Atlantis\Media\FileTagLink::RegisterType();
+		Atlantis\Media\FileTagLink::Register();
+		Atlantis\Tag\SubtagLink::Register();
 
 		////////
 

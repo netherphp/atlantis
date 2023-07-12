@@ -17,12 +17,7 @@ extends Atlantis\Routes\UploadAPI {
 
 		$Tag = $this->FetchTagByField();
 
-		$this->SetPayload([
-			'ID'    => $Tag->ID,
-			'Type'  => $Tag->Type,
-			'Alias' => $Tag->Alias,
-			'Name'  => $Tag->Name
-		]);
+		$this->SetPayload($Tag->DescribeForPublicAPI());
 
 		return;
 	}
@@ -38,6 +33,7 @@ extends Atlantis\Routes\UploadAPI {
 		->Query(Common\Datafilters::TrimmedText(...));
 
 		$Result = Atlantis\Tag\Entity::Find([
+			//'Type'     => 'tag',
 			'NameLike' => $this->Data->Query,
 			'Sort'     => 'tag-name-az',
 			'Limit'    => 20

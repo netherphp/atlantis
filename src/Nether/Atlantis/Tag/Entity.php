@@ -12,8 +12,12 @@ use Exception;
 class Entity
 extends Atlantis\Prototype {
 
+	////////////////////////////////////////////////////////////////
+	//// DATABASE FIELDS ///////////////////////////////////////////
+
 	#[Database\Meta\TypeChar(Size: 8, Default: 'tag', Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
 	public string
 	$Type;
 
@@ -39,6 +43,7 @@ extends Atlantis\Prototype {
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'SlottableKey' ])]
+	#[Common\Meta\PropertyListable]
 	public string
 	$Alias;
 
@@ -46,70 +51,55 @@ extends Atlantis\Prototype {
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyListable]
 	public string
 	$Name;
 
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyListable]
 	public ?string
 	$Details;
 
-	////////
+	////////////////////////////////////////////////////////////////
+	//// LOCAL FIELDS //////////////////////////////////////////////
+
+	#[Common\Meta\PropertyFactory('FromTime', 'TimeCreated')]
+	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
+	public Common\Date
+	$DateCreated;
 
 	public Atlantis\Media\File
 	$CoverImage;
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
 
 	protected function
 	OnReady(Common\Prototype\ConstructArgs $Args):
 	void {
 
 		if($Args->InputHas('UP_ID'))
-		$this->CoverImage = Atlantis\Media\File::FromPrefixedDataset($Args->Input, 'UP_');
+		$this->CoverImage = Atlantis\Media\File::FromPrefixedDataset(
+			$Args->Input, 'UP_'
+		);
 
 		return;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
 	public function
-	GetCoverImageURL(string $Size='md'):
-	?string {
+	DescribeForPublicAPI():
+	array {
 
-		if(!isset($this->CoverImage))
-		return NULL;
+		$Data = parent::DescribeForPublicAPI();
+		$Data['CoverImageURL'] = $this->GetCoverImageURL();
 
-		$URL = $this->CoverImage->GetPublicURL();
-		$URL = str_replace('original.', "{$Size}.", $URL);
-
-		return $URL;
-	}
-
-	public function
-	GetPageURL():
-	string {
-
-		$BaseURL = Atlantis\Library::Get(Atlantis\Library::PageTagURL);
-
-		return $BaseURL;
-	}
-
-	public function
-	FetchPhotos():
-	Database\Struct\PrototypeFindResult {
-
-		return EntityPhoto::Find([
-			'EntityID' => $this->ID,
-			'Limit'    => 0
-		]);
+		return $Data;
 	}
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	//// OVERRIDE Database\Prototype Joins /////////////////////////
 
 	static public function
 	JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
@@ -137,7 +127,7 @@ extends Atlantis\Prototype {
 	}
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	//// OVERRIDE Database\Prototype Finds /////////////////////////
 
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):
@@ -188,21 +178,26 @@ extends Atlantis\Prototype {
 			case 'title-za':
 				$SQL->Sort('Main.Name', $SQL::SortDesc);
 			break;
+
+			case 'newest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+			break;
+
+			case 'oldest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortAsc);
+			break;
+
 		}
 
 		return;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
 	static public function
 	Insert(iterable $Input):
 	?static {
 
-		$Input = new Common\Datastore($Input);
-		$Input->BlendLeft([
-			'TimeCreated' => time(),
+		$Input = Common\Datastore::FromStackBlended($Input, [
+			'TimeCreated' => Common\Date::CurrentUnixtime(),
 			'UUID'        => Common\UUID::V7(),
 			'Alias'       => NULL,
 			'Name'        => NULL,
@@ -217,7 +212,7 @@ extends Atlantis\Prototype {
 		////////
 
 		if(!$Input['Alias'])
-		$Input['Alias'] = Common\Datafilters::PathableKey($Input['Name']);
+		$Input['Alias'] = Common\Filters\Text::PathableKey($Input['Name']);
 
 		if(!$Input['Alias'])
 		$Input['Alias'] = Common\UUID::V7();
@@ -231,21 +226,65 @@ extends Atlantis\Prototype {
 	}
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	//// OVERRIDE Common\Prototype /////////////////////////////////
 
 	static public function
 	New(string $Type=NULL, string $Name=NULL, string $Alias=NULL):
 	static {
-
-		//$Type ??= 'unknown';
-		//$Name ??= 'Unknown';
-		//$Alias ??= Common\Datafilters::SlottableKey($Name);
 
 		return new static([
 			'Type'  => $Type,
 			'Name'  => $Name,
 			'Alias' => $Alias
 		]);
+	}
+
+	////////////////////////////////////////////////////////////////
+	//// LOCAL METHODS /////////////////////////////////////////////
+
+	public function
+	FetchPhotos():
+	Database\Struct\PrototypeFindResult {
+
+		return EntityPhoto::Find([
+			'EntityID' => $this->ID,
+			'Limit'    => 0
+		]);
+	}
+
+	public function
+	GetCoverImageURL(string $Size='md'):
+	?string {
+
+		if(!isset($this->CoverImage))
+		return NULL;
+
+		$URL = $this->CoverImage->GetPublicURL();
+		$URL = str_replace('original.', "{$Size}.", $URL);
+
+		return (string)Atlantis\WebURL::FromString($URL);
+	}
+
+	public function
+	GetPageURL():
+	string {
+
+		$Output = Atlantis\Library::Get(Atlantis\Library::PageTagViewURL);
+		$Key = NULL;
+		$Val = NULL;
+
+		$Tokens = [
+			':Alias:' => $this->Alias
+		];
+
+		////////
+
+		foreach($Tokens as $Key => $Val)
+		$Output = str_replace($Key, $Val, $Output);
+
+		////////
+
+		return (string)Atlantis\WebURL::FromString($Output);
 	}
 
 }

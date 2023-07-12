@@ -123,10 +123,12 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->EntityUUID(Common\Datafilters::TrimmedText(...));
+		->EntityUUID(Common\Filters\Text::Trimmed(...))
+		->Type(Common\Filters\Text::TrimmedNullable(...));
 
 		$Result = Atlantis\Tag\EntityLink::Find([
 			'EntityUUID' => $this->Data->EntityUUID,
+			'Type'       => $this->Data->Type,
 			'Sort'       => 'tag-name-az',
 			'Limit'      => 20
 		]);

@@ -182,8 +182,13 @@ class Util {
 		$URL ??= '';
 		$Domain = parse_url($URL, PHP_URL_HOST);
 
+		// parse_url can return a lot of different results. for this
+		// purpose anything not a string is an error condition.
+
 		if(!is_string($Domain))
 		return 'Unknown';
+
+		// strip off literal www from the start of domain names.
 
 		if(str_starts_with($Domain, 'www.'))
 		$Domain = preg_replace('/^www\./', '', $Domain);

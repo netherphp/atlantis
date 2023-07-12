@@ -147,6 +147,10 @@
 .line-clamp-7 { height: calc(var(--LocalLineHeight) * 7); }
 .line-clamp-8 { height: calc(var(--LocalLineHeight) * 8); }
 
+.dropdown-menu {
+	z-index: 9011;
+}
+
 .dropdown-menu.dropdown-menu-scrolled {
 	max-height: var(--DropdownMaxHeight);
 	overflow-y: scroll;

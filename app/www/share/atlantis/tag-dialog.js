@@ -49,7 +49,7 @@ extends ModalDialog {
 
 		let api = new API.Request('TAGSGET', '/api/media/entity');
 
-		(api.send({ EntityUUID: this.uuid }))
+		(api.send({ EntityUUID: this.uuid, Type: this.type }))
 		.then(this.onTagFetch.bind(this))
 		.catch(api.catch);
 

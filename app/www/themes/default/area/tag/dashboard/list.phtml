@@ -48,7 +48,7 @@ $Surface
 		</div>
 	</div>
 	<div class="col">
-		<a href="<?php $Util->Print(sprintf('/tag/%s', $Tag->Alias)) ?>"><?php $Util->Print($Tag->Name) ?></a>
+		<a href="<?php $Util->Print($Tag->GetPageURL()) ?>"><?php $Util->Print($Tag->Name) ?></a>
 	</div>
 	<div class="col-auto">
 		<div class="btn btn-dark CmdTagEdit" data-tag-id="<?php $Util->Print($Tag->ID) ?>">
