@@ -23,7 +23,7 @@ extends Atlantis\Prototype {
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
 	public int
-	$TimeCreated;
+	$TimeCreated = 0;
 
 	#[Database\Meta\TypeIntTiny(Unsigned: TRUE, Default: 1, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
