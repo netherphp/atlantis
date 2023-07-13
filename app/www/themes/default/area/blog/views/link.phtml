@@ -34,6 +34,8 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 };
 
 $Full ??= TRUE;
+$BlogUser ??= NULL;
+$Excerpt ??= TRUE;
 
 $Link = Blog\Struct\EditorLink::FromJSON($Post->Content);
 $OutboundURL = $Full ? $Link->URL : $Post->GetURL();
@@ -43,7 +45,7 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 ?>
 
 <!-- POST HEADING -->
-<div class="mb-4">
+<div class="<?php $Util->Print($Full ? 'mb-4' : '') ?>">
 
 	<!-- POST IMAGE -->
 	<?php if($Full && $Post->CoverImageID): ?>
@@ -56,15 +58,15 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 		<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
 	</h3>
 
-	<div class="mb-1">
+	<div class="mb-0">
 		<span class="fw-bold text-uppercase">Date Shared:</span>
 		<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
 	</div>
-	<div class="mb-1">
+	<div class="mb-0">
 		<span class="fw-bold text-uppercase">Date Posted:</span>
 		<?php $Util->Print(Common\Date::FromDateString($Link->Date)->Get(Common\Values::DateFormatFancyDate)) ?>
 	</div>
-	<div class="mb-2">
+	<div class="mb-3">
 		<span class="fw-bold text-uppercase">Source:</span>
 		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($OutboundDomain) ?></a>
 	</div>
@@ -86,9 +88,26 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 			</h3>
 			<hr class="mt-1 mb-3" />
 			<?php endif; ?>
+
 			<div class="fst-italic">
-				<?php while(str_ends_with($Link->Excerpt, '<div><br></div>')) $Link->Excerpt = preg_replace('/<div><br><\/div>$/', '', $Link->Excerpt); echo $Link->Excerpt; ?>
+				<?php
+
+				while(str_ends_with($Link->Excerpt, '<div><br></div>'))
+				$Link->Excerpt = preg_replace('/<div><br ?\/?><\/div>$/', '', $Link->Excerpt);
+
+				if(!$Full) {
+					if($Excerpt)
+					echo $Link->GetExcerpt();
+				}
+
+				else {
+					if($Excerpt)
+					echo $Link->Excerpt;
+				}
+
+				?>
 			</div>
+
 			<?php if($Full): ?>
 			<div class="text-align-center pt-4 fw-bold">
 				<div class="font-size-large mb-1">
@@ -102,6 +121,7 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 				</div>
 			</div>
 			<?php endif; ?>
+
 		</div>
 	</div>
 </div>
@@ -120,5 +140,6 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 <?php endif; ?>
 
 <?php if($Full): ?>
+<!-- POST CONTENT: Theme Extension -->
 <?php $Surface->Area('blog/widgets/view-post-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
 <?php endif; ?>

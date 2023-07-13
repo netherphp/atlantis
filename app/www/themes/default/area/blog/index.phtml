@@ -1,36 +1,76 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Avenue;
 use Nether\Blog;
 use Nether\Common;
 use Nether\Database;
+use Nether\Surface;
+use Nether\User;
 
 /**
-  * @var Blog\Blog $Blog
-  * @var ?Blog\BlogUser $BlogUser
-  * @var Database\Struct\PrototypeFindResult $BlogTags
-  * @var Database\Struct\PrototypeFindResult $Posts
-  * @var Common\Datastore $Popular
-  */
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Blog\Blog $Blog
+ * @var Blog\BlogUser $BlogUser
+ * @var Database\Struct\PrototypeFindResult $BlogTags
+ * @var Database\Struct\PrototypeFindResult $Posts
+ * @var Common\Datastore $Popular
+ * @var bool $OptShowDrafts
+ */
 
 ?>
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
 <div class="container pt-4 pb-4">
-	<div class="row">
+	<div class="row align-items-center">
 		<div class="col">
 			<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
 		</div>
 		<div class="col-auto">
 			<?php if($BlogUser && $BlogUser->CanWrite()): ?>
-			<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light mb-2 text-align-left">
+			<div class="form-check form-switch">
+				<label class="form-check-label fw-bold text-uppercase">
+					<input class="form-check-input OptShowDrafts" type="checkbox" <?php $Util->Print($Util->GetCheckedHTML($OptShowDrafts)) ?>>
+					Drafts
+				</label>
+			</div>
+			<script type="module">
+			jQuery(function(){
+				jQuery('.OptShowDrafts')
+				.on('change', function() {
+
+					let url = new URL(location.href);
+
+					if(this.checked)
+					url.searchParams.set('drafts', 'true');
+					else
+					url.searchParams.delete('drafts');
+
+					location.href = url.toString();
+					return;
+				});
+				return;
+			});
+			</script>
+			<?php endif; ?>
+		</div>
+		<div class="col-auto">
+			<?php if($BlogUser && $BlogUser->CanWrite()): ?>
+			<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light text-align-left">
 				<i class="mdi mdi-fw mdi-plus-thick"></i>
 				New Post
 			</a>
 			<?php endif; ?>
 
 			<?php if($BlogUser && $BlogUser->CanAdmin()): ?>
-			<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light mb-2 text-align-left">
+			<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light text-align-left">
 				<i class="mdi mdi-fw mdi-cog"></i>
 			</a>
 			<?php endif; ?>

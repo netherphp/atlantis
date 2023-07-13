@@ -39,7 +39,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 <div>
 	<div class="row <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
 		<div class="col-12 col-md-4 mb-4">
-			<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
+			<div class="ratiobox widescreen rounded wallpapered bg-dark" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
 				<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
 			</div>
 		</div>

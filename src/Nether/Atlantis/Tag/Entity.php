@@ -85,6 +85,9 @@ extends Atlantis\Prototype {
 			$Args->Input, 'UP_'
 		);
 
+		if(isset($this->Details))
+		$this->Details = Atlantis\Util::TrimHTML($this->Details, TRUE);
+
 		return;
 	}
 

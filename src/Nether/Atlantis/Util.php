@@ -240,6 +240,31 @@ class Util {
 		return (Bool)$ReResult->IsSuccess();
 	}
 
+	static public function
+	TrimHTML(?string $Input, bool $Nullable=FALSE):
+	?string {
+
+		$Output = $Input ?? '';
+
+		// if the content is short, strip and trim to find out if it ends
+		// up looking like a bunch of nothing.
+
+		if(isset($Output) && strlen($Output) < 64)
+		if(trim(strip_tags($Output)) === '')
+		$Output = '';
+
+		// then plain trim the content as well.
+
+		$Output = trim($Output);
+
+		// if we want it nullable and it seems falsy.
+
+		if($Nullable && !$Output)
+		$Output = NULL;
+
+		return $Output;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

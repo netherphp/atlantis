@@ -255,7 +255,7 @@ application instance.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Common\Meta\Date('2023-07-10')]
+	#[Common\Meta\DateAdded('2023-07-10')]
 	public function
 	FromConfRoot(?string $File=NULL):
 	string {
@@ -266,7 +266,7 @@ application instance.
 		return $this->FromProjectRoot(rtrim($Path, '/'));
 	}
 
-	#[Common\Meta\Date('2023-07-10')]
+	#[Common\Meta\DateAdded('2023-07-10')]
 	public function
 	FromConfEnv(?string $File=NULL):
 	string {
@@ -277,7 +277,7 @@ application instance.
 		return $this->FromConfRoot(rtrim($Path, '/'));
 	}
 
-	#[Common\Meta\Date('2023-07-10')]
+	#[Common\Meta\DateAdded('2023-07-10')]
 	public function
 	FromProjectRoot(?string $File=NULL):
 	string {
@@ -302,6 +302,19 @@ application instance.
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	HasLocalData(string $Key):
+	bool {
+
+		if(!isset($_SESSION))
+		return FALSE;
+
+		if(!isset($_SESSION[$Key]))
+		return FALSE;
+
+		return TRUE;
+	}
 
 	public function
 	SetLocalData(string $Key, mixed $Val):
