@@ -265,6 +265,32 @@ class Util {
 		return $Output;
 	}
 
+	static public function
+	GetBinProjectDirectory(string $Origin=NULL):
+	string {
+
+		$Origin ??= __FILE__;
+		$BinPath = Atlantis\Util::Repath(dirname($Origin));
+		$CurPath = Atlantis\Util::Repath(getcwd());
+
+		// if it looks like we in a project directory assume we are in
+		// the project directory.
+
+		if(file_exists(sprintf('%s/composer.lock', $CurPath)))
+		if(str_starts_with($BinPath, $CurPath))
+		return $CurPath;
+
+		// if we are elsewhere but calling this installed as a vendor
+		// binary assume that the project directory is up from that.
+
+		if(str_ends_with($BinPath, 'vendor/netherphp/atlantis/bin'))
+		return dirname(__FILE__, 5);
+
+		// else just yolo with the current path again.
+
+		return $CurPath;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

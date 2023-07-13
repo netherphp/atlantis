@@ -45,7 +45,8 @@
 	"bin": [
 		"bin/atlantis",
 		"bin/atlantis-ssl",
-		"bin/atlantis-cron"
+		"bin/atlantis-cron",
+		"bin/gfx.atl"
 	],
 	"autoload": {
 		"psr-0": {

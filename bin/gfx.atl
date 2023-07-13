@@ -1,0 +1,41 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+class GraphicsTool
+extends Console\Client {
+
+	const
+	AppName    = 'Atlantis Graphics Tool',
+	AppVersion = '5.0.0-dev';
+
+	protected Atlantis\Engine
+	$App;
+
+	protected function
+	OnReady():
+	void {
+
+		$this->App = new Atlantis\Engine(Atlantis\Util::GetBinProjectDirectory(__FILE__));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+
+}
+
+exit((new AtlantisCLI)->Run());
