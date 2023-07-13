@@ -291,6 +291,31 @@ class Util {
 		return $CurPath;
 	}
 
+	static public function
+	RewriteFileExtension(string $Filename, string $ExtOld, string $ExtNew):
+	string {
+
+		$Output = $Filename;
+
+		////////
+
+		// if the old file was extensionless then just append an extension
+		// to the end of it.
+
+		if(!$ExtOld)
+		return sprintf('%s.%s', $Output, $ExtNew);
+
+		// else replace the old extension with the new extension.
+
+		$Output = preg_replace(
+			sprintf('#%s$#', preg_quote($ExtOld, '#')),
+			$ExtNew,
+			$Output
+		);
+
+		return $Output;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

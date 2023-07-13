@@ -3,7 +3,7 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
-use Nether\User;
+use Nether\Storage;
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
@@ -13,21 +13,29 @@ use Nether\User;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+#[Common\Meta\DateAdded('2023-07-13')]
 class GraphicsTool
 extends Console\Client {
 
 	const
 	AppName    = 'Atlantis Graphics Tool',
-	AppVersion = '5.0.0-dev';
+	AppDesc    = 'Utilities for dealing with images that need processed.',
+	AppVersion = '5.0.0-dev',
+	AppDebug   = TRUE;
 
 	protected Atlantis\Engine
 	$App;
+
+	////////////////////////////////////////////////////////////////
+	// OVERRIDES Console\Client ////////////////////////////////////
 
 	protected function
 	OnReady():
 	void {
 
-		$this->App = new Atlantis\Engine(Atlantis\Util::GetBinProjectDirectory(__FILE__));
+		$this->App = new Atlantis\Engine(
+			Atlantis\Util::GetBinProjectDirectory(__FILE__)
+		);
 
 		return;
 	}
@@ -35,7 +43,198 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('genshare')]
+	#[Common\Meta\DateAdded('2023-07-13')]
+	#[Console\Meta\Info('Generate the social share sized versions of a graphic. Mostly used for site logos.')]
+	#[Console\Meta\Arg('path/to/image.png')]
+	#[Console\Meta\Toggle('--force', 'Allows overwriting existing output file.')]
+	#[Console\Meta\Value('--width', 'Width of output. Default: 1920')]
+	#[Console\Meta\Value('--height', 'Height of output. Default: 1080')]
+	#[Console\Meta\Value('--scale', 'Percentage input fills the output. Default: 64 (%)')]
+	#[Console\Meta\Value('--bg', 'Background colour of the output. Should accept any CSS colour name or hex code.')]
+	#[Console\Meta\Value('--ext', 'Output file extension/format. Recommend sticking with "jpg" or "png". Default: jpg')]
+	#[Console\Meta\Value('--suffix', 'Suffix that gets added to the filename. Default: ogimage')]
+	#[Console\Meta\Error(1, 'no file specified')]
+	#[Console\Meta\Error(2, 'file not found (%s)')]
+	#[Console\Meta\Error(3, 'imagick hated the input %s: %s')]
+	#[Console\Meta\Error(4, 'imagick hated itself: %s')]
+	#[Console\Meta\Error(5, 'output file exists (%s) use --force to force overwrite')]
+	public function
+	GenerateShareImage():
+	int {
+
+		$Colour1 = 'Khaki';
+
+		$Width = Common\Filters\Numbers::IntNullable($this->GetOption('Width')) ?? 1920;
+		$Height = Common\Filters\Numbers::IntNullable($this->GetOption('Height')) ?? 1080;
+		$Scale = Common\Filters\Numbers::FloatNullable($this->GetOption('Scale')) ?? 64.0;
+		$BgColour = Common\Filters\Text::TrimmedNullable($this->GetOption('BG')) ?? 'black';
+		$FormatExt = Common\Filters\Text::TrimmedNullable($this->GetOption('Ext')) ?? 'jpg';
+		$Suffix = Common\Filters\Text::TrimmedNullable($this->GetOption('Suffix')) ?? 'ogimage';
+		$Force = Common\Filters\Numbers::BoolType($this->GetOption('Force'));
+		$Trim = Common\Filters\Numbers::BoolType($this->GetOption('Trim'));
+		$Filename = $this->GetInput(1);
+
+		$File = NULL;
+		$ImageIn = NULL;
+		$ImageOut = NULL;
+		$Outname = NULL;
+
+		////////
+
+		if(!$Filename)
+		$this->Quit(1);
+
+		if(!file_exists($Filename))
+		$this->Quit(2, $Filename);
+
+		$File = new SplFileInfo($Filename);
+
+		$Outname = str_replace(
+			".{$FormatExt}",
+			"_{$Suffix}.{$FormatExt}",
+			 Atlantis\Util::RewriteFileExtension(
+				$Filename,
+				$File->GetExtension(),
+				$FormatExt
+			)
+		);
+
+		////////
+
+		// prepare the input image.
+
+		try {
+			$ImageIn = new Imagick($Filename);
+		}
+
+		catch(Exception $E) {
+			$this->Quit(3, $Filename, $E->GetMessage());
+		}
+
+		// prepare the new sized base canvas.
+
+		try {
+			$ImageOut = new Imagick;
+			$ImageOut->NewImage($Width, $Height, $BgColour);
+			$ImageOut->SetFormat('jpeg');
+			$ImageOut->SetImageCompression(Imagick::COMPRESSION_JPEG);
+			$ImageOut->SetCompressionQuality(90);
+		}
+
+		catch(Exception $E) {
+			$this->Quit(4, $E->GetMessage());
+		}
+
+		////////
+
+		$this
+		->FormatLn(sprintf('[%s]', __METHOD__), Colour: $Colour1, Bold: TRUE)
+		->PrintLn("• Input File: {$Filename}")
+		->PrintLn("• Output File: {$Outname}")
+		->PrintLn("• Output Size: {$Width}x{$Height}")
+		->PrintLn("• Output BG: {$BgColour}", 2);
+
+		if(file_exists($Outname) && !$Force)
+		$this->Quit(5, $Outname);
+
+		try {
+			$this->PutThisImageOnThatImageAtScale(
+				$ImageIn, $ImageOut,
+				($Scale / 100.0),
+				$Trim
+			);
+		}
+
+		catch(Exception $E) {
+			$this->Quit(4, $E->GetMessage());
+		}
+
+		$ImageOut->WriteImage($Outname);
+
+		////////
+
+		$ImageIn->Destroy();
+		$ImageOut->Destroy();
+
+		$this->PrintLn(sprintf(
+			'>> Output Size: %s',
+			(new Common\Units\Bytes(filesize($Outname)))
+		));
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\DateAdded('2023-07-13')]
+	protected function
+	PutThisImageOnThatImageAtScale(Imagick $ImageIn, Imagick $ImageOut, float $Scale=1.0, bool $Trim=FALSE):
+	void {
+
+		// determine best fit of input within the specified scale
+
+		$IW = $ImageIn->GetImageWidth();
+		$IH = $ImageIn->GetImageHeight();
+		$OW = $ImageOut->GetImageWidth() * $Scale;
+		$OH = $ImageOut->GetImageHeight() * $Scale;
+
+		if($IH > $IW)
+		$OW = ($OH * $IW) / $IH;
+
+		else
+		$OH = ($OW * $IH) / $IW;
+
+		// determine the coords that will center the input.
+
+		$OX = ($ImageOut->GetImageWidth() / 2) - ($OW / 2);
+		$OY = ($ImageOut->GetImageHeight() / 2) - ($OH / 2);
+
+		$this
+		->PrintLn(sprintf(
+			'>> Input Size: %dx%d',
+			$IW, $IH
+		))
+		->PrintLn(sprintf(
+			'>> Input Scaled: %dx%d',
+			$OW, $OH
+		))
+		->PrintLn(sprintf(
+			'>> Input Composite Origin: %dx%d',
+			$OX, $OY
+		))
+		->PrintLn();
+
+		// prepare the input image.
+
+		$ImageIn->SetBackgroundColor(
+			new ImagickPixel('transparent')
+		);
+
+		if($Trim)
+		$ImageIn->TrimImage(0.0);
+
+		$ImageIn->ResizeImage(
+			$OW, $OH,
+			Imagick::FILTER_SINC,
+			0.0,
+			FALSE,
+			FALSE
+		);
+
+		// render the final output.
+
+		$ImageOut->CompositeImage(
+			$ImageIn,
+			Imagick::COMPOSITE_DEFAULT,
+			$OX, $OY,
+			Imagick::CHANNEL_ALL
+		);
+
+		return;
+	}
 
 }
 
-exit((new AtlantisCLI)->Run());
+exit((new GraphicsTool)->Run());
