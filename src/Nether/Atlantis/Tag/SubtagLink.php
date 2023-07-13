@@ -42,8 +42,8 @@ extends EntityLink {
 		$TPre = $Table->GetPrefixedAlias($TPre);
 		$JAlias = $Table->GetPrefixedAlias($JAlias);
 
-		Entity::JoinMainTables($SQL, $JAlias, 'EntityUUID', "T{$TPre}");
-		Entity::JoinExtendTables($SQL, "T{$TPre}", "T{$TPre}");
+		Entity::JoinMainTables($SQL, $JAlias, 'EntityUUID', "{$TPre}");
+		Entity::JoinExtendTables($SQL, "{$TPre}", "{$TPre}");
 
 		return;
 	}
@@ -75,6 +75,8 @@ extends EntityLink {
 		switch($Input['Sort']) {
 
 		}
+
+		Common\Dump::Var($SQL, TRUE);
 
 		return;
 	}
