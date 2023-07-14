@@ -1,0 +1,283 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+use Nether\Storage;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+class AtlantisCLI
+extends Console\Client {
+
+	const
+	AppName    = 'Nether Atlantis Dev Tools',
+	AppDesc    = 'Mostly cheat tools for working on the framework.',
+	AppVersion = '5.0.0-dev',
+	AppDebug   = TRUE;
+
+	protected Atlantis\Engine
+	$App;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady():
+	void {
+
+		$this->App = new Atlantis\Engine(
+			Atlantis\Util::GetBinProjectDirectory(__FILE__)
+		);
+
+		return;
+	}
+
+	protected function
+	FindNetherVendorDirs():
+	Common\Datastore {
+
+		$Path = Common\Filesystem\Util::Pathify(
+			getcwd(), 'vendor', 'netherphp'
+		);
+
+		$Found = new Common\Datastore(glob($Path));
+		$Found->Filter(function(string $Filename): bool {
+			return file_exists(Common\Filesystem\Util::Pathify(
+				$Path, $Filename, '.git'
+			);
+		});
+
+		return $Found;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Run git command in all repos.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	public function
+	NetherGitStatus():
+	int {
+
+		$Verbose = (bool)$this->GetOption('--verbose');
+		$Found = $this->FindNetherVendorDirs();
+
+		$Dir = NULL;
+		$Git = NULL;
+		$Result = NULL;
+
+		foreach($Found as $Dir) {
+			if(str_ends_with($Dir, '/common'))
+			continue;
+
+			$Git = sprintf(
+				'git -C "%s" status --porcelain 2>&1',
+				Nether\Atlantis\Util::Repath("{$Dir}")
+			);
+
+			$Result = $this->ExecuteCommandLine($Git, TRUE);
+
+			if(count($Result->Output)) {
+				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+
+				if($Verbose)
+				$this->PrintLn($this->FormatSecondary($Git));
+
+				echo PHP_EOL, join(PHP_EOL, $Result->Output);
+				echo PHP_EOL, PHP_EOL;
+			}
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Run git command in all repos.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	#[Console\Meta\Toggle('--all', 'Include the ones I usually skip.')]
+	public function
+	NetherGitShove():
+	int {
+
+		$Verbose = (bool)$this->GetOption('verbose');
+		$Found = $this->FindNetherVendorDirs();
+		$DoAll = $this->GetOption('all');
+
+		$Dir = NULL;
+		$Git = NULL;
+		$Result = NULL;
+
+		foreach($Found as $Dir) {
+			if(!$DoAll && str_ends_with($Dir, '/common'))
+			continue;
+
+			$Git = sprintf(
+				'git -C "%1$s" add . 2>&1 && git -C "%1$s" commit -m "thusfar" 2>&1 && git -C "%1$s" push 2>&1',
+				Nether\Atlantis\Util::Repath("{$Dir}")
+			);
+
+			$Result = $this->ExecuteCommandLine($Git, TRUE);
+
+			if(count($Result->Output)) {
+				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+
+				if($Verbose)
+				$this->PrintLn($this->FormatSecondary($Git));
+
+				echo PHP_EOL, join(PHP_EOL, $Result->Output);
+				echo PHP_EOL, PHP_EOL;
+			}
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Run git command in all repos.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	public function
+	NetherGitYoink():
+	int {
+
+		$Verbose = (bool)$this->GetOption('--verbose');
+		$Found = $this->FindNetherVendorDirs();
+		$DoAll = $this->GetOption('all');
+
+		$Dir = NULL;
+		$Git = NULL;
+		$Result = NULL;
+
+		foreach($Found as $Dir) {
+			if(!$DoAll && str_ends_with($Dir, '/common'))
+			continue;
+
+			$Git = sprintf(
+				'git -C "%1$s" pull 2>&1',
+				Nether\Atlantis\Util::Repath("{$Dir}")
+			);
+
+			$Result = $this->ExecuteCommandLine($Git, TRUE);
+
+			if(count($Result->Output)) {
+				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+
+				if($Verbose)
+				$this->PrintLn($this->FormatSecondary($Git));
+
+				echo PHP_EOL, join(PHP_EOL, $Result->Output);
+				echo PHP_EOL, PHP_EOL;
+			}
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command]
+	#[Console\Meta\Info('Fixes various annoyances with git config on my repos that really grind my gears.')]
+	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
+	public function
+	NetherGitConfig():
+	int {
+
+		$Verbose = (bool)$this->GetOption('Verbose');
+		$Global = $this->GetOption('Global');
+		$Found = $this->FindNetherVendorDirs();
+
+		$GitCommandsToRun = [
+			'config core.filemode 0',
+			'config core.pager ""',
+			'config tag.sort version:refname'
+		];
+
+		$Dir = NULL;
+		$Git = NULL;
+		$GitCmd = NULL;
+		$Result = NULL;
+
+		foreach($Found as $Dir) {
+			foreach($GitCommandsToRun as $GitCmd) {
+				$Git = match($Global) {
+					TRUE => sprintf(
+						'git %1$s 2>&1',
+						str_replace('config ', 'config --global ', $GitCmd)
+					),
+					default => sprintf(
+						'git -C "%1$s" %2$s 2>&1',
+						Nether\Atlantis\Util::Repath("{$Dir}"),
+						$GitCmd
+					)
+				};
+
+				$Result = $this->ExecuteCommandLine($Git);
+
+				if(count($Result->Output)) {
+					$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
+
+					if($Verbose)
+					$this->PrintLn($this->FormatSecondary($Git));
+
+					echo PHP_EOL, join(PHP_EOL, $Result->Output);
+					echo PHP_EOL, PHP_EOL;
+				}
+			}
+
+			if($Global)
+			break;
+		}
+
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	ComposerDumpAutoload():
+	static {
+
+		$Result = $this->ExecuteCommandLine('composer dump-autoload');
+
+		$this->PrintLn('Composer said:');
+		$Result->Print('> ');
+
+		return $this;
+	}
+
+	protected function
+	GetProjectDirectory():
+	string {
+
+		$BinPath = Nether\Atlantis\Util::Repath(dirname(__FILE__));
+		$CurPath = Nether\Atlantis\Util::Repath(getcwd());
+
+		// if it looks like we in a project directory assume we are in
+		// the project directory.
+
+		if(file_exists(sprintf('%s/composer.lock', $CurPath)))
+		if(str_starts_with($BinPath, $CurPath))
+		return $CurPath;
+
+		// if we are elsewhere but calling this installed as a vendor
+		// binary assume that the project directory is up from that.
+
+		if(str_ends_with($BinPath, 'vendor/netherphp/atlantis/bin'))
+		return dirname(__FILE__, 5);
+
+		// else just yolo with the current path again.
+
+		return $CurPath;
+	}
+
+}
+
+exit((new AtlantisCLI)->Run());

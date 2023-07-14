@@ -44,13 +44,14 @@
 	},
 	"bin": [
 		"bin/atlantis",
-		"bin/atlantis-ssl",
-		"bin/atlantis-cron",
-
 		"bin/backup.atl",
 		"bin/cron.atl",
+		"bin/dev.atl",
 		"bin/gfx.atl",
-		"bin/ssl.atl"
+		"bin/ssl.atl",
+
+		"bin/atlantis-ssl",
+		"bin/atlantis-cron"
 	],
 	"autoload": {
 		"psr-0": {
