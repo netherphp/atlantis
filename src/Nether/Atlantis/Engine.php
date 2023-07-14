@@ -401,17 +401,23 @@ application instance.
 
 		////////
 
-		if(!file_exists($EnvFile))
-		return $this;
+		if(isset($_ENV['ATLANTIS.ENV'])) {
+			$EnvData = trim($_ENV['ATLANTIS.ENV']);
+		}
 
-		if(!is_readable($EnvFile))
-		return $this;
+		else {
+			if(!file_exists($EnvFile))
+			return $this;
+
+			if(!is_readable($EnvFile))
+			return $this;
+
+			$EnvData = Nether\Avenue\Util::MakePathableKey(
+				trim(file_get_contents($EnvFile))
+			);
+		}
 
 		////////
-
-		$EnvData = Nether\Avenue\Util::MakePathableKey(
-			trim(file_get_contents($EnvFile))
-		);
 
 		if(strlen($EnvData))
 		$this->ProjectEnv = $EnvData;

@@ -31,6 +31,11 @@ extends Console\Client {
 	OnReady():
 	void {
 
+		$Env = $this->GetOption('env');
+
+		if(is_string($Env) && strlen($Env))
+		$_ENV['ATLANTIS.ENV'] = $Env;
+
 		$this->App = new Atlantis\Engine(
 			Atlantis\Util::GetBinProjectDirectory(__FILE__)
 		);
@@ -177,6 +182,7 @@ extends Console\Client {
 
 	#[Console\Meta\Command('renew')]
 	#[Console\Meta\Info('Renew the certificate for the currently configured Environment.')]
+	#[Console\Meta\Value('--env', 'Run for specified Environment instead of current.')]
 	#[Console\Meta\Error(1, 'Renewal Failure')]
 	public function
 	HandleRenewCert():
