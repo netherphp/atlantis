@@ -14,7 +14,7 @@ use Nether\User;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-class AtlantisCLI
+class DevTool
 extends Console\Client {
 
 	const
@@ -38,24 +38,6 @@ extends Console\Client {
 		);
 
 		return;
-	}
-
-	protected function
-	FindNetherVendorDirs():
-	Common\Datastore {
-
-		$Path = Common\Filesystem\Util::Pathify(
-			getcwd(), 'vendor', 'netherphp'
-		);
-
-		$Found = new Common\Datastore(glob($Path));
-		$Found->Filter(function(string $Filename): bool {
-			return file_exists(Common\Filesystem\Util::Pathify(
-				$Path, $Filename, '.git'
-			);
-		});
-
-		return $Found;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -241,6 +223,26 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-07-14')]
+	protected function
+	FindNetherVendorDirs():
+	Common\Datastore {
+
+		$Path = Common\Filesystem\Util::Pathify(
+			getcwd(), 'vendor', 'netherphp'
+		);
+
+		$Found = new Common\Datastore(glob($Path));
+		$Found->Filter(function(string $Filename): bool {
+			return file_exists(Common\Filesystem\Util::Pathify(
+				$Path, $Filename, '.git'
+			);
+		});
+
+		return $Found;
+	}
+
+	#[Common\Meta\Date('2022-11-23')]
 	protected function
 	ComposerDumpAutoload():
 	static {
@@ -253,31 +255,6 @@ extends Console\Client {
 		return $this;
 	}
 
-	protected function
-	GetProjectDirectory():
-	string {
-
-		$BinPath = Nether\Atlantis\Util::Repath(dirname(__FILE__));
-		$CurPath = Nether\Atlantis\Util::Repath(getcwd());
-
-		// if it looks like we in a project directory assume we are in
-		// the project directory.
-
-		if(file_exists(sprintf('%s/composer.lock', $CurPath)))
-		if(str_starts_with($BinPath, $CurPath))
-		return $CurPath;
-
-		// if we are elsewhere but calling this installed as a vendor
-		// binary assume that the project directory is up from that.
-
-		if(str_ends_with($BinPath, 'vendor/netherphp/atlantis/bin'))
-		return dirname(__FILE__, 5);
-
-		// else just yolo with the current path again.
-
-		return $CurPath;
-	}
-
 }
 
-exit((new AtlantisCLI)->Run());
+exit((new DevTool)->Run());
