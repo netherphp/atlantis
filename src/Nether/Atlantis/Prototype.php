@@ -101,7 +101,7 @@ extends Database\Prototype {
 
 			if(isset($Attr->MethodName))
 			if(method_exists($this->{$P->Name}, $Attr->MethodName))
-			return $this->{$P->Name}->{$Attr->MethodName}();
+			return $this->{$P->Name}->{$Attr->MethodName}(...$Attr->MethodArgs);
 
 			if(isset($this->{$P->Name}))
 			return $this->{$P->Name};

@@ -12,6 +12,7 @@ class SubtagLink
 extends EntityLink {
 
 	#[Atlantis\Meta\TagEntityProperty('subtag')]
+	#[Database\Meta\TableJoin('EntityUUID', 'T2', TRUE)]
 	public Entity
 	$Subtag;
 
@@ -75,6 +76,8 @@ extends EntityLink {
 		switch($Input['Sort']) {
 
 		}
+
+		//Common\Dump::Var($SQL, TRUE);
 
 		return;
 	}

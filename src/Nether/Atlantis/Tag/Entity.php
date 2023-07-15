@@ -70,6 +70,7 @@ extends Atlantis\Prototype {
 	public Common\Date
 	$DateCreated;
 
+	#[Database\Meta\TableJoin('CoverImageID')]
 	public Atlantis\Media\File
 	$CoverImage;
 
