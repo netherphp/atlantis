@@ -52,7 +52,7 @@ required data in.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Database\Meta\TableJoin('TagID')]
+	#[Database\Meta\TableJoin('TagID', 'T1', TRUE)]
 	public Entity
 	$Tag;
 
@@ -63,8 +63,8 @@ required data in.
 	OnReady(ConstructArgs $Args):
 	void {
 
-		if($Args->InputHas('T_ID'))
-		$this->Tag = Entity::FromPrefixedDataset($Args->Input, 'T_');
+		if($Args->InputHas('T1_ID'))
+		$this->Tag = Entity::FromPrefixedDataset($Args->Input, 'T1_');
 
 		$this->OnReadyEntity($Args);
 
@@ -213,7 +213,7 @@ required data in.
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
+	_JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
 	void {
 
 		parent::JoinExtendTables($SQL, $JAlias, $TPre);
@@ -229,7 +229,7 @@ required data in.
 	}
 
 	static public function
-	JoinExtendFields(Database\Verse $SQL, ?string $TPre = NULL):
+	_JoinExtendFields(Database\Verse $SQL, ?string $TPre = NULL):
 	void {
 
 		parent::JoinExtendFields($SQL, $TPre);
@@ -286,10 +286,10 @@ required data in.
 
 		switch($Input['Sort']) {
 			case 'tag-name-az':
-				$SQL->Sort('T.Name', $SQL::SortAsc);
+				$SQL->Sort('T1.Name', $SQL::SortAsc);
 			break;
 			case 'tag-name-za':
-				$SQL->Sort('T.Name', $SQL::SortDesc);
+				$SQL->Sort('T1.Name', $SQL::SortDesc);
 			break;
 		}
 

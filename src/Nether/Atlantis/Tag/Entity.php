@@ -106,7 +106,7 @@ extends Atlantis\Prototype {
 	//// OVERRIDE Database\Prototype Joins /////////////////////////
 
 	static public function
-	JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
+	_JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
 	void {
 
 		$Table = static::GetTableInfo();
@@ -119,7 +119,7 @@ extends Atlantis\Prototype {
 	}
 
 	static public function
-	JoinExtendFields(Database\Verse $SQL, ?string $TPre=NULL):
+	_JoinExtendFields(Database\Verse $SQL, ?string $TPre=NULL):
 	void {
 
 		$Table = static::GetTableInfo();
