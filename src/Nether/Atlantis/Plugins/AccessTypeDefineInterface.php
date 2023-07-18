@@ -3,15 +3,12 @@
 namespace Nether\Atlantis\Plugins;
 
 use Nether\Atlantis;
-
-use Nether\Common\Datastore;
+use Nether\Common;
 
 interface AccessTypeDefineInterface {
 
-	// add keys with suggested default value.
-
 	public function
-	OnAccessTypeDefine(Atlantis\Engine $App, Datastore $List):
-	void;
+	Get():
+	iterable;
 
 }

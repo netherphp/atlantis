@@ -24,10 +24,10 @@ such as Theme Engines and Routers where it only makes sense to have one per
 application instance.
 //*/
 
-	public Datastore
+	public Common\Datastore
 	$Config;
 
-	public Datastore
+	public Common\Datastore
 	$Library;
 
 	public Avenue\Router
@@ -38,6 +38,9 @@ application instance.
 
 	public Database\Manager
 	$Database;
+
+	public Plugin\Manager
+	$Plugins;
 
 	public Surface\Engine
 	$Surface;
@@ -77,8 +80,9 @@ application instance.
 		$this->ProjectTime = microtime(TRUE);
 		$this->ProjectRoot = $ProjectRoot;
 		$this->ProjectEnv = 'dev';
-		$this->Config = new Datastore;
-		$this->Library = new Datastore;
+		$this->Config = new Common\Datastore;
+		$this->Library = new Common\Datastore;
+		$this->Plugins = new Plugin\Manager;
 
 		// load in configuration.
 
@@ -549,14 +553,14 @@ application instance.
 	static {
 
 		($this->Library)
-		->Shove('Common', new Nether\Common\Library(Config: $this->Config))
-		->Shove('Avenue', new Nether\Avenue\Library(Config: $this->Config))
-		->Shove('Surface', new Nether\Surface\Library(Config: $this->Config))
-		->Shove('Storage', new Nether\Storage\Library(Config: $this->Config))
-		->Shove('Database', new Nether\Database\Library(Config: $this->Config))
-		->Shove('User', new Nether\User\Library(Config: $this->Config))
-		->Shove('Email', new Nether\Email\Library(Config: $this->Config))
-		->Shove('Atlantis', new Nether\Atlantis\Library(Config: $this->Config));
+		->Shove('Common', new Nether\Common\Library(Config: $this->Config, App: $this))
+		->Shove('Avenue', new Nether\Avenue\Library(Config: $this->Config, App: $this))
+		->Shove('Surface', new Nether\Surface\Library(Config: $this->Config, App: $this))
+		->Shove('Storage', new Nether\Storage\Library(Config: $this->Config, App: $this))
+		->Shove('Database', new Nether\Database\Library(Config: $this->Config, App: $this))
+		->Shove('User', new Nether\User\Library(Config: $this->Config, App: $this))
+		->Shove('Email', new Nether\Email\Library(Config: $this->Config, App: $this))
+		->Shove('Atlantis', new Nether\Atlantis\Library(Config: $this->Config, App: $this));
 
 		return $this;
 	}
@@ -580,6 +584,28 @@ application instance.
 		}
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	From(iterable $Pile):
+	static {
+
+		$Item = NULL;
+		$Found = NULL;
+
+		foreach($Pile as $Item)
+		if($Item instanceof self) {
+			$Found = $Item;
+			break;
+		}
+
+		if($Found === NULL)
+		throw new Atlantis\Error\EngineNotFound;
+
+		return $Found;
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -16,7 +16,6 @@ extends Common\Library
 implements
 	Atlantis\Plugins\DashboardSidebarInterface,
 	Atlantis\Plugins\DashboardElementInterface,
-	Atlantis\Plugins\AccessTypeDefineInterface,
 	Atlantis\Plugins\UploadHandlerInterface {
 
 	const
@@ -89,6 +88,14 @@ implements
 	OnLoad(...$Argv):
 	void {
 
+		if(!isset($Argv['App']))
+		return;
+
+		/** @var Atlantis\Engine $App */
+		$App = $Argv['App'];
+
+		////////
+
 		static::$Config->BlendRight([
 			static::ConfLogFormat             => 'default',
 			static::ConfPassMinLen            => 10,
@@ -116,6 +123,14 @@ implements
 			static::PageTagIndexURL           => '/tags',
 			static::PageTagViewURL            => '/tag/:Alias:'
 		]);
+
+		////////
+
+		($App->Plugins)
+		->Register(
+			Atlantis\Plugins\AccessTypeDefineInterface::class,
+			Atlantis\Plugins\AccessTypeDefine::class
+		);
 
 		return;
 	}
@@ -200,27 +215,6 @@ implements
 		$Elements
 		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App))
 		->Push(new Atlantis\Dashboard\AtlantisMediaElement($App));
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	// AccessTypeDefInterface //////////////////////////////////////
-
-	public function
-	OnAccessTypeDefine(Atlantis\Engine $App, Common\Datastore $List):
-	void {
-
-		$List->MergeRight([
-			new Atlantis\User\AccessTypeDef(
-				static::AccessContactLogManage, 1,
-				'Allow the user to view the Contact Us log.'
-			),
-			new Atlantis\User\AccessTypeDef(
-				static::AccessPageManage, 1,
-				'Allow the user to manage Pages on the site.'
-			)
-		]);
 
 		return;
 	}
@@ -358,7 +352,6 @@ implements
 
 		return;
 	}
-
 
 }
 
