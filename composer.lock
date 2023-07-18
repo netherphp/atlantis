@@ -1437,12 +1437,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/database.git",
-                "reference": "6b66455817a1a736c1e56c260588ed9a2585a7c8"
+                "reference": "a31102947ab9e01bf55f011b321ef8def74cb315"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/database/zipball/6b66455817a1a736c1e56c260588ed9a2585a7c8",
-                "reference": "6b66455817a1a736c1e56c260588ed9a2585a7c8",
+                "url": "https://api.github.com/repos/netherphp/database/zipball/a31102947ab9e01bf55f011b321ef8def74cb315",
+                "reference": "a31102947ab9e01bf55f011b321ef8def74cb315",
                 "shasum": ""
             },
             "require": {
@@ -1487,7 +1487,7 @@
                 "issues": "https://github.com/netherphp/database/issues",
                 "source": "https://github.com/netherphp/database/tree/redux"
             },
-            "time": "2023-07-12T02:36:17+00:00"
+            "time": "2023-07-18T17:54:27+00:00"
         },
         {
             "name": "netherphp/email",
