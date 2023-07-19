@@ -167,7 +167,9 @@ Source: OpenSSL
 The following libraries are used in this project via direct inclusion and are self managed rather than installed via Composer:
 
 * jQuery (DOM, https://jquery.com/)
-* Bootstrap (Frontend framework, https://getbootstrap.com/)
+* Bootstrap (Frontend framework, https://getbootstrap.com)
 * Squire (HTML editor core, https://github.com/fastmail/Squire)
 * Editor.js (Block editor, https://editorjs.io)
-* SimpleLightbox (Image gallery thing, https://simplelightbox.com/)
+* SimpleLightbox (Image gallery thing, https://simplelightbox.com)
+* Material Design Icons (Icons: UI, https://pictogrammers.com/library/mdi)
+* Simple Icons Font (Icons: Brands, https://github.com/simple-icons/simple-icons-font)
