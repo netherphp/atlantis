@@ -123,11 +123,7 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 import Blog from '/share/atlantis/blog.js';
 
 jQuery(function(){
-
-	let post = Blog.Post.FromElement();
-
-	post.bindify();
-
+	let post = Blog.Post.FromElement({ bindify: true });
 	return;
 });
 

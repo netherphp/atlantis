@@ -39,7 +39,12 @@ class Blog {
 		return;
 	};
 
-	static FromElement(el='#BlogInfo') {
+	bindify() {
+
+		return;
+	};
+
+	static FromElement({ el='#BlogInfo', bindify=false } = {}) {
 
 		let that = jQuery(el);
 
@@ -47,6 +52,9 @@ class Blog {
 			that.attr('data-blog-id'),
 			that.attr('data-blog-uuid')
 		);
+
+		if(bindify)
+		blog.bindify();
 
 		return blog;
 	};
@@ -176,16 +184,19 @@ class Post {
 	////////////////
 	////////////////
 
-	static FromElement(el='#PostInfo') {
+	static FromElement({ el='#PostInfo', bindify=false } = {}) {
 
 		let that = jQuery(el);
-		let blog = Blog.FromElement(el);
+		let blog = Blog.FromElement({ el: el, bindify: bindify });
 
 		let post = new Post(
 			that.attr('data-post-id'),
 			that.attr('data-post-uuid'),
 			blog
 		);
+
+		if(bindify)
+		post.bindify();
 
 		return post;
 	};
