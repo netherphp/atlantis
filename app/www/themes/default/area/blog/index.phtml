@@ -24,6 +24,9 @@ use Nether\User;
  * @var bool $OptShowDrafts
  */
 
+$UserCanWrite = $BlogUser && $BlogUser->CanWrite();
+$UserCanAdmin = $BlogUser && $BlogUser->CanAdmin();
+
 ?>
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
@@ -33,8 +36,9 @@ use Nether\User;
 		<div class="col">
 			<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
 		</div>
+
+		<?php if($UserCanWrite): ?>
 		<div class="col-auto">
-			<?php if($BlogUser && $BlogUser->CanWrite()): ?>
 			<div class="form-check form-switch">
 				<label class="form-check-label fw-bold text-uppercase">
 					<input class="form-check-input OptShowDrafts" type="checkbox" <?php $Util->Print($Util->GetCheckedHTML($OptShowDrafts)) ?>>
@@ -59,27 +63,40 @@ use Nether\User;
 				return;
 			});
 			</script>
-			<?php endif; ?>
 		</div>
-		<div class="col-auto">
-			<?php if($BlogUser && $BlogUser->CanWrite()): ?>
-			<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light text-align-left">
-				<i class="mdi mdi-fw mdi-plus-thick"></i>
-				New Post
-			</a>
-			<?php endif; ?>
+		<?php endif; ?>
 
-			<?php if($BlogUser && $BlogUser->CanAdmin()): ?>
-			<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light text-align-left">
-				<i class="mdi mdi-fw mdi-cog"></i>
-			</a>
-			<?php endif; ?>
+		<?php if($UserCanAdmin || $UserCanWrite): ?>
+		<div class="col-auto">
+			<div class="dropdown">
+				<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+					<i class="mdi mdi-fw mdi-cog m-0 p-0"></i>
+				</button>
+				<div class="dropdown-menu dropdown-menu-end">
+					<?php if($BlogUser && $BlogUser->CanWrite()): ?>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" href="<?php $Printer($Blog->GetWriteURL()) ?>">
+							<i class="mdi mdi-fw mdi-plus-thick"></i>
+							New Post
+						</a>
+					</div>
+					<?php endif; ?>
+					<?php if($BlogUser && $BlogUser->CanAdmin()): ?>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" data-post-cmd="edit" href="<?php $Printer($Blog->GetSettingsURL()) ?>">
+							<i class="mdi mdi-fw mdi-wrench"></i>
+							Blog Setttings
+						</a>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
 		</div>
+		<?php endif; ?>
+
 	</div>
 	<hr class="mt-1" />
 </div>
-
-
 
 <div class="pt-0 pb-4">
 	<div class="container">

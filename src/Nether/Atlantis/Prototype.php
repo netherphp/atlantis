@@ -103,6 +103,10 @@ extends Database\Prototype {
 			if(method_exists($this->{$P->Name}, $Attr->MethodName))
 			return $this->{$P->Name}->{$Attr->MethodName}(...$Attr->MethodArgs);
 
+			if(is_object($this->{$P->Name}))
+			if(method_exists($this->{$P->Name}, 'DescribeForPublicAPI'))
+			return $this->{$P->Name}->DescribeForPublicAPI(...$Attr->MethodArgs);
+
 			if(isset($this->{$P->Name}))
 			return $this->{$P->Name};
 

@@ -50,7 +50,7 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 	<!-- POST IMAGE -->
 	<?php if($Full && $Post->CoverImageID): ?>
 	<div class="mb-4">
-		<img class="rounded w-100" src="<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
+		<img class="border border-secondary-subtle rounded w-100" src="<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
 	</div>
 	<?php endif; ?>
 

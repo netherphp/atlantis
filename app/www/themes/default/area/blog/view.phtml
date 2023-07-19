@@ -24,204 +24,112 @@ use Nether\User;
 
 ?>
 
+<hr id="PostInfo" class="d-none"
+data-blog-id="<?php $Util->Print($Post->Blog->ID) ?>"
+data-blog-uuid="<?php $Util->Print($Post->Blog->UUID) ?>"
+data-post-id="<?php $Util->Print($Post->ID) ?>"
+data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
+/>
+
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
-<hr id="BlogPostInfo"
-    class="d-none"
-    data-blog-id="<?php $Util->Print($Post->BlogID) ?>"
-    data-post-id="<?php $Util->Print($Post->ID) ?>"
-    data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
-    />
-
-<div class="container pt-4">
-	<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
-	<hr class="mt-1" />
-</div>
-
-<div class="pt-0 pb-4">
-	<div class="container">
-
-		<div class="row">
-			<div class="col-12 col-md-8 mb-4 mb-md-0 letter-space-reading">
-
-				<?php if(!$Post->Enabled): ?>
-				<div class="alert alert-primary text-center p-2 mb-4">
-					This post is in DRAFT mode.
-				</div>
-				<?php endif; ?>
-
-				<?php
-				match($Post->Editor) {
-					'link'
-					=> $Surface->Area('blog/views/link', $__SCOPE),
-
-					default
-					=> $Surface->Area('blog/views/html', $__SCOPE)
-				};
-				?>
-
-			</div>
-			<div class="col-12 col-md-4 mb-4 mb-md-0">
-
-				<?php if($BlogUser): ?>
-				<!-- SIDEBAR: MANAGE -->
-				<div class="quotron mb-6">
+<div class="container pt-4 ">
+	<div class="row align-items-center">
+		<div class="col">
+			<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
+		</div>
+		<div class="col-auto">
+			<?php if($BlogUser && $BlogUser->CanWrite()): ?>
+			<div class="dropdown">
+				<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+					<i class="mdi mdi-fw mdi-cog m-0 p-0"></i>
+				</button>
+				<div class="dropdown-menu dropdown-menu-end">
 					<?php if($BlogUser->CanWrite()): ?>
-					<a href="<?php $Printer($Post->GetEditURL()) ?>" class="btn btn-outline-light btn-block text-align-left mb-2 CmdPostEdit">
-						<i class="mdi mdi-fw mdi-pencil"></i>
-						Edit Post
-					</a>
-					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-2 CmdPostEditTags">
-						<i class="mdi mdi-fw mdi-tag"></i>
-						Edit Tags
-					</a>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" data-post-cmd="edit" href="<?php $Printer($Post->GetEditURL()) ?>">
+							<i class="mdi mdi-fw mdi-pencil"></i>
+							Edit Post
+						</a>
+					</div>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" data-post-cmd="tags" href="#">
+							<i class="mdi mdi-fw mdi-tag"></i>
+							Edit Tags
+						</a>
+					</div>
 
 					<?php $Surface->Area('blog/widgets/view-sidebar-manage', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
 
 					<hr class="mb-2 mb-3" />
 
 					<?php if(!$Post->Enabled): ?>
-					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-0 CmdPostPublish" data-value="1">
-						<i class="mdi mdi-fw mdi-eye"></i>
-						Publish Post
-					</a>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" data-post-cmd="publish" href="#">
+							<i class="mdi mdi-fw mdi-eye"></i>
+							Publish Post
+						</a>
+					</div>
 					<?php else: ?>
-					<a href="#" class="btn btn-outline-light btn-block text-align-left mb-0 CmdPostPublish" data-value="0">
-						<i class="mdi mdi-fw mdi-eye-off"></i>
-						Set To Draft Mode
-					</a>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" data-post-cmd="draft" href="#">
+							<i class="mdi mdi-fw mdi-eye-off"></i>
+							Set To Draft Mode
+						</a>
+					</div>
 					<?php endif; ?>
 
 					<hr class="mb-2 mb-3" />
 
-					<a href="#" class="btn btn-outline-danger btn-block text-align-left mb-2 CmdPostDelete" data-post-id="<?php $Util->Print($Post->ID) ?>">
-						<i class="mdi mdi-fw mdi-trash-can"></i>
-						Delete Post
-					</a>
+					<div class="dropdown-div">
+						<a class="btn btn-outline-dark" data-post-cmd="delete" href="#">
+							<i class="mdi mdi-fw mdi-trash-can"></i>
+							Delete Post
+						</a>
+					</div>
 					<?php endif; ?>
 				</div>
-				<?php endif; ?>
-
 			</div>
+			<?php endif; ?>
 		</div>
+	</div>
+	<hr class="mt-1" />
+</div>
+
+<div class="pt-0 pb-4">
+	<div class="container">
+
+		<?php if(!$Post->Enabled): ?>
+		<div class="alert alert-primary text-center p-2 mb-4">
+			This post is in DRAFT mode.
+		</div>
+		<?php endif; ?>
+
+		<?php
+		match($Post->Editor) {
+			'link'
+			=> $Surface->Area('blog/views/link', $__SCOPE),
+
+			default
+			=> $Surface->Area('blog/views/html', $__SCOPE)
+		};
+		?>
 
 	</div>
 </div>
 
 <?php if($BlogUser && $BlogUser->CanEdit()): ?>
 <script type="module">
-import API from '/share/nui/api/json.js';
-import TagDialog from '/share/atlantis/tag-dialog.js';
-import DialogUtil from '/share/nui/util/dialog.js';
+import Blog from '/share/atlantis/blog.js';
 
-jQuery(function() {
+jQuery(function(){
 
-	let info = jQuery('#BlogPostInfo');
-	let blog = { id: info.attr('data-blog-id') };
-	let post = { id: info.attr('data-post-id'), uuid: info.attr('data-post-uuid') };
+	let post = Blog.Post.FromElement();
 
-	jQuery('.CmdPostEditTags')
-	.on('click', function(){
-
-		let diag = new TagDialog(post.uuid, 'blogpost');
-		diag.show();
-
-		return false;
-	});
-
-
-	jQuery('.CmdPostDelete')
-	.on('click', function() {
-
-		let pid = this.dataset.postId;
-
-		let diag = new DialogUtil.Window({
-			body: `Really delete post <span class="fst-italic">#${pid}</span>?`,
-			title: 'Delete Post',
-			labelAccept: 'Yes',
-			fields: [ new DialogUtil.Field('hidden', 'ID', null, pid) ],
-			onAccept: function() {
-
-				let data = this.getFieldData();
-				let api = new API.Request('DELETE', '/api/blog/post', data);
-
-				(api.send())
-				.then(api.goto)
-				.catch(api.catch);
-
-				return;
-			}
-		});
-
-		diag.fillByRequest(
-			'GET', '/api/blog/post',
-			{ ID: pid },
-			true,
-			function(self, result) {
-				console.log(result);
-				self.body.find('span').text(result.payload.Post.Title);
-				return;
-			}
-		);
-
-		return false;
-	});
-
-	jQuery('.CmdPostPublish')
-	.on('click', function() {
-
-		let that = jQuery(this);
-		let state = parseInt(that.attr('data-value'));
-		let msg = null;
-
-		////////
-
-		if(state === 0)
-		msg = `<div class="fw-bold mb-2">SET DRAFT MODE?</div>`;
-		else
-		msg = `<div class="fw-bold mb-2">SET PUBLISHED MODE?</div>`;
-
-		msg += `<div class="InfoPostTitle fst-italic">#${post.id}</div>`;
-
-		////////
-
-		let diag = new DialogUtil.Window({
-			body: msg,
-			title: 'Update Post',
-			labelAccept: 'Yes',
-			fields: [
-				new DialogUtil.Field('hidden', 'ID', null, post.id),
-				new DialogUtil.Field('hidden', 'Enabled', null, state)
-			],
-			onAccept: function() {
-
-				let data = this.getFieldData();
-				let api = new API.Request('PATCH', '/api/blog/post', data);
-
-				(api.send())
-				.then(api.goto)
-				.catch(api.catch);
-
-				return;
-			}
-		});
-
-		diag.fillByRequest(
-			'GET', '/api/blog/post',
-			{ ID: post.id },
-			true,
-			function(self, result) {
-				console.log(result);
-				self.body.find('.InfoPostTitle').text(result.payload.Post.Title);
-				return;
-			}
-		);
-
-		return false;
-	});
-
+	post.bindify();
 
 	return;
 });
+
 </script>
 <?php endif; ?>

@@ -61,9 +61,20 @@ build and manage a modal popup.
 		return;
 	};
 
-	show() {
+	show(demenu=true) {
+
+		if(demenu)
+		this.demenu();
 
 		this.api.show();
+
+		return this;
+	};
+
+	demenu() {
+
+		jQuery('.dropdown')
+		.dropdown('hide');
 
 		return this;
 	};
