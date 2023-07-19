@@ -44,10 +44,22 @@ $Link = (
 		<!-- TITLE AND IMAGE -->
 		<div class="row mb-6">
 			<div class="col-12 col-md mb-4 mb-md-0">
+				<?php if($Post): ?>
+				<div class="mb-4">
+					<div class="fw-bold text-uppercase">Post Date</div>
+					<?php $Util->Print($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+
+					<?php if($Post->TimeCreated !== $Post->TimeSorted): ?>
+					(Sort Date: <?php $Util->Print($Post->DateSorted->Get(Common\Values::DateFormatFancyDate)) ?>)
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
+
 				<div class="mb-4">
 					<div class="fw-bold text-uppercase">Post Title</div>
 					<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
 				</div>
+
 				<div class="mb-0">
 					<div class="fw-bold text-uppercase">Post Visibility</div>
 					<select name="Enabled" class="form-select">
@@ -71,7 +83,17 @@ $Link = (
 		<div class="mb-6">
 			<div class="mb-6">
 				<div class="fw-bold text-uppercase">Source Date</div>
-				<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
+				<div class="mb-2">
+					<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
+				</div>
+
+				<div class="form-check form-switch">
+					<label class="form-check-label fw-bold">
+						<input class="form-check-input" name="OptUseLinkDate" type="checkbox" value="1" <?php $Util->Print($Util->GetCheckedHTML( $Post && $Link ? $Post->TimeSorted === $Link->GetTime() : FALSE )) ?>>
+						Sort post by Source Date?
+					</label>
+				</div>
+
 			</div>
 			<div class="mb-6">
 				<div class="fw-bold text-uppercase">Source URL</div>
