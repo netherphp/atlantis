@@ -10,6 +10,8 @@ use Nether\User;
 
 use Nether\Common\Datastore;
 use Nether\Common\Datafilter;
+use Nether\Atlantis\Meta\UserActivationFlow;
+use Nether\Atlantis\Meta\TrafficReportSkip;
 
 class PublicWeb
 extends Avenue\Route {
@@ -71,32 +73,31 @@ as html pages. //*/
 		// if we are viewing a dev server and we're not an admin then we
 		// should gtfo.
 
-		if($this->App->IsDev() && !$this->IsUserAdmin()) {
-			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class)) {
+		if($this->App->IsDev() && !defined('UNIT_TEST_GO_BRRRT'))
+		if(!$this->IsUserAdmin() && !$Info->HasAttribute(UserActivationFlow::class)) {
 
-				$Rewriter = match(TRUE) {
-					(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
-					=> Library::Get(Library::ConfDevLinkRewriter),
+			$Rewriter = match(TRUE) {
+				(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
+				=> Library::Get(Library::ConfDevLinkRewriter),
 
-					default
-					=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL)
-				};
+				default
+				=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL)
+			};
 
-				$Goto = $Rewriter($this->App->Router->Request->GetURL());
+			$Goto = $Rewriter($this->App->Router->Request->GetURL());
 
-				// if no rewriter was defined or it caused a loop then
-				// should just fail.
+			// if no rewriter was defined or it caused a loop then
+			// should just fail.
 
-				if($Goto === $this->App->Router->Request->GetURL())
-				return Avenue\Response::CodeForbidden;
+			if($Goto === $this->App->Router->Request->GetURL())
+			return Avenue\Response::CodeNope;
 
-				// else we can redirect to the rewritten url.
+			// else we can redirect to the rewritten url.
 
-				($this->App->Router->Response)
-				->SetHeader('Location', $Goto);
+			($this->App->Router->Response)
+			->SetHeader('Location', $Goto);
 
-				return Avenue\Response::CodeRedirectPerm;
-			}
+			return Avenue\Response::CodeRedirectPerm;
 		}
 
 		return Avenue\Response::CodeOK;
@@ -115,6 +116,7 @@ as html pages. //*/
 
 		// handle if the WillConfirm returned a redirect request.
 
+		if(!defined('UNIT_TEST_GO_BRRRT'))
 		if($Code >= 300 && $Code <= 399)
 		exit(0);
 
@@ -307,6 +309,9 @@ as html pages. //*/
 	protected function
 	HandleTrafficReporting(Common\Prototype\MethodInfo $MethodInfo):
 	void {
+
+		if(defined('UNIT_TEST_GO_BRRRT'))
+		return;
 
 		if($MethodInfo->HasAttribute(Atlantis\Meta\TrafficReportSkip::class))
 		return;

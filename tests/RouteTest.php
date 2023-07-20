@@ -130,6 +130,7 @@ extends TestCase {
 		$Scan = static::BuildRouteScanner();
 
 		$App->Router->AddHandlers($Scan->Generate());
+		//$App->Router->Response->HTTP = FALSE;
 
 		return $App;
 	}
@@ -139,10 +140,10 @@ extends TestCase {
 	string {
 
 		ob_start();
-
 		$App->Run();
+		$Output = ob_get_clean();
 
-		return ob_get_clean();
+		return $Output;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -241,7 +242,9 @@ extends TestCase {
 
 		$App = static::BuildAtlantis();
 		$Out = static::RunAtlantis($App);
+
 		$Handler = $App->Router->GetCurrentHandler();
+
 
 		$this->AssertEquals('GET', $Handler->Verb);
 		$this->AssertEquals('Routes\\Test', $Handler->Class);
