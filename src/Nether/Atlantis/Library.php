@@ -29,7 +29,8 @@ implements
 	ConfProjectInitWithConfig = 'Project.InitWithConfig',
 	ConfProjectWebRoot        = 'Project.WebRoot',
 	ConfProjectWebserver      = 'Project.WebServerType',
-	ConfProjectWebCertType    = 'Project.WebCertType';
+	ConfProjectWebCertType    = 'Project.WebCertType',
+	ConfDevLinkRewriter       = 'Project.DevLinkRewrite';
 
 	const
 	ConfAcmePhar       = 'AcmePHP.Phar',
@@ -79,7 +80,7 @@ implements
 
 	const
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',
-	PageTagViewURL = 'Nether.Atlantis.Tag.PageViewURL';
+	PageTagViewURL  = 'Nether.Atlantis.Tag.PageViewURL';
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -214,7 +215,9 @@ implements
 		return;
 
 		if($App->User->IsAdmin())
-		$Elements->Push(new Atlantis\Dashboard\AtlantisTagsElement($App));
+		$Elements
+		->Push(new Atlantis\Dashboard\AtlantisTagsElement($App))
+		->Push(new Atlantis\Dashboard\AtlantisTrafficElement($App));
 
 		$Elements
 		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App))

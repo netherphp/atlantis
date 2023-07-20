@@ -11,6 +11,7 @@ class UserSessionWeb
 extends PublicWeb {
 
 	#[RouteHandler('/login')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	PageLogin():
 	void {
@@ -22,6 +23,7 @@ extends PublicWeb {
 	}
 
 	#[RouteHandler('/logout')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	PageLogout():
 	void {
@@ -33,6 +35,7 @@ extends PublicWeb {
 	}
 
 	#[RouteHandler('/login/reset')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	PageForgot():
 	void {
@@ -50,6 +53,7 @@ extends PublicWeb {
 	}
 
 	#[RouteHandler('/signup')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	PageSignup():
 	void {

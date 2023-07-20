@@ -4,6 +4,7 @@ namespace Nether\Atlantis;
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\Surface;
 use Nether\User;
 
@@ -63,6 +64,37 @@ as html pages. //*/
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
+		$Handler = $this->App->Router->GetCurrentHandler();
+		$Info = static::GetMethodInfo($Handler->Method);
+
+		// prototype code
+		// if we are viewing a dev server and we're not an admin then we
+		// should gtfo.
+
+		if($this->App->IsDev()) {
+			if(!isset($this->App->User) || !$this->App->User->IsAdmin()) {
+				if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class)) {
+					$Rewriter = match(TRUE) {
+						(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
+						=> Library::Get(Library::ConfDevLinkRewriter),
+
+						default
+						=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL)
+					};
+
+					$Goto = $Rewriter($this->App->Router->Request->GetURL());
+
+					if($Goto === $this->App->Router->Request->GetURL())
+					return Avenue\Response::CodeForbidden;
+
+					($this->App->Router->Response)
+					->SetHeader('Location', $Goto);
+
+					return Avenue\Response::CodeRedirectPerm;
+				}
+			}
+		}
+
 		return Avenue\Response::CodeOK;
 	}
 
@@ -71,6 +103,8 @@ as html pages. //*/
 	void {
 
 		$Code = $this->OnWillConfirmReady($ExtraData);
+		$Handler = $this->App->Router->GetCurrentHandler();
+		$Info = static::GetMethodInfo($Handler->Method);
 
 		($this->App->Router->Response)
 		->SetCode($Code);
@@ -89,7 +123,8 @@ as html pages. //*/
 
 		////////
 
-		$this->HandleUserOnboarding();
+		$this->HandleUserOnboarding($Info);
+		$this->HandleTrafficReporting($Info);
 
 		return;
 	}
@@ -228,36 +263,88 @@ as html pages. //*/
 	}
 
 	protected function
-	HandleUserOnboarding():
-	static {
+	HandleUserOnboarding(Common\Prototype\MethodInfo $MethodInfo):
+	void {
 
-		if($this->User instanceof User\Entity) {
+		// handle if there is even a user.
 
-			$Handler = $this->App->Router->GetCurrentHandler();
-			$Info = static::GetMethodInfo($Handler->Method);
+		if(!isset($this->User))
+		return;
 
-			// handle if the account has been banned.
+		// handle if the account has been banned.
 
-			if($this->User->TimeBanned !== 0)
-			$this->Quit(403, 'Account is banned.');
+		if($this->User->TimeBanned !== 0)
+		$this->Quit(403, 'Account is banned.');
 
-			// handle if the account has not yet been activated.
+		// handle if the account has not yet been activated.
 
-			if(!$this->User->Activated)
-			if($this->Config[Atlantis\Library::ConfUserEmailActivate])
-			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
-			$this->Goto('/login/activate');
+		if(!$this->User->Activated)
+		if($this->Config[Atlantis\Library::ConfUserEmailActivate])
+		if(!$MethodInfo->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
+		$this->Goto('/login/activate');
 
-			// handle if the account has not had an alias set yet.
+		// handle if the account has not had an alias set yet.
 
-			if($this->User->Alias === NULL)
-			if($this->Config[Atlantis\Library::ConfUserRequireAlias])
-			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
-			$this->Goto('/login/activate');
+		if($this->User->Alias === NULL)
+		if($this->Config[Atlantis\Library::ConfUserRequireAlias])
+		if(!$MethodInfo->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
+		$this->Goto('/login/activate');
 
-		}
+		return;
+	}
 
-		return $this;
+	protected function
+	HandleTrafficReporting(Common\Prototype\MethodInfo $MethodInfo):
+	void {
+
+		if($MethodInfo->HasAttribute(Atlantis\Meta\TrafficReportSkip::class))
+		return;
+
+		if($this->IsUserAdmin())
+		return;
+
+		$Since = new Common\Date('-5 min');
+		$Hash = $this->Request->GetTrafficHash();
+		$UserID = isset($this->App->User) ? $this->App->User->ID : NULL;
+		$Parts = parse_url($Hash->URL);
+		$Domain = NULL;
+		$Path = NULL;
+		$Query = NULL;
+
+		////////
+
+		if(!$Parts)
+		return;
+
+		if(isset($Parts['host']))
+		$Domain = $Parts['host'];
+
+		if(isset($Parts['path']))
+		$Path = $Parts['path'];
+
+		if(isset($Parts['query']))
+		$Query = $Parts['query'];
+
+		////////
+
+		$Old = Struct\TrafficRow::Find([
+			'Hash'  => $Hash->Get(),
+			'Since' => $Since->GetUnixtime(),
+			'Limit' => 1
+		]);
+
+		if($Old->Count() === 0)
+		$Row = Struct\TrafficRow::Insert([
+			'Hash'   => $Hash->Get(),
+			'IP'     => $Hash->IP,
+			'URL'    => $Hash->URL,
+			'UserID' => $UserID,
+			'Domain' => $Domain,
+			'Path'   => $Path,
+			'Query'  => $Query
+		]);
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////
