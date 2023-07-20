@@ -24,6 +24,9 @@ as html pages. //*/
 	public Datafilter
 	$Data;
 
+	public ?Atlantis\Struct\TrafficRow
+	$Hit = NULL;
+
 	////////
 
 	protected bool
@@ -350,7 +353,7 @@ as html pages. //*/
 		]);
 
 		if($Old->Count() === 0)
-		$Row = Struct\TrafficRow::Insert([
+		$this->Hit = Struct\TrafficRow::Insert([
 			'Hash'    => $Hash->Get(),
 			'Visitor' => $Hash->GetVisitorHash(),
 			'IP'      => $Hash->IP,
