@@ -49,6 +49,7 @@ use Nether\Database;
 
 ($Config)
 ->Set(Database\Library::ConfConnections, [
+	/*
 	'Default' => new Database\Connection(
 		Type:     'mysql',
 		Hostname: 'DEV-DB-HOST',
@@ -57,4 +58,5 @@ use Nether\Database;
 		Password: 'DEV-DB-PASSWORD-DURR',
 		Auto: FALSE
 	)
+	*/
 ]);
