@@ -43,6 +43,60 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('datetime')]
+	#[Console\Meta\Info('Show date and time stamp info.')]
+	#[Console\Meta\Value('--date', 'A date component to use as input.')]
+	#[Console\Meta\Value('--time', 'A time component to use as input.')]
+	#[Console\Meta\Value('--tz', 'A timezone component to use as input.')]
+	#[Console\Meta\Value('--unix', 'Unix timestamp as an integer to use as input date. Overrides all other input options.')]
+	public function
+	DateTimeInfo():
+	int {
+
+		$Now = new Common\Date;
+		$Date = NULL;
+		$Key = NULL;
+		$Val = NULL;
+
+		$InputUnix = $this->GetOption('unix');
+		$InputDate = $this->GetOption('date') ?? $Now->Get(Common\Values::DateFormatYMD);
+		$InputTime = $this->GetOption('time') ?? $Now->Get(Common\Values::DateFormatT24V);
+		$InputZone = $this->GetOption('tz') ?? $Now->Get(Common\Values::DateFormatTO);
+
+		////////
+
+		if($InputUnix !== NULL)
+		$Date = Common\Date::FromTime($InputUnix);
+		else
+		$Date = Common\Date::FromDateString("{$InputDate} {$InputTime} {$InputZone}");
+
+		////////
+
+		$Info = [
+			"Date ({$Date->Get('T')})"
+			=> $Date->Get(Common\Values::DateFormatYMDT24VO),
+
+			"Date (UTC)"
+			=> $Date->SetTimezone('UTC')->Get(Common\Values::DateFormatYMDT24VO),
+
+			"Time (UTC)"
+			=> $Date->GetUnixtime(),
+		];
+
+		foreach($Info as $Key => $Val) {
+			$this->PrintLn(sprintf(
+				'%s: %s',
+				$this->Format($Key, Bold: TRUE),
+				$Val
+			));
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Console\Meta\Command('git-status')]
 	#[Console\Meta\Info('Run GIT STATUS on all Nether source repos within vendor dir, because inquiring minds got to know.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
