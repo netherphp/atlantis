@@ -1,0 +1,83 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Database\Struct\PrototypeFindResult $Rows
+ * @var int $Hits
+ * @var int $Visitors
+ * @var int $Pages
+ * @var string $Title
+ */
+
+$Surface
+->Set('Page.Title', 'Traffic - Dashboard')
+->Area('dashboard/nav', [ 'Trail' => [
+	'Traffic'        => NULL,
+	$Title           => NULL
+]]);
+
+?>
+
+	<div>
+		<div class="fw-bold font-size-larger">Traffic Report: <?php $Util->Print($Title) ?></div>
+		<hr class="mt-0 mb-4" />
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold"><?php $Util->Print($Hits) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Hits</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold"><?php $Util->Print($Visitors) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Visitors</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold"><?php $Util->Print($Pages) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Pages</div>
+			</div>
+		</div>
+	</div>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>
+					URL
+				</th>
+				<th class="th-shrink">
+					Count
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($Rows as $Row): /** @var Atlantis\Struct\TrafficRow $Row */ ?>
+			<tr>
+				<td>
+					<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->Path) ?></a>
+				</td>
+				<td class="text-align-center">
+					<?php $Util->Print($Row->GetGroupCount()) ?>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>

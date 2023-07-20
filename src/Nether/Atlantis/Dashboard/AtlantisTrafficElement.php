@@ -4,11 +4,12 @@ namespace Nether\Atlantis\Dashboard;
 
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Database;
 
 class AtlantisTrafficElement
 extends Atlantis\Dashboard\Element {
 
-	public Common\Datastore
+	public Database\Struct\PrototypeFindResult
 	$Rows;
 
 	public int

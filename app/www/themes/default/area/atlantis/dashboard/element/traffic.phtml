@@ -2,6 +2,7 @@
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\Surface;
 use Nether\User;
 
@@ -16,11 +17,20 @@ use Nether\User;
  * @var Atlantis\Dashboard\AtlantisTrafficElement $Element
  */
 
+$GetDateFor = function(string $When) {
+
+	$Date = Common\Date::FromDateString($When);
+
+	return $Date->Get(Common\Values::DateFormatYMD);
+}
+
 ?>
 
 <div class="jumbotron jumbotron-outline rounded">
-	<div class="fw-bold text-uppercase">
-		Traffic
+	<div class="row">
+		<div class="col">
+			<span class="fw-bold text-uppercase">Traffic Past 24HR</span>
+		</div>
 	</div>
 	<hr class="mt-0 mb-2" />
 
@@ -28,13 +38,52 @@ use Nether\User;
 		<div class="col-12 col-md-auto mb-2 mb-md-0">
 			<div>
 				<div class="font-size-most-large fw-bold"><?php $Util->Print($Element->Hits) ?></div>
-				<div class="font-size-smallest text-uppercase text-muted">Hits Last 24hr</div>
+				<div class="font-size-smallest text-uppercase text-muted">Hits</div>
 			</div>
 		</div>
-		<div class="col-12 col-md-auto mb-0 mb-md-0">
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
 			<div>
 				<div class="font-size-most-large fw-bold"><?php $Util->Print($Element->Visitors) ?></div>
-				<div class="font-size-smallest text-uppercase text-muted">Unique Visitors</div>
+				<div class="font-size-smallest text-uppercase text-muted">Visitors</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold"><?php $Util->Print($Element->Rows->Total) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Pages</div>
+			</div>
+		</div>
+		<div class="col-12 col-md mb-0 mb-md-0">
+			<div class="row tight justify-content-md-end mb-1">
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=24hr">Past 24hr</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=48hr">48hr</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=1wk">Week</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=1mo">Month</a>
+				</div>
+			</div>
+			<div class="row tight justify-content-md-end mb-0">
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=<?php $Util->Print($GetDateFor('today')) ?>">Today</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=<?php $Util->Print($GetDateFor('yesterday')) ?>">Yesterday</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=<?php $Util->Print(sprintf('%s-%s', date('Y'), date('m'))) ?>">MTD</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=<?php $Util->Print(date('Y')) ?>">YTD</a>
+				</div>
+				<div class="col-auto mb-2">
+					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="#">Date...</a>
+				</div>
 			</div>
 		</div>
 	</div>
