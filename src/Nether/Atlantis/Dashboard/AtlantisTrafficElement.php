@@ -14,6 +14,9 @@ extends Atlantis\Dashboard\Element {
 	public int
 	$Hits;
 
+	public int
+	$Visitors;
+
 	public function
 	__Construct(Atlantis\Engine $App) {
 
@@ -28,12 +31,17 @@ extends Atlantis\Dashboard\Element {
 		$this->Rows = Atlantis\Struct\TrafficRow::Find([
 			'Since' => $Since->GetUnixtime(),
 			'Group' => 'path',
-			'Sort'  => 'path-count',
+			'Sort'  => 'group-count-za',
 			'Limit' => 10
 		]);
 
 		$this->Hits = Atlantis\Struct\TrafficRow::FindCount([
 			'Since' => $Since->GetUnixtime()
+		]);
+
+		$this->Visitors = Atlantis\Struct\TrafficRow::FindCount([
+			'Since' => $Since->GetUnixtime(),
+			'Group' => 'visitors'
 		]);
 
 		return;

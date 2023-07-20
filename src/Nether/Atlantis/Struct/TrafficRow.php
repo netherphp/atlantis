@@ -102,8 +102,13 @@ extends Atlantis\Prototype {
 			if($Input['Group'] === 'path')
 			$SQL->Group('Main.Path');
 
+			if($Input['Group'] === 'visitor')
+			$SQL->Group('Main.Visitor');
+
 			$SQL->Fields([ 'GroupCount'=> 'COUNT(*) AS GroupCount' ]);
 		}
+
+
 
 		return;
 	}
@@ -111,6 +116,21 @@ extends Atlantis\Prototype {
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
+
+		switch($Input['Sort']) {
+			case 'group-count-az':
+				$SQL
+				->Sort('GroupCount', $SQL::SortAsc)
+				->Sort('Main.Domain', $SQL::SortAsc)
+				->Sort('Main.Path', $SQL::SortAsc);
+			break;
+			case 'group-count-za':
+				$SQL
+				->Sort('GroupCount', $SQL::SortDesc)
+				->Sort('Main.Domain', $SQL::SortAsc)
+				->Sort('Main.Path', $SQL::SortAsc);
+			break;
+		}
 
 		return;
 	}
