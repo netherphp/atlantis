@@ -16,14 +16,19 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->Data)
-		->When(Common\Filters\Text::Trimmed(...));
+		->When(Common\Filters\Text::Trimmed(...))
+		->Path([
+			Common\Filters\Text::PathableKey(...),
+			Common\Filters\Text::StringNullable(...)
+		]);
 
 		$Filters = [
-			'Since'  => NULL,
-			'Before' => NULL,
-			'Group'  => 'path',
-			'Sort'   => 'group-count-za',
-			'Limit'  => 0
+			'Since'     => NULL,
+			'Before'    => NULL,
+			'PathStart' => $this->Data->Path,
+			'Group'     => 'path',
+			'Sort'      => 'group-count-za',
+			'Limit'     => 0
 		];
 
 		$Title = 'Traffic Report';
@@ -96,7 +101,8 @@ extends Atlantis\ProtectedWeb {
 			'Rows'     => $Rows,
 			'Hits'     => $Hits,
 			'Visitors' => $Visitors,
-			'Pages'    => $Pages
+			'Pages'    => $Pages,
+			'Path'     => $Filters['PathStart']
 		]);
 
 		return;

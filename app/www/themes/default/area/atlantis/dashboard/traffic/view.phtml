@@ -20,6 +20,7 @@ use Nether\User;
  * @var int $Visitors
  * @var int $Pages
  * @var string $Title
+ * @var string $Path
  */
 
 $Surface
@@ -29,55 +30,143 @@ $Surface
 	$Title           => NULL
 ]]);
 
+$GetDateFor = function(string $When) {
+
+	$Date = Common\Date::FromDateString($When);
+
+	return $Date->Get(Common\Values::DateFormatYMD);
+};
+
 ?>
 
-	<div>
-		<div class="fw-bold font-size-larger">Traffic Report: <?php $Util->Print($Title) ?></div>
-		<hr class="mt-0 mb-4" />
+<!-- TRAFFIC HEADING -->
+<div class="mb-2">
+	<div class="fw-bold font-size-larger mb-0">
+		Traffic Report: <?php $Util->Print($Title) ?>
 	</div>
 
-	<div class="row mb-4">
-		<div class="col-12 col-md-auto mb-2 mb-md-0">
-			<div>
-				<div class="font-size-most-large fw-bold"><?php $Util->Print($Hits) ?></div>
-				<div class="font-size-smallest text-uppercase text-muted">Hits</div>
+	<?php if($Path): ?>
+	<div class="mt-1">
+		<b>Paths Starting With:</b>
+		<?php $Util->Print($Path) ?>
+	</div>
+	<?php endif; ?>
+
+	<hr class="mt-1 mb-0" />
+</div>
+
+<!-- TRAFFIC SUMMARY -->
+<div class="row mb-4">
+
+	<div class="col-12 col-md-auto mb-2 mb-md-0">
+		<div>
+			<div class="font-size-most-large fw-bold"><?php $Util->Print($Hits) ?></div>
+			<div class="font-size-smallest text-uppercase text-muted">Hits</div>
+		</div>
+	</div>
+	<div class="col-12 col-md-auto mb-2 mb-md-0">
+		<div>
+			<div class="font-size-most-large fw-bold"><?php $Util->Print($Visitors) ?></div>
+			<div class="font-size-smallest text-uppercase text-muted">Visitors</div>
+		</div>
+	</div>
+	<div class="col-12 col-md-auto mb-2 mb-md-0">
+		<div>
+			<div class="font-size-most-large fw-bold"><?php $Util->Print($Pages) ?></div>
+			<div class="font-size-smallest text-uppercase text-muted">Pages</div>
+		</div>
+	</div>
+
+	<div class="col">
+		<div class="row tight justify-content-md-end mb-1">
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> '24hr' ])) ?>">Past 24hr</a>
+			</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> '48hr' ])) ?>">48hr</a>
+			</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> '1wk' ])) ?>">Week</a>
+			</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-dark btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> '1mo' ])) ?>">Month</a>
 			</div>
 		</div>
-		<div class="col-12 col-md-auto mb-2 mb-md-0">
-			<div>
-				<div class="font-size-most-large fw-bold"><?php $Util->Print($Visitors) ?></div>
-				<div class="font-size-smallest text-uppercase text-muted">Visitors</div>
+		<div class="row tight justify-content-md-end mb-0">
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> $GetDateFor('today') ])) ?>">Today</a>
 			</div>
-		</div>
-		<div class="col-12 col-md-auto mb-2 mb-md-0">
-			<div>
-				<div class="font-size-most-large fw-bold"><?php $Util->Print($Pages) ?></div>
-				<div class="font-size-smallest text-uppercase text-muted">Pages</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> $GetDateFor('yesterday') ])) ?>">Yesterday</a>
+			</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> sprintf('%s-%s', date('Y'), date('m')) ])) ?>">MTD</a>
+			</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="<?php $Util->Print($Route->QueryCooker([ 'when'=> date('Y') ])) ?>">YTD</a>
+			</div>
+			<div class="col-auto mb-2">
+				<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" data-traffic-cmd="date" href="#">Date...</a>
 			</div>
 		</div>
 	</div>
 
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>
-					URL
-				</th>
-				<th class="th-shrink">
-					Count
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach($Rows as $Row): /** @var Atlantis\Struct\TrafficRow $Row */ ?>
-			<tr>
-				<td>
-					<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->Path) ?></a>
-				</td>
-				<td class="text-align-center">
-					<?php $Util->Print($Row->GetGroupCount()) ?>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</tbody>
-	</table>
+</div>
+
+<!-- TRAFFIC DATA -->
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>
+				URL
+			</th>
+			<th class="th-shrink">
+				Count
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach($Rows as $Row): /** @var Atlantis\Struct\TrafficRow $Row */ ?>
+		<tr>
+			<td>
+				<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->Path) ?></a>
+			</td>
+			<td class="text-align-center">
+				<?php $Util->Print($Row->GetGroupCount()) ?>
+			</td>
+		</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>
+
+<script type="module">
+import DialogUtil from '/share/nui/util/dialog.js';
+
+jQuery(function() {
+
+	jQuery('[data-traffic-cmd=date]')
+	.on('click', function() {
+		let diag = new DialogUtil.Window({
+			title: 'View Traffic By Date...',
+			labelAccept: 'Go',
+			fields: [
+				new DialogUtil.Field('date', 'When', 'Date'),
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let url = new URL(location.href);
+
+				url.searchParams.set('when', data.When);
+				location.href = url;
+				return;
+			}
+		});
+
+		diag.show();
+		return false;
+	});
+
+	return;
+});
+</script>

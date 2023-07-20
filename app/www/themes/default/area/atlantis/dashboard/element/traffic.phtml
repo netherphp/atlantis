@@ -22,7 +22,7 @@ $GetDateFor = function(string $When) {
 	$Date = Common\Date::FromDateString($When);
 
 	return $Date->Get(Common\Values::DateFormatYMD);
-}
+};
 
 ?>
 
@@ -82,7 +82,7 @@ $GetDateFor = function(string $When) {
 					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="/dashboard/traffic/view?when=<?php $Util->Print(date('Y')) ?>">YTD</a>
 				</div>
 				<div class="col-auto mb-2">
-					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" href="#">Date...</a>
+					<a class="btn btn-block btn-secondary btn-sm pt-1 pb-1" data-traffic-cmd="date" href="#">Date...</a>
 				</div>
 			</div>
 		</div>
@@ -114,3 +114,36 @@ $GetDateFor = function(string $When) {
 	</table>
 
 </div>
+
+<script type="module">
+import DialogUtil from '/share/nui/util/dialog.js';
+
+jQuery(function() {
+
+	jQuery('[data-traffic-cmd=date]')
+	.on('click', function() {
+		let diag = new DialogUtil.Window({
+			title: 'View Traffic By Date...',
+			labelAccept: 'Go',
+			fields: [
+				new DialogUtil.Field('date', 'When', 'Date'),
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let url = new URL(location.href);
+
+				url.pathname = '/dashboard/traffic/view';
+				url.searchParams.set('when', data.When);
+				location.href = url;
+				return;
+			}
+		});
+
+		diag.show();
+		return false;
+	});
+
+	return;
+});
+</script>
