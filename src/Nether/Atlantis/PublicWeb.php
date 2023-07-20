@@ -322,7 +322,7 @@ as html pages. //*/
 		if($this->IsUserAdmin())
 		return;
 
-		$Since = new Common\Date('-5 min');
+		$Since = new Common\Date('-10 min');
 		$Hash = $this->Request->GetTrafficHash();
 		$UserID = isset($this->App->User) ? $this->App->User->ID : NULL;
 		$Parts = parse_url($Hash->URL);

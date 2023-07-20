@@ -37,6 +37,7 @@ extends Atlantis\ProtectedWeb {
 		);
 
 		($this->App->Surface)
+		->Set('Page.Title', 'Dashboard')
 		->Wrap('dashboard/index', [
 			'SidebarItems' => $SidebarItems,
 			'MainItems'    => $MainItems
