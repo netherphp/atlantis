@@ -21,13 +21,13 @@ use Nether\User;
 
 
 
-	<?php foreach($Element->Blogs as $BlogUser): /** @var Blog\BlogUser $Blog */ ?>
+	<?php foreach($Element->Blogs as $Blog): /** @var Blog\BlogUser $Blog */ ?>
 
 		<div class="jumbotron rounded">
 
 			<!-- BLOG TITLE -->
 			<div class="fw-bold text-uppercase">
-				<a href="<?php $Util->Print($BlogUser->Blog->GetURL()) ?>"><?php $Util->Print($BlogUser->Blog->Title) ?></a>
+				<a href="<?php $Util->Print($Blog->BlogUser->Blog->GetURL()) ?>"><?php $Util->Print($Blog->BlogUser->Blog->Title) ?></a>
 			</div>
 			<hr class="mt-0 mb-2" />
 
@@ -35,13 +35,13 @@ use Nether\User;
 			<div class="row mb-4">
 				<div class="col-12 col-md-auto mb-2 mb-md-0">
 					<div>
-						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format(0)) ?></div>
+						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format($Blog->Hits)) ?></div>
 						<div class="font-size-smallest text-uppercase text-muted">Views Last 24hr</div>
 					</div>
 				</div>
 				<div class="col-12 col-md-auto mb-0 mb-md-0">
 					<div>
-						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format(0)) ?></div>
+						<div class="font-size-most-large fw-bold"><?php $Util->Print(number_format($Blog->Visitors)) ?></div>
 						<div class="font-size-smallest text-uppercase text-muted">Unique Visitors</div>
 					</div>
 				</div>
@@ -49,7 +49,7 @@ use Nether\User;
 
 			<!-- BLOG BUTTONS -->
 			<div class="mb-2">
-				<a href="<?php $Util->Print($BlogUser->Blog->GetWriteURL()) ?>" class="btn btn-dark btn-block text-align-left">
+				<a href="<?php $Util->Print($Blog->BlogUser->Blog->GetWriteURL()) ?>" class="btn btn-dark btn-block text-align-left">
 					<i class="mdi mdi-plus-thick"></i>
 					New Post
 				</a>
@@ -61,7 +61,7 @@ use Nether\User;
 				</a>
 			</div>
 			<div class="mb-0">
-				<a href="<?php $Util->Print($BlogUser->Blog->GetSettingsURL()) ?>" class="btn btn-dark btn-block text-align-left">
+				<a href="<?php $Util->Print($Blog->BlogUser->Blog->GetSettingsURL()) ?>" class="btn btn-dark btn-block text-align-left">
 					<i class="mdi mdi-cog"></i>
 					Settings
 				</a>

@@ -79,6 +79,7 @@ extends Atlantis\Prototype {
 
 		$Input['Hash'] ??= NULL;
 		$Input['Since'] ??= NULL;
+		$Input['PathStart'] ??= NULL;
 
 		$Input['Group'] ??= NULL;
 
@@ -97,6 +98,11 @@ extends Atlantis\Prototype {
 
 		if($Input['Before'] !== NULL)
 		$SQL->Where('Main.TimeCreated < :Before');
+
+		if($Input['PathStart'] !== NULL) {
+			$Input[':PathStartLike'] = "{$Input['PathStart']}%";
+			$SQL->Where('Main.Path LIKE :PathStartLike');
+		}
 
 		if($Input['Group'] !== NULL) {
 			if($Input['Group'] === 'path')
