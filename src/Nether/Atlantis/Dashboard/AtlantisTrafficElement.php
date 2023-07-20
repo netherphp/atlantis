@@ -41,7 +41,7 @@ extends Atlantis\Dashboard\Element {
 
 		$this->Visitors = Atlantis\Struct\TrafficRow::FindCount([
 			'Since' => $Since->GetUnixtime(),
-			'Group' => 'visitors'
+			'Group' => 'visitor'
 		]);
 
 		return;
