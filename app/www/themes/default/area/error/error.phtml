@@ -8,9 +8,9 @@ $Message ??= $Surface->Get('Message') ?? 'There was an error processing your req
 
 <div class="container pt-8 pb-8">
 	<h1>
-		<span class="text-uppercase"><?php $Printer($Title) ?></span>
-		<sup class="opacity-25">(<?php $Printer($Error) ?>)</sup>
+		<span class="text-uppercase"><?php $Util->Print($Title) ?></span>
+		<sup class="opacity-25">(<?php $Util->Print($Error) ?>)</sup>
 	</h1>
 
-	<p><?php $Printer($Message) ?></p>
+	<p><?php $Util->Print($Message) ?></p>
 </div>

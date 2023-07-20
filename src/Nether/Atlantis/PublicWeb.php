@@ -71,27 +71,31 @@ as html pages. //*/
 		// if we are viewing a dev server and we're not an admin then we
 		// should gtfo.
 
-		if($this->App->IsDev()) {
-			if(!isset($this->App->User) || !$this->App->User->IsAdmin()) {
-				if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class)) {
-					$Rewriter = match(TRUE) {
-						(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
-						=> Library::Get(Library::ConfDevLinkRewriter),
+		if($this->App->IsDev() && !$this->IsUserAdmin()) {
+			if(!$Info->HasAttribute(Atlantis\Meta\UserActivationFlow::class)) {
 
-						default
-						=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL)
-					};
+				$Rewriter = match(TRUE) {
+					(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
+					=> Library::Get(Library::ConfDevLinkRewriter),
 
-					$Goto = $Rewriter($this->App->Router->Request->GetURL());
+					default
+					=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL)
+				};
 
-					if($Goto === $this->App->Router->Request->GetURL())
-					return Avenue\Response::CodeForbidden;
+				$Goto = $Rewriter($this->App->Router->Request->GetURL());
 
-					($this->App->Router->Response)
-					->SetHeader('Location', $Goto);
+				// if no rewriter was defined or it caused a loop then
+				// should just fail.
 
-					return Avenue\Response::CodeRedirectPerm;
-				}
+				if($Goto === $this->App->Router->Request->GetURL())
+				return Avenue\Response::CodeForbidden;
+
+				// else we can redirect to the rewritten url.
+
+				($this->App->Router->Response)
+				->SetHeader('Location', $Goto);
+
+				return Avenue\Response::CodeRedirectPerm;
 			}
 		}
 
@@ -108,6 +112,13 @@ as html pages. //*/
 
 		($this->App->Router->Response)
 		->SetCode($Code);
+
+		// handle if the WillConfirm returned a redirect request.
+
+		if($Code >= 300 && $Code <= 399)
+		exit(0);
+
+		////////
 
 		($this->App->Surface)
 		->Queue('BuildGlobalScope', $this->BuildGlobalScope(...), TRUE)
@@ -328,20 +339,21 @@ as html pages. //*/
 		////////
 
 		$Old = Struct\TrafficRow::Find([
-			'Hash'  => $Hash->Get(),
-			'Since' => $Since->GetUnixtime(),
-			'Limit' => 1
+			'Hash'    => $Hash->Get(),
+			'Since'   => $Since->GetUnixtime(),
+			'Limit'   => 1
 		]);
 
 		if($Old->Count() === 0)
 		$Row = Struct\TrafficRow::Insert([
-			'Hash'   => $Hash->Get(),
-			'IP'     => $Hash->IP,
-			'URL'    => $Hash->URL,
-			'UserID' => $UserID,
-			'Domain' => $Domain,
-			'Path'   => $Path,
-			'Query'  => $Query
+			'Hash'    => $Hash->Get(),
+			'Visitor' => $Hash->GetVisitorHash(),
+			'IP'      => $Hash->IP,
+			'URL'     => $Hash->URL,
+			'UserID'  => $UserID,
+			'Domain'  => $Domain,
+			'Path'    => $Path,
+			'Query'   => $Query
 		]);
 
 		return;

@@ -15,6 +15,11 @@ extends Atlantis\Prototype {
 	public string
 	$Hash;
 
+	#[Database\Meta\TypeChar(Size: 128)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$Visitor;
+
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	#[Database\Meta\FieldIndex]
 	public int
@@ -50,6 +55,21 @@ extends Atlantis\Prototype {
 	public string
 	$Query;
 
+	////////
+
+	protected int
+	$GroupCount = 0;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetGroupCount():
+	int {
+
+		return $this->GroupCount;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -59,6 +79,8 @@ extends Atlantis\Prototype {
 
 		$Input['Hash'] ??= NULL;
 		$Input['Since'] ??= NULL;
+
+		$Input['Group'] ??= NULL;
 
 		return;
 	}
@@ -75,6 +97,13 @@ extends Atlantis\Prototype {
 
 		if($Input['Before'] !== NULL)
 		$SQL->Where('Main.TimeCreated < :Before');
+
+		if($Input['Group'] !== NULL) {
+			if($Input['Group'] === 'path')
+			$SQL->Group('Main.Path');
+
+			$SQL->Fields([ 'GroupCount'=> 'COUNT(*) AS GroupCount' ]);
+		}
 
 		return;
 	}
