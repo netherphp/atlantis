@@ -130,6 +130,10 @@ implements
 		->Register(
 			Atlantis\Plugins\AccessTypeDefineInterface::class,
 			Atlantis\Plugins\AccessTypeDefine::class
+		)
+		->Register(
+			Atlantis\Plugins\CommandLineExtensionInterface::class,
+			Atlantis\Plugins\CommandLineExtension::class
 		);
 
 		return;

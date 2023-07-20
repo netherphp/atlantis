@@ -37,6 +37,43 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('bins')]
+	public function
+	HelpForBins():
+	int {
+
+		$Plugins = NULL;
+		$Index = NULL;
+		$Bin = NULL;
+
+		////////
+
+		$Plugins = $this->App->Plugins->Get(
+			Atlantis\Plugins\CommandLineExtensionInterface::class
+		);
+
+		$Index = $Plugins->Accumulate((new Common\Datastore), (
+			fn(Common\Datastore $C, string $V)
+			=> $C->MergeRight((new $V)->Get()
+		)));
+
+		$Index->Sort();
+
+		////////
+
+		foreach($Index as $Bin) {
+			$this->PrintLn(sprintf(
+				'* %s',
+				$Bin
+			));
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	// the SETUP methods are going to become the new init/bootstrap/config
 	// toolchain using mostly things from the atlantis.json file. all
 	// additions to this chain should be built so that it can be repeated
