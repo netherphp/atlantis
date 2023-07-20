@@ -1262,12 +1262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/avenue.git",
-                "reference": "ede8a2cde95618dfbe842b8b4b63ce45ff114c46"
+                "reference": "2e1b6055d2eb6311dc2b10d99d18e6d6ae8f1980"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/avenue/zipball/ede8a2cde95618dfbe842b8b4b63ce45ff114c46",
-                "reference": "ede8a2cde95618dfbe842b8b4b63ce45ff114c46",
+                "url": "https://api.github.com/repos/netherphp/avenue/zipball/2e1b6055d2eb6311dc2b10d99d18e6d6ae8f1980",
+                "reference": "2e1b6055d2eb6311dc2b10d99d18e6d6ae8f1980",
                 "shasum": ""
             },
             "require": {
@@ -1314,7 +1314,7 @@
                 "issues": "https://github.com/netherphp/avenue/issues",
                 "source": "https://github.com/netherphp/avenue/tree/redux"
             },
-            "time": "2023-06-29T01:00:50+00:00"
+            "time": "2023-07-20T18:33:53+00:00"
         },
         {
             "name": "netherphp/common",
