@@ -113,6 +113,8 @@ extends Database\Prototype {
 			return NULL;
 		});
 
+
+
 		return $Vals->GetData();
 	}
 
