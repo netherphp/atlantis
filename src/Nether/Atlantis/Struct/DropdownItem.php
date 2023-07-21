@@ -29,7 +29,7 @@ extends Common\Prototype {
 
 		$Output = (
 			($this->Attr)
-			->Map(fn(mixed $V, string $K)=> "{$K}={$V}")
+			->MapKeys(fn(mixed $V, string $K)=> "{$K}={$V}")
 			->Join(' ')
 		);
 
