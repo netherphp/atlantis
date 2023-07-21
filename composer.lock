@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "63e3f0ae18a3beb50a4ec6e5d085a1b7",
+    "content-hash": "b687b23dd2d6a6919a62b1497e406024",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1318,16 +1318,16 @@
         },
         {
             "name": "netherphp/common",
-            "version": "dev-master",
+            "version": "v5.0.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/common.git",
-                "reference": "5965bbb407fa93d91cad0e8ff9a1ac5612e433f6"
+                "reference": "f1742a05ec0be2c9d8748ee94f109c88f0afbeb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/common/zipball/5965bbb407fa93d91cad0e8ff9a1ac5612e433f6",
-                "reference": "5965bbb407fa93d91cad0e8ff9a1ac5612e433f6",
+                "url": "https://api.github.com/repos/netherphp/common/zipball/f1742a05ec0be2c9d8748ee94f109c88f0afbeb8",
+                "reference": "f1742a05ec0be2c9d8748ee94f109c88f0afbeb8",
                 "shasum": ""
             },
             "require": {
@@ -1342,7 +1342,6 @@
                 "netherphp/standards": ">=0.1.9",
                 "phpunit/phpunit": "^9.6"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1368,9 +1367,9 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/common/issues",
-                "source": "https://github.com/netherphp/common/tree/master"
+                "source": "https://github.com/netherphp/common/tree/v5.0.23"
             },
-            "time": "2023-07-12T02:36:16+00:00"
+            "time": "2023-07-21T20:23:39+00:00"
         },
         {
             "name": "netherphp/console",
@@ -4914,17 +4913,9 @@
             "time": "2021-07-28T10:34:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "netherphp/common",
-            "version": "9999999-dev",
-            "alias": "5.0.99",
-            "alias_normalized": "5.0.99.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "netherphp/common": 20,
         "netherphp/ki": 20,
         "netherphp/avenue": 20,
         "netherphp/surface": 20,
