@@ -16,6 +16,10 @@ extends Common\Prototype {
 	public Common\Datastore
 	$Links;
 
+	#[Common\Meta\PropertyObjectify]
+	public Common\Datastore
+	$StepsForUpdate;
+
 	////////
 
 	protected Common\Datastore
@@ -52,6 +56,12 @@ extends Common\Prototype {
 			($this->Links)
 			->SetData($this->File['Links'])
 			->Remap(fn(object $L)=> new Common\Filesystem\Symlink($L));
+		}
+
+		if(isset($this->File['StepsForUpdate']))
+		if(is_iterable($this->File['StepsForUpdate'])) {
+			($this->StepsForUpdate)
+			->SetData($this->File['StepsForUpdate']);
 		}
 
 		return $this;

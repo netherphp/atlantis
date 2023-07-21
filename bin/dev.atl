@@ -97,7 +97,81 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('git-status')]
+	#[Console\Meta\Command('update')]
+	#[Console\Meta\Info('Perform all the actions needed to update this project installation.')]
+	#[Console\Meta\Toggle('--dry', 'Just pretend.')]
+	public function
+	ProjectUpdate():
+	int {
+
+		$Conf = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
+		$Steps = new Common\Datastore($Conf->StepsForUpdate);
+		$OptDry = $this->GetOption('Dry');
+
+		$Steps->Each(function(mixed $Line) use($OptDry) {
+			if(!is_string($Line))
+			return;
+
+			// execute a command. only show the output if the command
+			// resulted in an error code.
+
+			$Cmd = NULL;
+
+			if(str_starts_with($Line, '$$ ')) {
+				$Cmd = substr($Line, 3);
+
+				if($OptDry) {
+					$this->PrintLn(sprintf(
+						'%s %s',
+						$this->Format('[PseudoCommandLine]', Bold: TRUE),
+						$Cmd
+					));
+
+					return;
+				}
+
+				$Result = $this->ExecuteCommandLine($Cmd);
+
+				if($Result->Error) {
+					$this->FormatLn('ERROR', Bold: TRUE);
+					$this->PrintLn($Result->GetOutputString());
+				}
+
+				return;
+			}
+
+			// execute a command and always show the output regardless
+			// of the result it had.
+
+			if(str_starts_with($Line, '$! ')) {
+				$Cmd = substr($Line, 3);
+
+				if($OptDry) {
+					$this->PrintLn(sprintf(
+						'%s %s',
+						$this->Format('[PseudoExecuteCommand]', Bold: TRUE),
+						$Cmd
+					));
+
+					return;
+				}
+
+				$Result = $this->ExecuteCommandLine(substr($Line, 3));
+				$this->PrintLn($Result->GetOutputString());
+
+				return;
+			}
+
+			return;
+		});
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('nstatus')]
 	#[Console\Meta\Info('Run GIT STATUS on all Nether source repos within vendor dir, because inquiring minds got to know.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
@@ -133,7 +207,7 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Console\Meta\Command('git-shove')]
+	#[Console\Meta\Command('nshove')]
 	#[Console\Meta\Info('Run GIT PUSH on all Nether source repos within vendor dir. Been working really hard and wanna publish these updates. Not like you kept a verbose change list anyway.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
@@ -179,7 +253,7 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Console\Meta\Command('git-yoink')]
+	#[Console\Meta\Command('nyoink')]
 	#[Console\Meta\Info('Run GIT PULL on all Nether source repos within vendor dir. It is typically better to do a composer update, instead.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	public function
@@ -216,7 +290,7 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Console\Meta\Command('git-config')]
+	#[Console\Meta\Command('nconfig')]
 	#[Console\Meta\Info('Run GIT CONFIG on all Nether source repos within vendor dir. Usually to force local settings after the default system ones have been annoying.')]
 	#[Console\Meta\Toggle('--verbose', 'Show more info.')]
 	#[Console\Meta\Toggle('--global', 'Set these things globally for your user instead of local to this project.')]
