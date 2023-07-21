@@ -63,36 +63,7 @@ import DialogUtil from '/share/nui/util/dialog.js';
 
 jQuery(function() {
 
-	jQuery('.CmdVideoAdd')
-	.on('click', function(){
 
-		let parent = this.dataset.parentUuid;
-
-		let diag = new DialogUtil.Window({
-			show: true,
-			title: 'Add Video By URL',
-			labelAccept: 'Add',
-			fields: [
-				new DialogUtil.Field('hidden', 'ParentUUID', null, parent),
-				new DialogUtil.Field('text', 'URL'),
-				new DialogUtil.Field('text', 'Title'),
-				new DialogUtil.Field('date', 'DatePosted', 'Date')
-			],
-			onAccept: function() {
-
-				let data = this.getFieldData();
-				let api = new API.Request('POST', '/api/media/video-tp', data);
-
-				(api.send())
-				.then(api.reload)
-				.catch(api.catch);
-
-				return;
-			}
-		});
-
-		return false;
-	});
 
 	jQuery('.CmdVideoDelete')
 	.on('click', function(){
