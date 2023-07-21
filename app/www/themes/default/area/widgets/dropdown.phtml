@@ -1,0 +1,46 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Struct\DropdownMenu $Menu
+ * @var string $MenuBtnClass
+ * @var string $ItemBtnClass
+ */
+
+$Menu ??= Atlantis\Struct\DropdownMenu::New();
+$MenuBtnClass ??= 'btn-outline-dark';
+$ItemBtnClass ??= 'btn-outline-dark';
+
+?>
+
+<div class="dropdown">
+	<button class="btn <?php $Util->Print($MenuBtnClass) ?> dropdown-toggle" type="button" data-bs-toggle="dropdown">
+		<?php if($Menu->Icon): ?><i class="<?php $Util->Print($Menu->GetIcon()) ?>"></i><?php endif; ?>
+		<?php if($Menu->Title): ?><span><?php $Util->Print($Menu->Title) ?></span><?php endif; ?>
+	</button>
+	<div class="dropdown-menu dropdown-menu-end">
+		<?php foreach($Menu->Items as $Item): /** @var Atlantis\Struct\DropdownItem $Item */ ?>
+		<div class="dropdown-div">
+			<?php if($Item->Title === '-'): ?>
+			<hr />
+			<?php else: ?>
+			<a class="btn <?php $Util->Print($ItemBtnClass) ?>" <?php echo $Item->GetAttrForHTML() ?> href="#">
+				<?php if($Item->Icon): ?><i class="<?php $Util->Print($Item->GetIcon()) ?>"></i><?php endif; ?>
+				<?php if($Item->Title): ?><span><?php $Util->Print($Item->Title) ?></span><?php endif; ?>
+			</a>
+			<?php endif; ?>
+		</div>
+		<?php endforeach; ?>
+	</div>
+</div>

@@ -110,7 +110,7 @@ extends ModalDialog {
 	onSelectFile() {
 
 		this.input.trigger('click');
-		return;
+		return false;
 	};
 
 	onSelected() {
@@ -410,7 +410,7 @@ class UploadButton {
 
 		this.dialog = new UploadButtonDialog(this);
 
-		return;
+		return false;
 	};
 
 	destroyDialog() {
