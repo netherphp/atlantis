@@ -27,13 +27,16 @@ extends Common\Prototype {
 	GetAttrForHTML():
 	string {
 
-		$Output = (
-			($this->Attr)
-			->MapKeys(fn(mixed $V, string $K)=> "{$K}={$V}")
-			->Join(' ')
+		$Output = [];
+
+		$this->Attr->Each(
+			function(mixed $V, string $K) use(&$Output) {
+				array_push($Output, "{$K}=\"{$V}\"");
+				return;
+			}
 		);
 
-		return $Output;
+		return join(' ', $Output);
 	}
 
 	public function
