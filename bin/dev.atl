@@ -147,6 +147,7 @@ extends Console\Client {
 		$Dir = NULL;
 		$Git = NULL;
 		$Result = NULL;
+		$Output = NULL;
 
 		foreach($Found as $Dir) {
 			$Git = sprintf(
@@ -157,12 +158,17 @@ extends Console\Client {
 			$Result = $this->ExecuteCommandLine($Git, TRUE);
 
 			if(count($Result->Output)) {
+				$Output = join(PHP_EOL, $Result->Output);
+
+				if(str_contains($Output, 'Your branch is up to date'))
+				continue;
+
 				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
 
 				if($Verbose)
 				$this->PrintLn($this->FormatSecondary($Git));
 
-				echo PHP_EOL, join(PHP_EOL, $Result->Output);
+				echo PHP_EOL, $Output;
 				echo PHP_EOL, PHP_EOL;
 			}
 		}
