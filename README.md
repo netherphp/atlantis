@@ -111,6 +111,20 @@ $ nave gen --atlantis
 
 
 
+## **ENVIRONMENT CONFIGURATION**
+
+By default the framework will run inself an env called `dev` which will then load the configuration info from that directory. The environment can be changed using the lock file or environment variable. The order of selection is:
+
+1) Value of `$_ENV['ATLANTIS.ENV']`.
+2) Contents of `env.lock` file in the project root.
+3) Fallback to `dev`.
+
+The environments can also be classified with a prefix. For example an ENV name of `dev-apache` will report as a `dev` class environment.
+
+The `atlantis env` command will write to the `env.lock` file when using the `--set` option.
+
+
+
 ## **SSL NOTES**
 
 SSL info should be put inside the `conf/env/<env>/config.php` file. An AcmePHP YML file can then be generated:
