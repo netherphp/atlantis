@@ -163,6 +163,9 @@ extends Console\Client {
 				if(str_contains($Output, 'Your branch is up to date'))
 				continue;
 
+				if(str_contains($Output, 'HEAD detached from'))
+				continue;
+
 				$this->PrintLn($this->FormatPrimary("[{$Dir}]"));
 
 				if($Verbose)
