@@ -313,14 +313,26 @@ as html pages. //*/
 	HandleTrafficReporting(Common\Prototype\MethodInfo $MethodInfo):
 	void {
 
+		// @todo 2023-07-21
+		// this unit test const should be replaced with a database
+		// availability check instead.
+
 		if(defined('UNIT_TEST_GO_BRRRT'))
 		return;
+
+		// do not log traffic on routes that specifically flagged
+		// themselves as unactionable.
 
 		if($MethodInfo->HasAttribute(Atlantis\Meta\TrafficReportSkip::class))
 		return;
 
-		if($this->IsUserAdmin())
-		return;
+		// do not log admin traffic except on dev instances, that way the
+		// traffic dashboard has something to do.
+
+		if($this->IsUserAdmin()) {
+			if(!$this->App->IsDev())
+			return;
+		}
 
 		$Since = new Common\Date('-10 min');
 		$Hash = $this->Request->GetTrafficHash();
