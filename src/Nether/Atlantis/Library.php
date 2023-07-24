@@ -43,23 +43,24 @@ implements
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
 
 	const
-	ConfLibraries           = 'Nether.Atlantis.Libraries',
-	ConfLogFormat           = 'Nether.Atlantis.Log.Format',
-	ConfPassMinLen          = 'Nether.Atlantis.Passwords.MinLen',
-	ConfPassReqAlphaLower   = 'Nether.Atlantis.Passwords.RequireAlphaLower',
-	ConfPassReqAlphaUpper   = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
-	ConfPassReqNumeric      = 'Nether.Atlantis.Passwords.RequireNumeric',
-	ConfPassReqSpecial      = 'Nether.Atlantis.Passwords.RequireSpecial',
-	ConfUserAllowLogin      = 'Nether.Atlantis.Users.AllowLogin',
-	ConfUserAllowSignup     = 'Nether.Atlantis.Users.AllowSignup',
-	ConfUserAllowSignupGank = 'Nether.Atlantis.Users.AllowSignupGank',
-	ConfUserEmailActivate   = 'Nether.Atlantis.Users.EmailActivation',
-	ConfUserRequireAlias    = 'Nether.Atlantis.Users.RequireAlias',
-	ConfContactTo           = 'Nether.Atlantis.Contact.To',
-	ConfContactBCC          = 'Nether.Atlantis.Contact.BCC',
-	ConfContactSubject      = 'Nether.Atlantis.Contact.Subject',
-	ConfErrorDisplay        = 'Nether.Atlantis.Error.Display',
-	ConfErrorLogPath        = 'Nether.Atlantis.Error.LogPath';
+	ConfLibraries             = 'Nether.Atlantis.Libraries',
+	ConfLogFormat             = 'Nether.Atlantis.Log.Format',
+	ConfPassMinLen            = 'Nether.Atlantis.Passwords.MinLen',
+	ConfPassReqAlphaLower     = 'Nether.Atlantis.Passwords.RequireAlphaLower',
+	ConfPassReqAlphaUpper     = 'Nether.Atlantis.Passwords.RequireAlphaUpper',
+	ConfPassReqNumeric        = 'Nether.Atlantis.Passwords.RequireNumeric',
+	ConfPassReqSpecial        = 'Nether.Atlantis.Passwords.RequireSpecial',
+	ConfUserAllowLogin        = 'Nether.Atlantis.Users.AllowLogin',
+	ConfUserAllowSignup       = 'Nether.Atlantis.Users.AllowSignup',
+	ConfUserAllowSignupGank   = 'Nether.Atlantis.Users.AllowSignupGank',
+	ConfUserEmailActivate     = 'Nether.Atlantis.Users.EmailActivation',
+	ConfUserRequireAlias      = 'Nether.Atlantis.Users.RequireAlias',
+	ConfContactTo             = 'Nether.Atlantis.Contact.To',
+	ConfContactBCC            = 'Nether.Atlantis.Contact.BCC',
+	ConfContactSubject        = 'Nether.Atlantis.Contact.Subject',
+	ConfErrorDisplay          = 'Nether.Atlantis.Error.Display',
+	ConfErrorLogPath          = 'Nether.Atlantis.Error.LogPath',
+	ConfAccessHardIgnoreAgent = 'Nether.Atlantis.Access.HardIgnoreAgent';
 
 	const
 	ConfPageEnableDB          = 'Nether.Atlantis.Page.EnableDatabase',
@@ -113,6 +114,7 @@ implements
 			static::ConfPageEnableStatic      => TRUE,
 			static::ConfPageStaticStorageKey  => 'Default',
 			static::ConfPageStaticStoragePath => 'pages/static',
+			static::ConfAccessHardIgnoreAgent => 'Bytespider|Bytedance|MJ12bot|SemrushBot|PetalBot',
 
 			static::ConfContactTo             => NULL,
 			static::ConfContactBCC            => NULL,

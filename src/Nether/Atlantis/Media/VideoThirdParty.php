@@ -5,6 +5,7 @@ namespace Nether\Atlantis\Media;
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
+use Nether\Surface;
 
 use ArrayAccess;
 use Exception;
@@ -263,6 +264,9 @@ extends Atlantis\Prototype {
 		);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	GetPageURL():
 	string {
@@ -270,6 +274,26 @@ extends Atlantis\Prototype {
 		//return sprintf('/video/%d', $this->ID);
 
 		return $this->URL;
+	}
+
+	public function
+	GetPlayerArea():
+	string {
+
+		return 'media/video/players/youtube';
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetPlayerHTML(Surface\Engine $Surface):
+	string {
+
+		return $Surface->GetArea(
+			$this->GetPlayerArea(),
+			[ 'Video'=> $this ]
+		);
 	}
 
 }

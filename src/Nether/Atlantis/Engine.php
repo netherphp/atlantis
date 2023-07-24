@@ -149,6 +149,28 @@ application instance.
 	Run():
 	static {
 
+		$HardIgnoreUA = Library::Get(Library::ConfAccessHardIgnoreAgent);
+		$UserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
+		$Meh = NULL;
+
+		////////
+
+		if($HardIgnoreUA && $UserAgent) {
+			$Meh = preg_match(
+				sprintf('#(?:%s)#msi', $HardIgnoreUA),
+				$UserAgent
+			);
+
+			if($Meh) {
+				if($this->Router->Response->HTTP)
+				header('HTTP/1.1 404 Not Found');
+
+				return $this;
+			}
+		}
+
+		////////
+
 		$this->Router->Run(new Nether\Avenue\Struct\ExtraData([
 			'App'=> $this
 		]));

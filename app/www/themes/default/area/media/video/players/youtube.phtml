@@ -1,0 +1,28 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Media\VideoThirdParty $Video
+ */
+
+?>
+
+<iframe
+	class="w-100 h-100"
+	src="https://www.youtube.com/embed/<?php $Util->Print($Video->GetYouTubeID()) ?>"
+	title="YouTube video player"
+	frameborder="0"
+	allow="encrypted-media; picture-in-picture; web-share;"
+	allowfullscreen
+></iframe>

@@ -21,14 +21,22 @@ $AdminMenu = NULL;
 if($Route->IsUserAdmin())
 $AdminMenu = (
 	Atlantis\Struct\DropdownMenu::New()
-	->ItemNew('Edit Title', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'name' ])
+	->ItemNew('Edit Title', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'title' ])
 	->ItemNew('Edit Tags', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'tags' ])
 	->ItemNew('Edit Description', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'details' ])
+	->ItemNew('Edit Video Info', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'info' ])
 	->ItemNew('Disable Video', 'mdi-eye-off', Attr: [ 'data-video-cmd'=> 'disable' ], If: $Video->Enabled)
 	->ItemNew('Enable Video', 'mdi-eye', Attr: [ 'data-video-cmd'=> 'enable' ], If: !$Video->Enabled)
 );
 
 ?>
+
+<hr
+	id="VideoEntityInfo"
+	class="d-none"
+	data-id="<?php $Util->Print($Video->ID) ?>"
+	data-uuid="<?php $Util->Print($Video->UUID) ?>"
+/>
 
 <div class="row align-items-center mb-2">
 	<div class="col">
@@ -44,8 +52,24 @@ $AdminMenu = (
 	<?php endif; ?>
 </div>
 
-<div class="ratiobox widescreen bg-dark rounded">
-
+<div class="ratiobox widescreen bg-dark text-light rounded">
+	<div class="position-absolute position-v-center position-h-center">
+		<i class="mdi mdi-loading mdi-spin font-size-most-large"></i>
+	</div>
+	<div class="position-absolutely">
+		<?php echo $Video->GetPlayerHTML($Surface) ?>
+	</div>
 </div>
+
+<script type="module">
+import Video from '/share/atlantis/video-tp.js?v=<?php $Util->CacheBuster() ?>';
+
+jQuery(function() {
+
+	let vid = Video.FromElement({ bindify: true });
+
+	return;
+});
+</script>
 
 

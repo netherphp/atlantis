@@ -57,26 +57,26 @@ extends Atlantis\Prototype {
 
 	#[Database\Meta\TypeVarChar(Size: 255)]
 	#[Database\Meta\FieldIndex]
-	public string
+	public ?string
 	$FromURL;
 
 	#[Database\Meta\TypeChar(Size: 255)]
 	#[Database\Meta\FieldIndex]
-	public string
+	public ?string
 	$FromDomain;
 
 	#[Database\Meta\TypeChar(Size: 255)]
 	#[Database\Meta\FieldIndex]
-	public string
+	public ?string
 	$FromPath;
 
 	#[Database\Meta\TypeChar(Size: 255)]
 	#[Database\Meta\FieldIndex]
-	public string
+	public ?string
 	$FromQuery;
 
 	#[Database\Meta\TypeVarChar(Size: 255)]
-	public string
+	public ?string
 	$UserAgent;
 
 	////////
