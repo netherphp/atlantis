@@ -23,6 +23,10 @@ extends Atlantis\Prototype {
 	public int
 	$CoverImageID;
 
+	#[Database\Meta\TypeIntTiny(Unsigned: TRUE, Default: 1)]
+	public int
+	$Enabled;
+
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
@@ -256,6 +260,13 @@ extends Atlantis\Prototype {
 			'https://i.ytimg.com/vi/%s/maxresdefault.jpg',
 			$YouTubeID
 		);
+	}
+
+	public function
+	GetPageURL():
+	string {
+
+		return sprintf('/video/%d', $this->ID);
 	}
 
 }
