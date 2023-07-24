@@ -45,15 +45,39 @@ extends Atlantis\Prototype {
 	public string
 	$Domain;
 
-	#[Database\Meta\TypeChar(Size: 100)]
+	#[Database\Meta\TypeChar(Size: 255)]
 	#[Database\Meta\FieldIndex]
 	public string
 	$Path;
 
-	#[Database\Meta\TypeChar(Size: 100)]
+	#[Database\Meta\TypeChar(Size: 255)]
 	#[Database\Meta\FieldIndex]
 	public string
 	$Query;
+
+	#[Database\Meta\TypeVarChar(Size: 255)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$FromURL;
+
+	#[Database\Meta\TypeChar(Size: 255)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$FromDomain;
+
+	#[Database\Meta\TypeChar(Size: 255)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$FromPath;
+
+	#[Database\Meta\TypeChar(Size: 255)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$FromQuery;
+
+	#[Database\Meta\TypeVarChar(Size: 255)]
+	public string
+	$UserAgent;
 
 	////////
 

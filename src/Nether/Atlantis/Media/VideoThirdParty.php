@@ -74,6 +74,7 @@ extends Atlantis\Prototype {
 	public Common\Date
 	$DatePosted;
 
+	#[Database\Meta\TableJoin('CoverImageID')]
 	public Atlantis\Media\File
 	$CoverImage;
 
@@ -108,7 +109,7 @@ extends Atlantis\Prototype {
 	}
 
 	static public function
-	JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
+	_JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
 	void {
 
 		$Table = static::GetTableInfo();
@@ -121,7 +122,7 @@ extends Atlantis\Prototype {
 	}
 
 	static public function
-	JoinExtendFields(Database\Verse $SQL, ?string $TPre=NULL):
+	_JoinExtendFields(Database\Verse $SQL, ?string $TPre=NULL):
 	void {
 
 		$Table = static::GetTableInfo();
@@ -266,7 +267,9 @@ extends Atlantis\Prototype {
 	GetPageURL():
 	string {
 
-		return sprintf('/video/%d', $this->ID);
+		//return sprintf('/video/%d', $this->ID);
+
+		return $this->URL;
 	}
 
 }

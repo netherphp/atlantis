@@ -341,6 +341,32 @@ as html pages. //*/
 		$Domain = NULL;
 		$Path = NULL;
 		$Query = NULL;
+		$UserAgent = NULL;
+		$From = NULL;
+		$FromURL = NULL;
+		$FromDomain = NULL;
+		$FromPath = NULL;
+		$FromQuery = NULL;
+
+		if(isset($_SERVER['HTTP_USER_AGENT'])) {
+			$UserAgent = $_SERVER['HTTP_USER_AGENT'];
+		}
+
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			$FromURL = $_SERVER['HTTP_REFERER'];
+			$From = parse_url($FromURL);
+
+			if(is_array($From)) {
+				if(isset($From['host']))
+				$FromDomain = $From['host'];
+
+				if(isset($From['path']))
+				$FromPath = $From['path'];
+
+				if(isset($From['query']))
+				$FromQuery = $From['query'];
+			}
+		}
 
 		////////
 
@@ -366,14 +392,19 @@ as html pages. //*/
 
 		if($Old->Count() === 0)
 		$this->Hit = Struct\TrafficRow::Insert([
-			'Hash'    => $Hash->Get(),
-			'Visitor' => $Hash->GetVisitorHash(),
-			'IP'      => $Hash->IP,
-			'URL'     => $Hash->URL,
-			'UserID'  => $UserID,
-			'Domain'  => $Domain,
-			'Path'    => $Path,
-			'Query'   => $Query
+			'Hash'       => $Hash->Get(),
+			'Visitor'    => $Hash->GetVisitorHash(),
+			'IP'         => $Hash->IP,
+			'URL'        => $Hash->URL,
+			'UserID'     => $UserID,
+			'Domain'     => $Domain,
+			'Path'       => $Path,
+			'Query'      => $Query,
+			'UserAgent'  => $UserAgent,
+			'FromURL'    => $FromURL,
+			'FromDomain' => $FromDomain,
+			'FromPath'   => $FromPath,
+			'FromQuery'  => $FromQuery
 		]);
 
 		return;

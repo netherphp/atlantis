@@ -21,32 +21,28 @@ $AdminMenu = NULL;
 if($Route->IsUserAdmin())
 $AdminMenu = (
 	Atlantis\Struct\DropdownMenu::New()
-	->ItemNew('Edit Title', 'mdi-pencil', Attr: [ 'data-abuser-cmd'=> 'name' ])
-	->ItemNew('Edit Tags', 'mdi-pencil', Attr: [ 'data-abuser-cmd'=> 'tags' ])
-	->ItemNew('Edit Description', 'mdi-pencil', Attr: [ 'data-abuser-cmd'=> 'details' ])
-	->ItemNew('Disable Video', 'mdi-eye-off', Attr: [ 'data-abuser-cmd'=> 'disable' ], If: $Video->Enabled)
-	->ItemNew('Enable Video', 'mdi-eye', Attr: [ 'data-abuser-cmd'=> 'enable' ], If: !$Video->Enabled)
+	->ItemNew('Edit Title', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'name' ])
+	->ItemNew('Edit Tags', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'tags' ])
+	->ItemNew('Edit Description', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'details' ])
+	->ItemNew('Disable Video', 'mdi-eye-off', Attr: [ 'data-video-cmd'=> 'disable' ], If: $Video->Enabled)
+	->ItemNew('Enable Video', 'mdi-eye', Attr: [ 'data-video-cmd'=> 'enable' ], If: !$Video->Enabled)
 );
 
 ?>
 
-<div class="row align-items-center">
-
+<div class="row align-items-center mb-2">
 	<div class="col">
-		<h2 class="fw-bold mb-0">
+		<h2 class="fw-bold lh-1 mb-0">
 			Video:
 			<?php $Util->Print($Video->Title) ?>
 		</h2>
 	</div>
-
 	<?php if($Route->IsUserAdmin()): ?>
 	<div class="col-auto">
 		<?php $Surface->Area('widgets/dropdown', [ 'Menu'=> $AdminMenu ]) ?>
 	</div>
 	<?php endif; ?>
-
 </div>
-<hr class="mt-0 mb-4" />
 
 <div class="ratiobox widescreen bg-dark rounded">
 
