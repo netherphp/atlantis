@@ -10,7 +10,7 @@ use Nether\Surface;
 use ArrayAccess;
 use Exception;
 
-#[Database\Meta\TableClass('VideoThirdParty')]
+#[Database\Meta\TableClass('VideoThirdParty', 'VTP')]
 class VideoThirdParty
 extends Atlantis\Prototype {
 
@@ -25,6 +25,8 @@ extends Atlantis\Prototype {
 	$CoverImageID;
 
 	#[Database\Meta\TypeIntTiny(Unsigned: TRUE, Default: 1)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
 	public int
 	$Enabled;
 
@@ -109,36 +111,12 @@ extends Atlantis\Prototype {
 		return $Output;
 	}
 
-	static public function
-	_JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
-	void {
-
-		$Table = static::GetTableInfo();
-		$TPre = $Table->GetPrefixedAlias($TPre);
-		$JAlias = $Table->GetPrefixedAlias($JAlias);
-
-		Atlantis\Media\File::JoinMainTables($SQL, $JAlias, 'CoverImageID', $TPre);
-
-		return;
-	}
-
-	static public function
-	_JoinExtendFields(Database\Verse $SQL, ?string $TPre=NULL):
-	void {
-
-		$Table = static::GetTableInfo();
-		$TPre = $Table->GetPrefixedAlias($TPre);
-
-		Atlantis\Media\File::JoinMainFields($SQL, $TPre);
-
-		return;
-	}
-
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
 		$Input['ParentUUID'] ??= NULL;
+		$Input['Enabled'] ??= 1;
 
 		return;
 	}
@@ -149,6 +127,13 @@ extends Atlantis\Prototype {
 
 		if($Input['ParentUUID'] !== NULL)
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
+
+		if($Input['Enabled'] !== NULL) {
+			if(is_bool($Input['Enabled']))
+			$Input['Enabled'] = (int)$Input['Enabled'];
+
+			$SQL->Where('Main.Enabled=:Enabled');
+		}
 
 		return;
 	}
@@ -268,12 +253,13 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	GetPageURL():
+	GetPageURL(bool $Truth=FALSE):
 	string {
 
-		//return sprintf('/video/%d', $this->ID);
-
+		if(!$Truth)
 		return $this->URL;
+
+		return sprintf('/video/%d', $this->ID);
 	}
 
 	public function

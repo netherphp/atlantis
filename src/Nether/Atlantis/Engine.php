@@ -466,6 +466,7 @@ application instance.
 		// logs folder. it can also be forced to a specific path if given
 		// one.
 
+		/*
 		ini_set('error_log', match(TRUE) {
 			$ErrLogPath === NULL
 			=> $this->FromProjectRoot('logs/error.log'),
@@ -476,6 +477,7 @@ application instance.
 			default
 			=> NULL
 		});
+		*/
 
 		////////
 

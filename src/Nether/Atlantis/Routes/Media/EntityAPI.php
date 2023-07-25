@@ -237,7 +237,7 @@ extends Atlantis\Routes\UploadAPI {
 
 		////////
 
-		var_dump($Add);
+		//var_dump($EInfo->LinkClass);
 
 		$Add->Each(
 			fn(int $TagID)

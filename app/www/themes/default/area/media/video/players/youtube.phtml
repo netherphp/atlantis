@@ -19,10 +19,11 @@ use Nether\User;
 ?>
 
 <iframe
-	class="w-100 h-100"
+	class="w-100 h-100 border-0"
 	src="https://www.youtube.com/embed/<?php $Util->Print($Video->GetYouTubeID()) ?>"
-	title="YouTube video player"
-	frameborder="0"
+	title="<?php $Util->Print($Video->Title) ?>"
+
 	allow="encrypted-media; picture-in-picture; web-share;"
 	allowfullscreen
+	seamless
 ></iframe>

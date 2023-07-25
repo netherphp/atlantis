@@ -2,6 +2,7 @@
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\Surface;
 use Nether\User;
 
@@ -21,10 +22,9 @@ $AdminMenu = NULL;
 if($Route->IsUserAdmin())
 $AdminMenu = (
 	Atlantis\Struct\DropdownMenu::New()
-	->ItemNew('Edit Title', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'title' ])
-	->ItemNew('Edit Tags', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'tags' ])
-	->ItemNew('Edit Description', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'details' ])
 	->ItemNew('Edit Video Info', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'info' ])
+	->ItemNew('Edit Description', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'details' ])
+	->ItemNew('Edit Tags', 'mdi-pencil', Attr: [ 'data-video-cmd'=> 'tags' ])
 	->ItemNew('Disable Video', 'mdi-eye-off', Attr: [ 'data-video-cmd'=> 'disable' ], If: $Video->Enabled)
 	->ItemNew('Enable Video', 'mdi-eye', Attr: [ 'data-video-cmd'=> 'enable' ], If: !$Video->Enabled)
 );
@@ -52,13 +52,32 @@ $AdminMenu = (
 	<?php endif; ?>
 </div>
 
-<div class="ratiobox widescreen bg-dark text-light rounded">
+<div class="mb-2">
+	<span class="fw-bold text-uppercase">Date Posted:</span>
+	<?php $Util->Print($Video->DatePosted->Get( Common\Values::DateFormatFancyDate )) ?>
+</div>
+
+<div class="mb-2">
+	<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Tags ]) ?>
+</div>
+
+<div class="ratiobox widescreen bg-dark text-light rounded mb-6">
 	<div class="position-absolute position-v-center position-h-center">
 		<i class="mdi mdi-loading mdi-spin font-size-most-large"></i>
 	</div>
 	<div class="position-absolutely">
 		<?php echo $Video->GetPlayerHTML($Surface) ?>
 	</div>
+</div>
+
+<div class="mb-4">
+	<h2 class="text-uppercase">Description</h2>
+	<hr class="mt-2 mb-4" />
+
+	<div id="VideoDetails"><?php if($Video->Details): ?><?php echo $Video->Details ?><?php endif; ?></div>
+	<?php if(!$Video->Details): ?>
+	<div class="fst-italic">No additional information has been addded.</div>
+	<?php endif; ?>
 </div>
 
 <script type="module">

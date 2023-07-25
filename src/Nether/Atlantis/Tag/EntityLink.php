@@ -376,9 +376,11 @@ required data in.
 		if(!$Input['EntityUUID'])
 		throw new Exception('no EntityUUID specified');
 
+		$Result = parent::Insert($Input);
+
 		////////
 
-		return parent::Insert($Input);
+		return $Result;
 	}
 
 	////////////////////////////////////////////////////////////////

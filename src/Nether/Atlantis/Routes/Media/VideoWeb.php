@@ -16,8 +16,10 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		$this->Surface
+		->Set('Page.Title', sprintf('Video: %s', $Video->Title))
 		->Wrap('media/video/view', [
-			'Video' => $Video
+			'Video' => $Video,
+			'Tags'  => $Video->GetTags()
 		]);
 
 		return;
@@ -35,7 +37,6 @@ extends Atlantis\ProtectedWeb {
 		////////
 
 		$Data['Video'] = $Video;
-
 		return ($this->Response)::CodeOK;
 	}
 

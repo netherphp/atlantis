@@ -114,7 +114,7 @@ implements
 			static::ConfPageEnableStatic      => TRUE,
 			static::ConfPageStaticStorageKey  => 'Default',
 			static::ConfPageStaticStoragePath => 'pages/static',
-			static::ConfAccessHardIgnoreAgent => 'Bytespider|Bytedance|MJ12bot|SemrushBot|PetalBot',
+			static::ConfAccessHardIgnoreAgent => 'AhrefsBot|bingbot|Bytespider|Bytedance|GoogleBot|MJ12bot|SemrushBot|PetalBot',
 
 			static::ConfContactTo             => NULL,
 			static::ConfContactBCC            => NULL,
@@ -163,6 +163,8 @@ implements
 
 		Atlantis\Media\FileTagLink::Register();
 		Atlantis\Tag\SubtagLink::Register();
+
+		Atlantis\Media\VideoThirdPartyTagLink::Register();
 
 		////////
 

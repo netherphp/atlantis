@@ -31,6 +31,7 @@ use Nether\User;
 				<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"></a>
 				<div class="position-absolute position-bottom position-right p-1">
 					<?php if($Route->IsUserAdmin()): ?>
+					<a class="btn btn-light" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><i class="mdi mdi-tag mr-0"></i></a>
 					<button class="btn btn-light CmdVideoEdit" data-video-id="<?php $Util->Print($Video->ID) ?>"><i class="mdi mdi-pencil mr-0"></i></button>
 					<button class="btn btn-danger CmdVideoDelete" data-video-id="<?php $Util->Print($Video->ID) ?>"><i class="mdi mdi-trash-can mr-0"></i></button>
 					<?php endif; ?>
