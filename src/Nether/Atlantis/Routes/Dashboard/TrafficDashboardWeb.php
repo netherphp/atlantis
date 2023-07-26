@@ -90,16 +90,21 @@ extends Atlantis\ProtectedWeb {
 		////////
 
 		$Rows = Atlantis\Struct\TrafficRow::Find($Filters);
+		$Sources = Atlantis\Struct\TrafficRow::Find(array_merge($Filters, [ 'Group'=> 'from-domain', 'FromDomain'=> TRUE, 'Sort'=> 'group-count-za' ]));
 		$Pages = $Rows->Count();
 		$Hits = Atlantis\Struct\TrafficRow::FindCount(array_merge($Filters, [ 'Group'=> NULL, 'Sort'=> NULL ]));
 		$Visitors = Atlantis\Struct\TrafficRow::FindCount(array_merge($Filters, [ 'Group'=> 'visitor' ]));
 
+		$Sources->RemapKeys(function(mixed $K, mixed $V) {
+			return [ $V->FromDomain => $V->GetGroupCount() ];
+		});
 
 		($this->App->Surface)
 		->Set('Page.Title', "Traffic Report: {$Title} - Dashboard")
 		->Wrap('atlantis/dashboard/traffic/view', [
 			'Title'    => $Title,
 			'Rows'     => $Rows,
+			'Sources'  => $Sources,
 			'Hits'     => $Hits,
 			'Visitors' => $Visitors,
 			'Pages'    => $Pages,

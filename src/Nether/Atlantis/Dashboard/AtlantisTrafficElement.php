@@ -52,7 +52,8 @@ extends Atlantis\Dashboard\Element {
 			'Since'      => $Since->GetUnixtime(),
 			'FromDomain' => TRUE,
 			'Group'      => 'from-domain',
-			'Sort'       => 'group-count-za'
+			'Sort'       => 'group-count-za',
+			'Limit'      => 6
 		]);
 
 		$this->Sources->RemapKeys(function(mixed $K, mixed $V) {

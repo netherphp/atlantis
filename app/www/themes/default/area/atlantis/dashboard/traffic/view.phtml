@@ -16,6 +16,7 @@ use Nether\User;
  *
  * @var Atlantis\PublicWeb $Route
  * @var Database\Struct\PrototypeFindResult $Rows
+ * @var Database\Struct\PrototypeFindResult $Sources
  * @var int $Hits
  * @var int $Visitors
  * @var int $Pages
@@ -34,6 +35,16 @@ $GetDateFor = function(string $When) {
 	$Date = Common\Date::FromDateString($When);
 
 	return $Date->Get(Common\Values::DateFormatYMD);
+};
+
+$GetSourceName = function(string $Name) {
+	return match($Name) {
+		't.co'              => 'Twitter',
+		'facebook.com'      => 'Facebook',
+		'instagram.com'     => 'Instagram',
+		'appleid.apple.com' => 'Apple Log In',
+		default             => $Name
+	};
 };
 
 ?>
@@ -135,6 +146,27 @@ $GetDateFor = function(string $When) {
 			</td>
 		</tr>
 		<?php endforeach; ?>
+	</tbody>
+</table>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>
+				Source
+			</th>
+			<th class="th-shrink">
+				Count
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php foreach($Sources as $Domain => $Count): ?>
+		<tr>
+			<td><?php $Util->Print($GetSourceName($Domain)) ?></td>
+			<td><?php $Util->Print($Count) ?></td>
+		</tr>
+	<?php endforeach; unset($Domain, $Count); ?>
 	</tbody>
 </table>
 
