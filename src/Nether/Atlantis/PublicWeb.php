@@ -386,6 +386,11 @@ as html pages. //*/
 		if(isset($Parts['query']))
 		$Query = $Parts['query'];
 
+		// do not log self referential things like forms.
+
+		if($Domain === $this->Request->Domain)
+		return;
+
 		////////
 
 		$Old = Struct\TrafficRow::Find([

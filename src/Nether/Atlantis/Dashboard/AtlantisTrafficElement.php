@@ -18,6 +18,9 @@ extends Atlantis\Dashboard\Element {
 	public int
 	$Visitors;
 
+	public Database\Struct\PrototypeFindResult
+	$Sources;
+
 	public function
 	__Construct(Atlantis\Engine $App) {
 
@@ -44,6 +47,17 @@ extends Atlantis\Dashboard\Element {
 			'Since' => $Since->GetUnixtime(),
 			'Group' => 'visitor'
 		]);
+
+		$this->Sources = Atlantis\Struct\TrafficRow::Find([
+			'Since'      => $Since->GetUnixtime(),
+			'FromDomain' => TRUE,
+			'Group'      => 'from-domain',
+			'Sort'       => 'group-count-za'
+		]);
+
+		$this->Sources->RemapKeys(function(mixed $K, mixed $V) {
+			return [ $V->FromDomain => $V->GetGroupCount() ];
+		});
 
 		return;
 	}

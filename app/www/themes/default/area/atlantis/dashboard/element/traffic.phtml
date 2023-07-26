@@ -113,6 +113,27 @@ $GetDateFor = function(string $When) {
 		</tbody>
 	</table>
 
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>
+					Source
+				</th>
+				<th class="th-shrink">
+					Count
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php foreach($Element->Sources as $Domain => $Count): ?>
+			<tr>
+				<td><?php $Util->Print($Domain) ?></td>
+				<td><?php $Util->Print($Count) ?></td>
+			</tr>
+		<?php endforeach; unset($Domain, $Count); ?>
+		</tbody>
+	</table>
+
 </div>
 
 <script type="module">

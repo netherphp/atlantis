@@ -105,6 +105,8 @@ extends Atlantis\Prototype {
 		$Input['Since'] ??= NULL;
 		$Input['PathStart'] ??= NULL;
 
+		$Input['FromDomain'] ??= NULL;
+
 		$Input['Group'] ??= NULL;
 
 		return;
@@ -128,6 +130,11 @@ extends Atlantis\Prototype {
 			$SQL->Where('Main.Path LIKE :PathStartLike');
 		}
 
+		if($Input['FromDomain'] !== NULL) {
+			if($Input['FromDomain'] === TRUE)
+			$SQL->Where('Main.FromDomain IS NOT NULL');
+		}
+
 		if($Input['Group'] !== NULL) {
 			if($Input['Group'] === 'path')
 			$SQL->Group('Main.Path');
@@ -135,10 +142,11 @@ extends Atlantis\Prototype {
 			if($Input['Group'] === 'visitor')
 			$SQL->Group('Main.Visitor');
 
+			if($Input['Group'] === 'from-domain')
+			$SQL->Group('Main.FromDomain');
+
 			$SQL->Fields([ 'GroupCount'=> 'COUNT(*) AS GroupCount' ]);
 		}
-
-
 
 		return;
 	}
