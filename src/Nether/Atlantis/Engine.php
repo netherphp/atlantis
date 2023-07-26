@@ -149,16 +149,16 @@ application instance.
 	Run():
 	static {
 
-		$HardIgnoreUA = Library::Get(Library::ConfAccessIgnoreAgentHard);
-		$UserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
+		$IgnoreUA = Library::Get(Library::ConfAccessIgnoreAgentHard);
+		$InputUA = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
 		$Meh = NULL;
 
 		////////
 
-		if($HardIgnoreUA && $UserAgent) {
+		if($IgnoreUA && $InputUA) {
 			$Meh = preg_match(
-				sprintf('#(?:%s)#msi', $HardIgnoreUA),
-				$UserAgent
+				sprintf('#\b(?:%s)\b#msi', $IgnoreUA),
+				$InputUA
 			);
 
 			if($Meh) {
