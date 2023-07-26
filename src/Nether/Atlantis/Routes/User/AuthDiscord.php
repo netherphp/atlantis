@@ -23,6 +23,7 @@ extends OAuth2API {
 	////////////////////////////////////////////////////////////////
 
 	#[RouteHandler('/auth/discord')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	HandleAuthFlow():
 	void {

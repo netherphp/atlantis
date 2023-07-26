@@ -35,7 +35,8 @@
 		"netherphp/email": "dev-master",
 		"netherphp/storage": "dev-master",
 		"monolog/monolog": "^3.2",
-		"google/recaptcha": "^1.2.4"
+		"google/recaptcha": "^1.2.4",
+		"gravitypdf/querypath": "^3.2"
 	},
 	"require-dev": {
 		"netherphp/standards": "^0.2.8",

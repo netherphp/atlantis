@@ -18,6 +18,7 @@ extends OAuth2API {
 
 	#[RouteHandler('/auth/apple')]
 	#[RouteHandler('/auth/apple', Verb: 'POST')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	HandleApple():
 	void {

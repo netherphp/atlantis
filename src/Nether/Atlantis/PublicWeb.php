@@ -140,6 +140,10 @@ as html pages. //*/
 		////////
 
 		$this->HandleUserOnboarding($Info);
+
+		// @todo 2023-07-25 handle not calling traffic reporting if the
+		// user agent matches the soft ignore.
+
 		$this->HandleTrafficReporting($Info);
 
 		return;

@@ -60,7 +60,9 @@ implements
 	ConfContactSubject        = 'Nether.Atlantis.Contact.Subject',
 	ConfErrorDisplay          = 'Nether.Atlantis.Error.Display',
 	ConfErrorLogPath          = 'Nether.Atlantis.Error.LogPath',
-	ConfAccessHardIgnoreAgent = 'Nether.Atlantis.Access.HardIgnoreAgent';
+	ConfAccessIgnoreAgentHard = 'Nether.Atlantis.Access.IgnoreAgentHard',
+	ConfAccessIgnoreAgentSoft = 'Nether.Atlantis.Access.IgnoreAgentSoft',
+	ConfUserAgent             = 'Nether.Atlantis.UserAgent';
 
 	const
 	ConfPageEnableDB          = 'Nether.Atlantis.Page.EnableDatabase',
@@ -114,7 +116,9 @@ implements
 			static::ConfPageEnableStatic      => TRUE,
 			static::ConfPageStaticStorageKey  => 'Default',
 			static::ConfPageStaticStoragePath => 'pages/static',
-			static::ConfAccessHardIgnoreAgent => 'AhrefsBot|bingbot|Bytespider|Bytedance|GoogleBot|MJ12bot|SemrushBot|PetalBot',
+			static::ConfAccessIgnoreAgentHard => 'AhrefsBot|bingbot|BLEXBot|Bytespider|Bytedance|GoogleBot|MJ12bot|SemrushBot|PetalBot|opensiteexplorer\.org/dotbot',
+			static::ConfAccessIgnoreAgentSoft => 'facebookexternalhit|Twitterbot',
+			static::ConfUserAgent             => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
 
 			static::ConfContactTo             => NULL,
 			static::ConfContactBCC            => NULL,

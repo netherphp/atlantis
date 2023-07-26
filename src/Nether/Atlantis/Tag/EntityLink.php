@@ -24,6 +24,10 @@ must be extended and have its ready and find methods overridden to join in the
 required data in.
 //*/
 
+	const
+	SortNewest = 'newest',
+	SortOldest = 'oldest';
+
 	static private array
 	$TypeList = [];
 
@@ -75,18 +79,18 @@ required data in.
 	OnReadyEntity(ConstructArgs $Args):
 	void {
 
-		/** @var PropertyInfo $Prop */
+		try {
+			$Prop = static::EntityProperty();
+			$Table = static::EntityTableInfo($Prop->Type);
+		}
 
-		$Prop = current(static::GetPropertiesWithAttribute(
-			Atlantis\Meta\TagEntityProperty::class
-		));
+		catch(Atlantis\Error\TagEntityPropertyNotFound $E) {
+			// this allows for using the parent type as a generic to
+			// to just fetch the relationship without any extensions.
+			return;
+		}
 
-		if(!$Prop)
-		return;
-
-		/** @var TableClassInfo $Table */
-
-		$Table = ($Prop->Type)::GetTableInfo();
+		////////
 
 		if($Args->InputHas("{$Table->Alias}_{$Table->PrimaryKey}"))
 		$this->{$Prop->Name} = ($Prop->Type)::FromPrefixedDataset(
@@ -99,17 +103,8 @@ required data in.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	static public function
-	RegisterType():
-	void {
-	/*//
-	@deprecated 2023-06-26
-	//*/
-
-		static::Register();
-		return;
-	}
-
+	#[Common\Meta\Date('2023-06-27')]
+	#[Common\Meta\Info('Register this class with the framework to be known.')]
 	static public function
 	Register():
 	void {
@@ -137,6 +132,50 @@ required data in.
 
 		return;
 	}
+
+	#[Common\Meta\Date('2023-07-25')]
+	#[Common\Meta\Info('Fetch the information about the property that has the TagEntityProperty attribute.')]
+	static public function
+	EntityProperty():
+	PropertyInfo {
+
+		$Prop = current(static::GetPropertiesWithAttribute(
+			Atlantis\Meta\TagEntityProperty::class
+		));
+
+		if(!$Prop)
+		throw new Atlantis\Error\TagEntityPropertyNotFound(static::class);
+
+		return $Prop;
+	}
+
+	#[Common\Meta\Date('2023-07-25')]
+	#[Common\Meta\Info('Fetch the table info for the specified class.')]
+	static public function
+	EntityTableInfo(string $Class):
+	TableClassInfo {
+
+		$Table = ($Class)::GetTableInfo();
+
+		if(!$Table)
+		throw new Database\Error\TableClassNotFound($Class);
+
+		return $Table;
+	}
+
+	#[Common\Meta\Date('2023-07-25')]
+	#[Common\Meta\Info('Fetch the table info for the Tag class.')]
+	public function
+	TagTableInfo():
+	TableClassInfo {
+
+		$Table = Atlantis\Tag\Entity::GetTableInfo();
+
+		return $Table;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static public function
 	GetTypeByLinkClass(string $Class):
@@ -212,40 +251,6 @@ required data in.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	static public function
-	_JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
-	void {
-
-		parent::JoinExtendTables($SQL, $JAlias, $TPre);
-
-		$Table = static::GetTableInfo();
-		$TPre = $Table->GetPrefixedAlias($TPre);
-		$JAlias = $Table->GetPrefixedAlias($JAlias);
-
-		Entity::JoinMainTables($SQL, $JAlias, 'TagID', $TPre);
-		//Entity::JoinExtendTables($SQL, $JAlias, $TPre);
-
-		return;
-	}
-
-	static public function
-	_JoinExtendFields(Database\Verse $SQL, ?string $TPre = NULL):
-	void {
-
-		parent::JoinExtendFields($SQL, $TPre);
-
-		$Table = static::GetTableInfo();
-		$TPre = $Table->GetPrefixedAlias($TPre);
-
-		Entity::JoinMainFields($SQL, $TPre);
-		//Entity::JoinExtendFields($SQL, $TPre);
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):
 	void {
@@ -260,6 +265,10 @@ required data in.
 		$Input['TagID'] ??= NULL;
 		$Input['EntityUUID'] ??= NULL;
 		$Input['Sort'] ??= 'tag-name-az';
+
+		$Input['Resolvers'] ??= [
+			fn($Row)=> static::GetTypeLinkClass($Row->Type)
+		];
 
 		return;
 	}
@@ -381,6 +390,16 @@ required data in.
 		////////
 
 		return $Result;
+	}
+
+	static public function
+	InsertByPair(int $TagID, string $EntityUUID):
+	?static {
+
+		return static::Insert([
+			'TagID'      => $TagID,
+			'EntityUUID' => $EntityUUID
+		]);
 	}
 
 	////////////////////////////////////////////////////////////////

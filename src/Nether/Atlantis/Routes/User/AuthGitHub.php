@@ -2,6 +2,7 @@
 
 namespace Nether\Atlantis\Routes\User;
 
+use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
 use Nether\User;
@@ -24,6 +25,7 @@ extends OAuth2API {
 	////////////////////////////////////////////////////////////////
 
 	#[RouteHandler('/auth/github')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	HandleGitHub():
 	void {

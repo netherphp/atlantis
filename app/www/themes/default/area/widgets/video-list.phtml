@@ -41,6 +41,10 @@ use Nether\User;
 		<div class="col-12 col-md mb-4">
 			<h3><a href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"><?php $Util->Print($Video->Title) ?></a></h3>
 			<div>
+				<b>Date Shared:</b>
+				<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+			</div>
+			<div>
 				<b>Date Posted:</b>
 				<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
 			</div>

@@ -2,8 +2,11 @@
 
 namespace Nether\Atlantis\Routes\Media;
 
+use GuzzleHttp;
 use Nether\Atlantis;
 use Nether\Common;
+
+use Exception;
 
 class VideoAPI
 extends Atlantis\ProtectedAPI {
@@ -39,27 +42,56 @@ extends Atlantis\ProtectedAPI {
 		->ParentUUID(Common\Filters\Text::UUID(...))
 		->URL(Common\Filters\Text::Trimmed(...))
 		->Title(Common\Filters\Text::TrimmedNullable(...))
-		->DatePosted(Common\Filters\Text::TrimmedNullable(...));
+		->DatePosted(Common\Filters\Text::TrimmedNullable(...))
+		->TagID(
+			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Numbers::IntType(...)
+		);
+
+		$Title = NULL;
+		$DatePosted = NULL;
+		$Vid = NULL;
+		$TagID = NULL;
+
+		////////
 
 		if(!$this->Data->URL)
 		$this->Quit(1, 'no URL specified');
 
+		$RemoteInfo = $this->TryToGetInfo($this->Data->URL);
+		var_dump($RemoteInfo);
+
 		////////
 
-		$DatePosted = match(TRUE) {
-			$this->Data->DatePosted !== NULL
-			=> Common\Date::FromDateSTring($this->Data->DatePosted),
+		$Title = $this->Data->Title;
 
-			default
-			=> new Common\Date
-		};
+		if(!$Title && isset($RemoteInfo['Title']))
+		$Title = $RemoteInfo['Title'];
+
+		////////
+
+		$DatePosted = $this->Data->DatePosted;
+
+		if(!$DatePosted && isset($RemoteInfo['Date']))
+		$DatePosted = $RemoteInfo['Date'];
 
 		$Vid = Atlantis\Media\VideoThirdParty::Insert([
-			'ParentUUID' => $this->Data->ParentUUID,
 			'URL'        => $this->Data->URL,
-			'Title'      => $this->Data->Title,
-			'TimePosted' => $DatePosted->GetUnixtime()
+			'Title'      => $Title,
+			'TimePosted' => (Common\Date::FromDateString($DatePosted))->GetUnixtime()
 		]);
+
+		////////
+
+		if(is_iterable($this->Data->TagID))
+		foreach($this->Data->TagID as $TagID) {
+			Atlantis\Media\VideoThirdPartyTagLink::InsertByPair(
+				$TagID,
+				$Vid->UUID
+			);
+		}
+
+		////////
 
 		$this->SetPayload($Vid->DescribeForPublicAPI());
 		return;
@@ -106,6 +138,61 @@ extends Atlantis\ProtectedAPI {
 		$Video->Drop();
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	TryToGetInfo(string $URL):
+	?array {
+
+		$Output = NULL;
+		$Client = NULL;
+		$Result = NULL;
+
+		////////
+
+		$Client = new GuzzleHttp\Client([
+			'verify'  => FALSE,
+			'headers' => [ 'user-agent' => Atlantis\Library::Get(Atlantis\Library::ConfUserAgent) ],
+			'timeout' => 4
+		]);
+
+		// squelch failures to fetch.
+
+		try { $Result = $Client->Request('GET', $URL); }
+		catch(Exception $Err) { return NULL; }
+
+		// squelch different errors to fetch.
+
+		if(!$Result || $Result->GetStatusCode() !== 200)
+		return NULL;
+
+		// squelch failures to parse.
+
+		$HTML = $Result->GetBody();
+		$HTML = $HTML->GetContents();
+
+		if(!$HTML)
+		return NULL;
+
+		////////
+
+		$Doc = html5qp($HTML);
+
+		$El = $Doc->Find('meta[property="og:title"]');
+		$Title = html_entity_decode($El->Attr('content') ?: '');
+
+		$El = $Doc->Find('meta[itemprop="datePublished"]');
+		$Date = html_entity_decode($El->Attr('content') ?: '');
+
+		////////
+
+		return [
+			'Title' => $Title,
+			'Date'  => $Date
+		];
 	}
 
 }

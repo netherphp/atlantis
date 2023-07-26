@@ -20,6 +20,7 @@ extends OAuth2API {
 	////////////////////////////////////////////////////////////////
 
 	#[RouteHandler('/auth/google')]
+	#[Atlantis\Meta\UserActivationFlow]
 	public function
 	HandleGoogle():
 	void {

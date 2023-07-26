@@ -124,6 +124,9 @@ extends Database\Prototype {
 	FetchTagLinks():
 	Database\Struct\PrototypeFindResult {
 
+		// something needs to be done here so that it can be called via a
+		// typed class rather than the base class.
+
 		$Result = Tag\EntityLink::Find([
 			'EntityUUID' => $this->UUID,
 			'Limit'      => 0
@@ -152,10 +155,43 @@ extends Database\Prototype {
 
 		$Links = ($this
 			->GetTagLinks()
-			->Map(fn(Tag\EntityLink $Link)=> $Link->Tag)
+			->Map(fn($Link)=> $Link->Tag)
 		);
 
 		return $Links;
+	}
+
+	#[Common\Meta\Date('2023-07-25')]
+	#[Common\Meta\Info('Get a list of common attributes used with external systems.')]
+	public function
+	GetDataAttr(?iterable $More=NULL):
+	Common\Datastore {
+
+		$Output = new Common\Datastore([
+			'id'   => $this->ID,
+			'uuid' => $this->UUID
+		]);
+
+		if(is_iterable($More))
+		$Output->BlendRight($More);
+
+		return $Output;
+	}
+
+	#[Common\Meta\Date('2023-07-25')]
+	#[Common\Meta\Info('Get a list of common attributes used with external formatted as html data attributes.')]
+	public function
+	GetDataAttrForHTML(?iterable $More=NULL):
+	string {
+
+		$Output = $this->GetDataAttr($More);
+
+		$Output->RemapKeys(
+			fn(string $K, string $V)
+			=> [ $K=> sprintf('data-%s="%s"', $K, htmlentities($V)) ]
+		);
+
+		return $Output->Join(' ');
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -158,6 +158,60 @@ class Video {
 	////////////////
 	////////////////
 
+	static WhenDocumentReady() {
+
+		jQuery('[data-videotp-cmd=new]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+			let eTagID = that.attr('data-tag-id') ?? null;
+
+			Video.WhenOnNew(eID, eUUID, eTagID);
+
+			return;
+		});
+
+		return;
+	};
+
+	static WhenOnNew(eID, eUUID, eTagID) {
+
+		let v = new Video(eID, eUUID);
+		let endpoint = v.endpoint;
+
+		////////
+
+		new DialogUtil.Window({
+			show: true,
+			title: 'Add Video By URL',
+			labelAccept: 'Add',
+			fields: [
+				new DialogUtil.Field('hidden', 'TagID', null, eTagID),
+				new DialogUtil.Field('text', 'URL'),
+				new DialogUtil.Field('text', 'Title'),
+				new DialogUtil.Field('date', 'DatePosted', 'Date')
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('POST', endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		return;
+	};
+
+	////////////////
+	////////////////
+
 	static FromElement({ el='#VideoEntityInfo', bindify=false } = {}) {
 
 		let that = jQuery(el);
