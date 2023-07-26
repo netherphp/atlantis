@@ -164,7 +164,7 @@ $GetSourceName = function(string $Name) {
 	<?php foreach($Sources as $Domain => $Count): ?>
 		<tr>
 			<td><?php $Util->Print($GetSourceName($Domain)) ?></td>
-			<td><?php $Util->Print($Count) ?></td>
+			<td class="text-center"><?php $Util->Print($Count) ?></td>
 		</tr>
 	<?php endforeach; unset($Domain, $Count); ?>
 	</tbody>
