@@ -176,6 +176,14 @@ extends Atlantis\Prototype {
 			'TimeCreated' => $Now->GetUnixtime()
 		]);
 
+		if($Input['FromDomain']) {
+			if(substr_count($Input['FromDomain'], '.') > 3)
+			$Input['FromDomain'] = join('.', array_slice(
+				explode('.', $Input['FromDomain']),
+				-2, 2
+			));
+		}
+
 		return parent::Insert($Input);
 	}
 
