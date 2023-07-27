@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Avenue\Router $Router
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\User\EntitySession $User
+ *
+ * @var Nether\Atlantis\PublicWeb $Route
+ * @var Nether\Common\Datastore $Trail
+ * @var Nether\Database\Struct\PrototypeFindResult $Videos
+ * @var bool $Searched
+ */
+
+$Surface
+->Area('dashboard/nav', [ 'Trail'=> $Trail ]);
+
+?>
+
+<div class="jumbotron zjumbotron-outline rounded mb-3">
+	<form method="get">
+		<div class="row align-items-center">
+			<div class="col-12 mb-2">
+				<input type="text" name="q" class="form-control" placeholder="Search..." />
+			</div>
+			<div class="col-12 mb-2">
+				<div class="form-check form-switch">
+					<label class="form-check-label fw-bold text-uppercase">
+						<input type="checkbox" name="untagged" value="1" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
+						Untagged Only
+					</label>
+				</div>
+			</div>
+			<div class="col-12"></div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-dark">
+					<i class="mdi mdi-magnify"></i>
+					Search
+				</button>
+			</div>
+			<div class="col-auto">
+				(<a href="?">Reset</a>)
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="fw-bold text-align-center mb-6">
+	Found <?php $Util->Print($Videos->Total) ?> Videos
+</div>
+
+<?php
+
+$Surface
+->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos ])
+->Area('widgets/pager', [ 'Results'=> $Videos ])
+
+?>

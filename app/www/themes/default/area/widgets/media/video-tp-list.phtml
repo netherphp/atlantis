@@ -1,8 +1,5 @@
 <?php
 
-// use widgets/media/video-tp-list instead
-// changes in that version: plan for your own widget title.
-
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
@@ -22,58 +19,55 @@ use Nether\User;
 
 ?>
 
-<!-- VIDEOS -->
-<div class="mb-8">
-	<h2 class="text-uppercase">Videos (<?php $Util->Print($Videos->Count()) ?>)</h2>
-	<hr class="mt-2 mb-4" />
-
-	<div class="row">
-		<?php foreach($Videos as $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
-		<div class="col-12 col-md-3">
-			<div class="ratiobox widescreen wallpapered contained rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
-				<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"></a>
-				<div class="position-absolute position-bottom position-right p-1">
-					<?php if($Route->IsUserAdmin()): ?>
-					<a class="btn btn-light" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><i class="mdi mdi-tag mr-0"></i></a>
-					<button class="btn btn-light CmdVideoEdit" data-video-id="<?php $Util->Print($Video->ID) ?>"><i class="mdi mdi-pencil mr-0"></i></button>
-					<button class="btn btn-danger CmdVideoDelete" data-video-id="<?php $Util->Print($Video->ID) ?>"><i class="mdi mdi-trash-can mr-0"></i></button>
-					<?php endif; ?>
-				</div>
+<div class="row">
+	<?php foreach($Videos as $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
+	<div class="col-12 col-md-3">
+		<div class="ratiobox widescreen wallpapered contained rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
+			<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"></a>
+			<div class="position-absolute position-bottom position-right p-1">
+				<?php if($Route->IsUserAdmin()): ?>
+				<a class="btn btn-light" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><i class="mdi mdi-file-video mr-0"></i></a>
+				<button class="btn btn-light" data-videotp-cmd="edit" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-pencil mr-0"></i></button>
+				<button class="btn btn-danger" data-videotp-cmd="delete" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-trash-can mr-0"></i></button>
+				<?php endif; ?>
 			</div>
 		</div>
-		<div class="col-12 col-md mb-4">
-			<h3><a href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"><?php $Util->Print($Video->Title) ?></a></h3>
-			<div>
-				<b>Date Shared:</b>
-				<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
-			</div>
-			<div>
-				<b>Date Posted:</b>
-				<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
-			</div>
-		</div>
-		<div class="col-12">
-			<hr />
-		</div>
-		<?php endforeach; unset($Video); ?>
-
-		<?php if(!$Videos->Count()): ?>
-		<div class="fst-italic">
-			No videos have been added yet.
-		</div>
-		<?php endif; ?>
 	</div>
+	<div class="col-12 col-md mb-4">
+		<h3><a href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"><?php $Util->Print($Video->Title) ?></a></h3>
+		<div>
+			<b>Date Shared:</b>
+			<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+		</div>
+		<div>
+			<b>Date Posted:</b>
+			<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
+		</div>
+		<div>
+			<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
+		</div>
+	</div>
+	<div class="col-12">
+		<hr />
+	</div>
+	<?php endforeach; unset($Video); ?>
+
+	<?php if(!$Videos->Count()): ?>
+	<div class="fst-italic">
+		No videos have been added yet.
+	</div>
+	<?php endif; ?>
 </div>
+
 
 <script type="module">
 import API from '/share/nui/api/json.js';
 import DialogUtil from '/share/nui/util/dialog.js';
+//import VideoTP from '/share/atlantis/video-tp.js';
 
 jQuery(function() {
 
-
-
-	jQuery('.CmdVideoDelete')
+	jQuery('.zCmdVideoDelete')
 	.on('click', function(){
 
 		let vid = this.dataset.videoId;
@@ -110,7 +104,7 @@ jQuery(function() {
 		return false;
 	});
 
-	jQuery('.CmdVideoEdit')
+	jQuery('.zCmdVideoEdit')
 	.on('click', function(){
 
 		let vid = this.dataset.videoId;

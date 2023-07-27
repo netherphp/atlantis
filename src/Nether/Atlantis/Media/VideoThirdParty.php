@@ -118,6 +118,9 @@ extends Atlantis\Prototype {
 		$Input['ParentUUID'] ??= NULL;
 		$Input['Enabled'] ??= 1;
 
+		$Input['Search'] ??= NULL;
+		$Input['Untagged'] ??= NULL;
+
 		return;
 	}
 
@@ -128,11 +131,29 @@ extends Atlantis\Prototype {
 		if($Input['ParentUUID'] !== NULL)
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
 
+		if($Input['Search'] !== NULL) {
+			if(is_string($Input['Search'])) {
+				$Input['SearchRegEx'] = join('|', explode(' ', $Input['Search']));
+				$SQL->Where('Main.Title REGEXP :SearchRegEx');
+			}
+		}
+
 		if($Input['Enabled'] !== NULL) {
 			if(is_bool($Input['Enabled']))
 			$Input['Enabled'] = (int)$Input['Enabled'];
 
 			$SQL->Where('Main.Enabled=:Enabled');
+		}
+
+		if($Input['Untagged'] === TRUE) {
+			$TableTL = Atlantis\Tag\EntityLink::GetTableInfo();
+
+			$SQL->Join(sprintf(
+				'%s UTCHK ON UTCHK.EntityUUID=Main.UUID',
+				$TableTL->Name
+			));
+
+			$SQL->Where('UTCHK.ID IS NULL');
 		}
 
 		return;

@@ -166,9 +166,10 @@ implements
 		////////
 
 		Atlantis\Media\FileTagLink::Register();
-		Atlantis\Tag\SubtagLink::Register();
-
 		Atlantis\Media\VideoThirdPartyTagLink::Register();
+		Atlantis\Profile\EntityTagLink::Register();
+
+		Atlantis\Tag\SubtagLink::Register();
 
 		////////
 

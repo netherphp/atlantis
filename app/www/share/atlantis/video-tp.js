@@ -26,19 +26,19 @@ class Video {
 
 		////////
 
-		jQuery('[data-video-cmd=info]')
+		jQuery('[data-videotp-cmd=info]')
 		.on('click', this.onEditInfo.bind(this));
 
-		jQuery('[data-video-cmd=details]')
+		jQuery('[data-videotp-cmd=details]')
 		.on('click', this.onEditDetails.bind(this));
 
-		jQuery('[data-video-cmd=tags]')
+		jQuery('[data-videotp-cmd=tags]')
 		.on('click', this.onEditTags.bind(this));
 
-		jQuery('[data-video-cmd=enable]')
+		jQuery('[data-videotp-cmd=enable]')
 		.on('click', function(ev) { return self.onEditEnable(ev, 1); });
 
-		jQuery('[data-video-cmd=disable]')
+		jQuery('[data-videotp-cmd=disable]')
 		.on('click', function(ev) { return self.onEditEnable(ev, 0); });
 
 		return;
@@ -155,6 +155,47 @@ class Video {
 		return false;
 	};
 
+	onDelete(ev) {
+
+		let self = this;
+		let diag = null;
+
+		////////
+
+		diag = new DialogUtil.Window({
+			title: 'Confirm Video Delete',
+			labelAccept: 'Yes',
+			body: (''
+				+ '<div class="mb-2">Are you sure you want to delete this video?</div>'
+				+ `<div class="fst-italic mb-2"><q data-field="Title">${self.id}</q></div>`
+				+ `<div class="fw-bold text-danger">This cannot be undone.</div>`
+			),
+			onAccept: function() {
+
+				let data = { ID: self.id };
+				let api = new API.Request('DELETE', self.endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', this.endpoint,
+			{ ID: this.id },
+			true,
+			function(d, result) {
+				d.body.find('[data-field=Title]').text(result.payload.Title);
+				return;
+			}
+		);
+
+		return;
+	};
+
 	////////////////
 	////////////////
 
@@ -169,6 +210,32 @@ class Video {
 			let eTagID = that.attr('data-tag-id') ?? null;
 
 			Video.WhenOnNew(eID, eUUID, eTagID);
+
+			return;
+		});
+
+		jQuery('[data-videotp-cmd=edit]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+
+			if(eID)
+			Video.WhenOnEdit(eID, eUUID);
+
+			return;
+		});
+
+		jQuery('[data-videotp-cmd=delete]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+
+			if(eID)
+			Video.WhenOnDelete(eID, eUUID);
 
 			return;
 		});
@@ -205,6 +272,22 @@ class Video {
 				return;
 			}
 		});
+
+		return;
+	};
+
+	static WhenOnEdit(eID, eUUID) {
+
+		let vid = new Video(eID, eUUID);
+		vid.onEditInfo(null);
+
+		return;
+	};
+
+	static WhenOnDelete(eID, eUUID) {
+
+		let vid = new Video(eID, eUUID);
+		vid.onDelete(null);
 
 		return;
 	};

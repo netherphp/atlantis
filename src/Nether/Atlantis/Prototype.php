@@ -217,4 +217,13 @@ extends Database\Prototype {
 		return $Inst->DescribeForPublicAPI();
 	}
 
+	#[Common\Meta\DateAdded('2023-07-27')]
+	static public function
+	TagCachePrime(self $Inst):
+	void {
+
+		$Inst->GetTagLinks();
+		return;
+	}
+
 }

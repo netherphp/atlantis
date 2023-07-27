@@ -13,21 +13,6 @@ use Exception;
 class Entity
 extends Atlantis\Prototype {
 
-	#[Database\Meta\TypeIntBig(Unsigned: TRUE, AutoInc: TRUE)]
-	#[Database\Meta\PrimaryKey]
-	public int
-	$ID;
-
-	#[Database\Meta\TypeChar(Size: 36)]
-	#[Database\Meta\FieldIndex]
-	public string
-	$UUID;
-
-	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: NULL)]
-	#[Database\Meta\ForeignKey('Users', 'ID')]
-	public int
-	$UserID;
-
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0)]
 	public int
 	$TimeCreated;
@@ -36,16 +21,16 @@ extends Atlantis\Prototype {
 	public int
 	$TimeUpdated;
 
-	#[Database\Meta\TypeVarChar(Size: 64, Default: NULL)]
+	#[Database\Meta\TypeVarChar(Size: 255, Default: NULL)]
 	#[Database\Meta\NullifyEmptyValue]
 	public ?string
 	$Alias;
 
-	#[Database\Meta\TypeVarChar(Size: 64, Default: NULL)]
+	#[Database\Meta\TypeVarChar(Size: 255, Default: NULL)]
 	public string
 	$Title;
 
-	#[Database\Meta\TypeVarChar(Size: 64, Default: NULL)]
+	#[Database\Meta\TypeVarChar(Size: 255, Default: NULL)]
 	public string
 	$Subtitle;
 
