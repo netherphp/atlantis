@@ -386,13 +386,19 @@ as html pages. //*/
 		if(isset($Parts['query']))
 		$Query = $Parts['query'];
 
-		// do not log self referential things like forms.
+		// don't self reference in the from fields.
 
-		//if($FromDomain === $this->Request->Domain)
-		//return;
+		if($FromDomain === $this->App->Config[Atlantis\Library::ConfProjectDomain])
+		$FromDomain = NULL;
 
 		if($FromDomain !== NULL)
 		$FromDomain = (string)Common\Struct\Domain::FromDomain($FromDomain, 2);
+
+		// don't self reference in the from fields.
+		// (trying again after the clean)
+
+		if($FromDomain === $this->App->Config[Atlantis\Library::ConfProjectDomain])
+		$FromDomain = NULL;
 
 		////////
 
