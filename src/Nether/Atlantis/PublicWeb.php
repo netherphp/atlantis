@@ -388,7 +388,7 @@ as html pages. //*/
 
 		// do not log self referential things like forms.
 
-		if($Domain === $this->Request->Domain)
+		if($FromDomain === $this->Request->Domain)
 		return;
 
 		////////
