@@ -391,6 +391,9 @@ as html pages. //*/
 		//if($FromDomain === $this->Request->Domain)
 		//return;
 
+		if($FromDomain !== NULL)
+		$FromDomain = (string)Common\Struct\Domain::FromDomain($FromDomain, 2);
+
 		////////
 
 		$Old = Struct\TrafficRow::Find([
