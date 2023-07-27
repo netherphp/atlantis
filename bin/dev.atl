@@ -97,15 +97,87 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('update')]
-	#[Console\Meta\Info('Perform all the actions needed to update this project installation.')]
+	#[Console\Meta\Command('shove')]
+	#[Console\Meta\Info('Quick shove the current state into the repository.')]
 	#[Console\Meta\Toggle('--dry', 'Just pretend.')]
 	public function
-	ProjectUpdate():
+	ProjectShoveIntoRepo():
 	int {
 
 		$Conf = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
-		$Steps = new Common\Datastore($Conf->StepsForUpdate);
+		$Steps = new Common\Datastore($Conf->StepsForShove);
+		$OptDry = $this->GetOption('Dry');
+
+		$Steps->Each(function(mixed $Line) use($OptDry) {
+			if(!is_string($Line))
+			return;
+
+			// execute a command. only show the output if the command
+			// resulted in an error code.
+
+			$Cmd = NULL;
+
+			if(str_starts_with($Line, '$$ ')) {
+				$Cmd = substr($Line, 3);
+
+				if($OptDry) {
+					$this->PrintLn(sprintf(
+						'%s %s',
+						$this->Format('[PseudoCommandLine]', Bold: TRUE),
+						$Cmd
+					));
+
+					return;
+				}
+
+				$Result = $this->ExecuteCommandLine($Cmd);
+
+				if($Result->Error) {
+					$this->FormatLn('ERROR', Bold: TRUE);
+					$this->PrintLn($Result->GetOutputString());
+				}
+
+				return;
+			}
+
+			// execute a command and always show the output regardless
+			// of the result it had.
+
+			if(str_starts_with($Line, '$! ')) {
+				$Cmd = substr($Line, 3);
+
+				if($OptDry) {
+					$this->PrintLn(sprintf(
+						'%s %s',
+						$this->Format('[PseudoExecuteCommand]', Bold: TRUE),
+						$Cmd
+					));
+
+					return;
+				}
+
+				$Result = $this->ExecuteCommandLine(substr($Line, 3));
+				$this->PrintLn($Result->GetOutputString());
+
+				return;
+			}
+
+			return;
+		});
+
+		return 0;
+	}
+
+
+	#[Console\Meta\Command('release')]
+	#[Console\Meta\Info('Perform all the actions needed to update this project installation.')]
+	#[Console\Meta\Toggle('--dry', 'Just pretend.')]
+	public function
+	ProjectPullToRelease():
+	int {
+
+		$Conf = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
+		$Steps = new Common\Datastore($Conf->StepsForRelease);
 		$OptDry = $this->GetOption('Dry');
 
 		$Steps->Each(function(mixed $Line) use($OptDry) {
