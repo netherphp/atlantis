@@ -265,6 +265,11 @@ extends Atlantis\Prototype {
 		$YouTubeID = $this->GetYouTubeID();
 
 		return sprintf(
+			'https://i.ytimg.com/vi/%s/hqdefault.jpg',
+			$YouTubeID
+		);
+
+		return sprintf(
 			'https://i.ytimg.com/vi/%s/maxresdefault.jpg',
 			$YouTubeID
 		);
