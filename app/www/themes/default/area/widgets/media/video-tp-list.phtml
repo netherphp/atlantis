@@ -22,7 +22,7 @@ use Nether\User;
 <div class="row">
 	<?php foreach($Videos as $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
 	<div class="col-12 col-md-3">
-		<div class="ratiobox widescreen wallpapered contained rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
+		<div class="ratiobox widescreen wallpapered covered rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
 			<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL()) ?>" target="_blank"></a>
 			<div class="position-absolute position-bottom position-right p-1">
 				<?php if($Route->IsUserAdmin()): ?>
