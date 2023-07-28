@@ -6,6 +6,8 @@ use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
 
+use Exception;
+
 class ProfileWeb
 extends Atlantis\PublicWeb {
 
@@ -36,16 +38,22 @@ extends Atlantis\PublicWeb {
 
 		////////
 
-		$Data['Profile'] = Atlantis\Profile\Entity::GetByField(
-			'Alias', $Alias
-		);
+		try {
+			$Data['Profile'] = Atlantis\Profile\Entity::GetByField(
+				'Alias', $Alias
+			);
+		}
 
-		if($Data['Profile'])
-		return ($this->Response)::CodeOK;
+		catch(Exception $Err) {
+			return ($this->Response)::CodeNope;
+		}
+
+		if(!$Data['Profile'])
+		return ($this->Response)::CodeNope;
 
 		////////
 
-		return Avenue\Response::CodeNope;
+		return ($this->Response)::CodeOK;
 	}
 
 	////////////////////////////////////////////////////////////////
