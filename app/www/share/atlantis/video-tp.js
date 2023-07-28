@@ -181,8 +181,8 @@ class Video {
 			let eID = that.attr('data-id') ?? null;
 			let eUUID = that.attr('data-uuid') ?? null;
 			let eTagID = that.attr('data-tag-id') ?? null;
-			let eChildType = that.attr('data-child-type') ?? NULL;
-			let eChildUUID = that.attr('data-child-uuid') ?? NULL;
+			let eChildType = that.attr('data-child-type') ?? null;
+			let eChildUUID = that.attr('data-child-uuid') ?? null;
 
 			Video.WhenOnNew(eID, eUUID, eTagID, eChildType, eChildUUID);
 
