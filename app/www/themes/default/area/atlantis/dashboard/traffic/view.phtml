@@ -37,17 +37,6 @@ $GetDateFor = function(string $When) {
 	return $Date->Get(Common\Values::DateFormatYMD);
 };
 
-$GetSourceName = function(string $Name) {
-	return match($Name) {
-		't.co'              => 'Twitter',
-		'facebook.com'      => 'Facebook',
-		'instagram.com'     => 'Instagram',
-		'apple.com'         => 'Apple',
-		'google.com'        => 'Google',
-		default             => $Name
-	};
-};
-
 ?>
 
 <!-- TRAFFIC HEADING -->
@@ -164,7 +153,7 @@ $GetSourceName = function(string $Name) {
 	<tbody>
 	<?php foreach($Sources as $Domain => $Count): ?>
 		<tr>
-			<td><?php $Util->Print($GetSourceName($Domain)) ?></td>
+			<td><?php $Util->Print(Atlantis\Util::DomainToBrandName($Domain)) ?></td>
 			<td class="text-center"><?php $Util->Print($Count) ?></td>
 		</tr>
 	<?php endforeach; unset($Domain, $Count); ?>

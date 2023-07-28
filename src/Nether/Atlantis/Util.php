@@ -424,4 +424,21 @@ class Util {
 		return TRUE;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	DomainToBrandName(string $Domain):
+	string {
+
+		return match($Domain) {
+			't.co'          => 'Twitter',
+			'facebook.com'  => 'Facebook',
+			'instagram.com' => 'Instagram',
+			'apple.com'     => 'Apple Log In',
+			'google.com'    => 'Google',
+			default         => $Domain
+		};
+	}
+
 }

@@ -24,16 +24,6 @@ $GetDateFor = function(string $When) {
 	return $Date->Get(Common\Values::DateFormatYMD);
 };
 
-$GetSourceName = function(string $Name) {
-	return match($Name) {
-		't.co'              => 'Twitter',
-		'facebook.com'      => 'Facebook',
-		'instagram.com'     => 'Instagram',
-		'appleid.apple.com' => 'Apple Log In',
-		default             => $Name
-	};
-};
-
 ?>
 
 <div class="jumbotron jumbotron-outline rounded">
@@ -137,7 +127,7 @@ $GetSourceName = function(string $Name) {
 		<tbody>
 		<?php foreach($Element->Sources as $Domain => $Count): ?>
 			<tr>
-				<td><?php $Util->Print($GetSourceName($Domain)) ?></td>
+				<td><?php $Util->Print(Atlantis\Util::DomainToBrandName($Domain)) ?></td>
 				<td class="text-center"><?php $Util->Print($Count) ?></td>
 			</tr>
 		<?php endforeach; unset($Domain, $Count); ?>
