@@ -49,6 +49,7 @@
 		"bin/cron.atl",
 		"bin/dev.atl",
 		"bin/gfx.atl",
+		"bin/nether.atl",
 		"bin/ssl.atl",
 
 		"bin/atlantis-ssl",
