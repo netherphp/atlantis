@@ -20,33 +20,6 @@ class Video {
 	////////////////
 	////////////////
 
-	bindify() {
-
-		let self = this;
-
-		////////
-
-		jQuery('[data-videotp-cmd=info]')
-		.on('click', this.onEditInfo.bind(this));
-
-		jQuery('[data-videotp-cmd=details]')
-		.on('click', this.onEditDetails.bind(this));
-
-		jQuery('[data-videotp-cmd=tags]')
-		.on('click', this.onEditTags.bind(this));
-
-		jQuery('[data-videotp-cmd=enable]')
-		.on('click', function(ev) { return self.onEditEnable(ev, 1); });
-
-		jQuery('[data-videotp-cmd=disable]')
-		.on('click', function(ev) { return self.onEditEnable(ev, 0); });
-
-		return;
-	};
-
-	////////////////
-	////////////////
-
 	onEditDetails(ev) {
 
 		let self = this;
@@ -213,7 +186,7 @@ class Video {
 
 			Video.WhenOnNew(eID, eUUID, eTagID, eChildType, eChildUUID);
 
-			return;
+			return false;
 		});
 
 		jQuery('[data-videotp-cmd=edit]')
@@ -226,7 +199,33 @@ class Video {
 			if(eID)
 			Video.WhenOnEdit(eID, eUUID);
 
-			return;
+			return false;
+		});
+
+		jQuery('[data-videotp-cmd=tags]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+
+			if(eID)
+			Video.WhenOnEditTags(eID, eUUID);
+
+			return false;
+		});
+
+		jQuery('[data-videotp-cmd=details]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+
+			if(eID)
+			Video.WhenOnEditDetails(eID, eUUID);
+
+			return false;
 		});
 
 		jQuery('[data-videotp-cmd=delete]')
@@ -239,7 +238,33 @@ class Video {
 			if(eID)
 			Video.WhenOnDelete(eID, eUUID);
 
-			return;
+			return false;
+		});
+
+		jQuery('[data-videotp-cmd=disable]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+
+			if(eID)
+			Video.WhenOnEditEnable(eID, eUUID, 0);
+
+			return false;
+		});
+
+		jQuery('[data-videotp-cmd=enable]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+
+			if(eID)
+			Video.WhenOnEditEnable(eID, eUUID, 1);
+
+			return false;
 		});
 
 		return;
@@ -288,6 +313,22 @@ class Video {
 		return;
 	};
 
+	static WhenOnEditDetails(eID, eUUID) {
+
+		let vid = new Video(eID, eUUID);
+		vid.onEditDetails(null);
+
+		return;
+	};
+
+	static WhenOnEditTags(eID, eUUID) {
+
+		let vid = new Video(eID, eUUID);
+		vid.onEditTags(null);
+
+		return;
+	};
+
 	static WhenOnDelete(eID, eUUID) {
 
 		let vid = new Video(eID, eUUID);
@@ -296,22 +337,12 @@ class Video {
 		return;
 	};
 
-	////////////////
-	////////////////
+	static WhenOnEditEnable(eID, eUUID, state) {
 
-	static FromElement({ el='#VideoEntityInfo', bindify=false } = {}) {
+		let vid = new Video(eID, eUUID);
+		vid.onEditEnable(null, state);
 
-		let that = jQuery(el);
-
-		let output = new Video(
-			that.attr('data-id'),
-			that.attr('data-uuid')
-		);
-
-		if(bindify)
-		output.bindify();
-
-		return output;
+		return;
 	};
 
 };
