@@ -128,6 +128,10 @@ extends Atlantis\Prototype {
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
+		parent::FindExtendFilters($SQL, $Input);
+
+		////////
+
 		if($Input['ParentUUID'] !== NULL)
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
 
@@ -165,10 +169,10 @@ extends Atlantis\Prototype {
 
 		switch($Input['Sort']) {
 			case 'newest':
-				$SQL->Where('Main.DatePosted', $SQL::SortDesc);
+				$SQL->Sort('Main.TimePosted', $SQL::SortDesc);
 			break;
 			case 'oldest':
-				$SQL->Where('Main.DatePosted', $SQL::SortAsc);
+				$SQL->Sort('Main.TimePosted', $SQL::SortAsc);
 			break;
 		}
 

@@ -29,7 +29,8 @@ extends Atlantis\ProtectedWeb {
 		$Filters = new Common\Datastore([
 			'Search'   => $this->Data->Q,
 			'Page'     => $this->Data->Page,
-			'Untagged' => $this->Data->Untagged
+			'Untagged' => $this->Data->Untagged,
+			'Enabled'  => NULL
 		]);
 
 		$Videos = Atlantis\Media\VideoThirdParty::Find($Filters);

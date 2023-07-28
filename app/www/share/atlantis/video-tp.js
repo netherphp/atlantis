@@ -208,8 +208,10 @@ class Video {
 			let eID = that.attr('data-id') ?? null;
 			let eUUID = that.attr('data-uuid') ?? null;
 			let eTagID = that.attr('data-tag-id') ?? null;
+			let eChildType = that.attr('data-child-type') ?? NULL;
+			let eChildUUID = that.attr('data-child-uuid') ?? NULL;
 
-			Video.WhenOnNew(eID, eUUID, eTagID);
+			Video.WhenOnNew(eID, eUUID, eTagID, eChildType, eChildUUID);
 
 			return;
 		});
@@ -243,7 +245,7 @@ class Video {
 		return;
 	};
 
-	static WhenOnNew(eID, eUUID, eTagID) {
+	static WhenOnNew(eID, eUUID, eTagID, eChildType, eChildUUID) {
 
 		let v = new Video(eID, eUUID);
 		let endpoint = v.endpoint;
@@ -256,6 +258,8 @@ class Video {
 			labelAccept: 'Add',
 			fields: [
 				new DialogUtil.Field('hidden', 'TagID', null, eTagID),
+				new DialogUtil.Field('hidden', 'ChildType', null, eChildType),
+				new DialogUtil.Field('hidden', 'ChildUUID', null, eChildUUID),
 				new DialogUtil.Field('text', 'URL'),
 				new DialogUtil.Field('text', 'Title'),
 				new DialogUtil.Field('date', 'DatePosted', 'Date')

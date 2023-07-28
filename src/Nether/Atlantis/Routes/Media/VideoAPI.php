@@ -39,19 +39,24 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ParentUUID(Common\Filters\Text::UUID(...))
 		->URL(Common\Filters\Text::Trimmed(...))
 		->Title(Common\Filters\Text::TrimmedNullable(...))
 		->DatePosted(Common\Filters\Text::TrimmedNullable(...))
 		->TagID(
 			Common\Filters\Lists::ArrayOfNullable(...),
 			Common\Filters\Numbers::IntType(...)
-		);
+		)
+		->ChildUUID(
+			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Text::UUID(...)
+		)
+		->ChildType(Common\Filters\Text::TrimmedNullable(...));
 
 		$Title = NULL;
 		$DatePosted = NULL;
 		$Vid = NULL;
 		$TagID = NULL;
+		$ChildUUID = NULL;
 
 		////////
 
@@ -89,6 +94,16 @@ extends Atlantis\ProtectedAPI {
 				$TagID,
 				$Vid->UUID
 			);
+		}
+
+		if(is_iterable($this->Data->ChildUUID) && $this->Data->ChildType)
+		foreach($this->Data->ChildUUID as $ChildUUID) {
+			Atlantis\Struct\EntityRelationship::Insert([
+				'ParentType' => 'Video.ThirdParty',
+				'ParentUUID' => $Vid->UUID,
+				'ChildType'  => $this->Data->ChildType,
+				'ChildUUID'  => $ChildUUID
+			]);
 		}
 
 		////////
