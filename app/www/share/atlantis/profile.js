@@ -276,12 +276,13 @@ class Profile {
 			jQuery(`[data-profile-cmd=${key}]`)
 			.on('click', function(ev) {
 
+				let that = jQuery(this);
+
 				if(item.data === false) {
 					item.func.call(null, that);
 					return false;
 				}
 
-				let that = jQuery(this);
 				let eID = that.attr('data-id') ?? null;
 				let eUUID = that.attr('data-uuid') ?? null;
 
