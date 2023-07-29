@@ -14,15 +14,13 @@ use Nether\User;
  * @var User\EntitySession $User
  *
  * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $Trail
  * @var Database\Struct\PrototypeFindResult $Tags
  */
 
 $Surface
-->Set('Page.Title', 'Manage Tags - Dashboard')
 ->Area('media/dashboard/scripts', $__SCOPE)
-->Area('dashboard/nav', [ 'Trail' => [
-	'Tags' => '/dashboard/tags'
-]]);
+->Area('dashboard/nav', [ 'Trail'=> $Trail ]);
 
 ?>
 

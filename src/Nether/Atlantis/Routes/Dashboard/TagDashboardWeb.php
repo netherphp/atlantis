@@ -15,12 +15,23 @@ extends Atlantis\ProtectedWeb {
 	ListGet():
 	void {
 
+		$Trail = new Common\Datastore([
+			'Tags' => '/dashboard/tags'
+		]);
+
 		$Tags = Atlantis\Tag\Entity::Find([
 			'Sort'  => 'name-az',
 			'Limit' => 0
 		]);
 
-		$this->Surface->Wrap('tag/dashboard/list', [ 'Tags'=> $Tags ]);
+		////////
+
+		($this->Surface)
+		->Set('Page.Title', 'Manage Tags - Dashboard')
+		->Wrap('atlantis/dashboard/tag/list', [
+			'Trail' => $Trail,
+			'Tags'  => $Tags
+		]);
 
 		return;
 	}

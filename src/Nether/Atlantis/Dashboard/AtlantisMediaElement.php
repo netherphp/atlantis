@@ -13,7 +13,7 @@ extends Atlantis\Dashboard\Element {
 		parent::__Construct(
 			$App,
 			'Account',
-			'atlantis/dashboard/element/media'
+			'atlantis/dashboard/media/element-dash'
 		);
 
 		return;

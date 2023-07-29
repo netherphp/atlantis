@@ -1,42 +1,128 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Profile\Entity $Profile
+ * @var Database\Struct\PrototypeFindResult $Tags
+ * @var Database\Struct\PrototypeFindResult $Photos
+ * @var Database\Struct\PrototypeFindResult $Videos
+ */
+
+$AdminMenu = (
+	(Atlantis\Struct\DropdownMenu::New())
+	->ItemNew('Edit Title', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE))
+	->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
+	->ItemNew('Edit Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
+	->ItemNew('Enable Profile', 'mdi-eye', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE), If: !$Profile->Enabled)
+	->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
+	->ItemNew('-')
+	->ItemNew('Upload Photos', 'mdi-upload', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE))
+	->ItemNew('Add Video URL', 'mdi-video', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE))
+	->ItemNew('-')
+	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE))
+);
+
+?>
+
 <?php $Surface->Area('design/subheader'); ?>
 
 <div class="container pt-5 pb-6">
 
-	<div class="row">
-		<div class="col">
-			<h2 class="mb-0">Test Church 1</h2>
-		</div>
-		<div class="col-auto">
-			<button class="btn btn-outline-dark">
-				<i class="mdi mdi-cog"></i>
-			</button>
-		</div>
-	</div>
-	<hr class="mt-1 mb-3" />
+	<?php if(!$Profile->Enabled): ?>
+	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
+	<?php endif; ?>
 
-	<div class="mb-4">
-		<button class="btn btn-outline-dark btn-sm pt-1 pb-1">Test</button>
-		<button class="btn btn-outline-dark btn-sm pt-1 pb-1">Catholic Church</button>
+	<div class="mb-6">
+		<div class="row">
+			<?php if(isset($Profile->CoverImage)): ?>
+			<div class="col-3">
+				<div class="ratiobox square wallpapered rounded" style="border:1px solid #dadada; background-image:url(<?php $Util->Print($Profile->CoverImage->GetPublicURL()) ?>);"></div>
+			</div>
+			<?php endif; ?>
+			<div class="col">
+				<h2 class="mb-0"><?php $Util->Print($Profile->Title) ?></h2>
+			</div>
+			<div class="col-auto">
+				<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $AdminMenu ]) ?>
+			</div>
+		</div>
+		<hr class="mt-1 mb-3" />
+		<div class="mb-4">
+			<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
+		</div>
 	</div>
 
 	<div class="mb-8">
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-	</div>
-
-	<div class="mb-8">
-		<h2 class="text-uppercase mb-0">Photos (0)</h2>
+		<h2 class="text-uppercase mb-0">Description</h2>
 		<hr class="mt-1 mb-3" />
 
-		<div class="fst-italic">No photos have been added yet.</div>
+		<?php if($Profile->Details): ?>
+		<div class="EditorContent"><?php echo $Profile->Details ?></div>
+		<?php else: ?>
+		<div class="fst-italic">No additional information has been added.</div>
+		<?php endif; ?>
 	</div>
 
+	<?php if(isset($Photos) && $Photos->Total): ?>
 	<div class="mb-8">
-		<h2 class="text-uppercase mb-0">Videos (0)</h2>
+		<h2 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h2>
 		<hr class="mt-1 mb-3" />
 
-		<div class="fst-italic">No videos have been added yet.</div>
+		<div class="row">
+			<?php foreach($Photos as $Photo): /** @var Atlantis\Media\File $Photo */ ?>
+			<div class="col-6 col-md-3 mb-4">
+				<div class="cursor-pointer ratiobox widescreen wallpapered contained rounded bg-dark PhotoGalleryItem" style="background-image:url(<?php $Util->Print($Photo->GetPublicURL()) ?>);" data-url-lg="<?php $Util->Print($Photo->GetPublicURL()) ?>">
+					<div class="position-absolute position-bottom position-right p-1">
+						<?php if($Route->IsUserAdmin()): ?>
+						<button class="btn <?php $Util->Print($Profile->CoverImageID === $Photo->ID ? 'btn-success' : 'btn-dark') ?>" <?php echo $Profile->GetDataAttrForHTML(['profile-cmd'=> 'photoset', 'photo-id'=> $Photo->ID]) ?>><i class="mdi mdi-account-star mr-0"></i></button>
+						<button class="btn btn-danger" <?php echo $Photo->GetDataAttrForHTML(['photo-cmd'=> 'delete']) ?>><i class="mdi mdi-trash-can mr-0"></i></button>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
+			<?php endforeach; unset($Photo); ?>
+		</div>
 	</div>
+	<?php endif; ?>
+
+	<?php if(isset($Videos) && $Videos->Total): ?>
+	<div class="mb-8">
+		<h2 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Total) ?>)</h2>
+		<hr class="mt-1 mb-3" />
+
+		<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos ]) ?>
+	</div>
+	<?php endif; ?>
 
 
 </div>
 
+<script type="module">
+import SimpleLightbox from '/themes/default/lib/js/simplelightbox.js';
+
+jQuery(function() {
+
+	let gallery = new SimpleLightbox('.PhotoGalleryItem', {
+		captions: true,
+		captionSelector: 'self',
+		scrollZoom: false,
+		fileExt: false,
+		sourceAttr: 'data-url-lg'
+	});
+
+	return;
+});
+</script>

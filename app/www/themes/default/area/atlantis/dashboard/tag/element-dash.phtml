@@ -1,0 +1,73 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Dashboard\AtlantisTagsElement $Element
+ */
+
+$Buttons = [
+	Atlantis\Struct\DropdownItem::New('Tags', 'mdi-tag-multiple', '/dashboard/tags'),
+	Atlantis\Struct\DropdownItem::New('Profiles', 'mdi-file-account-outline', '/dashboard/profiles'),
+	Atlantis\Struct\DropdownItem::New('Photos', 'mdi-image', '/dashboard/media/images'),
+	Atlantis\Struct\DropdownItem::New('Videos', 'mdi-video', '/dashboard/media/videos-tp')
+];
+
+?>
+
+<div class="jumbotron rounded">
+	<div class="fw-bold text-uppercase">
+		<?php $Util->Print($Element->Title) ?>
+	</div>
+	<hr class="mt-0 mb-2" />
+
+	<div class="row mb-4">
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold lh-1"><?php $Util->Print($Element->GetTagCount()) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Tags</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold lh-1"><?php $Util->Print($Element->GetProfileCount()) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Profiles</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold lh-1"><?php $Util->Print($Element->GetPhotoCount()) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Photos</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<div>
+				<div class="font-size-most-large fw-bold lh-1"><?php $Util->Print($Element->GetVideoCount()) ?></div>
+				<div class="font-size-smallest text-uppercase text-muted">Videos</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row tight">
+		<?php foreach($Buttons as $Button): /** @var Atlantis\Struct\DropdownItem $Button */ ?>
+		<div class="col-6 mb-2">
+			<a href="<?php $Util->Print($Button->URL) ?>" class="btn btn-dark btn-block text-align-left">
+				<i class="mdi <?php $Util->Print($Button->GetIcon()) ?>"></i>
+				<?php $Util->Print($Button->Title) ?>
+			</a>
+		</div>
+		<?php endforeach; unset($Button); ?>
+	</div>
+
+</div>

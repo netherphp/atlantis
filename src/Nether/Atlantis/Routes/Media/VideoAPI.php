@@ -46,17 +46,17 @@ extends Atlantis\ProtectedAPI {
 			Common\Filters\Lists::ArrayOfNullable(...),
 			Common\Filters\Numbers::IntType(...)
 		)
-		->ChildUUID(
+		->ParentUUID(
 			Common\Filters\Lists::ArrayOfNullable(...),
 			Common\Filters\Text::UUID(...)
 		)
-		->ChildType(Common\Filters\Text::TrimmedNullable(...));
+		->ParentType(Common\Filters\Text::TrimmedNullable(...));
 
 		$Title = NULL;
 		$DatePosted = NULL;
 		$Vid = NULL;
 		$TagID = NULL;
-		$ChildUUID = NULL;
+		$ParentUUID = NULL;
 
 		////////
 
@@ -64,7 +64,6 @@ extends Atlantis\ProtectedAPI {
 		$this->Quit(1, 'no URL specified');
 
 		$RemoteInfo = $this->TryToGetInfo($this->Data->URL);
-		var_dump($RemoteInfo);
 
 		////////
 
@@ -96,13 +95,13 @@ extends Atlantis\ProtectedAPI {
 			);
 		}
 
-		if(is_iterable($this->Data->ChildUUID) && $this->Data->ChildType)
-		foreach($this->Data->ChildUUID as $ChildUUID) {
+		if(is_iterable($this->Data->ParentUUID) && $this->Data->ParentType)
+		foreach($this->Data->ParentUUID as $ParentUUID) {
 			Atlantis\Struct\EntityRelationship::Insert([
-				'ParentType' => 'Video.ThirdParty',
-				'ParentUUID' => $Vid->UUID,
-				'ChildType'  => $this->Data->ChildType,
-				'ChildUUID'  => $ChildUUID
+				'ParentType'  => $this->Data->ParentType,
+				'ParentUUID'  => $ParentUUID,
+				'ChildType'   => 'Media.Video.ThirdParty',
+				'ChildUUID'   => $Vid->UUID
 			]);
 		}
 

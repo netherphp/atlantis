@@ -5,7 +5,9 @@ namespace Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
 
-#[Common\Meta\DateAdded('2023-02-15')]
+use ArrayAccess;
+
+#[Common\Meta\Date('2023-02-15')]
 #[Common\Meta\Info('Adds core object features that anything built using the framework should expect to have.')]
 class Prototype
 extends Database\Prototype {
@@ -36,7 +38,7 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Database\Prototype ///////////////////////////////
 
-	#[Common\Meta\DateAdded('2023-02-15')]
+	#[Common\Meta\Date('2023-02-15')]
 	public function
 	Drop():
 	static {
@@ -53,10 +55,18 @@ extends Database\Prototype {
 		return $this;
 	}
 
-	#[Common\Meta\DateAdded('2023-02-15')]
+	#[Common\Meta\Date('2023-02-15')]
 	static protected function
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
+
+		if(isset($Input['ID'])) {
+			if(is_array($Input['ID']))
+			$SQL->Where('Main.ID IN(:ID)');
+
+			else
+			$SQL->Where('Main.ID=:ID');
+		}
 
 		if(isset($Input['UUID'])) {
 			if(is_array($Input['UUID']))
@@ -66,10 +76,23 @@ extends Database\Prototype {
 			$SQL->Where('Main.UUID=:UUID');
 		}
 
+		if(isset($Input['Untagged'])) {
+			if($Input['Untagged'] === TRUE) {
+				$TableTL = Tag\EntityLink::GetTableInfo();
+
+				$SQL->Join(sprintf(
+					'%s UTCHK ON UTCHK.EntityUUID=Main.UUID',
+					$TableTL->Name
+				));
+
+				$SQL->Where('UTCHK.ID IS NULL');
+			}
+		}
+
 		return;
 	}
 
-	#[Common\Meta\DateAdded('2023-02-15')]
+	#[Common\Meta\Date('2023-02-15')]
 	static public function
 	Insert(iterable $Input):
 	?static {
@@ -84,7 +107,7 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 	//// LOCAL METHODS /////////////////////////////////////////////
 
-	#[Common\Meta\DateAdded('2023-05-09')]
+	#[Common\Meta\Date('2023-05-09')]
 	#[Common\Meta\Info('Returns a dataset that is reasonable to be considered public information about this object. Classes should override, call the parent version, then append to the dataset returned.')]
 	public function
 	DescribeForPublicAPI():
@@ -118,7 +141,7 @@ extends Database\Prototype {
 		return $Vals->GetData();
 	}
 
-	#[Common\Meta\DateAdded('2023-03-07')]
+	#[Common\Meta\Date('2023-03-07')]
 	#[Common\Meta\Info('Fetch the dataset of tag links from the database.')]
 	public function
 	FetchTagLinks():
@@ -135,7 +158,7 @@ extends Database\Prototype {
 		return $Result;
 	}
 
-	#[Common\Meta\DateAdded('2023-03-07')]
+	#[Common\Meta\Date('2023-03-07')]
 	#[Common\Meta\Info('Get the dataset of tag links from the database. Uses local instance cache.')]
 	public function
 	GetTagLinks():
@@ -147,7 +170,7 @@ extends Database\Prototype {
 		return $this->TagLinks;
 	}
 
-	#[Common\Meta\DateAdded('2023-03-07')]
+	#[Common\Meta\Date('2023-03-07')]
 	#[Common\Meta\Info('Get the dataset of tag entities from the database. Uses local instance cache.')]
 	public function
 	GetTags():
@@ -164,7 +187,7 @@ extends Database\Prototype {
 	#[Common\Meta\Date('2023-07-25')]
 	#[Common\Meta\Info('Get a list of common attributes used with external systems.')]
 	public function
-	GetDataAttr(?iterable $More=NULL):
+	GetDataAttr(?iterable $More=NULL, bool $Prefix=FALSE):
 	Common\Datastore {
 
 		$Output = new Common\Datastore([
@@ -173,7 +196,13 @@ extends Database\Prototype {
 		]);
 
 		if(is_iterable($More))
-		$Output->BlendRight($More);
+		$Output->MergeRight($More);
+
+		if($Prefix)
+		$Output->RemapKeys(
+			fn(string $K, string $V)
+			=> [ "data-{$K}"=> $V ]
+		);
 
 		return $Output;
 	}
@@ -181,23 +210,32 @@ extends Database\Prototype {
 	#[Common\Meta\Date('2023-07-25')]
 	#[Common\Meta\Info('Get a list of common attributes used with external formatted as html data attributes.')]
 	public function
-	GetDataAttrForHTML(?iterable $More=NULL):
+	GetDataAttrForHTML(?iterable $More=NULL, bool $Prefix=TRUE):
 	string {
 
-		$Output = $this->GetDataAttr($More);
+		$Output = $this->GetDataAttr($More, $Prefix);
 
 		$Output->RemapKeys(
 			fn(string $K, string $V)
-			=> [ $K=> sprintf('data-%s="%s"', $K, htmlentities($V)) ]
+			=> [ $K=> sprintf('%s="%s"', $K, htmlentities($V)) ]
 		);
 
 		return $Output->Join(' ');
 	}
 
+	#[Common\Meta\Date('2023-07-28')]
+	public function
+	GetPageURL():
+	string {
+
+		throw new Error\MethodUnimplemented(__METHOD__);
+		return '';
+	}
+
 	////////////////////////////////////////////////////////////////
 	//// LOCAL STATIC API //////////////////////////////////////////
 
-	#[Common\Meta\DateAdded('2023-05-23')]
+	#[Common\Meta\Date('2023-05-23')]
 	#[Common\Meta\Info('Fetch an object by UUID.')]
 	static public function
 	GetByUUID(string $UUID):
@@ -206,10 +244,52 @@ extends Database\Prototype {
 		return parent::GetByField('UUID', $UUID);
 	}
 
+	#[Common\Meta\Date('2023-07-28')]
+	#[Common\Meta\Info('Builds a dataset based on the PropertyPatchable attributing for this class.')]
+	static public function
+	DatasetFromInput(array|ArrayAccess $Input):
+	array {
+
+		$PropInfos = static::GetPropertiesWithAttribute(Common\Meta\PropertyPatchable::class);
+		$Output = [];
+		$Prop = NULL;
+		$Info = NULL;
+
+		foreach($PropInfos as $Prop => $Info) {
+			/** @var Common\Prototype\PropertyInfo $Info */
+
+			$Has = match(TRUE) {
+				$Input instanceof ArrayAccess
+				=> $Input->OffsetExists($Prop),
+
+				default
+				=> array_key_exists($Prop, $Input)
+			};
+
+			if(!$Has)
+			continue;
+
+			$Filters = $Info->GetAttributes(Common\Meta\PropertyFilter::class);
+
+			if(!count($Filters))
+			continue;
+
+			////////
+
+			$Output[$Prop] = array_reduce(
+				$Filters,
+				fn(mixed $Data, callable $Func)=> $Func($Data),
+				$Input[$Prop]
+			);
+		}
+
+		return $Output;
+	}
+
 	////////////////////////////////////////////////////////////////
 	//// FILTER/MAPPER CALLABLES ///////////////////////////////////
 
-	#[Common\Meta\DateAdded('2023-07-07')]
+	#[Common\Meta\Date('2023-07-07')]
 	static public function
 	MapForPublicAPI(self $Inst):
 	array {
@@ -217,7 +297,7 @@ extends Database\Prototype {
 		return $Inst->DescribeForPublicAPI();
 	}
 
-	#[Common\Meta\DateAdded('2023-07-27')]
+	#[Common\Meta\Date('2023-07-27')]
 	static public function
 	TagCachePrime(self $Inst):
 	void {

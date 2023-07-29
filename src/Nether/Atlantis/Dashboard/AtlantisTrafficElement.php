@@ -27,7 +27,7 @@ extends Atlantis\Dashboard\Element {
 		parent::__Construct(
 			$App,
 			'Account',
-			'atlantis/dashboard/element/traffic'
+			'atlantis/dashboard/traffic/element-dash'
 		);
 
 		$Since = new Common\Date('-24 hour');

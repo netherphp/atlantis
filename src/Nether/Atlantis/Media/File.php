@@ -543,6 +543,8 @@ extends Atlantis\Prototype {
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
+		parent::FindExtendFilters($SQL, $Input);
+
 		return;
 	}
 

@@ -81,11 +81,28 @@ extends Atlantis\Routes\UploadAPI {
 	EntityPostFinal():
 	void {
 
+		$Entity = NULL;
+		$ParentUUID = NULL;
+		$ChildType = NULL;
+
+		////////
+
 		try { $this->ChunkFinalise(); }
 		catch(Exception $Error) {
 			$this->Quit(1, $Error->GetMessage());
 			return;
 		}
+
+		($this->Data)
+		->TagID(
+			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Numbers::IntType(...)
+		)
+		->ParentUUID(
+			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Text::UUID(...)
+		)
+		->ParentType(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 
@@ -95,6 +112,24 @@ extends Atlantis\Routes\UploadAPI {
 		$this->Quit(2, 'invalid or unhandled upload');
 
 		////////
+
+		$ChildType = match(TRUE) {
+			$Entity->Type === $Entity::TypeImg
+			=> 'Media.Image',
+
+			default
+			=> 'Media.File'
+		};
+
+		if(is_iterable($this->Data->ParentUUID) && $this->Data->ParentType)
+		foreach($this->Data->ParentUUID as $ParentUUID) {
+			Atlantis\Struct\EntityRelationship::Insert([
+				'ParentType'  => $this->Data->ParentType,
+				'ParentUUID'  => $ParentUUID,
+				'ChildType'   => $ChildType,
+				'ChildUUID'   => $Entity->UUID
+			]);
+		}
 
 		$this->SetPayload($Entity->DescribeForPublicAPI());
 

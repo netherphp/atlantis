@@ -1,0 +1,82 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $Trail
+ * @var Database\Struct\PrototypeFindResult $Profiles
+ */
+
+
+$Surface
+->Area('media/dashboard/scripts', $__SCOPE)
+->Area('dashboard/nav', [ 'Trail' => $Trail ]);
+
+?>
+
+<div class="jumbotron rounded p-2 mb-2">
+	<div class="row justify-content-end">
+		<div class="col-auto">
+			<button class="btn btn-outline-dark btn-block" data-profile-cmd="new">
+				<i class="mdi mdi-plus"></i>
+				New Profile
+			</button>
+		</div>
+	</div>
+</div>
+
+<div class="jumbotron rounded p-2 mb-6">
+	<form method="get">
+		<div class="row align-items-center">
+			<div class="col-12 mb-2">
+				<input type="text" name="q" class="form-control" placeholder="Search..." value="<?php $Util->Print($Route->Data->Q) ?>" />
+			</div>
+			<div class="col-12 mb-2">
+				<div class="form-check form-switch">
+					<label class="form-check-label fw-bold text-uppercase">
+						<input type="checkbox" name="untagged" value="1" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
+						Untagged Only
+					</label>
+				</div>
+			</div>
+			<div class="col-12"></div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-dark">
+					<i class="mdi mdi-magnify"></i>
+					Search
+				</button>
+			</div>
+			<?php if($Searched): ?>
+			<div class="col-auto">
+				(<a href="?">Reset</a>)
+			</div>
+			<?php endif; ?>
+		</div>
+	</form>
+</div>
+
+<div class="fw-bold text-align-center mb-2">
+	Found <?php $Util->Print($Profiles->Total) ?>
+	<?php $Util->Print(Atlantis\Util::IfOneOrMore($Profiles->Total, 'Profile', 'Profiles')) ?>
+</div>
+<hr />
+
+<?php
+
+$Surface
+->Area('widgets/profile-list', [ 'Profiles'=> $Profiles ])
+->Area('widgets/pager', [ 'Results'=> $Profiles ])
+
+?>

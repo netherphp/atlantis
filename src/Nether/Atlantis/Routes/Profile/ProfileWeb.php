@@ -11,21 +11,26 @@ use Exception;
 class ProfileWeb
 extends Atlantis\PublicWeb {
 
-	#[Avenue\Meta\RouteHandler('/::Alias::', Verb: 'GET')]
+	#[Avenue\Meta\RouteHandler('/profile/::Alias::', Verb: 'GET')]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
 	public function
 	View(string $Alias, Atlantis\Profile\Entity $Profile):
 	void {
 
-		($this->Surface)
-		->Set('Page.Title', $Profile->Title);
+		$Tags = $Profile->GetTags();
+		$Photos = $Profile->FetchPhotos();
+		$Videos = $Profile->FetchVideos();
 
 		////////
 
-		$this->Surface->Area(
-			$this->GetViewArea(),
-			[ 'Profile'=> $Profile ]
-		);
+		($this->Surface)
+		->Set('Page.Title', $Profile->Title)
+		->Area($this->GetViewArea(), [
+			'Profile' => $Profile,
+			'Tags'    => $Tags,
+			'Photos'  => $Photos,
+			'Videos'  => $Videos
+		]);
 
 		return;
 	}
