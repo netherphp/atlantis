@@ -39,7 +39,7 @@ $AdminMenu = (
 
 <?php $Surface->Area('design/subheader'); ?>
 
-<div class="container pt-5 pb-6">
+<div class="container pt-6 pb-6">
 
 	<?php if(!$Profile->Enabled): ?>
 	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
@@ -53,15 +53,19 @@ $AdminMenu = (
 			</div>
 			<?php endif; ?>
 			<div class="col">
-				<h2 class="mb-0"><?php $Util->Print($Profile->Title) ?></h2>
+				<div class="row">
+					<div class="col">
+						<h2 class="mb-0"><?php $Util->Print($Profile->Title) ?></h2>
+					</div>
+					<div class="col-auto">
+						<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $AdminMenu ]) ?>
+					</div>
+				</div>
+				<hr class="mt-1 mb-3" />
+				<div class="mb-4">
+					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
+				</div>
 			</div>
-			<div class="col-auto">
-				<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $AdminMenu ]) ?>
-			</div>
-		</div>
-		<hr class="mt-1 mb-3" />
-		<div class="mb-4">
-			<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
 		</div>
 	</div>
 
