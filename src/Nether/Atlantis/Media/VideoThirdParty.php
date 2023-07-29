@@ -149,6 +149,7 @@ extends Atlantis\Prototype {
 			$SQL->Where('Main.Enabled=:Enabled');
 		}
 
+		/* this was moved to prototype
 		if($Input['Untagged'] === TRUE) {
 			$TableTL = Atlantis\Tag\EntityLink::GetTableInfo();
 
@@ -159,6 +160,7 @@ extends Atlantis\Prototype {
 
 			$SQL->Where('UTCHK.ID IS NULL');
 		}
+		*/
 
 		return;
 	}
