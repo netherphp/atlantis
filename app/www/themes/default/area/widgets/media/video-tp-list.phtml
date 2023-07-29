@@ -23,7 +23,7 @@ use Nether\User;
 	<?php foreach($Videos as $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
 	<div class="col-12 col-md-3">
 		<div class="ratiobox widescreen wallpapered covered rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
-			<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>" target="_blank"></a>
+			<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"></a>
 			<div class="position-absolute position-bottom position-right p-1">
 				<?php if($Route->IsUserAdmin()): ?>
 				<button class="btn btn-light" data-videotp-cmd="edit" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-pencil mr-0"></i></button>
@@ -33,7 +33,7 @@ use Nether\User;
 		</div>
 	</div>
 	<div class="col-12 col-md mb-4">
-		<h3><a href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>" target="_blank"><?php $Util->Print($Video->Title) ?></a></h3>
+		<h3><a href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><?php $Util->Print($Video->Title) ?></a></h3>
 		<div>
 			<b>Date Shared:</b>
 			<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
