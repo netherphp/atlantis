@@ -168,8 +168,11 @@ implements
 		Atlantis\Media\FileTagLink::Register();
 		Atlantis\Media\VideoThirdPartyTagLink::Register();
 		Atlantis\Profile\EntityTagLink::Register();
-
 		Atlantis\Tag\SubtagLink::Register();
+
+		Atlantis\Struct\EntityRelationship::Register('Media.Image', Media\File::class);
+		Atlantis\Struct\EntityRelationship::Register('Media.Video.ThirdParty', Media\VideoThirdParty::class);
+		Atlantis\Struct\EntityRelationship::Register('Profile.Entity', Profile\Entity::class);
 
 		////////
 

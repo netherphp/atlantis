@@ -15,25 +15,133 @@ use Exception;
 class EntityRelationship
 extends Atlantis\Prototype {
 
+	#[Common\Meta\Date('2023-07-31')]
+	static Common\Datastore
+	$Types;
+
+	#[Common\Meta\Date('2023-07-31')]
+	static public function
+	Register(string $Type, string $Class):
+	void {
+
+		if(!isset(static::$Types))
+		static::$Types = new Common\Datastore;
+
+		////////
+
+		if(!class_exists($Class))
+		throw new Exception("class not found: {$Class}");
+
+		////////
+
+		static::$Types[$Type] = $Class;
+		return;
+	}
+
+	static public function
+	TypeClass(string $Type):
+	string {
+
+		if(!isset(static::$Types))
+		static::$Types = new Common\Datastore;
+
+		////////
+
+		if(!isset(static::$Types[$Type]))
+		throw new Exception("ERI Type not registered: {$Type}");
+
+		////////
+
+		return static::$Types[$Type];
+	}
+
+	static public function
+	ClassType(string $Class):
+	string {
+
+		if(!isset(static::$Types))
+		static::$Types = new Common\Datastore;
+
+		////////
+
+		$Found = static::$Types->Distill(
+			fn(string $C)
+			=> $C === $Class
+		);
+
+		if(!$Found->Count())
+		throw new Exception("ERI Class not registered: {$Class}");
+
+		////////
+
+		return $Found->Keys()[0];
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Database\Meta\TypeVarChar(Size: 36)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
 	public string
 	$ParentType;
 
 	#[Database\Meta\TypeVarChar(Size: 36)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
 	public string
 	$ParentUUID;
 
 	#[Database\Meta\TypeVarChar(Size: 36)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
 	public string
 	$ChildType;
 
 	#[Database\Meta\TypeVarChar(Size: 36)]
 	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
 	public string
 	$ChildUUID;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public ?Atlantis\Prototype
+	$Parent = NULL;
+
+	public ?Atlantis\Prototype
+	$Child = NULL;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady(Common\Prototype\ConstructArgs $Args):
+	void {
+
+		if($Args->InputHas('C_RE_ID')) {
+			$Class = static::TypeClass($Args->Input['ChildType']);
+			$this->Child = $Class::FromPrefixedDataset($Args->Input, 'C_RE_');
+		}
+
+		return;
+	}
+
+	public function
+	DescribeForPublicAPI():
+	array {
+
+		$Data = parent::DescribeForPublicAPI();
+
+		if(isset($this->Parent))
+		$Data['Parent'] = $this->Parent->DescribeForPublicAPI();
+
+		if(isset($this->Child))
+		$Data['Child'] = $this->Child->DescribeForPublicAPI();
+
+		return $Data;
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -86,11 +194,28 @@ extends Atlantis\Prototype {
 		if($Input['ParentUUID'] !== NULL)
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
 
-		if($Input['ChildType'] !== NULL)
-		$SQL->Where('Main.ChildType=:ChildType');
+		if($Input['ChildType'] !== NULL) {
+			$Class = static::TypeClass($Input['ChildType']);
+
+			$Class::JoinMainTables($SQL, 'Main', 'ChildUUID', 'C');
+			$Class::JoinMainFields($SQL, 'C');
+
+			$Class::JoinExtendTables($SQL, 'C', 'C');
+			$Class::JoinExtendFields($SQL, 'C');
+
+			$SQL->Where('Main.ChildType LIKE :ChildType');
+		}
 
 		if($Input['ChildUUID'] !== NULL)
 		$SQL->Where('Main.ChildUUID=:ChildUUID');
+
+		if($Input['Group'] !== NULL) {
+			if($Input['Group'] === 'parent')
+			$SQL->Group('Main.ParentUUID');
+
+			if($Input['Group'] === 'child')
+			$SQL->Group('Main.ChildUUID');
+		}
 
 		return;
 	}

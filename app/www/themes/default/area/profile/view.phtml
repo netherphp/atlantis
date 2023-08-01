@@ -21,8 +21,23 @@ use Nether\User;
  * @var Database\Struct\PrototypeFindResult $Videos
  */
 
-$AdminMenu = (
-	(Atlantis\Struct\DropdownMenu::New())
+$AdminMenu = NULL;
+
+if($Route->IsUserAdmin()) {
+	$AdminMenu = Atlantis\Struct\DropdownMenu::New();
+
+	$Plugins = (
+		($App->Plugins)
+		->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
+		->Remap(fn(string $C)=> new $C)
+		->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
+			=> $C->MergeRight($P->GetItems( $Profile ))
+		))
+		->Sort()
+	);
+
+	($AdminMenu)
 	->ItemNew('Edit Title', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE))
 	->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
 	->ItemNew('Edit Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
@@ -31,9 +46,16 @@ $AdminMenu = (
 	->ItemNew('-')
 	->ItemNew('Upload Photos', 'mdi-upload', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE))
 	->ItemNew('Add Video URL', 'mdi-video', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE))
-	->ItemNew('-')
-	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE))
-);
+	->ItemNew('-');
+
+	if($Plugins && $Plugins->Count()) {
+		$AdminMenu->ItemPush($Plugins);
+		$AdminMenu->ItemNew('-');
+	}
+
+	($AdminMenu)
+	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
+}
 
 ?>
 
@@ -111,6 +133,7 @@ $AdminMenu = (
 	</div>
 	<?php endif; ?>
 
+	<?php $Surface->Area('profile/view-extend', $__SCOPE) ?>
 
 </div>
 

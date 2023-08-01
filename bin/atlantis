@@ -1430,6 +1430,173 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	// these are tools for EntityRelationship to make sure that there were
+	// no stale records left behind. it is unclear at this time if the ERI
+	// will be kept so these commands will just live here for now.
+
+	#[Console\Meta\Command('chkrel-parent')]
+	public function
+	CheckEntRelParent():
+	int {
+
+		$OptCommit = $this->GetOption('commit') ?? FALSE;
+		$OptList = $this->GetOption('list') ?? FALSE;
+		$Delete = new Common\Datastore;
+
+		$Filters = new Common\Datastore([
+			'Page'  => 1,
+			'Limit' => 20,
+			'Group' => 'parent'
+		]);
+
+		while(TRUE) {
+			$Result = Atlantis\Struct\EntityRelationship::Find($Filters);
+
+			if(!$Result->Count())
+			break;
+
+			foreach($Result as $Row) {
+				$Class = Atlantis\Struct\EntityRelationship::TypeClass($Row->ParentType);
+				$Inst = $Class::GetByField('UUID', $Row->ParentUUID);
+
+				if(!$Inst)
+				$Delete[$Row->ID] = [ 'Type'=> $Row->ParentType, 'UUID'=> $Row->ParentUUID ];
+			}
+
+			$Filters['Page'] += 1;
+		}
+
+		$this
+		->PrintLn(sprintf(
+			$this->Format(
+				'Found %d Invalid Relationship Parents',
+				((count($Delete) === 0) ? static::FmtOK : static::FmtPrime)
+			),
+			count($Delete)
+		));
+
+		if(count($Delete)) {
+
+			if($OptList) {
+				$this->PrintLn();
+				$Delete->Each(
+					fn(array $I)
+					=> $this->PrintLn(sprintf(
+						'%s %s %s',
+						$this->Format('*', static::FmtAccent),
+						$I['Type'],
+						$I['UUID']
+					))
+				);
+				$this->PrintLn();
+			}
+
+			if(!$OptCommit) {
+				$this->FormatLn(
+					'Use --commit to delete the relationships. This cannot be undone.',
+					static::FmtAccent
+				);
+			}
+
+			else {
+				$Delete->Each(
+					fn(array $I)
+					=> Atlantis\Struct\EntityRelationship::DeleteByUUID($I['UUID'])
+				);
+			}
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('chkrel-child')]
+	public function
+	CheckEntRelChild():
+	int {
+
+		$OptCommit = $this->GetOption('commit') ?? FALSE;
+		$OptList = $this->GetOption('list') ?? FALSE;
+		$Delete = new Common\Datastore;
+
+		$Filters = new Common\Datastore([
+			'Page'  => 1,
+			'Limit' => 20,
+			'Group' => 'child'
+		]);
+
+		while(TRUE) {
+			$Result = Atlantis\Struct\EntityRelationship::Find($Filters);
+
+			if(!$Result->Count())
+			break;
+
+			foreach($Result as $Row) {
+				$Class = Atlantis\Struct\EntityRelationship::TypeClass($Row->ChildType);
+				$Inst = $Class::GetByField('UUID', $Row->ChildUUID);
+
+				if(!$Inst)
+				$Delete[$Row->ID] = [ 'Type'=> $Row->ChildType, 'UUID'=> $Row->ChildUUID ];
+			}
+
+			$Filters['Page'] += 1;
+		}
+
+		$this
+		->PrintLn(sprintf(
+			$this->Format(
+				'Found %d Invalid Relationship Children',
+				((count($Delete) === 0) ? static::FmtOK : static::FmtPrime)
+			),
+			count($Delete)
+		));
+
+		if(count($Delete)) {
+			if($OptList) {
+				$this->PrintLn();
+				$Delete->Each(
+					fn(array $I)
+					=> $this->PrintLn(sprintf(
+						'%s %s %s',
+						$this->Format('*', static::FmtAccent),
+						$I['Type'],
+						$I['UUID']
+					))
+				);
+				$this->PrintLn();
+			}
+
+			if(!$OptCommit) {
+				$this->FormatLn(
+					'Use --commit to delete the relationships. This cannot be undone.',
+					static::FmtAccent
+				);
+			}
+
+			else {
+				$Delete->Each(
+					fn(array $I)
+					=> Atlantis\Struct\EntityRelationship::DeleteByUUID($I['UUID'])
+				);
+			}
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('chkrel')]
+	public function
+	CheckEntRel():
+	int {
+
+		$this->CheckEntRelParent();
+		$this->CheckEntRelChild();
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	protected function
 	ComposerDumpAutoload():
 	static {

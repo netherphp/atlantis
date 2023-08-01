@@ -54,9 +54,13 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	ItemPush(DropdownItem $Item):
+	ItemPush(iterable|DropdownItem $Item):
 	static {
 
+		if(is_iterable($Item))
+		$this->Items->MergeRight($Item);
+
+		else
 		$this->Items->Push($Item);
 
 		return $this;

@@ -19,17 +19,37 @@ use Nether\User;
 
 $AdminMenu = NULL;
 
-if($Route->IsUserAdmin())
-$AdminMenu = (
-	Atlantis\Struct\DropdownMenu::New()
-	->ItemNew('Edit Video Info', 'mdi-pencil', Attr: [ 'data-videotp-cmd'=> 'edit', 'data-id'=> $Video->ID, 'data-uuid'=> $Video->UUID ])
-	->ItemNew('Edit Description', 'mdi-pencil', Attr: [ 'data-videotp-cmd'=> 'details', 'data-id'=> $Video->ID, 'data-uuid'=> $Video->UUID ])
-	->ItemNew('Edit Tags', 'mdi-pencil', Attr: [ 'data-videotp-cmd'=> 'tags', 'data-id'=> $Video->ID, 'data-uuid'=> $Video->UUID ])
-	->ItemNew('Disable Video', 'mdi-eye-off', Attr: [ 'data-videotp-cmd'=> 'disable', 'data-id'=> $Video->ID, 'data-uuid'=> $Video->UUID ], If: $Video->Enabled)
-	->ItemNew('Enable Video', 'mdi-eye', Attr: [ 'data-videotp-cmd'=> 'enable', 'data-id'=> $Video->ID, 'data-uuid'=> $Video->UUID ], If: !$Video->Enabled)
-	->ItemNew('-')
-	->ItemNew('Delete Video', 'mdi-trash-can', Attr: [ 'data-videotp-cmd'=> 'delete', 'data-id'=> $Video->ID, 'data-uuid'=> $Video->UUID ] )
-);
+if($Route->IsUserAdmin()) {
+	$AdminMenu = Atlantis\Struct\DropdownMenu::New();
+
+	$Plugins = (
+		($App->Plugins)
+		->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
+		->Remap(fn(string $C)=> new $C)
+		->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
+			=> $C->MergeRight($P->GetItems( $Video ))
+		))
+		->Sort()
+	);
+
+	($AdminMenu)
+	->ItemNew('Edit Video Info', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'edit' ], TRUE))
+	->ItemNew('Edit Video Description', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'details' ], TRUE))
+	->ItemNew('Edit Video Tags', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'tags' ], TRUE))
+	->ItemNew('Disable Video', 'mdi-eye-off', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'disable' ], TRUE), If: $Video->Enabled)
+	->ItemNew('Enable Video', 'mdi-eye', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'enable' ], TRUE), If: !$Video->Enabled)
+	->ItemNew('-');
+
+	if($Plugins && $Plugins->Count()) {
+		$AdminMenu->ItemPush($Plugins);
+		$AdminMenu->ItemNew('-');
+	}
+
+	($AdminMenu)
+	->ItemNew('Delete Video', 'mdi-trash-can', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'delete' ], TRUE));
+
+}
 
 ?>
 
@@ -39,14 +59,14 @@ data-id="<?php $Util->Print($Video->ID) ?>"
 data-uuid="<?php $Util->Print($Video->UUID) ?>"
 />
 
-<div class="row align-items-center mb-2">
+<div class="row align-items-start mb-2">
 	<div class="col">
 		<h2 class="fw-bold lh-1 mb-0">
 			Video:
 			<?php $Util->Print($Video->Title) ?>
 		</h2>
 	</div>
-	<?php if($Route->IsUserAdmin()): ?>
+	<?php if($AdminMenu): ?>
 	<div class="col-auto">
 		<?php $Surface->Area('widgets/dropdown', [ 'Menu'=> $AdminMenu ]) ?>
 	</div>
@@ -71,7 +91,7 @@ data-uuid="<?php $Util->Print($Video->UUID) ?>"
 	</div>
 </div>
 
-<div class="mb-4">
+<div class="mb-8">
 	<h2 class="text-uppercase">Description</h2>
 	<hr class="mt-2 mb-4" />
 
@@ -80,3 +100,6 @@ data-uuid="<?php $Util->Print($Video->UUID) ?>"
 	<div class="fst-italic">No additional information has been addded.</div>
 	<?php endif; ?>
 </div>
+
+<?php $Surface->Area('media/video/view-extend', $__SCOPE) ?>
+
