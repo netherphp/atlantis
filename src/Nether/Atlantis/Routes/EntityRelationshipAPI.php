@@ -47,7 +47,7 @@ extends Atlantis\ProtectedAPI {
 		->ParentUUID(Common\Filters\Text::UUID(...))
 		->ChildType(Common\Filters\Text::TrimmedNullable(...))
 		->ChildUUID(
-			Common\Filters\Lists::ArrayOf(...),
+			Common\Filters\Lists::ArrayOfNullable(...),
 			Common\Filters\Text::UUID(...)
 		);
 
@@ -66,8 +66,8 @@ extends Atlantis\ProtectedAPI {
 		if(!$this->Data->ChildType)
 		$this->Quit(3, 'no ChildType defined');
 
-		if(!count($this->Data->ChildUUID))
-		$this->Quit(4, 'no ChildUUID have been defined');
+		//if(!is_array($this->Data) || !count($this->Data->ChildUUID))
+		//$this->Quit(4, 'no ChildUUID have been defined');
 
 		// make an index of the relationships we already have to use as
 		// a way to determine what needs to be removed at the end of the
@@ -78,6 +78,7 @@ extends Atlantis\ProtectedAPI {
 			'ChildType'  => $this->Data->ChildType
 		]);
 
+		if(is_array($this->Data->ChildUUID))
 		foreach($this->Data->ChildUUID as $ChildUUID) {
 			// demand that the UUIDs given exist in the tables it is
 			// claimed they came from.
