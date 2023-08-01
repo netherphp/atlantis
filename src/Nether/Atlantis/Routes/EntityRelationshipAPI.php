@@ -120,12 +120,16 @@ extends Atlantis\ProtectedAPI {
 			);
 		}
 
-		// remove any remaining relationships from the old index completely
+		// if we only wanted to append then zero our local old index out.
 
-		if(!$this->Data->AppendOnly)
+		if($this->Data->AppendOnly)
+		$Old->Clear();
+
+		// remove remaining relationships from the old index completely.
+
 		$Old->Each(fn(EntityRelationship $P)=> $P->Drop());
 
-		////////
+		// describe for the api output.
 
 		$Old->Remap(fn(Atlantis\Prototype $P)=> $P->DescribeForPublicAPI());
 		$Added->Remap(fn(Atlantis\Prototype $P)=> $P->DescribeForPublicAPI());
