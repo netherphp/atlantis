@@ -86,7 +86,7 @@ class Profile {
 			labelAccept: 'Save',
 			fields: [
 				new DialogUtil.Field('hidden', 'ID', null, self.id),
-				new DialogUtil.Field('editor-html', 'Details', 'Description')
+				new DialogUtil.Field('editor-html', 'Details', 'Description', jQuery('#EditorContent').html())
 			],
 			onAccept: function() {
 

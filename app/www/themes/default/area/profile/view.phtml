@@ -96,7 +96,7 @@ if($Route->IsUserAdmin()) {
 		<hr class="mt-1 mb-3" />
 
 		<?php if($Profile->Details): ?>
-		<div class="EditorContent"><?php echo $Profile->Details ?></div>
+		<div id="EditorContent" class="EditorContent"><?php echo $Profile->Details ?></div>
 		<?php else: ?>
 		<div class="fst-italic">No additional information has been added.</div>
 		<?php endif; ?>
