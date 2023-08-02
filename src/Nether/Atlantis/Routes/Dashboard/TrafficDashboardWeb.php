@@ -102,6 +102,7 @@ extends Atlantis\ProtectedWeb {
 		($this->App->Surface)
 		->Set('Page.Title', "Traffic Report: {$Title} - Dashboard")
 		->Wrap('atlantis/dashboard/traffic/view', [
+			'When'     => $When,
 			'Title'    => $Title,
 			'Rows'     => $Rows,
 			'Sources'  => $Sources,
