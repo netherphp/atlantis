@@ -116,10 +116,7 @@ implements
 			static::ConfPageEnableStatic      => TRUE,
 			static::ConfPageStaticStorageKey  => 'Default',
 			static::ConfPageStaticStoragePath => 'pages/static',
-			static::ConfAccessIgnoreAgentHard => 'AhrefsBot|bingbot|BLEXBot|Bytespider|Bytedance|DotBot|GoogleBot|MJ12bot|SemrushBot|PetalBot',
-			static::ConfAccessIgnoreAgentSoft => 'facebookexternalhit|Twitterbot',
 			static::ConfUserAgent             => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
-
 			static::ConfContactTo             => NULL,
 			static::ConfContactBCC            => NULL,
 			static::ConfContactSubject        => 'Contact from Website',
@@ -128,7 +125,25 @@ implements
 			static::ConfErrorLogPath          => NULL,
 
 			static::PageTagIndexURL           => '/tags',
-			static::PageTagViewURL            => '/tag/:Alias:'
+			static::PageTagViewURL            => '/tag/:Alias:',
+
+			// things found to be walking our websites while providing
+			// absolutely no value back to the internet. these get
+			// served blank pages, and arent even logged by analytics.
+
+			static::ConfAccessIgnoreAgentHard => (''
+				. 'AhrefsBot|BLEXBot|Bytespider|Bytedance|DotBot|MJ12bot|SemrushBot|PetalBot|'
+				. 'paloaltonetworks|linkfluence|internet\\-measurement|naver\\.me'
+			),
+
+			// these tend to be things used by companies to fetch
+			// thumbnails for links you send people in various chats and
+			// messengers. additionally search engines people actually
+			// use are allowed.
+
+			static::ConfAccessIgnoreAgentSoft => (''
+				. 'Applebot|bingbot|facebookexternalhit|GoogleBot|Twitterbot|YandexBot'
+			)
 		]);
 
 		////////
