@@ -50,6 +50,10 @@ extends Atlantis\Prototype {
 	public string
 	$Details;
 
+	#[Database\Meta\TypeText]
+	public string
+	$SocialJSON;
+
 	////////
 
 	#[Common\Meta\PropertyListable]
@@ -60,6 +64,10 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TableJoin('CoverImageID')]
 	public Atlantis\Media\File
 	$CoverImage;
+
+	#[Common\Meta\PropertyFactory('FromJSON', 'SocialJSON')]
+	public Atlantis\Struct\SocialData
+	$SocialData;
 
 	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Atlantis\Prototype ///////////////////////////////

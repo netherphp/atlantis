@@ -247,8 +247,7 @@ implements
 		->Push(new Atlantis\Dashboard\AtlantisTrafficElement($App));
 
 		$Elements
-		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App))
-		->Push(new Atlantis\Dashboard\AtlantisMediaElement($App));
+		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App));
 
 		return;
 	}

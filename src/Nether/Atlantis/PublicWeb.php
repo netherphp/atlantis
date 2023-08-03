@@ -76,6 +76,7 @@ as html pages. //*/
 		// if we are viewing a dev server and we're not an admin then we
 		// should gtfo.
 
+		/*
 		if($this->App->IsDev() && !defined('UNIT_TEST_GO_BRRRT'))
 		if(!$this->IsUserAdmin() && !$Info->HasAttribute(UserActivationFlow::class)) {
 
@@ -102,6 +103,7 @@ as html pages. //*/
 
 			return Avenue\Response::CodeRedirectPerm;
 		}
+		*/
 
 		return Avenue\Response::CodeOK;
 	}
