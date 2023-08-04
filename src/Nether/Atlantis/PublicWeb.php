@@ -13,6 +13,8 @@ use Nether\Common\Datafilter;
 use Nether\Atlantis\Meta\UserActivationFlow;
 use Nether\Atlantis\Meta\TrafficReportSkip;
 
+use Exception;
+
 class PublicWeb
 extends Avenue\Route {
 /*// provides a basic route template for public endpoints that need to interact
@@ -69,41 +71,8 @@ as html pages. //*/
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
-		$Handler = $this->App->Router->GetCurrentHandler();
-		$Info = static::GetMethodInfo($Handler->Method);
-
-		// prototype code
-		// if we are viewing a dev server and we're not an admin then we
-		// should gtfo.
-
-		/*
-		if($this->App->IsDev() && !defined('UNIT_TEST_GO_BRRRT'))
-		if(!$this->IsUserAdmin() && !$Info->HasAttribute(UserActivationFlow::class)) {
-
-			$Rewriter = match(TRUE) {
-				(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
-				=> Library::Get(Library::ConfDevLinkRewriter),
-
-				default
-				=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL)
-			};
-
-			$Goto = $Rewriter($this->App->Router->Request->GetURL());
-
-			// if no rewriter was defined or it caused a loop then
-			// should just fail.
-
-			if($Goto === $this->App->Router->Request->GetURL())
-			return Avenue\Response::CodeNope;
-
-			// else we can redirect to the rewritten url.
-
-			($this->App->Router->Response)
-			->SetHeader('Location', $Goto);
-
-			return Avenue\Response::CodeRedirectPerm;
-		}
-		*/
+		if($this->HandleAppDevProdSendoff())
+		return Avenue\Response::CodeRedirectPerm;
 
 		return Avenue\Response::CodeOK;
 	}
@@ -430,6 +399,94 @@ as html pages. //*/
 		return;
 	}
 
+	protected function
+	HandleAppDevProdSendoff():
+	bool {
+
+		// @todo 2023-08-03 add config option for OptDevProdSendoff
+
+		$OptDevProdSendoff = 1;
+
+		// do not send them away if its set to not do that.
+
+		if($OptDevProdSendoff === 0)
+		return FALSE;
+
+		// do not send them away if this is not dev
+
+		if(!$this->App->IsDev())
+		return FALSE;
+
+		// do not send them away if the unit tests are running.
+
+		if(defined('UNIT_TEST_GO_BRRRT'))
+		return FALSE;
+
+		// do not send them away if this is part of the user login, signup,
+		// or activation flow system.
+
+		$Handler = $this->App->Router->GetCurrentHandler();
+		$Info = static::GetMethodInfo($Handler->Method);
+
+		if($Info->HasAttribute(UserActivationFlow::class))
+		return FALSE;
+
+		switch($OptDevProdSendoff) {
+			case 1:
+				// dont send admins.
+				if($this->IsUserAdmin())
+				return FALSE;
+
+				break;
+			break;
+			case 2:
+				// dont send users.
+				if($this->App->User)
+				return FALSE;
+
+				break;
+			break;
+			case 3:
+				// dont send users with permission.
+				if($this->App->User)
+				if($this->App->User->HasAccessTypeOrAdmin('Nether.Atlantis.Developer'))
+				return FALSE;
+
+				break;
+			break;
+		}
+
+		////////
+
+		$Goto = $this->App->Router->Request->GetURL();
+
+		$Rewriter = match(TRUE) {
+			(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
+			=> Library::Get(Library::ConfDevLinkRewriter),
+
+			(str_contains($Goto, '://dev.'))
+			=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL),
+
+			default
+			=> throw new Exception('no URL rewriter defined for sendoff')
+		};
+
+		$Goto = $Rewriter($Goto);
+
+		// if no rewriter was defined or it caused a loop then
+		// should just fail.
+
+		if($Goto === $this->App->Router->Request->GetURL())
+		return Avenue\Response::CodeNope;
+
+		// else we can redirect to the rewritten url.
+
+		($this->App->Router->Response)
+		->SetHeader('Location', $Goto);
+
+		return TRUE;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -493,6 +550,9 @@ as html pages. //*/
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	QueryBlender(array $Input):

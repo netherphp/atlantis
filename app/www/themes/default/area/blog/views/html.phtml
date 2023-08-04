@@ -57,8 +57,13 @@ $BlogUser ??= NULL;
 
 <!-- POST IMAGE -->
 <?php if($Full && $Post->CoverImageID): ?>
-<div class="pt-4 mb-4">
-	<img class="rounded w-100" src="<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
+<div class="position-relative bg-light rounded mb-4">
+	<div class="ratiobox widescreen bg-light rounded" style="overflow:hidden;">
+		<div class="position-absolutely wallpapered covered opacity-50" style="background-color:#c0c0c0;background-image:url(<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>); filter: blur(10px); transform: scale(1.1);">
+		</div>
+		<div class="position-absolutely wallpapered contained" style="background-color:transparent;background-image:url(<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>);">
+		</div>
+	</div>
 </div>
 <?php endif; ?>
 
