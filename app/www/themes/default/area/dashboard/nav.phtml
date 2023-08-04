@@ -9,11 +9,11 @@ $Val = NULL;
 <div class="mb-4">
 	<div class="PrettyModernNavbar">
 		<div class="row tight">
-			<div class="col-auto">
+			<div class="d-none col-auto">
 				<a href="/"><i class="mdi mdi-fw mdi-slash-forward"></i></a>
 			</div>
 			<div class="col-auto">
-				<i class="mdi mdi-fw mdi-chevron-right"></i>
+				<i class="d-none mdi mdi-fw mdi-chevron-right"></i>
 				<a href="/dashboard">Dashboard</a>
 			</div>
 			<?php foreach($Trail as $Key => $Val): ?>
@@ -29,6 +29,12 @@ $Val = NULL;
 			</div>
 			<?php endif; ?>
 			<?php endforeach; ?>
+
+			<div class="col"></div>
+			<div class="col-auto justify-self-end">
+				Hello,
+				<a href="/dashboard"><?php $Util->Print($User->GetAlias()) ?></a>
+			</div>
 		</div>
 	</div>
 </div>

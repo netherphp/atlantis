@@ -405,7 +405,7 @@ as html pages. //*/
 
 		// @todo 2023-08-03 add config option for OptDevProdSendoff
 
-		$OptDevProdSendoff = 1;
+		$OptDevProdSendoff = 2;
 
 		// do not send them away if its set to not do that.
 

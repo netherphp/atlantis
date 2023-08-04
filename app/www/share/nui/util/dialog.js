@@ -39,12 +39,13 @@ this class defines the arguments the dialog fields are able to take upon their
 constructors in object form.
 //*/
 
-	constructor({ type, name, title, value }) {
+	constructor({ type, name, title, value, list }) {
 
 		this.type = type;
 		this.name = name;
 		this.title = title ? title : name;
 		this.value = value ? value : null;
+		this.list  = list ? list : [];
 
 		return;
 	};
@@ -227,19 +228,21 @@ a dialog window can be given an array of these to automatically build a form
 inside the dialog window.
 //*/
 
-	constructor(type, name, title, value) {
+	constructor(type, name, title, value, list) {
 
 		if(typeof type === 'object') {
 			name = type.name;
 			title = type.title;
 			value = type.value;
 			type = type.type;
+			list = type.list;
 		}
 
 		this.type = type;
 		this.name = name;
 		this.title = title ? title : name;
 		this.value = value ? value : null;
+		this.list = list ? list : null;
 
 		return;
 	};
@@ -261,7 +264,43 @@ inside the dialog window.
 		if(this.type === 'editor-html')
 		return this.buildEditorHTML();
 
+		if(this.type === 'select')
+		return this.buildSelectField();
+
 		return;
+	};
+
+	buildSelectField() {
+
+		let output = jQuery('<div />');
+		let field = null;
+
+		output.append(
+			jQuery('<div />')
+			.addClass('fw-bold')
+			.text(this.title)
+		);
+
+		output.append(
+			field = jQuery('<select />')
+			.addClass('form-select')
+			.attr('name', this.name)
+			.attr('title', this.title)
+			.attr('data-fieldtype', this.type)
+		);
+
+		if(typeof this.list === 'object')
+		for(const item in this.list)
+		field.append(
+			jQuery('<option />')
+			.attr('value', this.list[item])
+			.text(item)
+		);
+
+		if(this.value)
+		field.val(this.value);
+
+		return output;
 	};
 
 	buildTextField() {
