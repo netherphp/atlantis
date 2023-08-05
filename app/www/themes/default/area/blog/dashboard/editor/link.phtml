@@ -26,6 +26,10 @@ $Link = (
 
 ?>
 
+<style type="text/css">
+.Viewport.EditorContent { min-height: 100px; }
+</style>
+
 <div class="BlogPostEditor">
 	<form id="BlogPostEditor" data-editor="link" data-post-id="<?php $Printer($Post ? $Post->ID : 'null') ?>">
 
@@ -42,34 +46,33 @@ $Link = (
 		</div>
 
 		<!-- TITLE AND IMAGE -->
-		<div class="row mb-6">
+		<div class="row mb-0">
 			<div class="col-12 col-md mb-4 mb-md-0">
-				<?php if($Post): ?>
-				<div class="mb-4">
-					<div class="fw-bold text-uppercase">Post Date</div>
-					<div class="mb-2">
-						<input type="date" name="DateCreated" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Post ? $Post->DateCreated->Get('Y-m-d') : '') ?>" />
-					</div>
-
-					<?php if($Post->TimeCreated !== $Post->TimeSorted): ?>
-					(Sort Date: <?php $Util->Print($Post->DateSorted->Get(Common\Values::DateFormatFancyDate)) ?>)
-					<?php endif; ?>
-				</div>
-				<?php endif; ?>
-
-				<div class="mb-4">
+				<div class="mb-6">
 					<div class="fw-bold text-uppercase">Post Title</div>
 					<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
 				</div>
 
-				<div class="mb-0">
-					<div class="fw-bold text-uppercase">Post Visibility</div>
-					<select name="Enabled" class="form-select">
-						<option value="0" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 0)) ?>>Draft: Only Admins Can See</option>
-						<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 1)) ?>>Published</option>
-					</select>
+				<div class="mb-6">
+					<div class="fw-bold text-uppercase">Source URL</div>
+					<input type="text" name="URL" class="form-control" value="<?php $Printer($Link ? $Link->URL : '') ?>" />
+				</div>
+
+				<div class="mb-6">
+					<div class="fw-bold text-uppercase">Source Released Date</div>
+					<div class="mb-2">
+						<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
+					</div>
+
+					<div class="form-check form-switch">
+						<label class="form-check-label fw-bold">
+							<input class="form-check-input" name="OptUseLinkDate" type="checkbox" value="1" <?php $Util->Print($Util->GetCheckedHTML( $Post && $Link ? $Post->TimeSorted === $Link->GetTime() : FALSE )) ?>>
+							Sort post by Source Date?
+						</label>
+					</div>
 				</div>
 			</div>
+
 			<div class="col-12 col-md-3 mb-0 mb-md-0">
 				<div class="fw-bold text-uppercase">Post Photo</div>
 					<div id="BlogPostCoverImage" class="ratiobox widescreen wallpapered rounded bg-light mb-2" data-id="<?php $Util->Print($Post && $Post->CoverImageID ? $Post->CoverImageID : 0) ?>" style="background-image:url(<?php $Util->Print($Post && $Post->CoverImageID ? $Post->GetCoverImageURL() : '/share/gfx/misc/no-image.png') ?>);"></div>
@@ -83,34 +86,37 @@ $Link = (
 
 		<!-- LINK FIELDS -->
 		<div class="mb-6">
-			<div class="mb-6">
-				<div class="fw-bold text-uppercase">Source Date</div>
-				<div class="mb-2">
-					<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Link ? $Link->Date : '') ?>" />
-				</div>
 
-				<div class="form-check form-switch">
-					<label class="form-check-label fw-bold">
-						<input class="form-check-input" name="OptUseLinkDate" type="checkbox" value="1" <?php $Util->Print($Util->GetCheckedHTML( $Post && $Link ? $Post->TimeSorted === $Link->GetTime() : FALSE )) ?>>
-						Sort post by Source Date?
-					</label>
-				</div>
 
-			</div>
-			<div class="mb-6">
-				<div class="fw-bold text-uppercase">Source URL</div>
-				<input type="text" name="URL" class="form-control" value="<?php $Printer($Link ? $Link->URL : '') ?>" />
-			</div>
 			<div class="mb-0">
 				<div class="fw-bold text-uppercase">Source Excerpt/Highlight</div>
 				<div id="EditorExcerpt" class="Editor d-none"><?php echo $Link ? $Link->Excerpt : '' ?></div>
 			</div>
 		</div>
 
-		<!-- POST CONTENT -->
 		<div class="mb-6">
 			<div class="fw-bold text-uppercase">Additional Post Content</div>
 			<div id="EditorContent" class="Editor d-none"><?php echo $Link ? $Link->Content : '' ?></div>
+		</div>
+
+		<?php if($Post): ?>
+		<div class="mb-6">
+			<div class="fw-bold text-uppercase">Post Date</div>
+			<div class="mb-6">
+				<input type="date" name="DateCreated" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Post ? $Post->DateCreated->Get('Y-m-d') : '') ?>" />
+				<?php if($Post->TimeCreated !== $Post->TimeSorted): ?>
+				<div>(Sort Date: <?php $Util->Print($Post->DateSorted->Get(Common\Values::DateFormatFancyDate)) ?>)</div>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<div class="mb-6">
+			<div class="fw-bold text-uppercase">Post Visibility</div>
+			<select name="Enabled" class="form-select">
+				<option value="0" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 0)) ?>>Draft: Only Admins Can See</option>
+				<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 1)) ?>>Published</option>
+			</select>
 		</div>
 
 		<!-- --- --->
