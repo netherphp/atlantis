@@ -5,10 +5,16 @@ namespace Nether\Atlantis\Struct;
 use Nether\Atlantis;
 use Nether\Common;
 
+use ArrayIterator;
 use Exception;
+use IteratorAggregate;
+use JsonSerializable;
 
 class SocialData
-extends Common\Prototype {
+extends Common\Prototype
+implements
+	IteratorAggregate,
+	JsonSerializable {
 
 	const Icons = [
 		'Website'   => 'mdi-web',
@@ -26,6 +32,35 @@ extends Common\Prototype {
 	#[Common\Meta\PropertyObjectify]
 	protected Common\Datastore
 	$Data;
+
+	////////////////////////////////////////////////////////////////
+	// implements JsonSerializable /////////////////////////////////
+
+	public function
+	JsonSerialize():
+	mixed {
+
+		return $this->Data->GetData();
+	}
+
+	////////////////////////////////////////////////////////////////
+	// implements IteratorAggregate ////////////////////////////////
+
+	public function
+	GetIterator():
+	ArrayIterator {
+
+		// return an iterator that will only process the data if it
+		// actually gets ran over.
+
+		return new ArrayIterator(array_map(
+			(fn(mixed $Key)=> $this->Get($Key)),
+			array_combine(
+				array_keys($this->Data->GetData()),
+				array_keys($this->Data->GetData())
+			)
+		));
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -88,4 +123,3 @@ extends Common\Prototype {
 	}
 
 }
-

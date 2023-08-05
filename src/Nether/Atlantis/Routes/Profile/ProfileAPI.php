@@ -62,7 +62,9 @@ extends Atlantis\ProtectedAPI {
 		$Ent = $this->DemandEntityByID($this->Data->ID);
 		$Patchset = $Ent->Patch($this->Data);
 
+		if(count($Patchset))
 		$Ent->Update($Patchset);
+
 		$this->SetPayload($Ent->DescribeForPublicAPI());
 
 		return;

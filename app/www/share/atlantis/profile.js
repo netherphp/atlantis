@@ -182,6 +182,52 @@ class Profile {
 		return false;
 	};
 
+	onEditLinks(ev) {
+
+		let self = this;
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Profile Social Links',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, self.id),
+				new DialogUtil.Field('text', 'SocialDataWebsite', 'Website'),
+				new DialogUtil.Field('text', 'SocialDataFacebook', 'Facebook'),
+				new DialogUtil.Field('text', 'SocialDataInstagram', 'Instagram'),
+				new DialogUtil.Field('text', 'SocialDataTikTok', 'TikTok'),
+				new DialogUtil.Field('text', 'SocialDataThreads', 'Threads'),
+				new DialogUtil.Field('text', 'SocialDataTwitter', 'Twitter')
+
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', self.endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', self.endpoint,
+			{ ID: self.id },
+			true,
+			function(d, result) {
+				d.fillFromObject(result.payload.SocialData, 'SocialData');
+				return;
+			}
+		);
+
+		return false;
+	};
+
+	////////////////
+	////////////////
+
 	onAddVideo(ev) {
 
 		let self = this;
@@ -260,6 +306,7 @@ class Profile {
 		let map = {
 			new:      new DocReadyFunc(()=> Profile.WhenNew(), false),
 			title:    new DocReadyFunc((i, u)=> Profile.WhenEditTitle(i, u), true),
+			links:    new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
 			details:  new DocReadyFunc((i, u)=> Profile.WhenEditDetails(i, u), true),
 			tags:     new DocReadyFunc((i, u)=> Profile.WhenEditTags(i, u), true),
 			photo:    new DocReadyFunc((i, u)=> Profile.WhenUploadPhoto(i, u), true),
@@ -324,6 +371,14 @@ class Profile {
 
 		let pro = new Profile(id, uuid);
 		pro.onEditTitle(null);
+
+		return;
+	};
+
+	static WhenEditLinks(id, uuid) {
+
+		let pro = new Profile(id, uuid);
+		pro.onEditLinks(null);
 
 		return;
 	};

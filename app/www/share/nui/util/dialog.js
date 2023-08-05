@@ -173,10 +173,10 @@ in-page dialog windows.
 	////////////////
 	////////////////
 
-	fillFromObject(input) {
+	fillFromObject(input, prefix='') {
 
 		for(const key in input) {
-			let field = this.body.find(`[name=${key}]`);
+			let field = this.body.find(`[name=${prefix}${key}]`);
 
 			if(!field.length)
 			continue;

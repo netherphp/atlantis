@@ -6,6 +6,7 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
 
+use ArrayAccess;
 use Exception;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
@@ -66,6 +67,7 @@ extends Atlantis\Prototype {
 	$CoverImage;
 
 	#[Common\Meta\PropertyFactory('FromJSON', 'SocialJSON')]
+	#[Common\Meta\PropertyListable]
 	public Atlantis\Struct\SocialData
 	$SocialData;
 
@@ -88,7 +90,7 @@ extends Atlantis\Prototype {
 	array {
 
 		$Output = array_merge(parent::DescribeForPublicAPI(), [
-			'PageURL' => $this->GetPageURL()
+			'PageURL'    => $this->GetPageURL()
 		]);
 
 		return $Output;
@@ -108,6 +110,43 @@ extends Atlantis\Prototype {
 
 	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Database\Prototype ///////////////////////////////
+
+	public function
+	Patch(array|ArrayAccess $Input):
+	array {
+
+		$Output = parent::Patch($Input);
+		$SocialData = [];
+
+		////////
+
+		$Key = TRUE;
+		$Kon = TRUE;
+
+		foreach(Atlantis\Struct\SocialData::Icons as $Key => $Kon) {
+			if(isset($Input["SocialData{$Key}"]))
+			$SocialData[$Key] = Common\Filters\Text::TrimmedNullable(
+				$Input["SocialData{$Key}"]
+			);
+		}
+
+		if(count($SocialData))
+		$Output['SocialJSON'] = json_encode($SocialData);
+
+		////////
+
+		return $Output;
+	}
+
+	public function
+	_Update(iterable $Dataset):
+	static {
+
+		if(isset($Dataset['SocialData']))
+		$Dataset['SocialJSON'] = json_encode($Dataset['SocialJSON']);
+
+		return parent::Update($Dataset);
+	}
 
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):

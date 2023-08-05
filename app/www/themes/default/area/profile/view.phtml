@@ -40,6 +40,7 @@ if($Route->IsUserAdmin()) {
 	($AdminMenu)
 	->ItemNew('Edit Title', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE))
 	->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
+	->ItemNew('Edit Links', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE))
 	->ItemNew('Edit Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
 	->ItemNew('Enable Profile', 'mdi-eye', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE), If: !$Profile->Enabled)
 	->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
@@ -56,6 +57,8 @@ if($Route->IsUserAdmin()) {
 	($AdminMenu)
 	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
 }
+
+Common\Dump::Var($Profile->SocialData, TRUE);
 
 ?>
 
