@@ -2,6 +2,8 @@
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
 use Nether\Surface;
 use Nether\User;
 
@@ -38,7 +40,15 @@ use Nether\User;
 			<div class="col-12 col-md mb-4 mb-md-0">
 				<div class="mb-4">
 					<div class="fw-bold text-uppercase">Post Title</div>
-					<input type="text" name="Title" class="form-control" value="<?php $Printer($Post ? $Post->Title : '') ?>" />
+
+					<div class="mb-2">
+						<input type="date" name="DateCreated" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Post ? $Post->DateCreated->Get('Y-m-d') : '') ?>" />
+					</div>
+
+					<?php if($Post->TimeCreated !== $Post->TimeSorted): ?>
+					(Sort Date: <?php $Util->Print($Post->DateSorted->Get(Common\Values::DateFormatFancyDate)) ?>)
+					<?php endif; ?>
+
 				</div>
 				<div class="mb-0">
 					<div class="fw-bold text-uppercase">Post Visibility</div>
