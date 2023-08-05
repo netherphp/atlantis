@@ -65,7 +65,7 @@ class Video {
 				new DialogUtil.Field('hidden', 'ID', null, this.id),
 				new DialogUtil.Field('text', 'URL', 'URL'),
 				new DialogUtil.Field('text', 'Title', 'Title'),
-				new DialogUtil.Field('date', 'DatePosted', 'Date Posted')
+				new DialogUtil.Field('date', 'DatePosted', 'Date Released')
 			],
 			onAccept: function() {
 
