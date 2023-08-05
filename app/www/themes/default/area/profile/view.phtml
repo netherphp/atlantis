@@ -89,6 +89,7 @@ if($Route->IsUserAdmin()) {
 					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
 				</div>
 
+				<?php if($Profile->SocialData->HasAnyItems()): ?>
 				<div class="mb-4">
 					<div class="row font-size-large tight align-items-center">
 						<div class="col-auto">
@@ -100,9 +101,11 @@ if($Route->IsUserAdmin()) {
 								<i class="<?php $Util->Print($Profile->SocialData->GetIconStyleClass($Key)) ?>"></i>
 							</a>
 						</div>
-						<?php endforeach; ?>
+						<?php endforeach; unset($Key, $Val); ?>
 					</div>
 				</div>
+				<?php endif; ?>
+
 			</div>
 		</div>
 	</div>

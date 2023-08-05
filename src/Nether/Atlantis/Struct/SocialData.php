@@ -53,11 +53,7 @@ implements
 		// return an iterator that will only process the data if it
 		// actually gets ran over.
 
-		$Keepers = (
-			$this->Data
-			->Distill(fn(string $URL)=> $URL !== NULL)
-			->GetData()
-		);
+		$Keepers = $this->GetArray();
 
 		return new ArrayIterator(array_map(
 			(fn(mixed $Key)=> $this->Get($Key)),
@@ -70,6 +66,13 @@ implements
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	HasAnyItems():
+	bool {
+
+		return count($this->GetArray()) !== 0;
+	}
 
 	public function
 	Has(string $Key):
@@ -98,6 +101,19 @@ implements
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	GetArray():
+	array {
+
+		$Keepers = (
+			$this->Data
+			->Distill(fn(?string $URL)=> $URL !== NULL)
+			->GetData()
+		);
+
+		return $Keepers;
+	}
 
 	public function
 	GetIconStyleClass(string $Key):
