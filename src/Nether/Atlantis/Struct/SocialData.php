@@ -53,11 +53,17 @@ implements
 		// return an iterator that will only process the data if it
 		// actually gets ran over.
 
+		$Keepers = (
+			$this->Data
+			->Distill(fn(string $URL)=> $URL !== NULL)
+			->GetData()
+		);
+
 		return new ArrayIterator(array_map(
 			(fn(mixed $Key)=> $this->Get($Key)),
 			array_combine(
-				array_keys($this->Data->GetData()),
-				array_keys($this->Data->GetData())
+				array_keys($Keepers),
+				array_keys($Keepers)
 			)
 		));
 	}
@@ -92,6 +98,28 @@ implements
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	GetIconStyleClass(string $Key):
+	?string {
+
+		$Icon = NULL;
+
+		if(array_key_exists($Key, static::Icons))
+		$Icon = static::Icons[$Key];
+
+		////////
+
+		if($Icon && str_starts_with($Icon, 'si-'))
+		$Icon = "si {$Icon}";
+
+		elseif($Icon && str_starts_with($Icon, 'mdi-'))
+		$Icon = "mdi {$Icon}";
+
+		////////
+
+		return $Icon;
+	}
 
 	public function
 	SetData(array $Data):
