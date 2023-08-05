@@ -47,7 +47,9 @@ $Link = (
 				<?php if($Post): ?>
 				<div class="mb-4">
 					<div class="fw-bold text-uppercase">Post Date</div>
-					<?php $Util->Print($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+					<div class="mb-2">
+						<input type="date" name="DateCreated" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Post ? $Post->DateCreated->Get('Y-m-d') : '') ?>" />
+					</div>
 
 					<?php if($Post->TimeCreated !== $Post->TimeSorted): ?>
 					(Sort Date: <?php $Util->Print($Post->DateSorted->Get(Common\Values::DateFormatFancyDate)) ?>)
