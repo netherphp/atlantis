@@ -37,7 +37,7 @@ class Key {
 	////////////////////////////////////////////////////////////////
 
 	const
-	ConfDevProdSendoff        = 'Nether.Atlantis.DevProdSendOff';
+	ConfDevProdSendOff        = 'Nether.Atlantis.DevProdSendOff';
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -63,7 +63,6 @@ class Key {
 	ConfAccessIgnoreAgentHard = 'Nether.Atlantis.Access.IgnoreAgentHard',
 	ConfAccessIgnoreAgentSoft = 'Nether.Atlantis.Access.IgnoreAgentSoft',
 	ConfUserAgent             = 'Nether.Atlantis.UserAgent',
-	ConfDevProdSendOff        = 'Nether.Atlantis.DevProdSendOff',
 	ConfDevLinkRewriter       = 'Nether.Atlantis.DevLinkRewrite';
 
 
@@ -82,7 +81,8 @@ class Key {
 
 	const
 	AccessContactLogManage = 'Nether.Atlantis.ContactLog.Manage',
-	AccessPageManage       = 'Nether.Atlantis.Page.Manage';
+	AccessPageManage       = 'Nether.Atlantis.Page.Manage',
+	AccessDeveloper        = 'Nether.Atlantis.Developer';
 
 	const
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',

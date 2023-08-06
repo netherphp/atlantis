@@ -104,7 +104,6 @@ extends Console\Client {
 				escapeshellarg($CommitMsg)
 			);
 
-			echo $Git, PHP_EOL; continue;
 			$Result = $this->ExecuteCommandLine($Git, TRUE);
 
 			if(count($Result->Output)) {

@@ -71,8 +71,12 @@ as html pages. //*/
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
+		////////
+
 		if($this->HandleAppDevProdSendoff())
 		return Avenue\Response::CodeRedirectPerm;
+
+		////////
 
 		return Avenue\Response::CodeOK;
 	}
@@ -405,89 +409,21 @@ as html pages. //*/
 	HandleAppDevProdSendoff():
 	bool {
 
-		// @todo 2023-08-03 add config option for OptDevProdSendoff
+		$Machine = new Util\DevProdSendOffMachine($this->App);
+		$Should = $Machine->ShouldSendOff();
 
-		$OptDevProdSendOff = (
-			$this->App->Config[Key::ConfDevProdSendOff]
-			?: 0
-		);
-
-		// do not send them away if its set to not do that.
-
-		if($OptDevProdSendOff === 0)
+		if(!$Should)
 		return FALSE;
-
-		// do not send them away if this is not dev
-
-		if(!$this->App->IsDev())
-		return FALSE;
-
-		// do not send them away if the unit tests are running.
-
-		if(defined('UNIT_TEST_GO_BRRRT'))
-		return FALSE;
-
-		// do not send them away if this is part of the user login, signup,
-		// or activation flow system.
-
-		$Handler = $this->App->Router->GetCurrentHandler();
-		$Info = static::GetMethodInfo($Handler->Method);
-
-		if($Info->HasAttribute(UserActivationFlow::class))
-		return FALSE;
-
-		switch($OptDevProdSendOff) {
-			case 1:
-				// dont send admins.
-				if($this->IsUserAdmin())
-				return FALSE;
-
-				break;
-			break;
-			case 2:
-				// dont send users.
-				if($this->App->User)
-				return FALSE;
-
-				break;
-			break;
-			case 3:
-				// dont send users with permission.
-				if($this->App->User)
-				if($this->App->User->HasAccessTypeOrAdmin('Nether.Atlantis.Developer'))
-				return FALSE;
-
-				break;
-			break;
-		}
 
 		////////
 
-		$Goto = $this->App->Router->Request->GetURL();
+		$GotoURL = $Machine->GetURL();
 
-		$Rewriter = match(TRUE) {
-			(is_callable(Library::Get(Key::ConfDevLinkRewriter)))
-			=> Library::Get(Key::ConfDevLinkRewriter),
-
-			(str_contains($Goto, '://dev.'))
-			=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL),
-
-			default
-			=> throw new Exception('no URL rewriter defined for sendoff')
-		};
-
-		$Goto = $Rewriter($Goto);
-
-		// if no rewriter was defined or it caused a loop then
-		// should just fail.
-
-		if($Goto === $this->App->Router->Request->GetURL())
-		return Avenue\Response::CodeNope;
-
-		// else we can redirect to the rewritten url.
+		if($GotoURL === $this->App->Router->Request->GetURL())
+		throw new Exception('sendoff rewriter causing loop');
 
 		($this->App->Router->Response)
-		->SetHeader('Location', $Goto);
+		->SetHeader('Location', $GotoURL);
 
 		return TRUE;
 	}
