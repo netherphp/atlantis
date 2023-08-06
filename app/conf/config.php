@@ -27,13 +27,13 @@ use Nether\User;
 // PROJECT CONFIG.
 
 ($Config)
-->Set(Atlantis\Library::ConfProjectID, 'atlantis')
-->Set(Atlantis\Library::ConfProjectName, 'Atlantis WebApp')
-->Set(Atlantis\Library::ConfProjectDomain, 'whatever.tld')
-->Set(Atlantis\Library::ConfProjectDescShort, 'Example project built on Nether Atlantis')
-->Set(Atlantis\Library::ConfProjectWebserver, Atlantis\Library::WebServerTypeApache24)
-->Set(Atlantis\Library::ConfProjectWebCertType, Atlantis\Library::WebCertTypeAcmePHP)
-->Set(Atlantis\Library::ConfContactTo, 'someone@whatever.tld');
+->Set(Atlantis\Key::ConfProjectID, 'atlantis')
+->Set(Atlantis\Key::ConfProjectName, 'Atlantis WebApp')
+->Set(Atlantis\Key::ConfProjectDomain, 'whatever.tld')
+->Set(Atlantis\Key::ConfProjectDescShort, 'Example project built on Nether Atlantis')
+->Set(Atlantis\Key::ConfProjectWebserver, Atlantis\Key::WebServerTypeApache24)
+->Set(Atlantis\Key::ConfProjectWebCertType, Atlantis\Key::WebCertTypeAcmePHP)
+->Set(Atlantis\Key::ConfContactTo, 'someone@whatever.tld');
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,9 +43,9 @@ use Nether\User;
 ($Config)
 ->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
 ->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))
-->Set(Atlantis\Library::ConfUserAllowLogin, FALSE)
-->Set(Atlantis\Library::ConfUserAllowSignup, FALSE)
-->Set(Atlantis\Library::ConfLibraries, [ ])
+->Set(Atlantis\Key::ConfUserAllowLogin, FALSE)
+->Set(Atlantis\Key::ConfUserAllowSignup, FALSE)
+->Set(Atlantis\Key::ConfLibraries, [ ])
 ->Set(Storage\Library::ConfStorageLocations, [
 	new Storage\Adaptors\Local(
 		Name: 'Default',

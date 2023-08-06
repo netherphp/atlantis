@@ -14,11 +14,11 @@ extends Common\PasswordTester {
 		parent::__Construct(...$Argv);
 
 		$this
-		->SetMinLength(Atlantis\Library::Get(Atlantis\Library::ConfPassMinLen))
-		->SetRequireAlphaLower(Atlantis\Library::Get(Atlantis\Library::ConfPassReqAlphaLower))
-		->SetRequireAlphaUpper(Atlantis\Library::Get(Atlantis\Library::ConfPassReqAlphaUpper))
-		->SetRequireNumeric(Atlantis\Library::Get(Atlantis\Library::ConfPassReqNumeric))
-		->SetRequireSpecial(Atlantis\Library::Get(Atlantis\Library::ConfPassReqSpecial));
+		->SetMinLength(Atlantis\Library::Get(Atlantis\Key::ConfPassMinLen))
+		->SetRequireAlphaLower(Atlantis\Library::Get(Atlantis\Key::ConfPassReqAlphaLower))
+		->SetRequireAlphaUpper(Atlantis\Library::Get(Atlantis\Key::ConfPassReqAlphaUpper))
+		->SetRequireNumeric(Atlantis\Library::Get(Atlantis\Key::ConfPassReqNumeric))
+		->SetRequireSpecial(Atlantis\Library::Get(Atlantis\Key::ConfPassReqSpecial));
 
 		return;
 	}

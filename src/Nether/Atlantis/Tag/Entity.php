@@ -273,7 +273,7 @@ extends Atlantis\Prototype {
 	GetPageURL():
 	string {
 
-		$Output = Atlantis\Library::Get(Atlantis\Library::PageTagViewURL);
+		$Output = Atlantis\Library::Get(Atlantis\Key::PageTagViewURL);
 		$Key = NULL;
 		$Val = NULL;
 

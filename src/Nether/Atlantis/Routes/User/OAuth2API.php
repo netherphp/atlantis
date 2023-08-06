@@ -37,8 +37,8 @@ extends Atlantis\PublicWeb {
 		->Code(Datafilters::TrimmedTextNullable(...))
 		->Goto(Datafilters::Base64Decode(...));
 
-		$AllowSignup = $this->App->Config[Atlantis\Library::ConfUserAllowSignup];
-		$AllowSignupGank = $this->App->Config[Atlantis\Library::ConfUserAllowSignupGank];
+		$AllowSignup = $this->App->Config[Atlantis\Key::ConfUserAllowSignup];
+		$AllowSignupGank = $this->App->Config[Atlantis\Key::ConfUserAllowSignupGank];
 		$Goto = $this->Request->Data->Goto;
 		$AuthCode = $this->Request->Data->Code;
 		$Token = NULL;

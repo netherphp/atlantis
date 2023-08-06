@@ -60,7 +60,7 @@ extends PublicWeb {
 
 		($this->App->Surface)
 		->Wrap('user/signup',[
-			'RequireAlias' => $this->Config[Atlantis\Library::ConfUserRequireAlias]
+			'RequireAlias' => $this->Config[Atlantis\Key::ConfUserRequireAlias]
 		]);
 
 		return;
@@ -74,8 +74,8 @@ extends PublicWeb {
 
 		($this->App->Surface)
 		->Wrap('user/activate',[
-			'RequireAlias' => $this->Config[Atlantis\Library::ConfUserRequireAlias],
-			'RequireEmail' => $this->Config[Atlantis\Library::ConfUserEmailActivate],
+			'RequireAlias' => $this->Config[Atlantis\Key::ConfUserRequireAlias],
+			'RequireEmail' => $this->Config[Atlantis\Key::ConfUserEmailActivate],
 			'Activated'    => $this->User->Activated
 		]);
 

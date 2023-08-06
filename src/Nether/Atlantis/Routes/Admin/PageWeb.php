@@ -35,7 +35,7 @@ extends Atlantis\ProtectedWeb {
 	HandleListWillAnswerRequest():
 	int {
 
-		if(!Atlantis\Library::Get(Atlantis\Library::ConfPageEnableDB))
+		if(!Atlantis\Library::Get(Atlantis\Key::ConfPageEnableDB))
 		return Avenue\Response::CodeForbidden;
 
 		return Avenue\Response::CodeOK;

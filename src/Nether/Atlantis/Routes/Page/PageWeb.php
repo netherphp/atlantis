@@ -39,7 +39,7 @@ extends Atlantis\PublicWeb {
 
 		////////
 
-		if($this->App->Config[Atlantis\Library::ConfPageEnableStatic]) {
+		if($this->App->Config[Atlantis\Key::ConfPageEnableStatic]) {
 			$Data['Page'] = Atlantis\Page\Entity::FromStaticFile(
 				$this->App,
 				$Alias
@@ -49,7 +49,7 @@ extends Atlantis\PublicWeb {
 			return Avenue\Response::CodeOK;
 		}
 
-		if($this->App->Config[Atlantis\Library::ConfPageEnableDB]) {
+		if($this->App->Config[Atlantis\Key::ConfPageEnableDB]) {
 			$Data['Page'] = Atlantis\Page\Entity::GetByField(
 				'Alias',
 				$Alias

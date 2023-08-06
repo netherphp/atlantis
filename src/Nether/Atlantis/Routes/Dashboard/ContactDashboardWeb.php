@@ -10,7 +10,7 @@ class ContactDashboardWeb
 extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/contact/list')]
-	#[Atlantis\Meta\RouteAccessType(Atlantis\Library::AccessContactLogManage, 'eq', 1)]
+	#[Atlantis\Meta\RouteAccessType(Atlantis\Key::AccessContactLogManage, 'eq', 1)]
 	public function
 	HandleList():
 	void {

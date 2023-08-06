@@ -18,6 +18,7 @@ implements
 	Atlantis\Plugins\DashboardElementInterface,
 	Atlantis\Plugins\UploadHandlerInterface {
 
+	/*
 	const
 	ConfProjectID             = 'Project.Key',
 	ConfProjectName           = 'Project.Name',
@@ -29,8 +30,7 @@ implements
 	ConfProjectInitWithConfig = 'Project.InitWithConfig',
 	ConfProjectWebRoot        = 'Project.WebRoot',
 	ConfProjectWebserver      = 'Project.WebServerType',
-	ConfProjectWebCertType    = 'Project.WebCertType',
-	ConfDevLinkRewriter       = 'Project.DevLinkRewrite';
+	ConfProjectWebCertType    = 'Project.WebCertType';
 
 	const
 	ConfAcmePhar       = 'AcmePHP.Phar',
@@ -41,6 +41,7 @@ implements
 	ConfAcmeCountry    = 'AcmePHP.Country',
 	ConfAcmeCity       = 'AcmePHP.City',
 	ConfAcmeOrgName    = 'AcmePHP.OrgName';
+
 
 	const
 	ConfLibraries             = 'Nether.Atlantis.Libraries',
@@ -62,7 +63,9 @@ implements
 	ConfErrorLogPath          = 'Nether.Atlantis.Error.LogPath',
 	ConfAccessIgnoreAgentHard = 'Nether.Atlantis.Access.IgnoreAgentHard',
 	ConfAccessIgnoreAgentSoft = 'Nether.Atlantis.Access.IgnoreAgentSoft',
-	ConfUserAgent             = 'Nether.Atlantis.UserAgent';
+	ConfUserAgent             = 'Nether.Atlantis.UserAgent',
+	ConfDevProdSendOff        = 'Nether.Atlantis.DevProdSendOff',
+	ConfDevLinkRewriter       = 'Nether.Atlantis.DevLinkRewrite';
 
 	const
 	ConfPageEnableDB          = 'Nether.Atlantis.Page.EnableDatabase',
@@ -84,6 +87,7 @@ implements
 	const
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',
 	PageTagViewURL  = 'Nether.Atlantis.Tag.PageViewURL';
+	*/
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -101,37 +105,37 @@ implements
 		////////
 
 		static::$Config->BlendRight([
-			static::ConfLogFormat             => 'default',
-			static::ConfPassMinLen            => 10,
-			static::ConfPassReqAlphaLower     => TRUE,
-			static::ConfPassReqAlphaUpper     => TRUE,
-			static::ConfPassReqNumeric        => TRUE,
-			static::ConfPassReqSpecial        => TRUE,
-			static::ConfUserAllowLogin        => FALSE,
-			static::ConfUserAllowSignup       => FALSE,
-			static::ConfUserAllowSignupGank   => FALSE,
-			static::ConfUserEmailActivate     => TRUE,
-			static::ConfUserRequireAlias      => FALSE,
-			static::ConfPageEnableDB          => FALSE,
-			static::ConfPageEnableStatic      => TRUE,
-			static::ConfPageStaticStorageKey  => 'Default',
-			static::ConfPageStaticStoragePath => 'pages/static',
-			static::ConfUserAgent             => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
-			static::ConfContactTo             => NULL,
-			static::ConfContactBCC            => NULL,
-			static::ConfContactSubject        => 'Contact from Website',
+			Key::ConfLogFormat             => 'default',
+			Key::ConfPassMinLen            => 10,
+			Key::ConfPassReqAlphaLower     => TRUE,
+			Key::ConfPassReqAlphaUpper     => TRUE,
+			Key::ConfPassReqNumeric        => TRUE,
+			Key::ConfPassReqSpecial        => TRUE,
+			Key::ConfUserAllowLogin        => FALSE,
+			Key::ConfUserAllowSignup       => FALSE,
+			Key::ConfUserAllowSignupGank   => FALSE,
+			Key::ConfUserEmailActivate     => TRUE,
+			Key::ConfUserRequireAlias      => FALSE,
+			Key::ConfPageEnableDB          => FALSE,
+			Key::ConfPageEnableStatic      => TRUE,
+			Key::ConfPageStaticStorageKey  => 'Default',
+			Key::ConfPageStaticStoragePath => 'pages/static',
+			Key::ConfUserAgent             => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
+			Key::ConfContactTo             => NULL,
+			Key::ConfContactBCC            => NULL,
+			Key::ConfContactSubject        => 'Contact from Website',
 
-			static::ConfErrorDisplay          => NULL,
-			static::ConfErrorLogPath          => NULL,
+			Key::ConfErrorDisplay          => NULL,
+			Key::ConfErrorLogPath          => NULL,
 
-			static::PageTagIndexURL           => '/tags',
-			static::PageTagViewURL            => '/tag/:Alias:',
+			Key::PageTagIndexURL           => '/tags',
+			Key::PageTagViewURL            => '/tag/:Alias:',
 
 			// things found to be walking our websites while providing
 			// absolutely no value back to the internet. these get
 			// served blank pages, and arent even logged by analytics.
 
-			static::ConfAccessIgnoreAgentHard => (''
+			Key::ConfAccessIgnoreAgentHard => (''
 				. 'AhrefsBot|BLEXBot|Bytespider|Bytedance|DotBot|MJ12bot|SemrushBot|PetalBot|'
 				. 'paloaltonetworks|linkfluence|internet\\-measurement|naver\\.me'
 			),
@@ -141,7 +145,7 @@ implements
 			// messengers. additionally search engines people actually
 			// use are allowed.
 
-			static::ConfAccessIgnoreAgentSoft => (''
+			Key::ConfAccessIgnoreAgentSoft => (''
 				. 'Applebot|bingbot|facebookexternalhit|GoogleBot|Twitterbot|YandexBot'
 			)
 		]);
@@ -175,7 +179,7 @@ implements
 		if($App->User && $App->User->IsAdmin())
 		$App->Log->InitAdminlog(
 			$App->GetProjectRoot(),
-			$App->Config[self::ConfLogFormat]
+			$App->Config[Key::ConfLogFormat]
 		);
 
 		////////
@@ -214,13 +218,13 @@ implements
 
 		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
 
-		if($App->User->HasAccessTypeOrAdmin(static::AccessContactLogManage))
+		if($App->User->HasAccessTypeOrAdmin(Key::AccessContactLogManage))
 		$Sidebar->Push(new Atlantis\Dashboard\AtlantisContactLogSidebar);
 
 		////////
 
-		if($App->Config[Atlantis\Library::ConfPageEnableDB]) {
-			if($App->User->HasAccessTypeOrAdmin(static::AccessPageManage))
+		if($App->Config[Key::ConfPageEnableDB]) {
+			if($App->User->HasAccessTypeOrAdmin(Key::AccessPageManage))
 			$Sidebar->Push(new Atlantis\Dashboard\AtlantisPageSidebar);
 		}
 

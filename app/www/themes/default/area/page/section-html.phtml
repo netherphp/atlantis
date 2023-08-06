@@ -12,7 +12,7 @@
 <div class="AtlantisPageSection position-relative <?php $Printer($Section->StyleBG) ?> <?php $Printer($Section->StylePad) ?>" data-page-id="<?php $Printer($Page->ID) ?>" data-section-id="<?php $Printer($Section->ID) ?>">
 	<?php if($Section->Contain): ?><div class="container position-relative"><?php endif; ?>
 
-		<?php if($User && $User->HasAccessTypeOrAdmin( Nether\Atlantis\Library::AccessPageManage )): ?>
+		<?php if($User && $User->HasAccessTypeOrAdmin( Nether\Atlantis\Key::AccessPageManage )): ?>
 		<div class="position-absolute position-top position-right pr-4">
 			<div class="dropdown">
 				<button class="position-absolute position-top position-right btn btn-secondary dropdown-toggle zindex-medium" type="button" data-bs-toggle="dropdown">

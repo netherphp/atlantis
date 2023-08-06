@@ -169,7 +169,7 @@ extends Atlantis\ProtectedAPI {
 
 		$Client = new GuzzleHttp\Client([
 			'verify'  => FALSE,
-			'headers' => [ 'user-agent' => Atlantis\Library::Get(Atlantis\Library::ConfUserAgent) ],
+			'headers' => [ 'user-agent' => Atlantis\Library::Get(Atlantis\Key::ConfUserAgent) ],
 			'timeout' => 4
 		]);
 

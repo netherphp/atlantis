@@ -325,8 +325,8 @@ extends Atlantis\PublicAPI {
 		->Password2(Common\Datafilters::TypeStringNullable(...))
 		->Session(Common\Datafilters::TypeBool(...));
 
-		$RequireEmail = $this->Config[Atlantis\Library::ConfUserEmailActivate];
-		$RequireAlias = $this->Config[Atlantis\Library::ConfUserRequireAlias];
+		$RequireEmail = $this->Config[Atlantis\Key::ConfUserEmailActivate];
+		$RequireAlias = $this->Config[Atlantis\Key::ConfUserRequireAlias];
 		$PasswordTester = new Atlantis\Util\PasswordTester;
 		$User = NULL;
 		$RemoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : NULL;

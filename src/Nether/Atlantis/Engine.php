@@ -99,7 +99,7 @@ application instance.
 
 		// begin setting things up.
 
-		if($this->Config->IsTrueEnough(Atlantis\Library::ConfProjectDefineConsts))
+		if($this->Config->IsTrueEnough(Atlantis\Key::ConfProjectDefineConsts))
 		$this->DefineProjectConsts();
 
 		$this
@@ -149,7 +149,7 @@ application instance.
 	Run():
 	static {
 
-		$IgnoreUA = Library::Get(Library::ConfAccessIgnoreAgentHard);
+		$IgnoreUA = Library::Get(Key::ConfAccessIgnoreAgentHard);
 		$InputUA = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
 		$Meh = NULL;
 
@@ -412,7 +412,7 @@ application instance.
 	static {
 
 		$this->Log->Update(
-			$this->Config[Atlantis\Library::ConfLogFormat]
+			$this->Config[Atlantis\Key::ConfLogFormat]
 		);
 
 		return $this;
@@ -457,8 +457,8 @@ application instance.
 	SetupEnvironment():
 	static {
 
-		$ErrLogPath = $this->Config[Library::ConfErrorLogPath];
-		$ErrDisplay = $this->Config[Library::ConfErrorDisplay];
+		$ErrLogPath = $this->Config[Key::ConfErrorLogPath];
+		$ErrDisplay = $this->Config[Key::ConfErrorDisplay];
 
 		////////
 
@@ -593,7 +593,7 @@ application instance.
 	LoadAdditionalLibraries():
 	static {
 
-		$Classes = $this->Config[Library::ConfLibraries];
+		$Classes = $this->Config[Key::ConfLibraries];
 		$Class = NULL;
 
 		if(is_iterable($Classes))

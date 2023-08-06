@@ -24,8 +24,8 @@ use Nether\Database;
 // PROJECT CONFIG.
 
 ($Config)
-->Set(Atlantis\Library::ConfProjectDomain, 'localhost')
-->Set(Atlantis\Library::ConfContactTo, 'someone@whatever.tld');
+->Set(Atlantis\Key::ConfProjectDomain, 'localhost')
+->Set(Atlantis\Key::ConfContactTo, 'someone@whatever.tld');
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,14 +33,14 @@ use Nether\Database;
 // SSL CONFIG
 
 ($Config)
-->Set(Atlantis\Library::ConfAcmePhar, '/opt/ssl/acmephp.phar')
-->Set(Atlantis\Library::ConfAcmeCertRoot, '/opt/ssl')
-->Set(Atlantis\Library::ConfAcmeDomain, '')
-->Set(Atlantis\Library::ConfAcmeEmail, '')
-->Set(Atlantis\Library::ConfAcmeAltDomains, [ ])
-->Set(Atlantis\Library::ConfAcmeCountry, '')
-->Set(Atlantis\Library::ConfAcmeCity, '')
-->Set(Atlantis\Library::ConfAcmeOrgName, '');
+->Set(Atlantis\Key::ConfAcmePhar, '/opt/ssl/acmephp.phar')
+->Set(Atlantis\Key::ConfAcmeCertRoot, '/opt/ssl')
+->Set(Atlantis\Key::ConfAcmeDomain, '')
+->Set(Atlantis\Key::ConfAcmeEmail, '')
+->Set(Atlantis\Key::ConfAcmeAltDomains, [ ])
+->Set(Atlantis\Key::ConfAcmeCountry, '')
+->Set(Atlantis\Key::ConfAcmeCity, '')
+->Set(Atlantis\Key::ConfAcmeOrgName, '');
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

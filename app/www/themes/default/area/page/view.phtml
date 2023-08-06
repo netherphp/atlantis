@@ -9,7 +9,7 @@
 
 <?php echo $Page->GetContent() ?>
 
-<?php if($User && $User->HasAccessTypeOrAdmin( Nether\Atlantis\Library::AccessPageManage )): ?>
+<?php if($User && $User->HasAccessTypeOrAdmin( Nether\Atlantis\Key::AccessPageManage )): ?>
 <script type="module">
 import Page from '/share/atlantis/page.js?v=<?php $Printer($CacheBuster) ?>';
 jQuery(function() {

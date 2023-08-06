@@ -25,7 +25,7 @@ implements Stringable {
 
 		if($Host === NULL)
 		$Host = (
-			Library::Get(Library::ConfProjectDomain)
+			Library::Get(Key::ConfProjectDomain)
 			?? $_SERVER['HTTP_HOST']
 		);
 

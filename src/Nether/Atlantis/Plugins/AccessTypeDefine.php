@@ -13,11 +13,11 @@ implements AccessTypeDefineInterface {
 
 		$Output = [
 			new Atlantis\User\AccessTypeDef(
-				Atlantis\Library::AccessContactLogManage, 1,
+				Atlantis\Key::AccessContactLogManage, 1,
 				'Allow the user to view the Contact Us log.'
 			),
 			new Atlantis\User\AccessTypeDef(
-				Atlantis\Library::AccessPageManage, 1,
+				Atlantis\Key::AccessPageManage, 1,
 				'Allow the user to manage Pages on the site.'
 			)
 		];

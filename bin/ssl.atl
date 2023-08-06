@@ -190,7 +190,7 @@ extends Console\Client {
 
 		$UseSudo = TRUE;
 		$UseRehash = TRUE;
-		$WebCertType = $this->App->Config[Atlantis\Library::ConfProjectWebCertType];
+		$WebCertType = $this->App->Config[Atlantis\Key::ConfProjectWebCertType];
 
 		if($UseSudo && $this->Sudo())
 		return 0;

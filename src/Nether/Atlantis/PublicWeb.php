@@ -183,8 +183,8 @@ as html pages. //*/
 	PreparePageTitle():
 	static {
 
-		$Name = $this->App->Config[Library::ConfProjectName];
-		$Desc = $this->App->Config[Library::ConfProjectDescShort];
+		$Name = $this->App->Config[Key::ConfProjectName];
+		$Desc = $this->App->Config[Key::ConfProjectDescShort];
 
 		////////
 
@@ -217,7 +217,7 @@ as html pages. //*/
 		if($this->App->Surface->Get('Page.Desc') === FALSE)
 		$this->App->Surface->Set(
 			'Page.Desc',
-			$this->App->Config[Library::ConfProjectDesc]
+			$this->App->Config[Key::ConfProjectDesc]
 			?? ''
 		);
 
@@ -270,14 +270,14 @@ as html pages. //*/
 		// handle if the account has not yet been activated.
 
 		if(!$this->User->Activated)
-		if($this->Config[Atlantis\Library::ConfUserEmailActivate])
+		if($this->Config[Key::ConfUserEmailActivate])
 		if(!$MethodInfo->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
 		$this->Goto('/login/activate');
 
 		// handle if the account has not had an alias set yet.
 
 		if($this->User->Alias === NULL)
-		if($this->Config[Atlantis\Library::ConfUserRequireAlias])
+		if($this->Config[Key::ConfUserRequireAlias])
 		if(!$MethodInfo->HasAttribute(Atlantis\Meta\UserActivationFlow::class))
 		$this->Goto('/login/activate');
 
@@ -359,7 +359,7 @@ as html pages. //*/
 
 		// don't self reference in the from fields.
 
-		if($FromDomain === $this->App->Config[Atlantis\Library::ConfProjectDomain])
+		if($FromDomain === $this->App->Config[Key::ConfProjectDomain])
 		$FromDomain = NULL;
 
 		if($FromDomain !== NULL)
@@ -368,33 +368,35 @@ as html pages. //*/
 		// don't self reference in the from fields.
 		// (trying again after the clean)
 
-		if($FromDomain === $this->App->Config[Atlantis\Library::ConfProjectDomain])
+		if($FromDomain === $this->App->Config[Key::ConfProjectDomain])
 		$FromDomain = NULL;
 
 		////////
 
-		$Old = Struct\TrafficRow::Find([
-			'Hash'    => $Hash->Get(),
-			'Since'   => $Since->GetUnixtime(),
-			'Limit'   => 1
-		]);
+		if($this->App->Database->Exists(Struct\TrafficRow::$DBA)) {
+			$Old = Struct\TrafficRow::Find([
+				'Hash'    => $Hash->Get(),
+				'Since'   => $Since->GetUnixtime(),
+				'Limit'   => 1
+			]);
 
-		if($Old->Count() === 0)
-		$this->Hit = Struct\TrafficRow::Insert([
-			'Hash'       => $Hash->Get(),
-			'Visitor'    => $Hash->GetVisitorHash(),
-			'IP'         => $Hash->IP,
-			'URL'        => $Hash->URL,
-			'UserID'     => $UserID,
-			'Domain'     => $Domain,
-			'Path'       => $Path,
-			'Query'      => $Query,
-			'UserAgent'  => $UserAgent,
-			'FromURL'    => $FromURL,
-			'FromDomain' => $FromDomain,
-			'FromPath'   => $FromPath,
-			'FromQuery'  => $FromQuery
-		]);
+			if($Old->Count() === 0)
+			$this->Hit = Struct\TrafficRow::Insert([
+				'Hash'       => $Hash->Get(),
+				'Visitor'    => $Hash->GetVisitorHash(),
+				'IP'         => $Hash->IP,
+				'URL'        => $Hash->URL,
+				'UserID'     => $UserID,
+				'Domain'     => $Domain,
+				'Path'       => $Path,
+				'Query'      => $Query,
+				'UserAgent'  => $UserAgent,
+				'FromURL'    => $FromURL,
+				'FromDomain' => $FromDomain,
+				'FromPath'   => $FromPath,
+				'FromQuery'  => $FromQuery
+			]);
+		}
 
 		return;
 	}
@@ -405,11 +407,14 @@ as html pages. //*/
 
 		// @todo 2023-08-03 add config option for OptDevProdSendoff
 
-		$OptDevProdSendoff = 2;
+		$OptDevProdSendOff = (
+			$this->App->Config[Key::ConfDevProdSendOff]
+			?: 0
+		);
 
 		// do not send them away if its set to not do that.
 
-		if($OptDevProdSendoff === 0)
+		if($OptDevProdSendOff === 0)
 		return FALSE;
 
 		// do not send them away if this is not dev
@@ -431,7 +436,7 @@ as html pages. //*/
 		if($Info->HasAttribute(UserActivationFlow::class))
 		return FALSE;
 
-		switch($OptDevProdSendoff) {
+		switch($OptDevProdSendOff) {
 			case 1:
 				// dont send admins.
 				if($this->IsUserAdmin())
@@ -461,8 +466,8 @@ as html pages. //*/
 		$Goto = $this->App->Router->Request->GetURL();
 
 		$Rewriter = match(TRUE) {
-			(is_callable(Library::Get(Library::ConfDevLinkRewriter)))
-			=> Library::Get(Library::ConfDevLinkRewriter),
+			(is_callable(Library::Get(Key::ConfDevLinkRewriter)))
+			=> Library::Get(Key::ConfDevLinkRewriter),
 
 			(str_contains($Goto, '://dev.'))
 			=> fn(string $URL)=> preg_replace('#://dev\.#', '://', $URL),

@@ -4,7 +4,7 @@ namespace Nether\Atlantis\Struct;
 
 use Exception;
 use Nether\Atlantis\Engine;
-use Nether\Atlantis\Library;
+use Nether\Atlantis\Key;
 use Nether\Common\Datastore;
 
 class AcmeConfig {
@@ -39,15 +39,15 @@ class AcmeConfig {
 	public function
 	__Construct(Engine $App) {
 
-		$this->Phar = $App->Config[Library::ConfAcmePhar] ?: NULL;
-		$this->CertRoot = $App->Config[Library::ConfAcmeCertRoot] ?: NULL;
+		$this->Phar = $App->Config[Key::ConfAcmePhar] ?: NULL;
+		$this->CertRoot = $App->Config[Key::ConfAcmeCertRoot] ?: NULL;
 		$this->WebRoot = $App->GetWebRoot() ?: NULL;
 
-		$this->Domain = $App->Config[Library::ConfAcmeDomain] ?: NULL;
-		$this->Email = $App->Config[Library::ConfAcmeEmail] ?: NULL;
-		$this->Country = $App->Config[Library::ConfAcmeCountry] ?: NULL;
-		$this->City = $App->Config[Library::ConfAcmeCity] ?: NULL;
-		$this->OrgName = $App->Config[Library::ConfAcmeOrgName] ?: NULL;
+		$this->Domain = $App->Config[Key::ConfAcmeDomain] ?: NULL;
+		$this->Email = $App->Config[Key::ConfAcmeEmail] ?: NULL;
+		$this->Country = $App->Config[Key::ConfAcmeCountry] ?: NULL;
+		$this->City = $App->Config[Key::ConfAcmeCity] ?: NULL;
+		$this->OrgName = $App->Config[Key::ConfAcmeOrgName] ?: NULL;
 		$this->AltDomains = [ $this->Domain ];
 
 		////////
@@ -56,7 +56,7 @@ class AcmeConfig {
 		// or else the alternate chain does not seem to work right when
 		// hitting letsencrypt.
 
-		$Alts = $App->Config[Library::ConfAcmeAltDomains];
+		$Alts = $App->Config[Key::ConfAcmeAltDomains];
 
 		if(is_array($Alts))
 		$this->AltDomains = array_merge($this->AltDomains, $Alts);

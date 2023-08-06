@@ -172,8 +172,8 @@ extends Atlantis\Prototype {
 	Write(Atlantis\Engine $App, ?string $Path=NULL):
 	static {
 
-		$Key ??= $App->Config[Atlantis\Library::ConfPageStaticStorageKey];
-		$Path ??= $App->Config[Atlantis\Library::ConfPageStaticStoragePath];
+		$Key ??= $App->Config[Atlantis\Key::ConfPageStaticStorageKey];
+		$Path ??= $App->Config[Atlantis\Key::ConfPageStaticStoragePath];
 
 		$Filename = sprintf(
 			'%s/%s.phtml',
@@ -257,12 +257,12 @@ extends Atlantis\Prototype {
 	//*/
 
 		$StorageKey = (
-			$App->Config[Atlantis\Library::ConfPageStaticStorageKey]
+			$App->Config[Atlantis\Key::ConfPageStaticStorageKey]
 			?? 'Default'
 		);
 
 		$StoragePrefix = (
-			$App->Config[Atlantis\Library::ConfPageStaticStoragePath]
+			$App->Config[Atlantis\Key::ConfPageStaticStoragePath]
 			?? 'pages/static'
 		);
 

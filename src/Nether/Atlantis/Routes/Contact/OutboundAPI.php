@@ -39,9 +39,9 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		$SendTo = Atlantis\Library::Get(Atlantis\Library::ConfContactTo);
-		$SendBCC = Atlantis\Library::Get(Atlantis\Library::ConfContactBCC);
-		$SendSubject = Atlantis\Library::Get(Atlantis\Library::ConfContactSubject);
+		$SendTo = Atlantis\Library::Get(Atlantis\Key::ConfContactTo);
+		$SendBCC = Atlantis\Library::Get(Atlantis\Key::ConfContactBCC);
+		$SendSubject = Atlantis\Library::Get(Atlantis\Key::ConfContactSubject);
 
 		if($SendTo && !is_array($SendTo))
 		$SendTo = [ $SendTo ];

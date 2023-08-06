@@ -914,7 +914,7 @@ extends Console\Client {
 
 		$Domain = (
 			$this->GetOption('Domain')
-			?? Atlantis->Config[ Atlantis\Library::ConfProjectDomain ]
+			?? Atlantis->Config[ Atlantis\Key::ConfProjectDomain ]
 		);
 
 		$Domains = [ $Domain ];
