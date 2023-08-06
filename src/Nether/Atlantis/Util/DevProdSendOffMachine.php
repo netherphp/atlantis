@@ -14,14 +14,10 @@ class DevProdSendOffMachine {
 	protected Atlantis\Engine
 	$App;
 
-	protected int
-	$Enabled;
-
 	public function
 	__Construct(Atlantis\Engine $App) {
 
 		$this->App = $App;
-		$this->Enabled = (int)$App->Config[Atlantis\Key::ConfDevProdSendOff];
 
 		return;
 	}
@@ -30,7 +26,9 @@ class DevProdSendOffMachine {
 	ShouldSendOff():
 	bool {
 
-		if($this->Enabled === 0)
+		$Enabled = (int)$this->App->Config[Atlantis\Key::ConfDevProdSendOff];
+
+		if($Enabled === 0)
 		return FALSE;
 
 		if(!$this->App->IsDev())
@@ -40,7 +38,7 @@ class DevProdSendOffMachine {
 		// make them lie regarding framework functions that may result in
 		// the use of exit() because phpunit explodes.
 
-		if(defined('UNIT_TEST_GO_BRRRT'))
+		if(defined('UNIT_TEST_GO_BRRRT') && !defined('UNIT_TEST_GO_BRRRT_TTT'))
 		return FALSE;
 
 		// if this router is part of the user auth flow then do not send
@@ -54,19 +52,19 @@ class DevProdSendOffMachine {
 
 		////////
 
-		if($this->Enabled === 1) {
+		if($Enabled === 1) {
 			// send off non-admins.
 			if($this->App->User && $this->App->User->IsAdmin())
 			return FALSE;
 		}
 
-		elseif($this->Enabled === 2) {
+		elseif($Enabled === 2) {
 			// send off non-users.
 			if($this->App->User)
 			return FALSE;
 		}
 
-		elseif($this->Enabled === 3) {
+		elseif($Enabled === 3) {
 			// send off non-users or users missing permission.
 			if($this->App->User)
 			if($this->App->User->HasAccessTypeOrAdmin(Atlantis\Key::AccessDeveloper))
