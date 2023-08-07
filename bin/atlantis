@@ -1396,7 +1396,13 @@ extends Console\Client {
 	RunLocalTestServer():
 	int {
 
-		$Host = $this->GetOption('Host') ?? 'localhost';
+		// i am convinced that the test server dns's itself or something
+		// every single page hit. even with "localhost" in my hosts file
+		// when the server is spooled up using it, hits will take 3+ seconds
+		// to get served. served using ip (even if browser is hitting
+		// named localhost) it serves shit instantly.
+
+		$Host = $this->GetOption('Host') ?? '127.0.0.1';
 		$Port = $this->GetOption('Port') ?? '80';
 
 		$Path = (
