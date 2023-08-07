@@ -8,6 +8,15 @@
 	line-height: 1.4rem;
 }
 
+.PrettyBrandTextFixed {
+	display: inline-block;
+	font-weight: bold;
+	border-top: 4px solid;
+	border-color: var(--theme-primary);
+	text-transform: uppercase;
+	line-height: 1.4rem;
+}
+
 .FancyOrVH {
 	display: flex;
 	flex-direction: column;

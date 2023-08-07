@@ -1,5 +1,5 @@
 /*//
-@date 2023-08-07 07:21:17 UTC
+@date 2023-08-07 18:28:09 UTC
 @files 19 [
     "src\/imports.css",
     "src\/main.css",
@@ -1426,6 +1426,15 @@ strong {
 	display: inline-block;
 	font-weight: bold;
 	border-top: 0.15em solid;
+	border-color: var(--theme-primary);
+	text-transform: uppercase;
+	line-height: 1.4rem;
+}
+
+.PrettyBrandTextFixed {
+	display: inline-block;
+	font-weight: bold;
+	border-top: 4px solid;
 	border-color: var(--theme-primary);
 	text-transform: uppercase;
 	line-height: 1.4rem;
