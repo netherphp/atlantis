@@ -63,7 +63,8 @@ class Key {
 	ConfAccessIgnoreAgentHard = 'Nether.Atlantis.Access.IgnoreAgentHard',
 	ConfAccessIgnoreAgentSoft = 'Nether.Atlantis.Access.IgnoreAgentSoft',
 	ConfUserAgent             = 'Nether.Atlantis.UserAgent',
-	ConfDevLinkRewriter       = 'Nether.Atlantis.DevLinkRewrite';
+	ConfDevLinkRewriter       = 'Nether.Atlantis.DevLinkRewrite',
+	ConfNetworkJSON           = 'Nether.Atlantis.Network.Filename';
 
 
 	const

@@ -42,6 +42,17 @@ extends Common\Prototype {
 		return NULL;
 	}
 
+	public function
+	GetSocials():
+	Common\Datastore {
+
+		$Output = $this->Data->Map(
+			fn(NetworkItem $I)=> $I->Social
+		);
+
+		return $Output;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -59,6 +70,22 @@ extends Common\Prototype {
 		$Output = new static([ 'Data'=> $Data ]);
 
 		return $Output;
+	}
+
+	static public function
+	FromFile(string $Filename):
+	static {
+
+		if(!file_exists($Filename))
+		throw new Common\Error\FileNotFound($Filename);
+
+		if(!is_readable($Filename))
+		throw new Common\Error\FileUnreadable($Filename);
+
+		$JSON = file_get_contents($Filename);
+		if(!$JSON) $JSON = [];
+
+		return static::FromJSON($JSON);
 	}
 
 }

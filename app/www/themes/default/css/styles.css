@@ -1,5 +1,5 @@
 /*//
-@date 2023-08-07 18:28:09 UTC
+@date 2023-08-07 23:37:55 UTC
 @files 19 [
     "src\/imports.css",
     "src\/main.css",
@@ -9,17 +9,17 @@
     "src\/ext-litepicker.css",
     "src\/ext-swiper.css",
     "src\/fx-text.css",
-    "src\/design\\footer.css",
-    "src\/design\\header.css",
-    "src\/elements\\article.css",
-    "src\/elements\\blog.css",
-    "src\/elements\\collapser.css",
-    "src\/elements\\editor-html.css",
-    "src\/elements\\gallery.css",
-    "src\/elements\\misc.css",
-    "src\/elements\\nether-sensei.css",
-    "src\/elements\\pretty-modern-box.css",
-    "src\/elements\\pretty-modern-navbar.css"
+    "src\/design\/footer.css",
+    "src\/design\/header.css",
+    "src\/elements\/article.css",
+    "src\/elements\/blog.css",
+    "src\/elements\/collapser.css",
+    "src\/elements\/editor-html.css",
+    "src\/elements\/gallery.css",
+    "src\/elements\/misc.css",
+    "src\/elements\/nether-sensei.css",
+    "src\/elements\/pretty-modern-box.css",
+    "src\/elements\/pretty-modern-navbar.css"
 ]
 //*/
 
@@ -626,7 +626,10 @@ strong {
 .vw-0 { width: 0vw !important; }
 
 .row.tight { margin-left: -0.25rem; margin-right: -0.25rem; }
-.row.tight > *[class^='col'] { padding-left: .25rem; padding-right: .25rem; }
+.row.tight > *[class^='col'] { padding-left: 0.25rem; padding-right: 0.25rem; }
+
+.row.snug { margin-left: -0.50rem; margin-right: -0.50rem; }
+.row.snug > *[class^='col'] { padding-left: 0.50rem; padding-right: 0.50rem; }
 
 /*******************************************************************************
 **** animating stuff **********************************************************/
@@ -1116,7 +1119,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design\footer.css ///////////////////////////////////////////////////*/
+//// src/design/footer.css ///////////////////////////////////////////////////*/
 
 /* header element stuff *******************************************************/
 
@@ -1186,7 +1189,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design\header.css ///////////////////////////////////////////////////*/
+//// src/design/header.css ///////////////////////////////////////////////////*/
 
 /* header element stuff *******************************************************/
 
@@ -1222,7 +1225,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\article.css ////////////////////////////////////////////////*/
+//// src/elements/article.css ////////////////////////////////////////////////*/
 
 .ArticlePrelabel {
 	color: var(--theme-primary);
@@ -1233,7 +1236,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\blog.css ///////////////////////////////////////////////////*/
+//// src/elements/blog.css ///////////////////////////////////////////////////*/
 
 .BlogHeader,
 .BlogHeader a:link,
@@ -1256,7 +1259,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\collapser.css //////////////////////////////////////////////*/
+//// src/elements/collapser.css //////////////////////////////////////////////*/
 
 .Collapser {
 		margin-bottom: 1.5em;
@@ -1298,7 +1301,7 @@ strong {
 	}
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\editor-html.css ////////////////////////////////////////////*/
+//// src/elements/editor-html.css ////////////////////////////////////////////*/
 
 .Editor {
 	background-color: var(--theme-body-bg-alt);
@@ -1406,7 +1409,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\gallery.css ////////////////////////////////////////////////*/
+//// src/elements/gallery.css ////////////////////////////////////////////////*/
 
 .GalleryItem .GalleryHoverTools {
 	background: var(--theme-dark-glass);
@@ -1420,7 +1423,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\misc.css ///////////////////////////////////////////////////*/
+//// src/elements/misc.css ///////////////////////////////////////////////////*/
 
 .PrettyBrandText {
 	display: inline-block;
@@ -1515,7 +1518,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\nether-sensei.css //////////////////////////////////////////*/
+//// src/elements/nether-sensei.css //////////////////////////////////////////*/
 
 :root {
 	--SenseiGreen: #9ddd4f;
@@ -1623,7 +1626,7 @@ strong {
 .Block.Attribute { background-color: var(--SenseiAttribute); }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\pretty-modern-box.css //////////////////////////////////////*/
+//// src/elements/pretty-modern-box.css //////////////////////////////////////*/
 
 .PrettyModernBox {
 	background-color: var(--theme-dark-glass);
@@ -1696,7 +1699,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements\pretty-modern-navbar.css ///////////////////////////////////*/
+//// src/elements/pretty-modern-navbar.css ///////////////////////////////////*/
 
 .PrettyModernNavbar {
 	font-weight: 600;
