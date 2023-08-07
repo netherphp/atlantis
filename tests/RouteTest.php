@@ -2,13 +2,7 @@
 
 use Nether\Atlantis;
 use Nether\Avenue;
-use Nether\Common;
 use Nether\User;
-
-use PHPUnit\Framework\TestCase;
-
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
 
 if(!defined('ProjectRewt'))
 define('ProjectRewt', Nether\Common\Filesystem\Util::Pathify(
@@ -16,139 +10,11 @@ define('ProjectRewt', Nether\Common\Filesystem\Util::Pathify(
 	'app'
 ));
 
-class TestUserNormal
-extends User\EntitySession {
-
-	public function
-	__Construct() {
-
-		parent::__Construct([
-			'ID'          => 42,
-			'Alias'       => 'geordi-laforge',
-			'TimeCreated' => time(),
-			'TimeBanned'  => 0,
-			'Activated'   => 1,
-			'Admin'       => 0
-		]);
-
-		return;
-	}
-
-	protected function
-	OnReady(Common\Prototype\ConstructArgs $Args):
-	void {
-
-		$this->AccessTypes = new Common\Datastore;
-
-		parent::OnReady($Args);
-
-		return;
-	}
-
-}
-
-class TestUserAdmin
-extends TestUserNormal {
-
-	public function
-	__Construct() {
-
-		parent::__Construct();
-		$this->Admin = 1;
-
-		return;
-	}
-
-}
-
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
 class RouteTest
-extends TestCase {
-
-	static public function
-	Autoload(string $Class):
-	void {
-
-		if(str_starts_with($Class, 'Routes')) {
-			$Class = preg_replace('#^Routes\\\\#', 'routes\\', $Class);
-
-			require(Common\Filesystem\Util::Pathify(
-				ProjectRewt,
-				sprintf(
-					'%s.php',
-					str_replace('\\', '/', $Class)
-				)
-			));
-		}
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	static public function
-	SetupAutoloader():
-	void {
-
-		spl_autoload_register('RouteTest::Autoload');
-
-		return;
-	}
-
-	static public function
-	SetupRequestEnv(string $Method='GET', string $Host='atlantis.dev', string $Path='/'):
-	void {
-
-		$_SERVER['REQUEST_METHOD'] = $Method;
-		$_SERVER['HTTP_HOST'] = $Host;
-		$_SERVER['REQUEST_URI'] = $Path;
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	static public function
-	BuildRouteScanner():
-	Avenue\RouteScanner {
-
-		$Scan = new Avenue\RouteScanner(Common\Filesystem\Util::Pathify(
-			ProjectRewt, 'routes'
-		));
-
-		return $Scan;
-	}
-
-	static public function
-	BuildAtlantis():
-	Atlantis\Engine {
-
-		$App = new Atlantis\Engine(ProjectRewt);
-		$Scan = static::BuildRouteScanner();
-
-		$App->Router->AddHandlers($Scan->Generate());
-		//$App->Router->Response->HTTP = FALSE;
-
-		return $App;
-	}
-
-	static public function
-	RunAtlantis(Atlantis\Engine $App):
-	string {
-
-		ob_start();
-		$App->Run();
-		$Output = ob_get_clean();
-
-		return $Output;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+extends Atlantis\Util\Tests\TestCasePU9 {
 
 	/**
 	 * @test
@@ -276,7 +142,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/user');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserNormal;
+		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 		$Out = static::RunAtlantis($App);
 
 		$Handler = $App->Router->GetCurrentHandler();
@@ -345,7 +211,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/admin');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserNormal;
+		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 		$Out = static::RunAtlantis($App);
 		$Handler = $App->Router->GetCurrentHandler();
 
@@ -375,7 +241,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/admin');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserAdmin;
+		$App->User = new Atlantis\Util\Tests\TestUserAdmin;
 		$Out = static::RunAtlantis($App);
 
 		$Handler = $App->Router->GetCurrentHandler();
@@ -444,7 +310,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/at1');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserNormal;
+		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 		$Out = static::RunAtlantis($App);
 		$Handler = $App->Router->GetCurrentHandler();
 
@@ -477,7 +343,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/at1');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserNormal;
+		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 		$App->User->GetAccessTypes()->Push('AccessType1', -1);
 		$Out = static::RunAtlantis($App);
 		$Handler = $App->Router->GetCurrentHandler();
@@ -511,7 +377,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/at1');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserNormal;
+		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 
 		$App->User->GetAccessTypes()->Shove(
 			'AccessType1',
@@ -553,7 +419,7 @@ extends TestCase {
 		static::SetupRequestEnv(Path: '/test/at1');
 
 		$App = static::BuildAtlantis();
-		$App->User = new TestUserNormal;
+		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 
 		$App->User->GetAccessTypes()->Shove(
 			'AccessType1',
