@@ -9,6 +9,7 @@ use ArrayIterator;
 use Exception;
 use IteratorAggregate;
 use JsonSerializable;
+use Traversable;
 
 class SocialData
 extends Common\Prototype
@@ -29,8 +30,8 @@ implements
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Common\Meta\PropertyObjectify]
-	protected Common\Datastore
+	#[Common\Meta\PropertyFactory('FromArray', 'Data')]
+	protected array|Common\Datastore
 	$Data;
 
 	////////////////////////////////////////////////////////////////
@@ -92,6 +93,20 @@ implements
 	}
 
 	public function
+	GetByList(...$Argv):
+	Common\Datastore {
+
+		$Output = new Common\Datastore;
+		$Arg = NULL;
+
+		foreach($Argv as $Arg)
+		if($this->Has($Arg))
+		$Output[$Arg] = $this->Get($Arg);
+
+		return $Output;
+	}
+
+	public function
 	Set(string $Key, mixed $Val):
 	static {
 
@@ -116,10 +131,17 @@ implements
 	}
 
 	public function
+	GetCount():
+	int {
+
+		return $this->Data->Count();
+	}
+
+	public function
 	GetIconStyleClass(string $Key):
 	?string {
 
-		$Icon = NULL;
+		$Icon = 'mdi-link-variant';
 
 		if(array_key_exists($Key, static::Icons))
 		$Icon = static::Icons[$Key];
@@ -137,17 +159,17 @@ implements
 		return $Icon;
 	}
 
-	public function
-	SetData(array $Data):
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FromArray(iterable $Data):
 	static {
 
-		$this->Data->SetData($Data);
+		$Output = new static([ 'Data'=> $Data ]);
 
-		return $this;
+		return $Output;
 	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
 
 	static public function
 	FromJSON(string $JSON):
@@ -160,10 +182,7 @@ implements
 
 		////////
 
-		$Output = new static;
-		$Output->SetData($Data);
-
-		return $Output;
+		return static::FromArray($Data);
 	}
 
 }

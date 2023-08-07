@@ -1,3 +1,4 @@
+#!env php
 <?php
 
 use Nether\Atlantis;

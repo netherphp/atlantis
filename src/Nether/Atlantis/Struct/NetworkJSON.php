@@ -2,36 +2,61 @@
 
 namespace Nether\Atlantis\Struct;
 
-use Nether\Atlantis;
 use Nether\Common;
 
 class NetworkJSON
 extends Common\Prototype {
 
+	protected array|Common\Datastore
+	$Data;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady(Common\Prototype\ConstructArgs $Args):
+	void {
+
+		if(!isset($this->Data))
+		$this->Data = [];
+
+		if(is_array($this->Data))
+		$this->Data = Common\Datastore::FromArray($this->Data);
+
+		($this->Data)
+		->Remap(fn(array $I)=> new NetworkItem($I));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	Get(string $Site):
+	?NetworkItem {
+
+		if($this->Data->HasKey($Site))
+		return $this->Data[$Site];
+
+		return NULL;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static public function
-	FromFile(string $Filename):
+	FromJSON(string $JSON):
 	static {
 
-		$JSON = NULL;
-		$Data = NULL;
+		$Data = json_decode($JSON, TRUE);
+
+		if(!is_array($Data))
+		throw new Common\Error\RequiredDataMissing('Valid JSON', 'object');
 
 		////////
 
-		if(!file_exists($Filename))
-		throw new Common\Error\FileNotFound($Filename);
-
-		if(!is_readable($Filename))
-		throw new Common\Error\FileUnreadable($Filename);
-
-		if(!is_string($JSON = file_get_contents($Filename)))
-		throw new Common\Error\RequiredDataMissing('JSON File Data');
-
-		if(!is_object($Data = json_decode($JSON)))
-		throw new Common\Error\RequiredDataMissing('Valid JSON Object');
-
-		////////
-
-		$Output = new static($Data);
+		$Output = new static([ 'Data'=> $Data ]);
 
 		return $Output;
 	}
