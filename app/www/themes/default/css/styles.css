@@ -1,6 +1,6 @@
 /*//
-@date 2023-08-07 01:38:21 UTC
-@files 18 [
+@date 2023-08-07 07:21:17 UTC
+@files 19 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -8,6 +8,7 @@
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
     "src\/ext-swiper.css",
+    "src\/fx-text.css",
     "src\/design\\footer.css",
     "src\/design\\header.css",
     "src\/elements\\article.css",
@@ -31,7 +32,7 @@
 //// src/main.css ////////////////////////////////////////////////////////////*/
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// GLOBAL //////////////////////////////////////////////////////////////////*/
+//// GLOBAL VARS /////////////////////////////////////////////////////////////*/
 
 :root {
 	--theme-anim-ease-fast: 150ms ease-in-out;
@@ -362,6 +363,37 @@ strong {
 .jumbotron-outline {
 	background-color: transparent;
 	border: 4px solid var(--theme-body-bg-alt1);
+}
+
+/*******************************************************************************
+**** typeify.js ***************************************************************/
+
+.typeify-cursor {
+	font-weight: normal;
+
+	animation-duration: 1s;
+	animation-name: blink;
+	animation-iteration-count: infinite;
+	animation-timing-function: steps(1);
+}
+
+.typeify-cursor::after {
+	position: absolute;
+	content: attr(data-typeify-cursor);
+}
+
+@keyframes blink {
+	0% {
+		opacity: 0.0;
+	}
+
+	50% {
+		opacity: 1.0
+	}
+
+	100% {
+		opacity: 0.0;
+	}
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1037,6 +1069,50 @@ strong {
 
 .swiper:hover .swiper-button-container {
 	opacity: 100;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/fx-text.css /////////////////////////////////////////////////////////*/
+
+.shifty1 {
+	position: relative;
+	white-space: nowrap;
+}
+
+.shifty1::after {
+	color: #F00;
+	content: attr(data-title);
+
+	position: absolute;
+	top: 0px;
+	left: -2px;
+	opacity: 0.2;
+}
+
+.shifty1::before {
+	color: #0FF;
+	content: attr(data-title);
+
+	position: absolute;
+	top: 0px;
+	left: 2px;
+	opacity: 0.2;
+}
+
+.shifty {
+	position: relative;
+	white-space: nowrap;
+}
+
+.shifty::before {
+	color: #000;
+	content: attr(data-title);
+
+	position: absolute;
+	top: 0px;
+	left: 3px;
+	opacity: 0.8;
+	mix-blend-mode: soft-light;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

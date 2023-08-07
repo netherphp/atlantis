@@ -331,3 +331,35 @@ strong {
 	background-color: transparent;
 	border: 4px solid var(--theme-body-bg-alt1);
 }
+
+/*******************************************************************************
+**** typeify.js ***************************************************************/
+
+.typeify-cursor {
+	font-weight: normal;
+
+	animation-duration: 1s;
+	animation-name: blink;
+	animation-iteration-count: infinite;
+	animation-timing-function: steps(1);
+}
+
+.typeify-cursor::after {
+	position: absolute;
+	content: attr(data-typeify-cursor);
+}
+
+@keyframes blink {
+	0% {
+		opacity: 0.0;
+	}
+
+	50% {
+		opacity: 1.0
+	}
+
+	100% {
+		opacity: 0.0;
+	}
+}
+

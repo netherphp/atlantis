@@ -1,0 +1,66 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Surface;
+
+/**
+ * @var Surface\Engine $Surface
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var string $UUID
+ * @var string $VideoURL
+ * @var string $Overlay
+ * @var string $Ratio
+ * @var string $Title
+ * @var string $Subline
+ * @var bool $Typeify
+ */
+
+$UUID ??= Common\UUID::ForElementHTML();
+$Ratio ??= 'ultrawide';
+$VideoURL ??= '';
+$Overlay ??= '';
+$Title ??= '';
+$Subline ??= '';
+$Typeify ??= FALSE;
+
+?>
+
+<div id="<?php $Util->Print($UUID) ?>" class="ratiobox <?php $Util->Print($Ratio) ?>">
+	<video class="position-absolutely" style="object-fit:cover;" muted autoplay loop playsinline>
+		<source src="<?php $Util->Print($VideoURL) ?>" type="video/mp4" />
+	</video>
+	<div class="position-absolutely <?php $Util->Print($Overlay) ?>"></div>
+	<div class="position-absolutely">
+		<div class="container h-100">
+			<div class="row h-100 justify-content-center align-items-center">
+				<div class="col-auto font-size-mostest-large line-height-normal">
+					<?php if($Title): ?>
+					<div class="fw-bold" data-typeify="true" data-title="<?php $Util->Print($Title) ?>">
+						<?php if(!$Typeify) $Util->Print($Title) ?>
+					</div>
+					<?php endif; ?>
+					<?php if($Subline): ?>
+					<div class="fw-light" data-typeify="true" data-title="<?php $Util->Print($Subline) ?>">
+						<?php if(!$Typeify) $Util->Print($Subline) ?>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php if($Typeify): ?>
+<script type="module">
+import Typeify from '/share/nui/util/typeify.js?v=<?php $Util->CacheBuster() ?>';
+
+jQuery(()=> new Typeify({
+	selector: '#<?php $Util->Print($UUID) ?>',
+	autorun: 100,
+	cursor: '_',
+	cursorKeep: true
+}));
+
+</script>
+<?php endif; ?>
