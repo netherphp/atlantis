@@ -1,4 +1,12 @@
 /*//////////////////////////////////////////////////////////////////////////////
+//// GLOBAL VARS /////////////////////////////////////////////////////////////*/
+
+:root {
+	--theme-anim-ease-fast: 150ms ease-in-out;
+	--theme-anim-ease-slow: 300ms ease-in-out;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
 //// DARK THEME //////////////////////////////////////////////////////////////*/
 
 :root {
@@ -7,9 +15,9 @@
 	logo and/or desired look. these should typically be somewhat bold colours
 	to be used on primary attention getting elements. */
 
-	--theme-primary: #467adb;
-	--theme-primary-alt: #84a6e6;
-	--theme-secondary: #9834c7;
+	--theme-primary:       #467adb;
+	--theme-primary-alt:   #84a6e6;
+	--theme-secondary:     #9834c7;
 	--theme-secondary-alt: #c08bd8;
 
 	/* font settings for the theme. generally these should be the most
@@ -25,15 +33,32 @@
 	--theme-font-mono-letter-spacing: 0.02em;
 
 	/* these should be generically neutral colours as they will be used for
-	various page elements for division and such */
+	various page elements for division and such. */
 
-	--theme-body-bg: #161616;
-	--theme-body-bg-alt: #0F0F0F;
-	--theme-body-bg-alt2: #111111;
+	--theme-body-bg:      #161616;
+	--theme-body-bg-alt:  #0F0F0F;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt1: var(--theme-body-bg-alt);
+	--theme-body-bg-alt2: #111111;
+	--theme-body-fg:      #FAFAFA;
 
-	--theme-body-fg: #FAFAFA;
+	/* styles for glass panels of various opacity and filters. opacity is
+	chosen via a bg class so that backdrop-filter can then apply the glass
+	filters to it. */
+
+	--theme-glass-bg-100: #000000FF;
+	--theme-glass-bg-75:  #000000BD;
+	--theme-glass-bg-50:  #0000007F;
+	--theme-glass-bg-25:  #0000003F;
+	--theme-glass-bg-0:   #00000000;
+
+	--theme-glass-filter-out:         contrast(1.0) saturate(1.0) blur(0.0px);
+	--theme-glass-filter-thin:        contrast(1.0) saturate(0.5) blur(2.0px);
+	--theme-glass-filter-thick:       contrast(1.0) saturate(0.5) blur(8.0px);
+	--theme-glass-filter-frost-thin:  contrast(0.9) saturate(0.5) blur(2.0px);
+	--theme-glass-filter-frost-thick: contrast(0.9) saturate(0.5) blur(8.0px);
+
+	/* this section needs to be auditied */
 
 	--theme-shadow: #000000AA;
 	--theme-hover-bg: var(--theme-primary);
@@ -81,18 +106,16 @@
 
 [data-bs-theme="light"] {
 
-	--theme-font-normal-weight: 400;
-	--theme-font-mono-weight: 400;
-
-	--theme-body-bg: #FAFAFA;
-	--theme-body-bg-alt: #F0F0F0;
+	--theme-body-bg:      #FAFAFA;
+	--theme-body-bg-alt:  #F0F0F0;
 	--theme-body-bg-alt2: #EAEAEA;
-	--theme-body-bg-alt0: var(--theme-body-bg);
-	--theme-body-bg-alt1: var(--theme-body-bg-alt);
+	--theme-body-fg:      #161616;
 
-	--theme-body-fg: #161616;
+	/* this section needs to be auditied */
 
 	--theme-dark-glass: #cccccc34;
+
+	/* *** */
 
 	--theme-header-bg: #FFFFFF;
 	--theme-footer-bg: #FFFFFF;

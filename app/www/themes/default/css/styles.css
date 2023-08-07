@@ -1,5 +1,5 @@
 /*//
-@date 2023-07-18 22:46:24 UTC
+@date 2023-08-07 01:38:21 UTC
 @files 18 [
     "src\/imports.css",
     "src\/main.css",
@@ -8,17 +8,17 @@
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
     "src\/ext-swiper.css",
-    "src\/design\/footer.css",
-    "src\/design\/header.css",
-    "src\/elements\/article.css",
-    "src\/elements\/blog.css",
-    "src\/elements\/collapser.css",
-    "src\/elements\/editor-html.css",
-    "src\/elements\/gallery.css",
-    "src\/elements\/misc.css",
-    "src\/elements\/nether-sensei.css",
-    "src\/elements\/pretty-modern-box.css",
-    "src\/elements\/pretty-modern-navbar.css"
+    "src\/design\\footer.css",
+    "src\/design\\header.css",
+    "src\/elements\\article.css",
+    "src\/elements\\blog.css",
+    "src\/elements\\collapser.css",
+    "src\/elements\\editor-html.css",
+    "src\/elements\\gallery.css",
+    "src\/elements\\misc.css",
+    "src\/elements\\nether-sensei.css",
+    "src\/elements\\pretty-modern-box.css",
+    "src\/elements\\pretty-modern-navbar.css"
 ]
 //*/
 
@@ -31,6 +31,14 @@
 //// src/main.css ////////////////////////////////////////////////////////////*/
 
 /*//////////////////////////////////////////////////////////////////////////////
+//// GLOBAL //////////////////////////////////////////////////////////////////*/
+
+:root {
+	--theme-anim-ease-fast: 150ms ease-in-out;
+	--theme-anim-ease-slow: 300ms ease-in-out;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
 //// DARK THEME //////////////////////////////////////////////////////////////*/
 
 :root {
@@ -39,9 +47,9 @@
 	logo and/or desired look. these should typically be somewhat bold colours
 	to be used on primary attention getting elements. */
 
-	--theme-primary: #467adb;
-	--theme-primary-alt: #84a6e6;
-	--theme-secondary: #9834c7;
+	--theme-primary:       #467adb;
+	--theme-primary-alt:   #84a6e6;
+	--theme-secondary:     #9834c7;
 	--theme-secondary-alt: #c08bd8;
 
 	/* font settings for the theme. generally these should be the most
@@ -57,15 +65,32 @@
 	--theme-font-mono-letter-spacing: 0.02em;
 
 	/* these should be generically neutral colours as they will be used for
-	various page elements for division and such */
+	various page elements for division and such. */
 
-	--theme-body-bg: #161616;
-	--theme-body-bg-alt: #0F0F0F;
-	--theme-body-bg-alt2: #111111;
+	--theme-body-bg:      #161616;
+	--theme-body-bg-alt:  #0F0F0F;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt1: var(--theme-body-bg-alt);
+	--theme-body-bg-alt2: #111111;
+	--theme-body-fg:      #FAFAFA;
 
-	--theme-body-fg: #FAFAFA;
+	/* styles for glass panels of various opacity and filters. opacity is
+	chosen via a bg class so that backdrop-filter can then apply the glass
+	filters to it. */
+
+	--theme-glass-bg-100: #000000FF;
+	--theme-glass-bg-75:  #000000BD;
+	--theme-glass-bg-50:  #0000007F;
+	--theme-glass-bg-25:  #0000003F;
+	--theme-glass-bg-0:   #00000000;
+
+	--theme-glass-filter-out:         contrast(1.0) saturate(1.0) blur(0.0px);
+	--theme-glass-filter-thin:        contrast(1.0) saturate(0.5) blur(2.0px);
+	--theme-glass-filter-thick:       contrast(1.0) saturate(0.5) blur(8.0px);
+	--theme-glass-filter-frost-thin:  contrast(0.9) saturate(0.5) blur(2.0px);
+	--theme-glass-filter-frost-thick: contrast(0.9) saturate(0.5) blur(8.0px);
+
+	/* this section needs to be auditied */
 
 	--theme-shadow: #000000AA;
 	--theme-hover-bg: var(--theme-primary);
@@ -113,18 +138,16 @@
 
 [data-bs-theme="light"] {
 
-	--theme-font-normal-weight: 400;
-	--theme-font-mono-weight: 400;
-
-	--theme-body-bg: #FAFAFA;
-	--theme-body-bg-alt: #F0F0F0;
+	--theme-body-bg:      #FAFAFA;
+	--theme-body-bg-alt:  #F0F0F0;
 	--theme-body-bg-alt2: #EAEAEA;
-	--theme-body-bg-alt0: var(--theme-body-bg);
-	--theme-body-bg-alt1: var(--theme-body-bg-alt);
+	--theme-body-fg:      #161616;
 
-	--theme-body-fg: #161616;
+	/* this section needs to be auditied */
 
 	--theme-dark-glass: #cccccc34;
+
+	/* *** */
 
 	--theme-header-bg: #FFFFFF;
 	--theme-footer-bg: #FFFFFF;
@@ -899,6 +922,39 @@ strong {
 	display: none;
 }
 
+/*******************************************************************************
+**** offcanvas tweaks *********************************************************/
+
+.offcanvas {
+	box-shadow: 0px 0px 24px var(--theme-glass-bg-50);
+	z-index: 9101;
+
+	transition: transform var(--theme-anim-ease-fast);
+}
+
+.offcanvas.offcanvas-glass {
+	background-color: var(--theme-glass-bg-50);
+	backdrop-filter: var(--theme-glass-filter-thick);
+}
+
+.offcanvas-backdrop {
+	z-index: 9100;
+}
+
+.offcanvas-backdrop.fade {
+	background-color: var(--theme-glass-bg-0);
+	backdrop-filter: var(--theme-glass-filter-out);
+	opacity: 1.0;
+
+	transition: backdrop-filter var(--theme-anim-ease-fast), background-color var(--theme-anim-ease-fast);
+}
+
+.offcanvas-backdrop.fade.show {
+	background-color: var(--theme-glass-bg-25);
+	backdrop-filter: var(--theme-glass-filter-frost-thin);
+	opacity: 1.0;
+}
+
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-materialdesignicons.css /////////////////////////////////////////*/
 
@@ -984,7 +1040,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design/footer.css ///////////////////////////////////////////////////*/
+//// src/design\footer.css ///////////////////////////////////////////////////*/
 
 /* header element stuff *******************************************************/
 
@@ -1054,7 +1110,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design/header.css ///////////////////////////////////////////////////*/
+//// src/design\header.css ///////////////////////////////////////////////////*/
 
 /* header element stuff *******************************************************/
 
@@ -1089,43 +1145,8 @@ strong {
 	padding: 1px 8px 2px 8px;
 }
 
-/* header menu stuff **********************************************************/
-
-.PageHeaderMenu {
-	height: 0px;
-	overflow: hidden;
-}
-
-.PageHeaderMenuToggle:nth-of-type(1) {
-	opacity: 1.0;
-}
-
-.PageHeaderMenuToggle:nth-of-type(2) {
-	opacity: 0.0;
-}
-
-.MenuOpen .PageHeaderMenuToggle:nth-of-type(1) {
-	opacity: 0.0;
-}
-
-.MenuOpen .PageHeaderMenuToggle:nth-of-type(2) {
-	opacity: 1.0;
-}
-
-.MenuOpen .PageHeaderMenu {
-	height: auto;
-}
-
-/* responsive *****************************************************************/
-
-@media(min-width:992px) {
-	.PageHeaderMenu {
-		height: auto;
-	}
-}
-
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/article.css ////////////////////////////////////////////////*/
+//// src/elements\article.css ////////////////////////////////////////////////*/
 
 .ArticlePrelabel {
 	color: var(--theme-primary);
@@ -1136,7 +1157,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/blog.css ///////////////////////////////////////////////////*/
+//// src/elements\blog.css ///////////////////////////////////////////////////*/
 
 .BlogHeader,
 .BlogHeader a:link,
@@ -1159,7 +1180,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/collapser.css //////////////////////////////////////////////*/
+//// src/elements\collapser.css //////////////////////////////////////////////*/
 
 .Collapser {
 		margin-bottom: 1.5em;
@@ -1201,7 +1222,7 @@ strong {
 	}
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/editor-html.css ////////////////////////////////////////////*/
+//// src/elements\editor-html.css ////////////////////////////////////////////*/
 
 .Editor {
 	background-color: var(--theme-body-bg-alt);
@@ -1309,7 +1330,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/gallery.css ////////////////////////////////////////////////*/
+//// src/elements\gallery.css ////////////////////////////////////////////////*/
 
 .GalleryItem .GalleryHoverTools {
 	background: var(--theme-dark-glass);
@@ -1323,7 +1344,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/misc.css ///////////////////////////////////////////////////*/
+//// src/elements\misc.css ///////////////////////////////////////////////////*/
 
 .PrettyBrandText {
 	display: inline-block;
@@ -1409,7 +1430,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/nether-sensei.css //////////////////////////////////////////*/
+//// src/elements\nether-sensei.css //////////////////////////////////////////*/
 
 :root {
 	--SenseiGreen: #9ddd4f;
@@ -1517,7 +1538,7 @@ strong {
 .Block.Attribute { background-color: var(--SenseiAttribute); }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pretty-modern-box.css //////////////////////////////////////*/
+//// src/elements\pretty-modern-box.css //////////////////////////////////////*/
 
 .PrettyModernBox {
 	background-color: var(--theme-dark-glass);
@@ -1590,7 +1611,7 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pretty-modern-navbar.css ///////////////////////////////////*/
+//// src/elements\pretty-modern-navbar.css ///////////////////////////////////*/
 
 .PrettyModernNavbar {
 	font-weight: 600;

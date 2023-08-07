@@ -9,33 +9,44 @@
 <header class="PageHeader">
 	<div class="container">
 		<div class="row align-items-center justify-content-between">
+
 			<!-- LOGO -->
 			<div class="col-auto">
-				<a href="/"><div class="PrettyBrandText font-size-larger" style="margin-top:0.25rem;">Nether</div></a>
+				<a href="/">
+					<img src="/themes/default/gfx/atlantis-word.png" alt="Atlantis" style="max-height:20px;" />
+				</a>
 			</div>
 
+			<!-- SPACER -->
 			<div class="col"><hr class="opacity-10" /></div>
 
 			<div class="col-auto">
-				<button class="btn btn-sm pt-1 pb-1 btn-light" data-nui-theme-toggle="--toggle"><i class="mdi mdi-fw mdi-lightbulb-night font-size-larger"></i></button>
-				<button class="btn btn-sm pt-1 pb-1 btn-dark" data-nui-theme-toggle="--toggle"><i class="mdi mdi-fw mdi-lightbulb-on font-size-larger"></i></button>
+				<span data-bs-toggle="offcanvas" data-bs-target="#PageMenuMain" class="cursor-pointer text-uppercase">
+					<span class="text-muted">Menu</span>
+					<i class="mdi mdi-menu font-size-most-large lh-1 mr-0"></i>
+				</span>
 			</div>
 
-			<div class="col-auto d-block d-md-none">
-				<div class="position-relative d-inline-block font-size-most-large">
-					<span class="position-absolutely cursor-pointer opacity-fade PageHeaderMenuToggle"><i class="mdi mdi-fw mdi-menu"></i></span>
-					<span class="position-absolutely cursor-pointer opacity-fade PageHeaderMenuToggle"><i class="mdi mdi-fw mdi-hamburger"></i></span>
-					<i class="mdi mdi-fw mdi-empty"></i>
-				</div>
-			</div>
-
-			<div class="col-12 col-md-auto PageHeaderMenu">
-				<nav class="row align-items-center">
-					<div class="col-12 col-md-auto"><a href="/">Home</a></div>
-					<div class="col-12 col-md-auto"><a href="/docs">Docs</a></div>
-					<?php $Surface->Area('design/header-user') ?>
-				</nav>
-			</div>
 		</div>
 	</div>
 </header>
+
+<div id="PageMenuMain" class="offcanvas offcanvas-end offcanvas-glass zindex-high">
+	<button data-bs-dismiss="offcanvas" class="btn-close m-2 opacity-100 position-absolute position-top position-right" type="button"></button>
+	<div class="offcanvas-body">
+		<div class="ratiobox widescreen wallpapered rounded bg-black mt-4 mb-4" style="background-image:url(/themes/default/gfx/bob.jpg);">
+			<div class="position-absolutely grad-focus-darker rounded"></div>
+			<div class="position-absolute position-h-center position-v-center">
+				W U Z Z U P
+			</div>
+		</div>
+
+		<div>
+			<a href="/" class="border-0">Home</a>
+		</div>
+		<div><hr /></div>
+		<div>
+			<a href="/docs" class="border-0">Docs</a>
+		</div>
+	</div>
+</div>
