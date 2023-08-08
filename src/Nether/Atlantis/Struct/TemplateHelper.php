@@ -3,11 +3,10 @@
 namespace Nether\Atlantis\Struct;
 
 use Nether\Atlantis;
+use Nether\Common;
 
+#[Common\Meta\Date('2023-06-07')]
 class TemplateHelper {
-/*//
-@date 2023-06-07
-//*/
 
 	protected Atlantis\Engine
 	$App;
@@ -23,7 +22,6 @@ class TemplateHelper {
 
 		return;
 	}
-
 
 	////////////////////////////////////////////////////////////////
 	// methods that directly send output ///////////////////////////
@@ -60,6 +58,30 @@ class TemplateHelper {
 
 	////////////////////////////////////////////////////////////////
 	// methods that return values //////////////////////////////////
+
+	#[Common\Meta\Date('2023-08-07')]
+	#[Common\Meta\Info('Mostly for rewriting URLs to our own application.')]
+	public function
+	RewriteURL(string $URL):
+	string {
+
+		$HTTPS = 'https://';
+
+		if($this->App->IsDev())
+		$HTTPS .= 'dev.';
+
+		////////
+
+		if(str_starts_with($URL, 'atl://www.'))
+		$URL = str_replace('atl://', $HTTPS, $URL);
+
+		elseif(str_starts_with($URL, 'atl://'))
+		$URL = str_replace('atl://', $HTTPS, $URL);
+
+		////////
+
+		return $URL;
+	}
 
 	public function
 	Encode(string $Input):
