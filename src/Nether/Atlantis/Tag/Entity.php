@@ -50,14 +50,14 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TypeVarChar(Size: 100, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
 	#[Common\Meta\PropertyListable]
 	public string
 	$Name;
 
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$Details;
