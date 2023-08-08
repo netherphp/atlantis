@@ -30,7 +30,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->Query(Common\Datafilters::TrimmedText(...));
+		->Query(Common\Filters\Text::TrimmedText(...));
 
 		$Result = Atlantis\Tag\Entity::Find([
 			//'Type'     => 'tag',
@@ -68,10 +68,10 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->Name(Common\Datafilters::TrimmedText(...));
+		->Name(Common\Filters\Text::TrimmedText(...));
 
 		$Name = $this->Data->Name;
-		$Alias = Common\Datafilters::SlottableKey($Name);
+		$Alias = Common\Filters\Text::SlottableKey($Name);
 		$Old = NULL;
 
 		////////
@@ -145,7 +145,7 @@ extends Atlantis\Routes\UploadAPI {
 	FetchTagByField(string $Field='ID'):
 	Atlantis\Tag\Entity {
 
-		$ID = Common\Datafilters::TypeIntNullable($this->Data->Get($Field));
+		$ID = Common\Filters\Numbers::IntNullable($this->Data->Get($Field));
 
 		if(!$ID)
 		$this->Quit(1, 'no ID specified');

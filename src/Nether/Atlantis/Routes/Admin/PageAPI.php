@@ -18,7 +18,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		////////
 
@@ -44,9 +44,9 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->Title(Common\Datafilters::TrimmedText(...))
-		->Subtitle(Common\Datafilters::TrimmedTextNullable(...))
-		->URL(Common\Datafilters::PathableKey(...));
+		->Title(Common\Filters\Text::Trimmed(...))
+		->Subtitle(Common\Filters\Text::TrimmedNullable(...))
+		->URL(Common\Filters\Text::PathableKey(...));
 
 		$Title = $this->Data->Title;
 		$Subtitle = $this->Data->Subtitle;
@@ -73,7 +73,7 @@ extends Atlantis\ProtectedAPI {
 			'Title'    => $Title,
 			'Subtitle' => $Subtitle,
 			'StyleBG'  => Atlantis\Page\Section::DefaultStyleBG(),
-			'StylePad' => Atlantis\Page\Section::DefaultStylePad(),
+			'StylePad' => Atlantis\Page\Section::DefaultStylePad()
 		]);
 
 		($this)
@@ -90,7 +90,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		$Page = Atlantis\Page\Entity::GetByID($this->Data->ID);
 
@@ -113,7 +113,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		////////
 
@@ -135,14 +135,14 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->PageID(Common\Datafilters::TypeInt(...))
-		->AfterID(Common\Datafilters::TypeInt(...))
-		->Title(Common\Datafilters::TrimmedText(...))
-		->Subtitle(Common\Datafilters::TrimmedText(...))
-		->StyleBG(Common\Datafilters::TypeStringNullable(...))
-		->StylePad(Common\Datafilters::TypeStringNullable(...))
+		->PageID(Common\Filters\Numbers::IntType(...))
+		->AfterID(Common\Filters\Numbers::IntType(...))
+		->Title(Common\Filters\Text::Trimmed(...))
+		->Subtitle(Common\Filters\Text::Trimmed(...))
+		->StyleBG(Common\Filters\Text::StringNullable(...))
+		->StylePad(Common\Filters\Text::StringNullable(...))
 		->Type([
-			Common\Datafilters::TypeStringNullable(...),
+			Common\Filters\Text::StringNullable(...),
 			(fn(Common\Struct\DatafilterItem $Val)=> $Val->Value ?? 'html')
 		]);
 
@@ -167,6 +167,7 @@ extends Atlantis\ProtectedAPI {
 
 		$Sorting = 1;
 		$Sections = $Page->GetSections();
+		$Sect = NULL;
 
 		foreach($Sections as $Sect) {
 			/** @var Atlantis\Page\Section $Sect */
@@ -197,12 +198,12 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...))
-		->Title(Common\Datafilters::TrimmedTextNullable(...))
-		->Subtitle(Common\Datafilters::TrimmedTextNullable(...))
-		->StyleBG(Common\Datafilters::TypeStringNullable(...))
-		->StylePad(Common\Datafilters::TypeStringNullable(...))
-		->Content(Common\Datafilters::TrimmedText(...));
+		->ID(Common\Filters\Numbers::IntType(...))
+		->Title(Common\Filters\Text::TrimmedNullable(...))
+		->Subtitle(Common\Filters\Text::TrimmedNullable(...))
+		->StyleBG(Common\Filters\Text::TrimmedNullable(...))
+		->StylePad(Common\Filters\Text::TrimmedNullable(...))
+		->Content(Common\Filters\Text::Trimmed(...));
 
 		////////
 
@@ -237,7 +238,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		$Section = Atlantis\Page\Section::GetByID($this->Data->ID);
 
@@ -263,8 +264,8 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...))
-		->Move(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...))
+		->Move(Common\Filters\Numbers::IntType(...));
 
 		////////
 

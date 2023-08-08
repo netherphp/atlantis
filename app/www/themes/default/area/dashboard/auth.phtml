@@ -27,7 +27,7 @@ $GetConnectButton = function(string $Type) use($App) {
 	$Output = sprintf(
 		'<a href="/auth/%s?goto=%s" class="btn btn-primary" data-auth-action="post" data-auth-type="%s">Connect</a>',
 		$Type,
-		Common\Datafilters::Base64Encode($App->Router->Request->GetURL()),
+		Common\Filters\Text::Base64Encode($App->Router->Request->GetURL()),
 		$Type
 	);
 

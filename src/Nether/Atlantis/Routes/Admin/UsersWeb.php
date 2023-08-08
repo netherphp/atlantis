@@ -16,9 +16,9 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->Data)
-		->Q(Common\Datafilters::TrimmedTextNullable(...))
-		->AccessType(Common\Datafilters::TypeIntNullable(...))
-		->Sort(Common\Datafilters::TrimmedTextNullable(...));
+		->Q(Common\Filters\Text::TrimmedNullable(...))
+		->AccessType(Common\Filters\Numbers::IntNullable(...))
+		->Sort(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 

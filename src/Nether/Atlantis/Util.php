@@ -161,7 +161,7 @@ class Util {
 	AppendGoto(string $URL, string $What):
 	string {
 
-		$Encoded = Common\Datafilters::Base64Encode($What);
+		$Encoded = Common\Filters\Text::Base64Encode($What);
 		$Output = $URL;
 
 		if(str_contains($URL, '?'))

@@ -28,21 +28,21 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TypeIntTiny(Unsigned: TRUE, Default: 1, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'TypeInt' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
 	public int
 	$Enabled;
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: NULL)]
 	#[Database\Meta\ForeignKey('Uploads', 'ID')]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'TypeIntNullable' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
 	public ?int
 	$CoverImageID;
 
 	#[Database\Meta\TypeVarChar(Size: 100, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'SlottableKey' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'SlottableKey' ])]
 	#[Common\Meta\PropertyListable]
 	public string
 	$Alias;
@@ -50,14 +50,14 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TypeVarChar(Size: 100, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedText' ])]
 	#[Common\Meta\PropertyListable]
 	public string
 	$Name;
 
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Datafilters::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedText' ])]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$Details;

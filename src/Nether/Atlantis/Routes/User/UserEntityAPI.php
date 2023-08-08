@@ -20,7 +20,7 @@ extends Atlantis\ProtectedAPI {
 	EntityGet():
 	void {
 
-		$ID = Common\Datafilters::TypeInt($this->Data->ID);
+		$ID = Common\Filters\Numbers::IntType($this->Data->ID);
 
 		if(!$ID)
 		$this->Quit(1, 'no user id provided');
@@ -57,7 +57,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		////////
 
@@ -141,8 +141,8 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...))
-		->Reason(Common\Datafilters::TrimmedTextNullable(...));
+		->ID(Common\Filters\Numbers::IntType(...))
+		->Reason(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 
@@ -174,7 +174,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		////////
 
@@ -203,7 +203,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		////////
 
@@ -241,10 +241,10 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...))
-		->Key(Common\Datafilters::TrimmedTextNullable(...))
-		->Value(Common\Datafilters::TypeInt(...))
-		->Overwrite(Common\Datafilters::TypeBool(...));
+		->ID(Common\Filters\Numbers::IntType(...))
+		->Key(Common\Filters\Text::TrimmedNullable(...))
+		->Value(Common\Filters\Numbers::IntType(...))
+		->Overwrite(Common\Filters\Numbers::BoolType(...));
 
 		////////
 
@@ -316,7 +316,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->AccessID(Common\Datafilters::TypeInt(...));
+		->AccessID(Common\Filters\Numbers::IntType(...));
 
 		////////
 

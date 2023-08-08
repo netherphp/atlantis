@@ -20,7 +20,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		if(!$this->Data->ID)
 		$this->Quit(1, 'no ID specified');
@@ -46,7 +46,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		if(!$this->Data->ID)
 		$this->Quit(1, 'no ID specified');
@@ -195,15 +195,15 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->EntityType(Common\Datafilters::TrimmedText(...))
-		->EntityUUID(Common\Datafilters::TrimmedText(...))
+		->EntityType(Common\Filters\Text::Trimmed(...))
+		->EntityUUID(Common\Filters\Text::Trimmed(...))
 		->TagID(
-			Common\Datafilters::ArrayOfNullable(...),
-			Common\Datafilters::TypeInt(...)
+			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Numbers::IntType(...)
 		)
 		->TagName(
-			Common\Datafilters::ArrayOfNullable(...),
-			Common\Datafilters::TrimmedText(...)
+			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Text::Trimmed(...)
 		);
 
 		////////
@@ -306,7 +306,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Datafilters::TypeInt(...));
+		->ID(Common\Filters\Numbers::IntType(...));
 
 		if(!$this->Data->ID)
 		$this->Quit(1, 'no ID specified');
@@ -341,8 +341,8 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->Page(Common\Datafilters::PageNumber(...))
-		->Limit(Common\Datafilters::TypeIntRange(...), 10, 30, 0);
+		->Page(Common\Filters\Numbers::Page(...))
+		->Limit(Common\Filters\Numbers::IntRange(...), 10, 30, 0);
 
 		$Filters = [
 			'Type'  => 'img',

@@ -1352,7 +1352,7 @@ extends Console\Client {
 			foreach($Result as $File) {
 				/** @var Atlantis\Media\File $File */
 
-				if(!Common\Datafilters::UUID($File->UUID))
+				if(!Common\Filters\Text::UUID($File->UUID))
 				continue;
 
 				$Path = explode('-', $File->UUID);

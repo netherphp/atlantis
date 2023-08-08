@@ -77,7 +77,7 @@ extends Database\Prototype {
 
 		return new Atlantis\WebURL(sprintf(
 			'/dashboard/settings/email?confirm=%s',
-			Common\Datafilters::Base64Encode($this->Code)
+			Common\Filters\Text::Base64Encode($this->Code)
 		));
 	}
 

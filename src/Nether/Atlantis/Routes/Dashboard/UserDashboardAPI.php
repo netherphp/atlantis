@@ -21,8 +21,8 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->Email(Common\Datafilters::Email(...))
-		->Confirm(Common\Datafilters::Base64Decode(...));
+		->Email(Common\Filters\Text::Email(...))
+		->Confirm(Common\Filters\Text::Base64Decode(...));
 
 		if(!$this->Data->Email)
 		$this->Quit(1, 'Invalid Email address');
@@ -95,9 +95,9 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->Password0(Common\Datafilters::TrimmedTextNullable(...))
-		->Password1(Common\Datafilters::TrimmedTextNullable(...))
-		->Password2(Common\Datafilters::TrimmedTextNullable(...));
+		->Password0(Common\Filters\Text::TrimmedNullable(...))
+		->Password1(Common\Filters\Text::TrimmedNullable(...))
+		->Password2(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 
@@ -148,7 +148,7 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->AuthType(Common\Datafilters::TrimmedText(...));
+		->AuthType(Common\Filters\Text::Trimmed(...));
 
 		$Field = match($this->Data->AuthType) {
 			AuthApple::GetAuthKey()   => AuthApple::AuthField,

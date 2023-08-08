@@ -54,8 +54,8 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->Data)
-		->Email(Common\Datafilters::Email(...))
-		->Via(Common\Datafilters::TypeStringNullable(...));
+		->Email(Common\Filters\Text::Email(...))
+		->Via(Common\Filters\Text::StringNullable(...));
 
 		if($this->Data->Email && $this->Data->Via) {
 			$this->SendTestEmail($this->Data->Email, $this->Data->Via);

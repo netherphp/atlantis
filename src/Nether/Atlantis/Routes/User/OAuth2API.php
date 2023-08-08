@@ -5,10 +5,9 @@ use Nether;
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 
 use Throwable;
-use Nether\Atlantis\PublicWeb;
-use Nether\Common\Datafilters;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 
@@ -34,8 +33,8 @@ extends Atlantis\PublicWeb {
 	void {
 
 		($this->Request->Data)
-		->Code(Datafilters::TrimmedTextNullable(...))
-		->Goto(Datafilters::Base64Decode(...));
+		->Code(Common\Filters\Text::TrimmedNullable(...))
+		->Goto(Common\Filters\Text::Base64Decode(...));
 
 		$AllowSignup = $this->App->Config[Atlantis\Key::ConfUserAllowSignup];
 		$AllowSignupGank = $this->App->Config[Atlantis\Key::ConfUserAllowSignupGank];
@@ -294,7 +293,7 @@ extends Atlantis\PublicWeb {
 			$Email = NULL;
 
 			if(method_exists($Account, 'GetEmail'))
-			$Email = Nether\Common\Datafilters::Email($Account->GetEmail());
+			$Email = Common\Filters\Text::Email($Account->GetEmail());
 		}
 
 		catch(Throwable $Error) { }

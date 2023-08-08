@@ -17,9 +17,9 @@ extends Atlantis\PublicAPI {
 	void {
 
 		($this->Request->Data)
-		->Username(Common\Datafilters::TrimmedTextNullable(...))
-		->Password(Common\Datafilters::TypeStringNullable(...))
-		->Goto(Common\Datafilters::Base64Decode(...));
+		->Username(Common\Filters\Text::TrimmedNullable(...))
+		->Password(Common\Filters\Text::StringNullable(...))
+		->Goto(Common\Filters\Text::Base64Decode(...));
 
 		////////
 
@@ -89,7 +89,7 @@ extends Atlantis\PublicAPI {
 	void {
 
 		($this->Data)
-		->Alias(Common\Datafilters::TrimmedText(...));
+		->Alias(Common\Filters\Text::Trimmed(...));
 
 		$User = User\EntitySession::Get();
 		$Alias = $this->Data->Alias;
@@ -211,7 +211,7 @@ extends Atlantis\PublicAPI {
 	void {
 
 		($this->Data)
-		->Email(Common\Datafilters::Email(...));
+		->Email(Common\Filters\Text::Email(...));
 
 		if(!$this->Data->Email)
 		$this->Quit(1, 'Invalid email address');
@@ -259,9 +259,9 @@ extends Atlantis\PublicAPI {
 		////////
 
 		($this->Data)
-		->Code(Common\Datafilters::Base64Decode(...))
-		->Password1(Common\Datafilters::TrimmedTextNullable(...))
-		->Password2(Common\Datafilters::TrimmedTextNullable(...));
+		->Code(Common\Filters\Text::Base64Decode(...))
+		->Password1(Common\Filters\Text::TrimmedNullable(...))
+		->Password2(Common\Filters\Text::TrimmedNullable(...));
 
 		if(!$this->Data->Password1 || !$this->Data->Password2)
 		$this->Quit(1, 'You did not successfully enter the new password twice.');
@@ -319,11 +319,11 @@ extends Atlantis\PublicAPI {
 	void {
 
 		($this->Data)
-		->Email(Common\Datafilters::Email(...))
-		->Alias(Common\Datafilters::TrimmedTextNullable(...))
-		->Password1(Common\Datafilters::TypeStringNullable(...))
-		->Password2(Common\Datafilters::TypeStringNullable(...))
-		->Session(Common\Datafilters::TypeBool(...));
+		->Email(Common\Filters\Text::Email(...))
+		->Alias(Common\Filters\Text::TrimmedNullable(...))
+		->Password1(Common\Filters\Text::StringNullable(...))
+		->Password2(Common\Filters\Text::StringNullable(...))
+		->Session(Common\Filters\Numbers::BoolType(...));
 
 		$RequireEmail = $this->Config[Atlantis\Key::ConfUserEmailActivate];
 		$RequireAlias = $this->Config[Atlantis\Key::ConfUserRequireAlias];

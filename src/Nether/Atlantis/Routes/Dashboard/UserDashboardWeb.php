@@ -57,7 +57,7 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->Query)
-		->Confirm(Common\Datafilters::Base64Decode(...));
+		->Confirm(Common\Filters\Text::Base64Decode(...));
 
 		////////
 

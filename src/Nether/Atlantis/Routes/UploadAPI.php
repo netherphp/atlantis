@@ -52,12 +52,12 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		$Type = Common\Datafilters::TrimmedText(
+		$Type = Common\Filters\Text::Trimmed(
 			$this->Data->Type
 			?: 'default'
 		);
 
-		$UUID = Common\Datafilters::TrimmedText(
+		$UUID = Common\Filters\Text::Trimmed(
 			$this->Data->UUID
 			?: Common\UUID::V7()
 		);
@@ -139,10 +139,10 @@ extends Atlantis\ProtectedAPI {
 
 		($this->Data)
 		->Type([
-			Common\Datafilters::TrimmedText(...),
+			Common\Filters\Text::Trimmed(...),
 			fn(Common\Struct\DatafilterItem $V)=> $V->Value ?: 'default'
 		])
-		->UUID(Common\Datafilters::UUID(...));
+		->UUID(Common\Filters\Text::UUID(...));
 
 		////////
 

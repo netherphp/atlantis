@@ -95,7 +95,7 @@ extends OAuth2API {
 			$Account = $Client->GetResourceOwner($Token);
 			$AuthID = $Account->GetID();
 			$Alias = $Account->GetUsername();
-			$Email = Common\Datafilters::Email($Account->GetEmail());
+			$Email = Common\Filters\Text::Email($Account->GetEmail());
 		}
 
 		catch(Throwable $Error) { throw $Error; }

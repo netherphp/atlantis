@@ -58,7 +58,7 @@ extends Database\Prototype {
 	GetURL():
 	string {
 
-		$Encoded = Common\Datafilters::Base64Encode(json_encode([
+		$Encoded = Common\Filters\Text::Base64Encode(json_encode([
 			'ID'   => $this->ID,
 			'Code' => $this->Code
 		]));

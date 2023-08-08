@@ -22,9 +22,9 @@ extends Atlantis\PublicAPI {
 	//*/
 
 		($this->Request->Data)
-		->Email(Common\Datafilters::Email(...))
-		->Phone(Common\Datafilters::TrimmedTextNullable(...))
-		->Message(Common\Datafilters::TrimmedTextNullable(...));
+		->Email(Common\Filters\Text::Email(...))
+		->Phone(Common\Filters\Text::TrimmedNullable(...))
+		->Message(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 

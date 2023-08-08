@@ -178,7 +178,7 @@ extends Atlantis\Prototype {
 		$Filename = sprintf(
 			'%s/%s.phtml',
 			$Path,
-			Common\Datafilters::SlottableKey($this->Alias)
+			Common\Filters\Text::SlottableKey($this->Alias)
 		);
 
 		////////
@@ -221,7 +221,7 @@ extends Atlantis\Prototype {
 		throw new Exception('Page must have a title.');
 
 		if(!$Input['Alias'])
-		$Input['Alias'] = Common\Datafilters::PathableKey($Input['Title']);
+		$Input['Alias'] = Common\Filters\Text::PathableKey($Input['Title']);
 
 		////////
 
@@ -269,7 +269,7 @@ extends Atlantis\Prototype {
 		$Path = sprintf(
 			'%s/%s.phtml',
 			$StoragePrefix,
-			Common\Datafilters::SlottableKey($Alias)
+			Common\Filters\Text::SlottableKey($Alias)
 		);
 
 		$Location = $App->Storage->Location($StorageKey);

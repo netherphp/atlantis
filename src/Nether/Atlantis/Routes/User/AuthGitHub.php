@@ -97,7 +97,7 @@ extends OAuth2API {
 			$Account = $Client->GetResourceOwner($Token);
 			$AuthID = $Account->GetID();
 			$Alias = Avenue\Util::MakePathableKey($Account->GetNickname());
-			$Email = Common\Datafilters::Email($Account->GetEmail());
+			$Email = Common\Filters\Text::Email($Account->GetEmail());
 
 			// github tends to not return an email address even if
 			// you have one set as public, so, here we go.
