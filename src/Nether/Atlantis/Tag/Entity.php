@@ -36,6 +36,7 @@ extends Atlantis\Prototype {
 	#[Database\Meta\ForeignKey('Uploads', 'ID')]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
+	#[Common\Meta\PropertyListable]
 	public ?int
 	$CoverImageID;
 

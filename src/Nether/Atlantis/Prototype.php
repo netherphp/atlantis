@@ -81,7 +81,7 @@ extends Database\Prototype {
 				$Input['ExtraData']
 			));
 
-			$ExtraData->BlendRight($this->ExtraData);
+			$ExtraData->BlendRight($this->ExtraData->GetData());
 			$ExtraData->Filter(fn(mixed $D)=> !!$D);
 
 			$Data['ExtraJSON'] = json_encode($ExtraData->GetData());
