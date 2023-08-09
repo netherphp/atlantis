@@ -150,12 +150,6 @@ extends Atlantis\Prototype {
 			return $URL;
 		}
 
-		if(isset($this->Blog->ImageHeader)) {
-			$URL = $this->Blog->ImageHeader->GetPublicURL();
-			$URL = str_replace('original.', "{$Size}.", $URL);
-			return $URL;
-		}
-
 		return NULL;
 	}
 
