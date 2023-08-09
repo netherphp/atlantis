@@ -10,7 +10,12 @@ use Exception;
 
 #[Database\Meta\TableClass('Tags', 'T')]
 class Entity
-extends Atlantis\Prototype {
+extends Atlantis\Prototype
+implements
+	Atlantis\Packages\ExtraDataInterface {
+
+	use
+	Atlantis\Packages\ExtraDataPackage;
 
 	////////////////////////////////////////////////////////////////
 	//// DATABASE FIELDS ///////////////////////////////////////////
@@ -63,9 +68,7 @@ extends Atlantis\Prototype {
 	public ?string
 	$Details;
 
-	#[Database\Meta\TypeText]
-	public ?string
-	$ExtraJSON;
+
 
 	////////////////////////////////////////////////////////////////
 	//// LOCAL FIELDS //////////////////////////////////////////////
@@ -79,10 +82,7 @@ extends Atlantis\Prototype {
 	public Atlantis\Media\File
 	$CoverImage;
 
-	#[Common\Meta\PropertyFactory('FromJSON', 'ExtraJSON')]
-	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
-	public Common\Protostore
-	$ExtraData;
+
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
