@@ -55,6 +55,41 @@ extends Database\Prototype {
 		return $this;
 	}
 
+	#[Common\Meta\Date('2023-08-09')]
+	public function
+	Patch(array|ArrayAccess $Input):
+	array {
+
+		$Data = parent::Patch($Input);
+		$ExtraData = NULL;
+		$Key = NULL;
+		$Val = NULL;
+
+		$HasExtraDataData = match(TRUE) {
+			$Input instanceof ArrayAccess
+			=> $Input->OffsetExists('ExtraData'),
+
+			default
+			=> array_key_exists('ExtraData', $Input)
+		};
+
+		// if this object has extradata and we had extra data blend the
+		// input data in.
+
+		if(property_exists($this, 'ExtraData') && $HasExtraDataData) {
+			$ExtraData = new Common\Datastore(Common\Filters\Lists::ArrayOf(
+				$Input['ExtraData']
+			));
+
+			$ExtraData->BlendRight($this->ExtraData);
+			$ExtraData->Filter(fn(mixed $D)=> !!$D);
+
+			$Data['ExtraJSON'] = json_encode($ExtraData->GetData());
+		}
+
+		return $Data;
+	}
+
 	#[Common\Meta\Date('2023-02-15')]
 	static protected function
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):

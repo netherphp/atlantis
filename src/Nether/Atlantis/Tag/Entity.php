@@ -62,6 +62,10 @@ extends Atlantis\Prototype {
 	public ?string
 	$Details;
 
+	#[Database\Meta\TypeText]
+	public ?string
+	$ExtraJSON;
+
 	////////////////////////////////////////////////////////////////
 	//// LOCAL FIELDS //////////////////////////////////////////////
 
@@ -73,6 +77,11 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TableJoin('CoverImageID')]
 	public Atlantis\Media\File
 	$CoverImage;
+
+	#[Common\Meta\PropertyFactory('FromJSON', 'ExtraJSON')]
+	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
+	public Common\Protostore
+	$ExtraData;
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
