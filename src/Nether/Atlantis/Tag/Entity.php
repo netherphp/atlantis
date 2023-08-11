@@ -15,7 +15,7 @@ implements
 	Atlantis\Packages\ExtraDataInterface {
 
 	use
-	Atlantis\Packages\ExtraDataPackage;
+	Atlantis\Packages\ExtraData;
 
 	////////////////////////////////////////////////////////////////
 	//// DATABASE FIELDS ///////////////////////////////////////////

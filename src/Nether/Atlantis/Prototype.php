@@ -72,7 +72,7 @@ extends Database\Prototype {
 	}
 
 	#[Common\Meta\Date('2023-08-09')]
-	#[Common\Meta\Info('Generate an array of any ExtraData that was given.')]
+	#[Common\Meta\Info('Generate an array of ExtraData that was given merged with any old.')]
 	public function
 	PatchExtraData(array|ArrayAccess $Input):
 	array {
