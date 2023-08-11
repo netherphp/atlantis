@@ -284,7 +284,7 @@ class Util {
 		// binary assume that the project directory is up from that.
 
 		if(str_ends_with($BinPath, 'vendor/netherphp/atlantis/bin'))
-		return dirname(__FILE__, 5);
+		return dirname(__FILE__, 7);
 
 		// else just yolo with the current path again.
 

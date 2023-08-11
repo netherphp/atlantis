@@ -69,7 +69,7 @@ extends Atlantis\ProtectedWeb {
 					$Today = new Common\Date($When, TRUE);
 					$Prev = $Today->Modify('-1 day');
 					$Next = $Today->Modify('+24 hour');
-					$Timeline = Atlantis\Struct\TrafficTimeline::FindAround($Today);
+					$Timeline = Atlantis\Struct\TrafficTimeline::FindAround($Today, 14);
 
 					$Filters['Since'] = $When->GetUnixtime();
 					$Filters['Before'] = $When->Modify('+1 day')->GetUnixtime();

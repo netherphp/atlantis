@@ -81,12 +81,14 @@ $GetDateFor = function(string $When) {
 	</div>
 
 	<?php if($Timeline instanceof Atlantis\Struct\TrafficTimeline): ?>
-	<hr />
-	<div class="row tight mb-4">
+	<hr class="mb-3 mb-0" />
+	<div class="row tight mb-0">
 		<?php foreach($Timeline->Reports as $Rep): /** @var Atlantis\Struct\TrafficReport $Rep */ ?>
-		<div class="col">
+		<div class="col mb-0">
 			<div class="ratiobox square wallpapered bg-transparent" style="min-height: 100px;">
-				<div class="position-absolute position-bottom w-100 <?php $Util->Print($Rep->ReportDate === $Today->Get('Y-m-d') ? 'bg-primary' : 'bg-black') ?>" style="background:#f00; height: <?php $Util->Print(($Rep->HitCount / $Timeline->Hits->Max) * 100) ?>px;">
+				<div class="position-absolutely opacity-10 <?php $Util->Print($Rep->ReportDate === $Today->Get('Y-m-d') ? 'bg-primary' : 'bg-black') ?>">
+				</div>
+				<div class="position-absolute position-bottom w-100 <?php $Util->Print($Rep->ReportDate === $Today->Get('Y-m-d') ? 'bg-primary' : 'bg-black') ?>" style="height: <?php $Util->Print(($Rep->HitCount / $Timeline->Hits->Max) * 100) ?>px;">
 				</div>
 				<a href="?when=<?php $Util->Print($Rep->ReportDate) ?>" class="position-absolutely"></a>
 			</div>
@@ -96,13 +98,13 @@ $GetDateFor = function(string $When) {
 	<?php endif; ?>
 
 	<?php if($Path): ?>
-	<div class="mt-1">
+	<div class="mb-2">
 		<b>Paths Starting With:</b>
 		<?php $Util->Print($Path) ?>
 	</div>
 	<?php endif; ?>
 
-	<hr class="mt-1 mb-0" />
+	<hr class="mb-2 mb-0" />
 </div>
 
 <!-- TRAFFIC SUMMARY -->

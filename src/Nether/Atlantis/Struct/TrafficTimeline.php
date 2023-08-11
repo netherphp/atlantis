@@ -102,7 +102,7 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	FindAround(Common\Date $Date, int $Days=14):
+	FindAround(Common\Date $Date, int $Days=7):
 	static {
 
 		$Today = new Common\Date('today', TRUE);
