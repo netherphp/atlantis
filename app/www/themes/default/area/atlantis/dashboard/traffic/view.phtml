@@ -41,6 +41,7 @@ $GetDateFor = function(string $When) {
 //Common\Dump::Var($Prev->Get(Common\Values::DateFormatYMDT12VO), TRUE);
 //Common\Dump::Var($Today->Get(Common\Values::DateFormatYMDT12VO), TRUE);
 //Common\Dump::Var($Next->Get(Common\Values::DateFormatYMDT12VO), TRUE);
+//Common\Dump::Var($Timeline, TRUE);
 
 ?>
 
@@ -78,6 +79,21 @@ $GetDateFor = function(string $When) {
 		</div>
 		<?php endif; ?>
 	</div>
+
+	<?php if($Timeline instanceof Atlantis\Struct\TrafficTimeline): ?>
+	<hr />
+	<div class="row tight mb-4">
+		<?php foreach($Timeline->Reports as $Rep): /** @var Atlantis\Struct\TrafficReport $Rep */ ?>
+		<div class="col">
+			<div class="ratiobox square wallpapered bg-transparent" style="min-height: 100px;">
+				<div class="position-absolute position-bottom w-100 <?php $Util->Print($Rep->ReportDate === $Today->Get('Y-m-d') ? 'bg-primary' : 'bg-black') ?>" style="background:#f00; height: <?php $Util->Print(($Rep->HitCount / $Timeline->Hits->Max) * 100) ?>px;">
+				</div>
+				<a href="?when=<?php $Util->Print($Rep->ReportDate) ?>" class="position-absolutely"></a>
+			</div>
+		</div>
+		<?php endforeach; unset($Rep); ?>
+	</div>
+	<?php endif; ?>
 
 	<?php if($Path): ?>
 	<div class="mt-1">

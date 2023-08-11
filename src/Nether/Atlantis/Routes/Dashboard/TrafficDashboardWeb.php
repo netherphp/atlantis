@@ -38,6 +38,7 @@ extends Atlantis\ProtectedWeb {
 		$Today = NULL;
 		$Next = NULL;
 		$Prev = NULL;
+		$Timeline = NULL;
 
 		switch($this->Data->When) {
 			case '24hr':
@@ -67,7 +68,8 @@ extends Atlantis\ProtectedWeb {
 
 					$Today = new Common\Date($When, TRUE);
 					$Prev = $Today->Modify('-1 day');
-					$Next = $Today->Modify('+25 hour');
+					$Next = $Today->Modify('+24 hour');
+					$Timeline = Atlantis\Struct\TrafficTimeline::FindAround($Today);
 
 					$Filters['Since'] = $When->GetUnixtime();
 					$Filters['Before'] = $When->Modify('+1 day')->GetUnixtime();
@@ -123,7 +125,8 @@ extends Atlantis\ProtectedWeb {
 			'Now'      => $Now,    // always the literal now.
 			'Today'    => $Today,  // the "now" of the current view.
 			'Next'     => $Next,   // relative to current view
-			'Prev'     => $Prev    // relative to current view
+			'Prev'     => $Prev,   // relative to current view,
+			'Timeline' => $Timeline
 		]);
 
 		return;
