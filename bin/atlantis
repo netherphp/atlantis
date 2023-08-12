@@ -83,6 +83,7 @@ extends Console\Client {
 	#[Console\Meta\Toggle('--dirs', 'Only setup directories.')]
 	#[Console\Meta\Toggle('--links', 'Only setup symlinks.')]
 	#[Console\Meta\Toggle('--rewrite', 'Rewrite/Update the config file.')]
+	#[Console\Meta\Toggle('--fix', 'Try to correct incorrect things.')]
 	public function
 	Setup():
 	int {
@@ -90,6 +91,7 @@ extends Console\Client {
 		$OptDirs = $this->GetOption('Dirs') ?? FALSE;
 		$OptLinks = $this->GetOption('Links') ?? FALSE;
 		$OptRewrite = $this->GetOption('Rewrite') ?? FALSE;
+		$OptFix = $this->GetOption('Fix') ?? FALSE;
 
 		if(!$OptDirs && !$OptLinks && !$OptRewrite)
 		$OptDirs = $OptLinks = TRUE;
@@ -99,10 +101,10 @@ extends Console\Client {
 		$this->PrintLn();
 
 		if($OptDirs)
-		$this->SetupProjectDirs($Project);
+		$this->SetupProjectDirs($Project, $OptFix);
 
 		if($OptLinks)
-		$this->SetupProjectLinks($Project);
+		$this->SetupProjectLinks($Project, $OptFix);
 
 		if($OptRewrite) {
 			$this->PrintLn('Rewriting atlantis.json...');
@@ -114,7 +116,7 @@ extends Console\Client {
 	}
 
 	protected function
-	SetupProjectDirs(Atlantis\Struct\AtlantisProjectJSON $Project):
+	SetupProjectDirs(Atlantis\Struct\AtlantisProjectJSON $Project, bool $OptFix=FALSE):
 	static {
 
 		$Dir = NULL;
@@ -134,12 +136,17 @@ extends Console\Client {
 			$Path = $this->App->FromProjectRoot($Dir->Path);
 
 			if(is_link($Path)) {
-				$Reports->Push((object)[
-					'Prefix'=> 'HM', 'Dir'=> $Dir, 'Status'=> 'primary',
-					'Message'=> sprintf('exists as symlink to %s', readlink($Path))
-				]);
+				if($OptFix)
+				unlink($Path);
 
-				continue;
+				if(is_link($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'HM', 'Dir'=> $Dir, 'Status'=> 'primary',
+						'Message'=> sprintf('exists as symlink to %s', readlink($Path))
+					]);
+
+					continue;
+				}
 			}
 
 			if(is_dir($Path)) {
@@ -192,7 +199,7 @@ extends Console\Client {
 	}
 
 	protected function
-	SetupProjectLinks(Atlantis\Struct\AtlantisProjectJSON $Project):
+	SetupProjectLinks(Atlantis\Struct\AtlantisProjectJSON $Project, bool $OptFix=FALSE):
 	static {
 
 		$Link = NULL;
@@ -222,30 +229,57 @@ extends Console\Client {
 					continue;
 				}
 
-				$Reports->Push((object)[
-					'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
-					'Message'=> sprintf('exists as symlink to %s', readlink($Path))
-				]);
+				if($OptFix) {
+					if(PHP_OS_FAMILY === 'Windows') {
+						if(is_dir($Path) || !file_exists(realpath($Path)))
+						rmdir($Path);
 
-				continue;
+						else
+						unlink($Path);
+					}
+
+					else
+					unlink($Path);
+				}
+
+				if(is_link($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+						'Message'=> sprintf('exists as symlink to %s', readlink($Path))
+					]);
+
+					continue;
+				}
 			}
 
 			if(is_dir($Path)) {
-				$Reports->Push((object)[
-					'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
-					'Message'=> 'exists as normal directory'
-				]);
 
-				continue;
+				if($OptFix)
+				Common\Filesystem\Util::RmDir($Path);
+
+				if(is_dir($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+						'Message'=> 'exists as normal directory'
+					]);
+
+					continue;
+				}
 			}
 
 			if(is_file($Path)) {
-				$Reports->Push((object)[
-					'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
-					'Message'=> 'exists as normal file'
-				]);
 
-				continue;
+				if($OptFix)
+				unlink($Path);
+
+				if(is_file($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+						'Message'=> 'exists as normal file'
+					]);
+
+					continue;
+				}
 			}
 
 			if(symlink($Source, $Path)) {
