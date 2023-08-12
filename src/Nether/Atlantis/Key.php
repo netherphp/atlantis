@@ -16,6 +16,7 @@ class Key {
 	ConfProjectKeywords       = 'Project.Keywords',
 	ConfProjectDefineConsts   = 'Project.DefineConstants',
 	ConfProjectInitWithConfig = 'Project.InitWithConfig',
+	ConfProjectLogoURL        = 'Project.LogoURL',
 	ConfProjectWebRoot        = 'Project.WebRoot',
 	ConfProjectWebserver      = 'Project.WebServerType',
 	ConfProjectWebCertType    = 'Project.WebCertType';

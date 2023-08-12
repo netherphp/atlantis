@@ -289,7 +289,9 @@ application instance.
 		$File ??= '';
 		$Path = sprintf('conf/%s', $File);
 
-		return $this->FromProjectRoot(rtrim($Path, '/'));
+		return Common\Filesystem\Util::Repath(
+			$this->FromProjectRoot(rtrim($Path, '/'))
+		);
 	}
 
 	#[Common\Meta\DateAdded('2023-07-10')]
@@ -300,7 +302,9 @@ application instance.
 		$File ??= '';
 		$Path = sprintf('env/%s/%s', $this->GetProjectEnv(), $File);
 
-		return $this->FromConfRoot(rtrim($Path, '/'));
+		return Common\Filesystem\Util::Repath(
+			$this->FromConfRoot(rtrim($Path, '/'))
+		);
 	}
 
 	#[Common\Meta\DateAdded('2023-07-10')]
@@ -323,7 +327,7 @@ application instance.
 			$this->ProjectRoot, Util::Repath($File)
 		));
 
-		return $Path;
+		return Common\Filesystem\Util::Repath($Path);
 	}
 
 	////////////////////////////////////////////////////////////////
