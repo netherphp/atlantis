@@ -41,11 +41,9 @@ use Nether\User;
 // FRAMEWORK CONFIG.
 
 ($Config)
+->Set(Atlantis\Key::ConfLibraries, [ ])
 ->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
 ->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))
-->Set(Atlantis\Key::ConfUserAllowLogin, FALSE)
-->Set(Atlantis\Key::ConfUserAllowSignup, FALSE)
-->Set(Atlantis\Key::ConfLibraries, [ ])
 ->Set(Storage\Library::ConfStorageLocations, [
 	new Storage\Adaptors\Local(
 		Name: 'Default',
@@ -64,6 +62,9 @@ use Nether\User;
 // USER CONFIG.
 
 ($Config)
+->Set(Atlantis\Key::ConfUserAllowLogin, FALSE)
+->Set(Atlantis\Key::ConfUserAllowSignup, FALSE)
+->Set(Atlantis\Key::ConfDevProdSendOff, 0)
 ->Set(User\Library::ConfAppleEnabled, FALSE)
 ->Set(User\Library::ConfAppleID, '')
 ->Set(User\Library::ConfAppleTeamID, '')

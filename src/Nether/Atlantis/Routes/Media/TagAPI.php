@@ -30,7 +30,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->Query(Common\Filters\Text::TrimmedText(...));
+		->Query(Common\Filters\Text::Trimmed(...));
 
 		$Result = Atlantis\Tag\Entity::Find([
 			//'Type'     => 'tag',
@@ -68,7 +68,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->Name(Common\Filters\Text::TrimmedText(...));
+		->Name(Common\Filters\Text::Trimmed(...));
 
 		$Name = $this->Data->Name;
 		$Alias = Common\Filters\Text::SlottableKey($Name);

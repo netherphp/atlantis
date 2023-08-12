@@ -1,0 +1,118 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+use Nether\Storage;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+class DevTool
+extends Console\Client {
+
+	const
+	AppName    = 'Nether Atlantis Traffic Tools',
+	AppDesc    = 'Mostly cheat tools for working on the framework.',
+	AppVersion = '5.0.0-dev',
+	AppDebug   = TRUE;
+
+	protected Atlantis\Engine
+	$App;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady():
+	void {
+
+		$this->App = new Atlantis\Engine(
+			Atlantis\Util::GetBinProjectDirectory(__FILE__)
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('report')]
+	#[Console\Meta\Info('Generate reports.')]
+	public function
+	HandleReportGen():
+	int {
+
+		$Until = Common\Date::FromDateString('today', NULL, TRUE);
+		$Until->SetTimezone('UTC');
+		$Starting = $Until->Modify('-100 day');
+
+		$this->PrintLn(sprintf(
+			'%s %s',
+			$this->Format('Starting:', Preset: static::FmtPrime),
+			$Starting->Get(Common\Values::DateFormatYMDT24VO)
+		));
+
+		$this->PrintLn(sprintf(
+			'%s %s',
+			$this->Format('Until:', Preset: static::FmtPrime),
+			$Until->Get(Common\Values::DateFormatYMDT24VO)
+		));
+
+		while($Until->IsBefore($Starting)) {
+			$TimeStart = $Starting->GetUnixtime();
+			$TimeStop = $TimeStart + Common\Values::SecPerDay;
+			$Filters = [
+				'Since'  => $TimeStart,
+				'Before' => $TimeStop
+			];
+
+			$this->PrintLn(sprintf(
+				'%s %s (%s => %s)',
+				$this->Format('Date:', static::FmtAccent),
+				$Starting->Get(Common\Values::DateFormatYMDT24VO),
+				$TimeStart,
+				$TimeStop
+			));
+
+			$Result = Atlantis\Struct\TrafficRow::Find($Filters);
+			$Hits = $Result->Total;
+			$Visitors = Atlantis\Struct\TrafficRow::FindCount(array_merge($Filters, [ 'Group'=> 'visitor' ]));
+			$Pages = Atlantis\Struct\TrafficRow::FindCount(array_merge($Filters, [ 'Group'=> 'path' ]));
+
+			$this
+			->PrintLn(sprintf(
+				'      %s',
+				$this->Format(
+					sprintf(
+						'Hits: %d, Visitors: %d, Pages: %d',
+						$Hits, $Visitors, $Pages
+					),
+					static::FmtMuted
+				)
+			))
+			->PrintLn();
+
+			$Report = Atlantis\Struct\TrafficReport::Insert([
+				'ReportDate'   => $Starting->Get(Common\Values::DateFormatYMD),
+				'HitCount'     => $Hits,
+				'VisitorCount' => $Visitors,
+				'PageCount'    => $Pages,
+				'ExtraJSON'    => json_encode([ 'TimeStart'=> $TimeStart, 'TimeStop'=> $TimeStop ])
+			]);
+
+			$Starting = $Starting->Modify('+1 day');
+		}
+
+		return 0;
+	}
+
+}
+
+exit((new DevTool)->Run());

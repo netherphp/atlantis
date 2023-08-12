@@ -1,0 +1,47 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+$Name ??= $App->Config[Atlantis\Key::ConfProjectName];
+$LogoURL ??= $App->Config[Atlantis\Key::ConfProjectLogoURL];
+$Reason ??= 'Coming Soon';
+
+?>
+
+<style type="text/css">
+html, body, #PageMain {
+	height: 100vh;
+	margin: 0px;
+	padding: 0px;
+}
+</style>
+
+<div class="container-fluid h-100">
+	<div class="row justify-content-center align-items-center h-100">
+		<div class="col-12 col-sm-8 col-md-6 col-lg-5 text-align-center">
+			<?php if($LogoURL): ?><img src="<?php $Util->Print($LogoURL) ?>" alt="<?php $Util->Print($Name) ?>" />
+			<?php else: ?><h1 class="fw-bold font-size-largerer"><?php $Util->Print($Name) ?></h1>
+			<?php endif; ?>
+
+			<div class="text-uppercase fw-bold font-size-smaller text-muted">
+				<?php $Util->Print($Reason) ?>
+			</div>
+
+			<?php $Surface->Area('soon/extend') ?>
+		</div>
+	</div>
+</div>

@@ -10,7 +10,12 @@ use Exception;
 
 #[Database\Meta\TableClass('Tags', 'T')]
 class Entity
-extends Atlantis\Prototype {
+extends Atlantis\Prototype
+implements
+	Atlantis\Packages\ExtraDataInterface {
+
+	use
+	Atlantis\Packages\ExtraData;
 
 	////////////////////////////////////////////////////////////////
 	//// DATABASE FIELDS ///////////////////////////////////////////
@@ -36,6 +41,7 @@ extends Atlantis\Prototype {
 	#[Database\Meta\ForeignKey('Uploads', 'ID')]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
+	#[Common\Meta\PropertyListable]
 	public ?int
 	$CoverImageID;
 
@@ -50,17 +56,19 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TypeVarChar(Size: 100, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
 	#[Common\Meta\PropertyListable]
 	public string
 	$Name;
 
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedText' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$Details;
+
+
 
 	////////////////////////////////////////////////////////////////
 	//// LOCAL FIELDS //////////////////////////////////////////////
@@ -73,6 +81,8 @@ extends Atlantis\Prototype {
 	#[Database\Meta\TableJoin('CoverImageID')]
 	public Atlantis\Media\File
 	$CoverImage;
+
+
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////

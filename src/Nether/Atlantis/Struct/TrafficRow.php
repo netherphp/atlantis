@@ -101,10 +101,11 @@ extends Atlantis\Prototype {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['Hash'] ??= NULL;
 		$Input['Since'] ??= NULL;
-		$Input['PathStart'] ??= NULL;
+		$Input['Before'] ??= NULL;
 
+		$Input['Hash'] ??= NULL;
+		$Input['PathStart'] ??= NULL;
 		$Input['FromDomain'] ??= NULL;
 
 		$Input['Group'] ??= NULL;

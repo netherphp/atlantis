@@ -34,6 +34,12 @@ extends Atlantis\ProtectedWeb {
 		$Title = 'Traffic Report';
 		$When = NULL;
 
+		$Now = new Common\Date;
+		$Today = NULL;
+		$Next = NULL;
+		$Prev = NULL;
+		$Timeline = NULL;
+
 		switch($this->Data->When) {
 			case '24hr':
 				$Title = 'Past 24 Hours';
@@ -59,6 +65,11 @@ extends Atlantis\ProtectedWeb {
 				if(preg_match('#\d{4}-\d{2}-\d{2}#', $this->Data->When)) {
 					$When = Common\Date::FromDateString($this->Data->When);
 					$Title = sprintf('Day of %s', $When->Get(Common\Values::DateFormatFancyDate));
+
+					$Today = new Common\Date($When, TRUE);
+					$Prev = $Today->Modify('-1 day');
+					$Next = $Today->Modify('+24 hour');
+					$Timeline = Atlantis\Struct\TrafficTimeline::FindAround($Today, 14);
 
 					$Filters['Since'] = $When->GetUnixtime();
 					$Filters['Before'] = $When->Modify('+1 day')->GetUnixtime();
@@ -109,7 +120,13 @@ extends Atlantis\ProtectedWeb {
 			'Hits'     => $Hits,
 			'Visitors' => $Visitors,
 			'Pages'    => $Pages,
-			'Path'     => $Filters['PathStart']
+			'Path'     => $Filters['PathStart'],
+
+			'Now'      => $Now,    // always the literal now.
+			'Today'    => $Today,  // the "now" of the current view.
+			'Next'     => $Next,   // relative to current view
+			'Prev'     => $Prev,   // relative to current view,
+			'Timeline' => $Timeline
 		]);
 
 		return;

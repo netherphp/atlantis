@@ -139,6 +139,21 @@ extends Atlantis\Prototype {
 	}
 
 	public function
+	GetCoverImageURL(string $Size='md'):
+	?string {
+
+		$URL = NULL;
+
+		if(isset($this->CoverImage)) {
+			$URL = $this->CoverImage->GetPublicURL();
+			$URL = str_replace('original.', "{$Size}.", $URL);
+			return $URL;
+		}
+
+		return NULL;
+	}
+
+	public function
 	_Update(iterable $Dataset):
 	static {
 
@@ -153,6 +168,7 @@ extends Atlantis\Prototype {
 	void {
 
 		$Input['Search'] ??= NULL;
+		$Input['TagID'] ??= NULL;
 
 		return;
 	}
@@ -163,6 +179,9 @@ extends Atlantis\Prototype {
 
 		parent::FindExtendFilters($SQL, $Input);
 
+		if($Input['TagID'] !== NULL)
+		static::FindExtendFilters_ByEntityFields_ByTagID($SQL, $Input);
+
 		if($Input['Search'] !== NULL) {
 			if(is_string($Input['Search'])) {
 				$Input['SearchRegEx'] = join('|', explode(' ', $Input['Search']));
@@ -172,6 +191,33 @@ extends Atlantis\Prototype {
 
 		return;
 	}
+
+	static protected function
+	FindExtendFilters_ByEntityFields_ByTagID(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		$TableTag = Atlantis\Tag\EntityLink::GetTableInfo();
+
+		$Input['TagID'] = match(TRUE) {
+			is_array($Input['TagID'])
+			=> $Input['TagID'],
+
+			default
+			=> [ $Input['TagID'] ]
+		};
+
+		////////
+
+		$SQL->Join(sprintf(
+			'%s RET on RET.EntityUUID=Main.UUID',
+			$TableTag->Name
+		));
+
+		$SQL->Where('RET.TagID IN(:TagID)');
+
+		return;
+	}
+
 
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):

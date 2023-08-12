@@ -51,6 +51,7 @@
 		"bin/gfx.atl",
 		"bin/nether.atl",
 		"bin/ssl.atl",
+		"bin/traffic.atl",
 
 		"bin/atlantis-ssl",
 		"bin/atlantis-cron"

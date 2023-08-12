@@ -55,6 +55,70 @@ extends Database\Prototype {
 		return $this;
 	}
 
+	#[Common\Meta\Date('2023-08-09')]
+	public function
+	Patch(array|ArrayAccess $Input):
+	array {
+
+
+		$Data = parent::Patch($Input);
+
+		// add magic ExtraData/ExtraJSON support.
+
+		if($this instanceof Packages\ExtraDataInterface)
+		$Data = array_merge($Data, $this->PatchExtraData($Input));
+
+		return $Data;
+	}
+
+	#[Common\Meta\Date('2023-08-09')]
+	#[Common\Meta\Info('Generate an array of ExtraData that was given merged with any old.')]
+	public function
+	PatchExtraData(array|ArrayAccess $Input):
+	array {
+
+		// fyi we are expecting assoc arrays from the input. so like...
+		// { "ID": 42, "ExtraData[Something]": 1234 }
+		// $_POST['ID'] and $_POST['ExtraData']['Something']
+
+		$Output = [];
+
+		$Has = match(TRUE) {
+			$Input instanceof ArrayAccess
+			=> $Input->OffsetExists('ExtraData'),
+
+			default
+			=> array_key_exists('ExtraData', $Input)
+		};
+
+		if(!$Has || !is_array($Input['ExtraData']))
+		return $Output;
+
+		/** @var Packages\ExtraDataPackage $this */
+
+		// if this object has extradata and we had extra data merge the
+		// new data in and strip things that were emptied out.
+
+		$ExtraData = (
+			Common\Datastore::FromArray($this->ExtraData->GetData())
+			->MergeRight($Input['ExtraData'])
+			->Filter(fn(mixed $D)=> !!$D)
+		);
+
+		// if the result has data then turn it to json otherwise null the
+		// entire field out.
+
+		$Output['ExtraJSON'] = match(TRUE) {
+			$ExtraData->Count() > 0
+			=> json_encode($ExtraData->GetData()),
+
+			default
+			=> NULL
+		};
+
+		return $Output;
+	}
+
 	#[Common\Meta\Date('2023-02-15')]
 	static protected function
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
