@@ -1,21 +1,14 @@
-<div class="ratiobox ultrawide wallpapered" style="background-image:url(/themes/default/gfx/space.jpg);">
-	<div class="position-absolutely opacity-0 bg-black"></div>
-	<div class="position-absolutely">
-		<div class="container h-100">
-			<div class="row h-100 justify-content-center align-items-center">
-				<div class="col-auto font-size-mostest-large line-height-normal">
-					<div class="fw-bold">Hi.</div>
-					<div class="fw-light">I'm a Website.</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="position-absolute position-bottom-right">
-		<div class="font-size-smallerer fs-italic text-uppercase opacity-20 p-2">
-			<a target="_blank" href="https://unsplash.com/photos/-tOr_T4qTpQ">Photo Credit</a>
-		</div>
-	</div>
-</div>
+<?php
+
+$Surface->Area('widgets/video-promo', [
+	'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
+	'Overlay'  => 'grad-focus-dark',
+	'Title'    => 'Hi.',
+	'Subline'  => 'I\'m a Website.',
+	'Typeify'  => TRUE
+]);
+
+?>
 
 <div class="container pt-6 pb-6">
 	<div class="ArticlePrelabel">Required Reading</div>
