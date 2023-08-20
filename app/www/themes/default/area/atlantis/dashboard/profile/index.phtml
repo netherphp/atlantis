@@ -26,17 +26,6 @@ $Surface
 
 ?>
 
-<div class="jumbotron rounded p-2 mb-2">
-	<div class="row justify-content-end">
-		<div class="col-auto">
-			<button class="btn btn-outline-dark btn-block" data-profile-cmd="new">
-				<i class="mdi mdi-plus"></i>
-				New Profile
-			</button>
-		</div>
-	</div>
-</div>
-
 <div class="jumbotron rounded p-2 mb-6">
 	<form method="get">
 		<div class="row align-items-center">
@@ -67,9 +56,18 @@ $Surface
 	</form>
 </div>
 
-<div class="fw-bold text-align-center mb-2">
-	Found <?php $Util->Print($Profiles->Total) ?>
-	<?php $Util->Print(Atlantis\Util::IfOneOrMore($Profiles->Total, 'Profile', 'Profiles')) ?>
+<div class="row align-items-center">
+	<div class="col">
+		<span class="fw-bold text-uppercase">
+			<?php $Util->Print($Profiles->Total) ?> Profiles Found
+		</span>
+	</div>
+	<div class="col-auto">
+		<button class="btn btn-outline-dark btn-block" data-profile-cmd="new">
+			<i class="mdi mdi-plus"></i>
+			New Profile
+		</button>
+	</div>
 </div>
 <hr />
 

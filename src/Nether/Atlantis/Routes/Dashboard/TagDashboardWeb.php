@@ -15,11 +15,17 @@ extends Atlantis\ProtectedWeb {
 	ListGet():
 	void {
 
+		($this->Data)
+		->Type(Atlantis\Tag\Entity::FilterValidType(...));
+
+		////////
+
 		$Trail = new Common\Datastore([
 			'Tags' => '/dashboard/tags'
 		]);
 
 		$Tags = Atlantis\Tag\Entity::Find([
+			'Type'  => $this->Data->Type,
 			'Sort'  => 'name-az',
 			'Limit' => 0
 		]);

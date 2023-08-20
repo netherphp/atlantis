@@ -15,6 +15,7 @@ implements
 	Atlantis\Packages\ExtraDataInterface {
 
 	use
+	Atlantis\Packages\CoverImage,
 	Atlantis\Packages\ExtraData;
 
 	////////////////////////////////////////////////////////////////
@@ -36,14 +37,6 @@ implements
 	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
 	public int
 	$Enabled;
-
-	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: NULL)]
-	#[Database\Meta\ForeignKey('Uploads', 'ID')]
-	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
-	#[Common\Meta\PropertyListable]
-	public ?int
-	$CoverImageID;
 
 	#[Database\Meta\TypeVarChar(Size: 100, Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
@@ -75,10 +68,6 @@ implements
 	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
 	public Common\Date
 	$DateCreated;
-
-	#[Database\Meta\TableJoin('CoverImageID')]
-	public Atlantis\Media\File
-	$CoverImage;
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
@@ -235,19 +224,6 @@ implements
 	}
 
 	public function
-	GetCoverImageURL(string $Size='md'):
-	?string {
-
-		if(!isset($this->CoverImage))
-		return NULL;
-
-		$URL = $this->CoverImage->GetPublicURL();
-		$URL = str_replace('original.', "{$Size}.", $URL);
-
-		return (string)Atlantis\WebURL::FromString($URL);
-	}
-
-	public function
 	GetPageURL():
 	string {
 
@@ -270,6 +246,24 @@ implements
 		////////
 
 		return (string)Atlantis\WebURL::FromString($Output);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FilterValidType(mixed $Input):
+	string {
+
+		$Input = Common\Filters\Text::Trimmed($Input);
+
+		return match($Input) {
+			'tag', 'topic', 'site'
+			=> $Input,
+
+			default
+			=> 'tag'
+		};
 	}
 
 }

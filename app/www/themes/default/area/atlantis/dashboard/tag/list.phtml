@@ -22,7 +22,51 @@ $Surface
 ->Area('media/dashboard/scripts', $__SCOPE)
 ->Area('dashboard/nav', [ 'Trail'=> $Trail ]);
 
+$View = 'list';
+
 ?>
+
+<div class="jumbotron rounded mb-4">
+	<form id="SearchFilters" method="post">
+		<div class="row mb-2">
+			<div class="col">
+				<input name="Q" type="text" class="form-control" placeholder="Search..." />
+			</div>
+			<div class="col-auto">
+				<select name="Type" class="form-select">
+					<optgroup label="Content Management">
+						<option value="tag">Tags</option>
+					</optgroup>
+
+					<optgroup label="System">
+						<option value="topic">Topics</option>
+						<option value="site">Sites</option>
+					</optgroup>
+				</select>
+			</div>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-dark">
+				<i class="mdi mdi-magnify"></i>
+				Search
+			</button>
+		</div>
+	</form>
+	<script type="module">
+	import FormUtil from '/share/nui/util/form.js';
+
+	jQuery(function(){
+
+		jQuery('#SearchFilters')
+		.on('submit', function() {
+
+			return false;
+		});
+
+		return;
+	});
+	</script>
+</div>
 
 <div class="row align-items-center">
 	<div class="col">
@@ -31,7 +75,7 @@ $Surface
 		</span>
 	</div>
 	<div class="col-auto">
-		<div class="btn btn-dark CmdTagNew">
+		<div class="btn btn-outline-dark CmdTagNew">
 			<i class="mdi mdi-plus"></i>
 			New Tag
 		</div>
@@ -39,14 +83,28 @@ $Surface
 </div>
 <hr />
 
-<?php foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
+
+
+<?php if($View === 'list'): foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
 <div class="row align-items-center">
 	<div class="col-auto">
 		<div class="ratiobox square wallpapered rounded" style="width:48px; background-image:url(<?php $Util->Print($Tag->GetCoverImageURL()) ?>);">
+			<?php if(!$Tag->HasCoverImage()): ?>
+			<div class="position-absolute position-v-center position-h-center font-size-large">
+				<i class="mdi mdi-tag"></i>
+			</div>
+			<?php endif; ?>
 		</div>
 	</div>
 	<div class="col">
 		<a href="<?php $Util->Print($Tag->GetPageURL()) ?>"><?php $Util->Print($Tag->Name) ?></a>
+	</div>
+	<div class="col-auto font-size-largerer">
+		<?php if($Tag->ExtraData->HasKey('URL')): ?>
+		<a href="<?php $Util->Print($Util->RewriteURL($Tag->ExtraData->Get('URL'))) ?>" target="_blank">
+			<i class="mdi mdi-link-box-variant mr-0 opacity-50"></i>
+		</a>
+		<?php endif; ?>
 	</div>
 	<div class="col-auto">
 		<div class="btn btn-dark CmdTagEdit" data-tag-id="<?php $Util->Print($Tag->ID) ?>">
@@ -61,7 +119,7 @@ $Surface
 	</div>
 </div>
 <hr />
-<?php endforeach; ?>
+<?php endforeach; endif; ?>
 
 <div>
 	<?php $Surface->Area('widgets/pager', [ 'Results'=> $Tags ]) ?>
@@ -111,7 +169,8 @@ jQuery(function() {
 			fields: [
 				new DialogUtil.Field('hidden', 'ID', null, tag.id),
 				new DialogUtil.Field('text', 'Name', null),
-				new DialogUtil.Field('text', 'Alias', null)
+				new DialogUtil.Field('text', 'Alias', null),
+				new DialogUtil.Field('text', 'ExtraData[URL]', 'URL')
 			],
 			onAccept: function() {
 
@@ -129,7 +188,11 @@ jQuery(function() {
 		diag.fillByRequest(
 			'GET', '/api/tag/entity',
 			{ ID: tag.id },
-			true
+			true,
+			function(d, result) {
+				d.body.find('[name="ExtraData[URL]"]').val(result.payload.ExtraData.URL);
+				return;
+			}
 		);
 
 		return false;
