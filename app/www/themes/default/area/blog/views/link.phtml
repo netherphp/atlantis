@@ -75,8 +75,8 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 		<span class="fw-bold text-uppercase">Source:</span>
 		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($OutboundDomain) ?></a>
 	</div>
-	<div class="mb-0">
-		<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
+	<div class="mb-1">
+		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 	</div>
 
 	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>

@@ -513,14 +513,14 @@ extends Atlantis\Prototype {
 			//echo "write to disk", PHP_EOL;
 			$Output = $File->New($Name);
 			$Output->Write($Data);
-			echo '> Wrote ', new Common\Units\Bytes($Output->GetSize()), PHP_EOL;
+			//echo '> Wrote ', new Common\Units\Bytes($Output->GetSize()), PHP_EOL;
 		}
 
 		catch(Exception $Err) {
 			throw new Exception("storage hated that: {$Err->GetMessage()}");
 		}
 
-		echo '> Memory: ', new Common\Units\Bytes(memory_get_peak_usage()), PHP_EOL;
+		//echo '> Memory: ', new Common\Units\Bytes(memory_get_peak_usage()), PHP_EOL;
 
 		////////
 

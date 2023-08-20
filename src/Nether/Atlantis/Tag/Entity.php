@@ -68,8 +68,6 @@ implements
 	public ?string
 	$Details;
 
-
-
 	////////////////////////////////////////////////////////////////
 	//// LOCAL FIELDS //////////////////////////////////////////////
 
@@ -81,8 +79,6 @@ implements
 	#[Database\Meta\TableJoin('CoverImageID')]
 	public Atlantis\Media\File
 	$CoverImage;
-
-
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
@@ -110,34 +106,6 @@ implements
 		$Data['CoverImageURL'] = $this->GetCoverImageURL();
 
 		return $Data;
-	}
-
-	////////////////////////////////////////////////////////////////
-	//// OVERRIDE Database\Prototype Joins /////////////////////////
-
-	static public function
-	_JoinExtendTables(Database\Verse $SQL, string $JAlias='Main', ?string $TPre=NULL):
-	void {
-
-		$Table = static::GetTableInfo();
-		$TPre = $Table->GetPrefixedAlias($TPre);
-		$JAlias = $Table->GetPrefixedAlias($JAlias);
-
-		Atlantis\Media\File::JoinMainTables($SQL, $JAlias, 'CoverImageID', $TPre);
-
-		return;
-	}
-
-	static public function
-	_JoinExtendFields(Database\Verse $SQL, ?string $TPre=NULL):
-	void {
-
-		$Table = static::GetTableInfo();
-		$TPre = $Table->GetPrefixedAlias($TPre);
-
-		Atlantis\Media\File::JoinMainFields($SQL, $TPre);
-
-		return;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -258,7 +226,7 @@ implements
 
 	public function
 	FetchPhotos():
-	Database\Struct\PrototypeFindResult {
+	Database\ResultSet {
 
 		return EntityPhoto::Find([
 			'EntityID' => $this->ID,
@@ -286,6 +254,9 @@ implements
 		$Output = Atlantis\Library::Get(Atlantis\Key::PageTagViewURL);
 		$Key = NULL;
 		$Val = NULL;
+
+		if($this->Type === 'topic')
+		$Output = '/:Alias:';
 
 		$Tokens = [
 			':Alias:' => $this->Alias

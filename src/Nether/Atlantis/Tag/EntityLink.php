@@ -266,6 +266,10 @@ required data in.
 		$Input['EntityUUID'] ??= NULL;
 		$Input['Sort'] ??= 'tag-name-az';
 
+		$Input['TagAnd'] ??= NULL;
+
+		$Input['Enabled'] ??= NULL;
+
 		$Input['Resolvers'] ??= [
 			fn($Row)=> static::GetTypeLinkClass($Row->Type)
 		];
@@ -285,6 +289,40 @@ required data in.
 
 		if($Input['EntityUUID'] !== NULL)
 		$SQL->Where('`Main`.`EntityUUID`=:EntityUUID');
+
+		static::FindExtendFilters_HandleTagAnd($SQL, $Input);
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_HandleTagAnd(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(!is_array($Input['TagAnd']))
+		return;
+
+		$Table   = Entity::GetTableInfo();
+		$TagIter = NULL;
+		$TagID = NULL;
+		$TagKey = NULL;
+
+		// this is literally stupid as hell i think there is a much
+		// better way we used in the past with an IN() and a count
+		// followup. there was a gotcha with that though and im
+		// still having a hard time with things after covid. it does
+		// however, work.
+
+		foreach($Input['TagAnd'] as $TagIter => $TagID) {
+			$TagKey = "PTLA{$TagIter}";
+			$Input[$TagKey] = $TagID;
+
+			$SQL
+			->Join("{$Table->Name} {$TagKey} ON {$TagKey}.ID=Main.TagID")
+			->Where("{$TagKey}.ID=:{$TagKey}");
+		}
+
+		$SQL->Group('Main.EntityUUID');
 
 		return;
 	}

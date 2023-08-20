@@ -60,7 +60,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 					<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
 				</div>
 
-				<div class="mb-2"><?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?></div>
+				<div class="mb-2"><?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?></div>
 
 				<div class="EditorContent mb-2">
 					<?php echo $Post->GetExcerpt() ?>

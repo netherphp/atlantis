@@ -9,7 +9,7 @@ use Nether\Database;
 class AtlantisTrafficElement
 extends Atlantis\Dashboard\Element {
 
-	public Database\Struct\PrototypeFindResult
+	public Database\ResultSet
 	$Rows;
 
 	public int
@@ -18,7 +18,7 @@ extends Atlantis\Dashboard\Element {
 	public int
 	$Visitors;
 
-	public Database\Struct\PrototypeFindResult
+	public Database\ResultSet
 	$Sources;
 
 	public function

@@ -14,7 +14,7 @@ use Nether\User;
  * @var User\EntitySession $User
  *
  * @var Atlantis\PublicWeb $Route
- * @var Database\Struct\PrototypeFindResult $Videos
+ * @var Database\ResultSet $Videos
  */
 
 ?>
@@ -43,7 +43,7 @@ use Nether\User;
 			<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
 		</div>
 		<div>
-			<?php $Surface->Area('tag/buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
+			<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
 		</div>
 	</div>
 	<div class="col-12">

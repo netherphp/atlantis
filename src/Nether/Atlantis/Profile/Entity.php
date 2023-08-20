@@ -97,6 +97,21 @@ extends Atlantis\Prototype {
 	}
 
 	public function
+	GetExcerpt(int $Len=100):
+	string {
+
+		$Output = preg_replace('#<[Bb][Rr] ?/?>#', ' ', $this->Details);
+		$Bits = explode(' ', strip_tags($Output), ($Len + 1));
+		$Output = join(' ', array_slice($Bits, 0, $Len));
+
+		if(count($Bits) > $Len)
+		if(!str_ends_with($Output, '.'))
+		$Output .= '...';
+
+		return $Output;
+	}
+
+	public function
 	GetPageURL():
 	string {
 
@@ -146,11 +161,16 @@ extends Atlantis\Prototype {
 
 		if(isset($this->CoverImage)) {
 			$URL = $this->CoverImage->GetPublicURL();
-			$URL = str_replace('original.', "{$Size}.", $URL);
-			return $URL;
+
+			foreach($this->CoverImage->ExtraFiles as $FName => $FInfo) {
+				if(str_starts_with($FName, "")) {
+					$URL = str_replace($this->CoverImage->Name, $FName, $URL);
+					break;
+				}
+			}
 		}
 
-		return NULL;
+		return $URL;
 	}
 
 	public function
@@ -217,7 +237,6 @@ extends Atlantis\Prototype {
 
 		return;
 	}
-
 
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
@@ -299,6 +318,31 @@ extends Atlantis\Prototype {
 		$Index->Push('null-null-null');
 
 		$Result = Atlantis\Media\VideoThirdParty::Find([
+			'UUID'    => $Index->GetData(),
+			'Sort'    => 'newest',
+			'Limit'   => 0
+		]);
+
+		return $Result;
+	}
+
+	#[Common\Meta\Date('2023-08-18')]
+	public function
+	FetchRelatedLinks():
+	Common\Datastore {
+
+		$Index = Atlantis\Struct\EntityRelationship::Find([
+			'ParentType' => 'Profile.Entity',
+			'ParentUUID' => $this->UUID,
+
+			'ChildType'  => 'Media.Related.Link',
+			'Remappers'  => fn(Atlantis\Struct\EntityRelationship $P)=> $P->ChildUUID
+		]);
+
+		if(!$Index->Count())
+		$Index->Push('null-null-null');
+
+		$Result = Atlantis\Media\RelatedLink::Find([
 			'UUID'    => $Index->GetData(),
 			'Sort'    => 'newest',
 			'Limit'   => 0

@@ -11,7 +11,7 @@ trait ExtraData {
 
 	#[Database\Meta\TypeText]
 	public ?string
-	$ExtraJSON;
+	$ExtraJSON = '{}';
 
 	#[Common\Meta\PropertyFactory('FromJSON', 'ExtraJSON')]
 	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]

@@ -1232,6 +1232,7 @@ extends Console\Client {
 		while($Page <= $PageCount) {
 
 			$Result = Atlantis\Media\File::Find([
+				//'UUID' => $this->GetOption('UUID'),
 				'Type' => Atlantis\Media\File::TypeImg,
 				'Page' => $Page
 			]);

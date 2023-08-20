@@ -39,7 +39,7 @@ class Manager {
 	Get(string $IFace):
 	?Common\Datastore {
 
-		return $this->Interfaces[$IFace];
+		return $this->Interfaces[$IFace] ?? new Common\Datastore;
 	}
 
 	public function

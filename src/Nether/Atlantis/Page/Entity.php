@@ -121,7 +121,7 @@ extends Atlantis\Prototype {
 
 	public function
 	GetSections():
-	Database\Struct\PrototypeFindResult {
+	Database\ResultSet {
 
 		return Section::Find([
 			'PageID' => $this->ID

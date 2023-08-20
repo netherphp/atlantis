@@ -16,9 +16,9 @@ use Nether\User;
  *
  * @var Atlantis\PublicWeb $Route
  * @var Atlantis\Profile\Entity $Profile
- * @var Database\Struct\PrototypeFindResult $Tags
- * @var Database\Struct\PrototypeFindResult $Photos
- * @var Database\Struct\PrototypeFindResult $Videos
+ * @var Database\ResultSet $Tags
+ * @var Database\ResultSet $Photos
+ * @var Database\ResultSet $Videos
  */
 
 $AdminMenu = NULL;
@@ -58,6 +58,8 @@ if($Route->IsUserAdmin()) {
 	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
 }
 
+$FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
+
 ?>
 
 <?php $Surface->Area('design/subheader'); ?>
@@ -72,7 +74,7 @@ if($Route->IsUserAdmin()) {
 		<div class="row">
 			<?php if(isset($Profile->CoverImage)): ?>
 			<div class="col-3">
-				<div class="ratiobox square wallpapered rounded" style="border:1px solid #dadada; background-image:url(<?php $Util->Print($Profile->CoverImage->GetPublicURL()) ?>);"></div>
+				<div class="ratiobox widescreen wallpapered rounded contained" style="border:1px solid #dadada; background-image:url(<?php $Util->Print($Profile->CoverImage->GetPublicURL()) ?>);"></div>
 			</div>
 			<?php endif; ?>
 			<div class="col">
@@ -86,7 +88,7 @@ if($Route->IsUserAdmin()) {
 				</div>
 				<hr class="mt-1 mb-3" />
 				<div class="mb-0">
-					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
+					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags->Filter($FilterTags) ]) ?>
 				</div>
 
 				<?php if($Profile->SocialData->HasAnyItems()): ?>
@@ -149,6 +151,27 @@ if($Route->IsUserAdmin()) {
 		<hr class="mt-1 mb-3" />
 
 		<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos ]) ?>
+	</div>
+	<?php endif; ?>
+
+	<?php if(isset($Links) && $Links->Total): ?>
+	<div class="mb-8">
+		<h2 class="text-uppercase mb-0">Related Links (<?php $Util->Print($Links->Total) ?>)</h2>
+		<hr class="mt-1 mb-3" />
+
+		<?php foreach($Links as $Rel): ?>
+		<div class="row">
+			<div class="col">
+				<div class="fst-italic">
+					<?php $Util->Print(Atlantis\Util::DomainFromURL($Rel->URL)) ?>
+				</div>
+				<div>
+					<a href="<?php $Util->Print($Rel->URL) ?>" target="_blank" class="fw-bold"><?php $Util->Print($Rel->Title) ?></a>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<?php endforeach; unset($Rel); ?>
 	</div>
 	<?php endif; ?>
 

@@ -47,8 +47,8 @@ $BlogUser ??= NULL;
 		<span class="fw-bold text-uppercase">Post Date:</span>
 		<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
 	</div>
-	<div class="mb-0">
-		<?php $Surface->Area('tag/buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
+	<div class="mb-1">
+		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 	</div>
 
 	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>

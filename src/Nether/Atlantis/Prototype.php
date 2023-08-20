@@ -32,7 +32,7 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 	//// LOCAL FIELDS //////////////////////////////////////////////
 
-	protected Database\Struct\PrototypeFindResult
+	protected Database\ResultSet
 	$TagLinks;
 
 	////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ extends Database\Prototype {
 	#[Common\Meta\Info('Fetch the dataset of tag links from the database.')]
 	public function
 	FetchTagLinks():
-	Database\Struct\PrototypeFindResult {
+	Database\ResultSet {
 
 		// something needs to be done here so that it can be called via a
 		// typed class rather than the base class.
@@ -226,7 +226,7 @@ extends Database\Prototype {
 	#[Common\Meta\Info('Get the dataset of tag links from the database. Uses local instance cache.')]
 	public function
 	GetTagLinks():
-	Database\Struct\PrototypeFindResult {
+	Database\ResultSet {
 
 		if(!isset($this->TagLinks))
 		$this->TagLinks = $this->FetchTagLinks();
@@ -238,7 +238,7 @@ extends Database\Prototype {
 	#[Common\Meta\Info('Get the dataset of tag entities from the database. Uses local instance cache.')]
 	public function
 	GetTags():
-	Database\Struct\PrototypeFindResult {
+	Database\ResultSet {
 
 		$Links = ($this
 			->GetTagLinks()
