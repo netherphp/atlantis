@@ -16,27 +16,38 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->Data)
-		->Type(Atlantis\Tag\Entity::FilterValidType(...));
+		->Type(Atlantis\Tag\Entity::FilterValidType(...))
+		->Q(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 
-		$Trail = new Common\Datastore([
+		$Trail = Common\Datastore::FromArray([
 			'Tags' => '/dashboard/tags'
 		]);
 
-		$Tags = Atlantis\Tag\Entity::Find([
-			'Type'  => $this->Data->Type,
-			'Sort'  => 'name-az',
-			'Limit' => 0
+		$Filters = Common\Datastore::FromArray([
+			'NameLike' => $this->Data->Q,
+			'Type'     => $this->Data->Type,
+			'Sort'     => 'name-az',
+			'Limit'    => 0
 		]);
+
+		$Tags = Atlantis\Tag\Entity::Find($Filters);
+
+		$Searched = (FALSE
+			|| $this->Data->Q
+			|| $this->Data->Type !== 'tag'
+		);
 
 		////////
 
 		($this->Surface)
 		->Set('Page.Title', 'Manage Tags - Dashboard')
 		->Wrap('atlantis/dashboard/tag/list', [
-			'Trail' => $Trail,
-			'Tags'  => $Tags
+			'Trail'    => $Trail,
+			'Tags'     => $Tags,
+			'Filters'  => $Filters,
+			'Searched' => $Searched
 		]);
 
 		return;

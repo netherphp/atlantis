@@ -40,6 +40,30 @@ class FormUtil {
 		return this;
 	};
 
+	trim(args) {
+
+		// given a list of keys trim each of them.
+
+		if(Array.isArray(args)) {
+			for(const item of args) {
+				if(typeof this.data[item] === undefined)
+				continue;
+
+				console.log(`[FormUtil:trim] trimming ${item}`);
+				this.data[item] = jQuery.trim(this.data[item]);
+			}
+		}
+
+		else if(typeof args === 'string') {
+			if(typeof this.data[args] !== undefined) {
+				console.log(`[FormUtil:trim] trimming ${args}`);
+				this.data[args] = jQuery.trim(this.data[args]);
+			}
+		}
+
+		return this;
+	};
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -79,6 +103,42 @@ class FormUtil {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	updateUrlObject(url, fields) {
+
+		// given a url object go through this form and set data from it
+		// as get variables. if a form value is set to its default then
+		// completely remove that variable.
+
+		// this provides a way for forms which are stupid with scripting
+		// to manipulate a url with its field data to always produce the
+		// cleanest possible url that form could have produced.
+
+		let data = this.getDataObject();
+
+		for(const field of fields) {
+			if(typeof data[field.name] === undefined)
+			continue;
+
+			console.log(`[FormUtil::updateUrlObject] updating ${field.name}`);
+
+			if(data[field.name] !== field.default)
+			url.searchParams.set(field.name, data[field.name]);
+			else
+			url.searchParams.delete(field.name);
+		}
+
+		return this;
+	};
+
+	updateCurrentUrl(fields) {
+
+		let url = new URL(location.href);
+
+		this.updateUrlObject(url, fields);
+
+		return url;
+	};
 
 	getDataFormData() {
 
