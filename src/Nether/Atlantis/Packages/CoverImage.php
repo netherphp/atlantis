@@ -41,10 +41,44 @@ trait CoverImage {
 		if(!$this->HasCoverImage())
 		return NULL;
 
+		////////
+
 		$URL = $this->CoverImage->GetPublicURL();
-		$URL = str_replace('original.', "{$Size}.", $URL);
+
+		if(isset($this->CoverImage->ExtraFiles))
+		$URL = $this->GetCoverImageSizeURL($Size, $URL);
 
 		return (string)Atlantis\WebURL::FromString($URL);
+	}
+
+	protected function
+	GetCoverImageSizeURL(string $Size, string $URL):
+	?string {
+
+		$FName = NULL;
+		$FInfo = NULL;
+
+		foreach($this->CoverImage->ExtraFiles as $FName => $FInfo) {
+
+			if(!str_contains($FName, '.'))
+			continue;
+
+			// if(md.jpeg begins with md)
+
+			if(str_starts_with($FName, $Size)) {
+				error_log(json_encode($this->CoverImage));
+
+				$URL = str_replace(
+					$this->CoverImage->Name,
+					$FName,
+					$URL
+				);
+
+				break;
+			}
+		}
+
+		return $URL;
 	}
 
 }
