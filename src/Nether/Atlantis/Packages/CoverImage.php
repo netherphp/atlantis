@@ -60,22 +60,18 @@ trait CoverImage {
 
 		foreach($this->CoverImage->ExtraFiles as $FName => $FInfo) {
 
+			// if we're not looking at something we sized.
+
 			if(!str_contains($FName, '.'))
 			continue;
 
 			// if(md.jpeg begins with md)
 
 			if(str_starts_with($FName, $Size)) {
-				error_log(json_encode($this->CoverImage));
-
-				$URL = str_replace(
-					$this->CoverImage->Name,
-					$FName,
-					$URL
-				);
-
+				$URL = str_replace(basename($URL), $FName, $URL);
 				break;
 			}
+
 		}
 
 		return $URL;
