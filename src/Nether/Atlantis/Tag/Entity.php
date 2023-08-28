@@ -231,6 +231,11 @@ implements
 		$Key = NULL;
 		$Val = NULL;
 
+		if($this->ExtraData->Get('URL'))
+		return $this->ExtraData->Get('URL');
+
+		////////
+
 		if($this->Type === 'topic')
 		$Output = '/:Alias:';
 
