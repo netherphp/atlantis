@@ -189,6 +189,7 @@ extends Atlantis\Prototype {
 
 		$Input['Search'] ??= NULL;
 		$Input['TagID'] ??= NULL;
+		$Input['UseSiteTags'] ??= TRUE;
 
 		return;
 	}
@@ -199,6 +200,11 @@ extends Atlantis\Prototype {
 
 		parent::FindExtendFilters($SQL, $Input);
 
+		////////
+
+		if($Input['UseSiteTags'] === TRUE)
+		static::FindExtendFilters_ByEntityFields_UseSiteTags($SQL, $Input);
+
 		if($Input['TagID'] !== NULL)
 		static::FindExtendFilters_ByEntityFields_ByTagID($SQL, $Input);
 
@@ -208,6 +214,39 @@ extends Atlantis\Prototype {
 				$SQL->Where('Main.Title REGEXP :SearchRegEx');
 			}
 		}
+
+		////////
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_ByEntityFields_UseSiteTags(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		$SiteTags = Atlantis\Util::FetchSiteTags();
+		$TableLink = EntityTagLink::GetTableInfo();
+
+		if(!$SiteTags->Count())
+		return;
+
+		////////
+
+		$Input['SiteTags'] = $SiteTags->GetData();
+
+		$SQL
+		->Join(sprintf(
+			'%s TQ1 ON Main.UUID=TQ1.EntityUUID',
+			$TableLink->Name
+		));
+
+		$SQL
+		->Where(sprintf(
+			'TQ1.TagID IN (:TagID)'
+		));
+
+		$SQL
+		->Group('Main.ID');
 
 		return;
 	}

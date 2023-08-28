@@ -90,4 +90,7 @@ class Key {
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',
 	PageTagViewURL  = 'Nether.Atlantis.Tag.PageViewURL';
 
+	const
+	ConfSiteTags = 'Nether.Atlantis.SiteTags';
+
 };
