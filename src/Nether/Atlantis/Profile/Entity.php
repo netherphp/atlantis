@@ -226,6 +226,8 @@ extends Atlantis\Prototype {
 
 		$SiteTags = Atlantis\Util::FetchSiteTags();
 		$TableLink = EntityTagLink::GetTableInfo();
+		$TLK = 0;
+		$Tag = NULL;
 
 		if(!$SiteTags->Count())
 		return;
@@ -234,16 +236,22 @@ extends Atlantis\Prototype {
 
 		$Input['SiteTags'] = $SiteTags->GetData();
 
-		$SQL
-		->Join(sprintf(
-			'%s TQ1 ON Main.UUID=TQ1.EntityUUID',
-			$TableLink->Name
-		));
+		foreach($SiteTags as $Tag) {
+			$TLK += 1;
 
-		$SQL
-		->Where(sprintf(
-			'TQ1.TagID IN (:TagID)'
-		));
+			$Input[":SiteTagID{$TLK}"] = $Tag->ID;
+
+			$SQL
+			->Join(sprintf(
+				'%1$s TQ%2$d ON Main.UUID=TQ%2$d.EntityUUID',
+				$TableLink->Name,
+				$TLK
+			))
+			->Where(sprintf(
+				'TQ%1$d.TagID IN (:SiteTagID%1$d)',
+				$TLK
+			));
+		}
 
 		$SQL
 		->Group('Main.ID');
