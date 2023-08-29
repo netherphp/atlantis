@@ -42,9 +42,22 @@ extends Atlantis\ProtectedAPI {
 
 		$Dataset = Atlantis\Profile\Entity::DatasetFromInput($this->Data);
 		$Ent = NULL;
+		$Tag = NULL;
 
-		try { $Ent = Atlantis\Profile\Entity::Insert($Dataset); }
-		catch(Exception $Err) { $this->Quit(100, $Err->GetMessage()); }
+		try {
+			$Ent = Atlantis\Profile\Entity::Insert($Dataset);
+
+			foreach(Atlantis\Util::FetchSiteTags() as $Tag) {
+				Atlantis\Profile\EntityTagLink::InsertByPair(
+					$Tag->ID,
+					$Ent->UUID
+				);
+			}
+		}
+
+		catch(Exception $Err) {
+			$this->Quit(100, $Err->GetMessage());
+		}
 
 		$this
 		->SetGoto($Ent->GetPageURL())
