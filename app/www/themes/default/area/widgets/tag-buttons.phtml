@@ -41,7 +41,7 @@ $TagClasses = function(Atlantis\Tag\Entity $T): string {
 	return 'btn-outline-dark';
 };
 
-if(!$User || !$User->IsAdmin())
+//if(!$User || !$User->IsAdmin())
 $Tags = $Tags->Distill(
 	fn(Atlantis\Tag\Entity $T)
 	=> $T->Type !== 'site'
@@ -52,11 +52,11 @@ $Tags = $Tags->Distill(
 <div class="opacity-100">
 
 	<?php if($Pre) foreach($Pre as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
-	<a href="<?php $Util->Print($RewriteURL($Tag, $URL)) ?>" class="btn <?php $Util->Print($Tag->Type) ?> <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
+	<a href="<?php $Util->Print($Util->RewriteURL($RewriteURL($Tag, $URL))) ?>" class="btn <?php $Util->Print($Tag->Type) ?> <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
 	<?php endforeach; ?>
 
 	<?php if($Tags) foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
-	<a href="<?php $Util->Print($RewriteURL($Tag, $URL)) ?>" class="btn <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
+	<a href="<?php $Util->Print($Util->RewriteURL($RewriteURL($Tag, $URL))) ?>" class="btn <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
 	<?php endforeach; ?>
 
 </div>

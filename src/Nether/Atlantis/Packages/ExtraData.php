@@ -15,7 +15,7 @@ trait ExtraData {
 
 	#[Common\Meta\PropertyFactory('FromJSON', 'ExtraJSON')]
 	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
-	public Common\Protostore
+	public ?Common\Protostore
 	$ExtraData;
 
 };

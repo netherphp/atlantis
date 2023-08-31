@@ -1,5 +1,5 @@
 /*//
-@date 2023-08-07 23:37:55 UTC
+@date 2023-08-31 00:52:35 UTC
 @files 19 [
     "src\/imports.css",
     "src\/main.css",
@@ -465,6 +465,8 @@ strong {
 .text-muted { color: #7d7d7d !important; }
 .text-decoration-none { border-bottom: 0px !important; text-decoration: none !important; }
 .text-transform-none { text-transform: initial !important; }
+
+.text-underline-thick { border-bottom-width: 3px !important; border-bottom-style: solid !important; }
 
 .text-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 

@@ -66,11 +66,18 @@ extends Atlantis\PublicWeb {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	protected function
+	public function
 	GetViewArea():
 	string {
 
 		return 'profile/view';
+	}
+
+	public function
+	GetTagURL():
+	string {
+
+		return '/tag/:Alias:';
 	}
 
 }

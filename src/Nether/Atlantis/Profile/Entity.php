@@ -11,7 +11,16 @@ use Exception;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
 class Entity
-extends Atlantis\Prototype {
+extends Atlantis\Prototype
+implements Atlantis\Packages\ExtraDataInterface {
+
+	use
+	Atlantis\Packages\ExtraData;
+
+	#[Database\Meta\TypeVarChar(Size: 128)]
+	#[Database\Meta\FieldIndex]
+	public string
+	$CUID;
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	public int
@@ -188,8 +197,10 @@ extends Atlantis\Prototype {
 	void {
 
 		$Input['Search'] ??= NULL;
-		$Input['TagID'] ??= NULL;
 		$Input['UseSiteTags'] ??= TRUE;
+
+		$Input['TagID'] ??= NULL;
+		$Input['SubtagID'] ??= NULL;
 
 		return;
 	}
@@ -202,11 +213,16 @@ extends Atlantis\Prototype {
 
 		////////
 
-		if($Input['UseSiteTags'] === TRUE)
-		static::FindExtendFilters_ByEntityFields_UseSiteTags($SQL, $Input);
-
 		if($Input['TagID'] !== NULL)
 		static::FindExtendFilters_ByEntityFields_ByTagID($SQL, $Input);
+
+		if($Input['SubtagID'] !== NULL)
+		static::FindExtendFilters_ByEntityFields_ByTagID2($SQL, $Input);
+
+		////////
+
+		if($Input['UseSiteTags'] === TRUE)
+		static::FindExtendFilters_ByEntityFields_UseSiteTags($SQL, $Input);
 
 		if($Input['Search'] !== NULL) {
 			if(is_string($Input['Search'])) {
@@ -280,7 +296,37 @@ extends Atlantis\Prototype {
 			$TableTag->Name
 		));
 
-		$SQL->Where('RET.TagID IN(:TagID)');
+		$SQL->Where('RET.TagID IN(:TagID) AND RET.TagID IS NOT NULL');
+
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_ByEntityFields_ByTagID2(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		$TableTag = Atlantis\Tag\EntityLink::GetTableInfo();
+
+		$Input['SubtagID'] = match(TRUE) {
+			is_array($Input['SubtagID'])
+			=> $Input['SubtagID'],
+
+			default
+			=> [ $Input['SubtagID'] ]
+		};
+
+		////////
+
+		$SQL->Join(sprintf(
+			'%s RET2 on RET2.EntityUUID=Main.UUID',
+			$TableTag->Name
+		));
+
+		$SQL->Where('RET2.TagID IN(:SubtagID)');
+
+		//Common\Dump::Var($SQL, TRUE);
+		//Common\Dump::Var($Input, TRUE);
 
 		return;
 	}
@@ -322,6 +368,33 @@ extends Atlantis\Prototype {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-07-28')]
+	public function
+	FetchRelationships(string $Type):
+	Database\ResultSet {
+
+		$Index = Atlantis\Struct\EntityRelationship::Find([
+			'ParentType' => 'Profile.Entity',
+			'ParentUUID' => $this->UUID,
+
+			'ChildType'  => $Type,
+			'Remappers'  => fn(Atlantis\Struct\EntityRelationship $P)=> $P->ChildUUID
+		]);
+
+		if(!$Index->Count())
+		$Index->Push('null-null-null');
+
+		$Class = Atlantis\Struct\EntityRelationship::TypeClass($Type);
+
+		$Result = ($Class)::Find([
+			'UUID'    => $Index->GetData(),
+			'Sort'    => 'newest',
+			'Limit'   => 0
+		]);
+
+		return $Result;
+	}
 
 	#[Common\Meta\Date('2023-07-28')]
 	public function
