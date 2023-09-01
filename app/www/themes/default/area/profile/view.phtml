@@ -82,9 +82,13 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 					<div class="col">
 						<h2 class="mb-0"><?php $Util->Print($Profile->Title) ?></h2>
 					</div>
+
+					<?php if($Route->IsUserAdmin()): ?>
 					<div class="col-auto">
 						<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $AdminMenu ]) ?>
 					</div>
+					<?php endif; ?>
+
 				</div>
 				<hr class="mt-1 mb-3" />
 				<div class="mb-0">
