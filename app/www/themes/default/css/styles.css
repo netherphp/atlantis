@@ -1,6 +1,6 @@
 /*//
-@date 2023-08-31 00:52:35 UTC
-@files 19 [
+@date 2023-09-02 01:30:39 UTC
+@files 20 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -19,7 +19,8 @@
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
     "src\/elements\/pretty-modern-box.css",
-    "src\/elements\/pretty-modern-navbar.css"
+    "src\/elements\/pretty-modern-navbar.css",
+    "src\/elements\/swiper.css"
 ]
 //*/
 
@@ -1717,5 +1718,132 @@ strong {
 .PrettyModernNavbar a:link,
 .PrettyModernNavbar a:visited {
 	color: var(--bs-body-color);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/swiper.css /////////////////////////////////////////////////*/
+
+/* applies to both itemslider and itemslider2 */
+
+.swiper-supercontainer {
+	position: relative;
+	border: 1px solid red;
+	margin: 0px -64px;
+	overflow: hidden;
+}
+
+.swiper-supercontainer .swiper-horizontal {
+	border: 1px solid orange;
+	height: 100%;
+	padding: 0px 64px 32px 64px;
+	width: 100%;
+}
+
+.swiper-supercontainer.contain {
+	margin: 0px 0px !important;
+}
+
+.swiper-supercontainer.contain .swiper-container {
+	padding: 0px 0px 32px 0px !important;
+}
+
+.swiper-supercontainer .swiper-slide {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: transparent;
+	font-size: 18px;
+	text-align: center;
+}
+
+.swiper-supercontainer .swiper-button-disabled {
+	opacity: 0.0 !important;
+}
+
+.swiper-supercontainer .swiper-button-next,
+.swiper-supercontainer .swiper-button-prev {
+	color: #fff;
+	border: 0px solid red;
+	text-shadow: 0px 0px 4px #000;
+	top: 0%;
+	height: 100%;
+	margin-top: 0px;
+	width: 64px;
+	padding-bottom: 32px;
+	z-index: initial;
+}
+
+.swiper-supercontainer .swiper-button-next::after,
+.swiper-supercontainer .swiper-button-prev::after {
+	position: absolute;
+}
+
+.swiper-supercontainer .swiper-button-next {
+	right: 0px;
+}
+
+.swiper-supercontainer .swiper-button-prev {
+	left: 0px;
+}
+
+.swiper-supercontainer .swiper-pagination {
+	bottom: 0px;
+}
+
+.swiper-supercontainer.nav-fade .swiper-button-next {
+	background: rgb(255,255,255);
+	background: linear-gradient(270deg, rgba(255,255,255,1) 10%, rgba(255,255,255,0) 100%);
+}
+
+.swiper-supercontainer.nav-fade .swiper-button-prev {
+	background: rgb(255,255,255);
+	background: linear-gradient(90deg, rgba(255,255,255,1) 10%, rgba(255,255,255,0) 100%);
+}
+
+.swiper-container,
+.swiper-wrapper,
+.swiper-pagination {
+	z-index: initial;
+}
+
+.swiper-staging {
+	height: 100%;
+	width: 100%;
+}
+
+.swiper-supercontainer.coldboot .swiper-container {
+	opacity: 0.0;
+	transform: translateY(-100%);
+}
+
+.swiper-supercontainer .swiper-container {
+	opacity: 1.0;
+	transform: translateY(0%);
+	transition: transform 300ms, opacity 300ms;
+}
+
+.swiper-pagination-bullet-active {
+	background-color: #a00;
+}
+
+.swiper-container.ImageContain .swiper-slide .wallpapered {
+	background-size: contain !important;
+}
+
+.swiper-container.ImageTransparent .swiper-slide .wallpapered {
+	background-color: transparent;
+	border-color: transparent !important;
+	box-shadow: none;
+}
+
+
+@media(max-width: 575.98px) {
+	.swiper-supercontainer {
+		margin: 0px 0px;
+	}
+
+	.swiper-supercontainer .swiper-container {
+		padding: 0px 0px 32px 0px;
+	}
 }
 

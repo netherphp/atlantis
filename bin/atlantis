@@ -93,6 +93,8 @@ extends Console\Client {
 		$OptRewrite = $this->GetOption('Rewrite') ?? FALSE;
 		$OptFix = $this->GetOption('Fix') ?? FALSE;
 
+		////////
+
 		if(!$OptDirs && !$OptLinks && !$OptRewrite)
 		$OptDirs = $OptLinks = TRUE;
 

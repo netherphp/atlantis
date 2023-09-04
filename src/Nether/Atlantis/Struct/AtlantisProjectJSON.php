@@ -131,11 +131,11 @@ extends Common\Prototype {
 		$Data = Common\Datastore::FromStackMerged(
 			file_exists($ProjectFile)
 			? Common\Datastore::FromFile($ProjectFile)
-			: NULL,
+			: [],
 
 			file_exists($EnvFile)
 			? Common\Datastore::FromFile($EnvFile)
-			: NULL
+			: []
 		);
 
 		////////

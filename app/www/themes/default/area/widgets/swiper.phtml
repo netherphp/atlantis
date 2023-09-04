@@ -1,0 +1,154 @@
+<?php
+
+/*//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+<div id="swiper-supercontainer-{$UUID}" class="swiper-supercontainer coldboot">
+	<div id="swiper-container-{$UUID}" class="swiper-container">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide">
+				<div class="swiper-staging d-none">
+					[your content]
+				</div>
+			</div>,
+			...
+		</div>
+	</div>
+</div>
+
+we generate this uuid and then bind it to the element and make a singular
+construction call because there is an issue with Swiper pagination if you
+allow the constructor to touch more than one swiper at a time. meaning, it
+breaks if you have multiple on the same page.
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////*/
+
+/** @var Toaster\HTML\Element\ItemSlider $Element */
+
+$UUID = Ramsey\Uuid\Uuid::UUID4()->ToString();
+$Classes = $Element->GetClassList();
+$ShowTitle = ($Classes->HasValue('ShowTitle') !== FALSE);
+$WallpaperedAspect = 'SixteenByNine';
+$ContainerClass = '';
+$WrapperClass = '';
+$ShadeClass = 'Shade';
+$InitialSlide = NULL;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+if($Classes->HasValue('Contain') !== FALSE)
+$ContainerClass = 'contain';
+
+if($Classes->HasValue('OneColumn') !== FALSE)
+$Element->Config->SetupOneColumn();
+
+if($Classes->HasValue('TwoColumn') !== FALSE)
+$Element->Config->SetupTwoColumn();
+
+if($Classes->HasValue('ThreeColumn') !== FALSE)
+$Element->Config->SetupThreeColumn();
+
+if($Classes->HasValue('PassiveScroll') !== FALSE) {
+	$WrapperClass = 'transition-timing-linear';
+	$Element->Config->SetupPassiveAutoScroll();
+};
+
+if($Classes->HasValue('ActiveScroll') !== FALSE) {
+	$WrapperClass = 'transition-timing-inout';
+	$Element->Config->SetupActiveAutoScroll();
+};
+
+if($Classes->HasValue('Square') !== FALSE)
+$WallpaperedAspect = 'OneByOne';
+
+if($Classes->HasValue('NoPagination') !== FALSE)
+$Element->Config->Pagination = FALSE;
+
+if($Classes->HasValue('NoNavigation') !== FALSE)
+$Element->Config->Navigation = FALSE;
+
+if($Classes->HasValue('NoShade'))
+$ShadeClass = '';
+elseif($Classes->HasValue('ShadeDim'))
+$ShadeClass = 'Shade Dim';
+elseif($Classes->HasValue('ShadeFocus'))
+$ShadeClass = 'Shade Focus';
+
+foreach($Element->GetItems() as $Iter => $Item)
+if($Item->GetClassList()->HasValue('Active')) {
+	$InitialSlide = $Iter;
+	break;
+}
+
+?>
+
+<div id="swiper-supercontainer-<?php $Printer($UUID) ?>" class="swiper-supercontainer <?php $Printer($ContainerClass) ?> coldboot">
+	<div id="swiper-container-<?php $Printer($UUID) ?>" class="swiper-container">
+		<div class="swiper-wrapper <?php $Printer($WrapperClass) ?>">
+			<?php foreach($Element->GetItems() as $Iter => $Item): ?>
+			<div class="swiper-slide <?php $Printer($Item->GetClassListString()) ?>">
+				<div class="swiper-staging d-none">
+					<div class="WallpaperedBox <?php $Printer($WallpaperedAspect) ?> rounded w-100" style="background-image:url(<?php $Printer($Item->GetImage()) ?>);">
+						<a href="<?php echo $Item->GetURL() ?>">
+							<span class="<?php $Printer($ShadeClass) ?> rounded">
+								<?php if($Item->GetTitle()): ?>
+								<span class="Bottom">
+									<?php echo $Item->GetTitle() ?>
+								</span>
+								<?php endif; ?>
+							</span>
+						</a>
+					</div>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+		<div id="swiper-pagination-<?php $Printer($UUID) ?>" class="swiper-pagination"></div>
+		<?php if($Element->Config->Navigation !== FALSE): ?>
+		<div class="swiper-button-next"></div>
+		<div class="swiper-button-prev"></div>
+		<?php endif ;?>
+	</div>
+</div>
+
+<script type="module">
+import Swiper from '/share/toaster/lib/swiper.js';
+
+jQuery(document)
+.ready(function(){
+
+	let Container = null;
+	let UUID = <?php echo json_encode($UUID) ?>;
+	let Element = jQuery(`#swiper-container-${UUID}`);
+	let SwiperConfig = <?php echo $Element->Config->Encode() ?>;
+	let SwiperSetup = { 'on': { } };
+
+	<?php if($InitialSlide !== NULL): ?>
+	console.log(SwiperConfig.initialSlide = <?php $Printer($InitialSlide) ?>);
+	<?php endif; ?>
+
+	(SwiperSetup.on)
+	.afterInit = function(){
+		// allow our sides to be scene now that swiper has done its
+		// various calculations for size.
+		setTimeout(
+			(()=> Element.find('.swiper-staging').removeClass('d-none')),
+			100
+		);
+		// then take our marker off the supercontainer to denote that we
+		// are done here.
+		setTimeout(
+			(()=> Element.parent('.coldboot').removeClass('coldboot')),
+			200
+		);
+		return;
+	};
+
+	NUI.Util.MergeProperties(SwiperConfig, SwiperSetup);
+	Container = new Swiper(Element[0],SwiperSetup);
+
+	return;
+});
+</script>
