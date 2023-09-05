@@ -26,6 +26,7 @@ extends Atlantis\PublicWeb {
 
 		($this->Surface)
 		->Set('Page.Title', $Profile->Title)
+		->Set('Page.ImageURL', $Profile->GetCoverImageURL('lg'))
 		->Area($this->GetViewArea(), [
 			'Profile' => $Profile,
 			'Tags'    => $Tags,
