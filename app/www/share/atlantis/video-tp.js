@@ -181,8 +181,8 @@ class Video {
 			let eID = that.attr('data-id') ?? null;
 			let eUUID = that.attr('data-uuid') ?? null;
 			let eTagID = that.attr('data-tag-id') ?? null;
-			let eChildType = that.attr('data-child-type') ?? null;
-			let eChildUUID = that.attr('data-child-uuid') ?? null;
+			let eChildType = that.attr('data-parent-type') ?? null;
+			let eChildUUID = that.attr('data-parent-uuid') ?? null;
 
 			Video.WhenOnNew(eID, eUUID, eTagID, eChildType, eChildUUID);
 
@@ -283,8 +283,8 @@ class Video {
 			labelAccept: 'Add',
 			fields: [
 				new DialogUtil.Field('hidden', 'TagID', null, eTagID),
-				new DialogUtil.Field('hidden', 'ChildType', null, eChildType),
-				new DialogUtil.Field('hidden', 'ChildUUID', null, eChildUUID),
+				new DialogUtil.Field('hidden', 'ParentType', null, eChildType),
+				new DialogUtil.Field('hidden', 'ParentUUID', null, eChildUUID),
 				new DialogUtil.Field('text', 'URL'),
 				new DialogUtil.Field('text', 'Title'),
 				new DialogUtil.Field('date', 'DatePosted', 'Date')
