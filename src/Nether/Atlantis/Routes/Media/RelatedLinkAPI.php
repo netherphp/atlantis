@@ -14,6 +14,8 @@ extends Atlantis\ProtectedAPI {
 	EntityGet():
 	void {
 
+		$Ent = $this->FetchEntityByField();
+
 		return;
 	}
 
@@ -31,7 +33,7 @@ extends Atlantis\ProtectedAPI {
 		$Tag = Atlantis\Media\RelatedLink::GetByID($ID);
 
 		if(!$Tag)
-		$this->Quit(2, 'tag not found');
+		$this->Quit(2, 'related link not found');
 
 		////////
 
