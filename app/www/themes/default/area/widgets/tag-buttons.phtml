@@ -41,7 +41,7 @@ $TagClasses = function(Atlantis\Tag\Entity $T): string {
 	return 'btn-outline-dark';
 };
 
-//if(!$User || !$User->IsAdmin())
+if(!$User || !$User->IsAdmin())
 $Tags = $Tags->Distill(
 	fn(Atlantis\Tag\Entity $T)
 	=> $T->Type !== 'site'
