@@ -35,12 +35,13 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 $Full ??= TRUE;
 $BlogUser ??= NULL;
+$ShowTags ??= TRUE;
 
 ?>
 
 <!-- POST HEADING -->
 <div class="mb-4">
-	<h3 class="font-size-larger mb-4">
+	<h3 class="font-size-large mb-4">
 		<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
 	</h3>
 	<div class="mb-1">

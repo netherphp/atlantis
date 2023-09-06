@@ -35,7 +35,7 @@ $ItemBtnClass ??= 'btn-outline-dark';
 			<?php if($Item->Title === '-'): ?>
 			<hr />
 			<?php else: ?>
-			<a class="btn <?php $Util->Print($ItemBtnClass) ?>" <?php echo $Item->GetAttrForHTML() ?> href="#">
+			<a class="btn <?php $Util->Print($ItemBtnClass) ?>" <?php echo $Item->GetAttrForHTML() ?> href="<?php $Util->Print($Item->URL ?: '#') ?>">
 				<?php if($Item->Icon): ?><i class="<?php $Util->Print($Item->GetIcon()) ?>"></i><?php endif; ?>
 				<?php if($Item->Title): ?><span><?php $Util->Print($Item->Title) ?></span><?php endif; ?>
 			</a>

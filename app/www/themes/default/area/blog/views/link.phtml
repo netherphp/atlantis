@@ -36,6 +36,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 $Full ??= TRUE;
 $BlogUser ??= NULL;
 $Excerpt ??= TRUE;
+$ShowTags ??= TRUE;
 
 $Link = Blog\Struct\EditorLink::FromJSON($Post->Content);
 $OutboundURL = $Full ? $Link->URL : $Post->GetURL();
@@ -59,7 +60,7 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 	</div>
 	<?php endif; ?>
 
-	<h3 class="font-size-larger mb-3">
+	<h3 class="font-size-large mb-3">
 		<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
 	</h3>
 
@@ -75,9 +76,12 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 		<span class="fw-bold text-uppercase">Source:</span>
 		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($OutboundDomain) ?></a>
 	</div>
+
+	<?php if($ShowTags): ?>
 	<div class="mb-1">
 		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 	</div>
+	<?php endif; ?>
 
 	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
 

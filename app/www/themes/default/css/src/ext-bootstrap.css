@@ -411,6 +411,10 @@
 	background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important
 }
 
+.bg-primary {
+	background-color: var(--theme-primary) !important;
+}
+
 .btn-block {
 	display: block;
 	width: 100%;

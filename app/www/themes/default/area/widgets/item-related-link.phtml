@@ -1,0 +1,68 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Blog;
+use Nether\Common;
+
+/**
+ * @var Atlantis\PublicWeb $Route
+ * @var Local\AbuseRegistry\EntityRelatedLink $Link
+ * @var Atlantis\Media\RelatedLink $Link
+ */
+
+$GetAdminMenu = function(mixed $Input): Atlantis\Struct\DropdownMenu {
+
+	$Menu = Atlantis\Struct\DropdownMenu::New();
+
+	$Menu->ItemNew('Edit Link', 'mdi-pencil', Attr: [ 'data-abuser-cmd' => 'linkedit', 'data-link-id' => $Input->ID ]);
+	$Menu->ItemNew('Delete', 'mdi-close', Attr: [ 'data-abuser-cmd' => 'linkdel', 'data-link-id' => $Input->ID ]);
+
+	return $Menu;
+};
+
+$GetDatePosted = function(mixed $Input) {
+
+	if(is_string($Input))
+	return Common\Date::FromDateString($Input)->Get(Common\Values::DateFormatFancyDate);
+
+	if($Input instanceof Common\Date)
+	return $Input->Get(Common\Values::DateFormatFancyDate);
+
+	return '';
+};
+
+?>
+
+<div class="row align-items-center">
+	<div class="col-2 d-none d-block">
+		<div class="ratiobox widescreen wallpapered rounded bg-white border">
+			<div class="position-absolutely opacity-50" style="background:#fff;"></div>
+			<div class="position-absolute position-v-center text-center w-100 d-none">
+				<span class="opacity-10" style="font-size: 600%;"><i class="mdi mdi-web"></i></span>
+			</div>
+			<div class="position-absolute position-v-center fw-bold text-uppercase text-center font-size-largerest opacity-50 text-shadow-none text-black w-100" style="text-shadow:none;">
+				<span class="opacity-10" style="font-size: 300%;"><i class="mdi mdi-web"></i></span>
+			</div>
+			<a class="position-absolutely" href="<?php $Util->Print($Link->URL) ?>" target="_blank"></a>
+		</div>
+	</div>
+
+	<div class="col">
+		<div class="fw-bold font-size-large">
+			<a href="<?php $Util->Print($Link->URL) ?>" target="_blank" class="btn btn-outline-dark p-1 pl-2 pr-2 mr-2">Link</a>
+			<a href="<?php $Util->Print($Link->URL) ?>" target="_blank"><?php $Util->Print($Link->Title) ?></a>
+		</div>
+
+		<div class="d-none mb-4">
+			<div class="mb-0"><span class="text-uppercase fw-bold">Date Shared:</span> <?php $Util->Print($GetDatePosted($Link->DatePosted)) ?></div>
+			<div class="mb-0"><span class="text-uppercase fw-bold">Source:</span> <?php $Util->Print($Link->GetDomain()) ?></div>
+		</div>
+	</div>
+
+	<?php if($Route->IsUserAdmin()): ?>
+	<div class="col-auto">
+		<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $GetAdminMenu($Link) ]) ?>
+	</div>
+	<?php endif; ?>
+
+</div>

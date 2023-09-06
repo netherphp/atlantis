@@ -17,6 +17,10 @@ extends Atlantis\Prototype {
 	public int
 	$TimeCreated;
 
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
+	public int
+	$TimePosted;
+
 	#[Database\Meta\TypeVarChar(Size: 255, Nullable: FALSE)]
 	public string
 	$Title;
@@ -32,6 +36,10 @@ extends Atlantis\Prototype {
 	public Common\Date
 	$DateCreated;
 
+	#[Common\Meta\PropertyFactory('FromTime', 'TimePosted')]
+	public Common\Date
+	$DatePosted;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -40,17 +48,6 @@ extends Atlantis\Prototype {
 	void {
 
 		return;
-	}
-
-	public function
-	Drop():
-	static {
-
-		parent::Drop();
-
-		Atlantis\Struct\EntityRelationship::DeleteByUUID($this->UUID);
-
-		return $this;
 	}
 
 	public function
@@ -64,6 +61,22 @@ extends Atlantis\Prototype {
 			'DateCreated' => $this->DateCreated->Get(),
 			'URL'         => $this->URL
 		];
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-09-05')]
+	public function
+	GetDomain():
+	string {
+
+		$URL = parse_url($this->URL, PHP_URL_HOST);
+		$URL ??= '';
+
+		$URL = preg_replace('/^www\./', '', $URL);
+
+		return $URL ?: '';
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -1,0 +1,72 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Blog;
+use Nether\Common;
+
+/**
+ * @var Blog\Post $Post
+ */
+
+$ShowTags ??= TRUE;
+
+$GetAdminMenu = function(Blog\Post $Input): Atlantis\Struct\DropdownMenu {
+
+	$Menu = Atlantis\Struct\DropdownMenu::New();
+
+	$Menu->ItemNew('Edit Post', 'mdi-pencil', $Input->GetEditURL());
+
+	return $Menu;
+};
+
+$GetPreTags = function(Blog\Post $Post): Common\Datastore {
+
+	$Output = new Common\Datastore;
+
+	if(!$Post->Enabled)
+	$Output->Push(Atlantis\Tag\Entity::New(
+		Name: 'DRAFT',
+		Type: 'btn-primary'
+	));
+
+	return $Output;
+};
+
+?>
+
+<div>
+	<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
+		<div class="col-12 col-md-2 mb-4 mb-md-0">
+			<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
+				<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
+			</div>
+		</div>
+		<div class="col-12 col-md mb-0 mb-md-0">
+			<div class="mb-2">
+				<?php match($Post->Editor) {
+					'link'
+					=> $Surface->Area('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE, 'Excerpt'=> FALSE, 'ShowTags'=> $ShowTags ]),
+
+					default
+					=> $Surface->Area('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE, 'Excerpt'=> FALSE, 'ShowTags'=> $ShowTags ])
+				}; ?>
+			</div>
+
+			<div class="row tight align-items-center">
+				<div class="col-auto">
+					<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
+				</div>
+
+				<?php if($Route->IsUserAdmin()): ?>
+				<div class="col-auto opacity-25">
+					|
+				</div>
+				<div class="col-auto">
+					<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $GetAdminMenu($Post) ]) ?>
+				</div>
+				<?php endif; ?>
+			</div>
+
+		</div>
+	</div>
+</div>
