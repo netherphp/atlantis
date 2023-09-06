@@ -179,7 +179,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 			}
 		}
 
-		return $URL;
+		return (string)(new Atlantis\WebURL($URL));
 	}
 
 	public function
