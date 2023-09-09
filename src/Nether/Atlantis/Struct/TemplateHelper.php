@@ -80,7 +80,11 @@ class TemplateHelper {
 
 		////////
 
+		if(!str_starts_with($URL, 'http'))
 		return (string)(new Atlantis\WebURL($URL));
+
+		else
+		return $URL;
 	}
 
 	public function
