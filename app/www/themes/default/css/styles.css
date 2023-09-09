@@ -1,5 +1,5 @@
 /*//
-@date 2023-09-02 01:30:39 UTC
+@date 2023-09-08 23:11:26 UTC
 @files 20 [
     "src\/imports.css",
     "src\/main.css",
@@ -811,6 +811,10 @@ strong {
 .bg-body-primary {
 	--bs-bg-opacity: 1;
 	background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important
+}
+
+.bg-primary {
+	background-color: var(--theme-primary) !important;
 }
 
 .btn-block {

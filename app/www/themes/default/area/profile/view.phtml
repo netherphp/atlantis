@@ -46,6 +46,7 @@ if($Route->IsUserAdmin()) {
 	->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
 	->ItemNew('-')
 	->ItemNew('Upload Photos', 'mdi-upload', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE))
+	->ItemNew('Add Related Link', 'mdi-web', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'related-link' ], TRUE))
 	->ItemNew('Add Video URL', 'mdi-video', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE))
 	->ItemNew('-');
 
@@ -60,6 +61,15 @@ if($Route->IsUserAdmin()) {
 
 $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 
+$GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
+
+	$Menu = Atlantis\Struct\DropdownMenu::New();
+	$Menu->ItemNew('Edit Link', 'mdi-pencil', Attr: $Rel->GetDataAttr([ 'link-cmd' => 'edit' ], TRUE));
+	$Menu->ItemNew('Delete', 'mdi-close', Attr: $Rel->GetDataAttr([ 'link-cmd' => 'delete' ], TRUE));
+
+	return $Menu;
+};
+
 ?>
 
 <?php $Surface->Area('design/subheader'); ?>
@@ -70,6 +80,7 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
 	<?php endif; ?>
 
+	<!-- HEADER -->
 	<div class="mb-6">
 		<div class="row">
 			<?php if(isset($Profile->CoverImage)): ?>
@@ -116,6 +127,7 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 		</div>
 	</div>
 
+	<!-- DETAILS -->
 	<div class="mb-8">
 		<h2 class="text-uppercase mb-0">Description</h2>
 		<hr class="mt-1 mb-3" />
@@ -132,6 +144,7 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 	<?php $Surface->Area('profile/view-extend-pre', $__SCOPE) ?>
 
 	<?php if(isset($Photos) && $Photos->Total): ?>
+	<!-- PHOTOS -->
 	<div class="mb-8">
 		<h2 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h2>
 		<hr class="mt-1 mb-3" />
@@ -154,6 +167,7 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 	<?php endif; ?>
 
 	<?php if(isset($Videos) && $Videos->Total): ?>
+	<!-- VIDEOS -->
 	<div class="mb-8">
 		<h2 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Total) ?>)</h2>
 		<hr class="mt-1 mb-3" />
@@ -163,12 +177,13 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 	<?php endif; ?>
 
 	<?php if(isset($Links) && $Links->Total): ?>
+	<!-- RELATED LINKS -->
 	<div class="mb-8">
 		<h2 class="text-uppercase mb-0">Related Links (<?php $Util->Print($Links->Total) ?>)</h2>
 		<hr class="mt-1 mb-3" />
 
 		<?php foreach($Links as $Rel): ?>
-		<div class="row">
+		<div class="row align-items-center">
 			<div class="col">
 				<div class="fst-italic">
 					<?php $Util->Print(Atlantis\Util::DomainFromURL($Rel->URL)) ?>
@@ -177,6 +192,11 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 					<a href="<?php $Util->Print($Rel->URL) ?>" target="_blank" class="fw-bold"><?php $Util->Print($Rel->Title) ?></a>
 				</div>
 			</div>
+			<?php if($Route->IsUserAdmin()): ?>
+			<div class="col-auto">
+				<?php $Surface->Area('widgets/dropdown', [ 'Menu'=> $GetMenuForRelatedLink($Rel) ]) ?>
+			</div>
+			<?php endif; ?>
 		</div>
 		<hr />
 		<?php endforeach; unset($Rel); ?>
@@ -189,6 +209,8 @@ $FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
 
 <script type="module">
 import SimpleLightbox from '/themes/default/lib/js/simplelightbox.js';
+import API            from '/share/nui/api/json.js';
+import DialogUtil     from '/share/nui/util/dialog.js';
 
 jQuery(function() {
 
@@ -199,6 +221,125 @@ jQuery(function() {
 		fileExt: false,
 		sourceAttr: 'data-url-lg'
 	});
+
+	////////
+
+	jQuery('[data-profile-cmd="related-link"]')
+	.on('click', function() {
+
+		let that = jQuery(this);
+		let id = that.attr('data-id');
+		let uuid = that.attr('data-uuid');
+		let endpoint = '/api/media/link';
+
+		let parentType = 'Profile.Entity';
+		let parentUUID = <?php echo json_encode($Profile->UUID) ?>;
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Related Link',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, id),
+				new DialogUtil.Field('text', 'URL', 'URL'),
+				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('date', 'DateCreated', 'Date'),
+				new DialogUtil.Field('hidden', 'ParentType', null, parentType),
+				new DialogUtil.Field('hidden', 'ParentUUID', null, parentUUID)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('POST', endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.show();
+
+		return false;
+	});
+
+	jQuery('[data-link-cmd="edit"]')
+	.on('click', function(){
+
+		let that = jQuery(this);
+		let id = that.attr('data-id');
+		let uuid = that.attr('data-uuid');
+		let endpoint = '/api/media/link';
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Related Link',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, id),
+				new DialogUtil.Field('text', 'URL', 'URL'),
+				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('date', 'DateCreated', 'Date')
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', endpoint,
+			{ ID: id },
+			true
+		);
+
+		return false;
+	});
+
+	jQuery('[data-link-cmd="delete"]')
+	.on('click', function(){
+
+		let that = jQuery(this);
+		let id = that.attr('data-id');
+		let uuid = that.attr('data-uuid');
+		let endpoint = '/api/media/link';
+
+		let diag = new DialogUtil.Window({
+			title: 'Delete Releated Link',
+			body: 'Really delete this link?',
+			labelAccept: 'Yes',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, id)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('DELETE', endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', endpoint,
+			{ ID: id },
+			true
+		);
+
+		return false;
+	});
+
 
 	return;
 });

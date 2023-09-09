@@ -7,6 +7,7 @@ use Nether\Common;
 use Nether\Database;
 use Nether\Storage;
 
+use ArrayAccess;
 use Exception;
 
 #[Database\Meta\TableClass('RelatedLinks', 'RL')]
@@ -14,17 +15,23 @@ class RelatedLink
 extends Atlantis\Prototype {
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
 	public int
 	$TimeCreated;
 
-	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
-	public int
-	$TimePosted;
+	//#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
+	//public int
+	//$TimePosted;
 
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	#[Database\Meta\TypeVarChar(Size: 255, Nullable: FALSE)]
 	public string
 	$Title;
 
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	#[Database\Meta\TypeVarChar(Size: 255, Nullable: FALSE)]
 	public string
 	$URL;
@@ -36,9 +43,9 @@ extends Atlantis\Prototype {
 	public Common\Date
 	$DateCreated;
 
-	#[Common\Meta\PropertyFactory('FromTime', 'TimePosted')]
-	public Common\Date
-	$DatePosted;
+	//#[Common\Meta\PropertyFactory('FromTime', 'TimePosted')]
+	//public Common\Date
+	//$DatePosted;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -61,6 +68,20 @@ extends Atlantis\Prototype {
 			'DateCreated' => $this->DateCreated->Get(),
 			'URL'         => $this->URL
 		];
+	}
+
+	public function
+	Patch(array|ArrayAccess $Input):
+	array {
+
+		$Output = parent::Patch($Input);
+
+		if(isset($Input['DateCreated'])) {
+			$Output['TimeCreated'] = Common\Date::FromDateString($Input['DateCreated'])->GetUnixtime();
+			unset($Output['DateCreated']);
+		}
+
+		return $Output;
 	}
 
 	////////////////////////////////////////////////////////////////
