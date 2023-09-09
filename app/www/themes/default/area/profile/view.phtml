@@ -236,12 +236,12 @@ jQuery(function() {
 		let parentUUID = <?php echo json_encode($Profile->UUID) ?>;
 
 		let diag = new DialogUtil.Window({
-			title: 'Edit Related Link',
+			title: 'New Related Link',
 			labelAccept: 'Save',
 			fields: [
 				new DialogUtil.Field('hidden', 'ID', null, id),
-				new DialogUtil.Field('text', 'URL', 'URL'),
 				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('text', 'URL', 'URL'),
 				new DialogUtil.Field('date', 'DateCreated', 'Date'),
 				new DialogUtil.Field('hidden', 'ParentType', null, parentType),
 				new DialogUtil.Field('hidden', 'ParentUUID', null, parentUUID)
@@ -277,8 +277,8 @@ jQuery(function() {
 			labelAccept: 'Save',
 			fields: [
 				new DialogUtil.Field('hidden', 'ID', null, id),
-				new DialogUtil.Field('text', 'URL', 'URL'),
 				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('text', 'URL', 'URL'),
 				new DialogUtil.Field('date', 'DateCreated', 'Date')
 			],
 			onAccept: function() {
