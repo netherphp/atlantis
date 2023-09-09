@@ -51,6 +51,10 @@ extends Atlantis\Tag\EntityLink {
 		parent::FindExtendSorts($SQL, $Input);
 
 		switch($Input['Sort']) {
+			case 'title-az':
+				$SQL->Sort('PRO.Title', $SQL::SortAsc);
+			break;
+
 			case static::SortNew:
 				$SQL->Sort('PRO.TimeCreated', $SQL::SortDesc);
 			break;
