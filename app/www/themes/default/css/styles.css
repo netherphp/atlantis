@@ -1,5 +1,5 @@
 /*//
-@date 2023-09-11 23:42:33 UTC
+@date 2023-09-12 02:13:08 UTC
 @files 20 [
     "src\/imports.css",
     "src\/main.css",
@@ -1734,12 +1734,17 @@ strong {
 			<div class="swiper-slide"></div>
 			...
 		</div>
+
+		<!-- if omitted, added automatically. -->
 		<div class="swiper-buttons">
 			<div class="swiper-button-prev"></div>
 			<div class="swiper-button-next"></div>
 		</div>
-		<div class="swiper-pagination"></div>
-		<div class="swiper-scrollbar"></div>
+
+		<!-- if omitted, added automatically. -->
+		<div class="swiper-pager">
+			<div class="swiper-pagination"></div>
+		</div>
 	</div>
 </div>
 */
@@ -1748,6 +1753,9 @@ strong {
 	--theme-swiper-btn-bg:      #00000000;
 	--theme-swiper-btn-bg-next: #000000AA;
 	--theme-swiper-btn-bg-stop: #00000033;
+
+	--theme-swiper-pager-bg-this: #AAAAAA;
+	--theme-swiper-pager-bg-nope: #222222;
 }
 
 .swiper-supercontainer {
@@ -1827,16 +1835,18 @@ strong {
 	cursor: pointer !important;
 	pointer-events: initial !important;
 
-	color: #FFFFFF33 !important;
+	color: var(--theme-swiper-btn-bg-stop) !important;
 }
 
 .swiper-pagination-bullet {
 	border-radius: 2px !important;
+	background: var(--theme-swiper-pager-bg-nope) !important;
+	opacity: initial !important;
 }
 
 .swiper-pagination-bullet-active {
-	color: var(--theme-light-fg);
-	background: var(--theme-primary);
+	background: var(--theme-swiper-pager-bg-this) !important;
+	opacity: initial !important;
 }
 
 /*******************************************************************************

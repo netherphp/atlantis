@@ -231,7 +231,7 @@ class SliderConfig {
 		return this;
 	};
 
-	setSlideGap(dist=30) {
+	setSlideGap(dist=24) {
 
 		this.spaceBetween = dist;
 
@@ -259,19 +259,19 @@ class SliderConfig {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	setAfterInitFunc(func) {
+
+		this.on.setAfterInit(func);
+
+		return this;
+	};
+
 	setPagerBulletFunc(func) {
 
 		this.pagination.renderBullet = null;
 
 		if(typeof this.pagination === 'object')
 		this.pagination.renderBullet = func;
-
-		return this;
-	};
-
-	setAfterInitFunc(func) {
-
-		this.on.setAfterInit(func);
 
 		return this;
 	};
