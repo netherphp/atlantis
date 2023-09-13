@@ -105,7 +105,7 @@ class Slider {
 
 	onRenderBullet(i, cname) {
 
-		let out = SliderPageBullet.Default(i, cname);
+		let out = SliderPageBullet.Square(i, cname);
 
 		return out;
 	};
@@ -159,17 +159,13 @@ class SliderConfig {
 		// managed by setSlideGap()
 		this.spaceBetween = 0;
 
-		// managed by setNavShow()
+		// self-managed substructures.
+		this.on = null;
 		this.navigation = null;
-
-		// managed by setPagerShow()
 		this.pagination = null;
 
-		// managed by prepareEventStruct()
-		this.on = null;
-
 		(this)
-		.prepareEventStruct()
+		.prepareSubstructs()
 		.setSlideGap()
 		.setSlideCount()
 		.setPagerShow()
@@ -194,9 +190,11 @@ class SliderConfig {
 		return this;
 	};
 
-	prepareEventStruct() {
+	prepareSubstructs() {
 
 		this.on = new SliderConfigEventStruct;
+		this.navigation = new SliderConfigNavStruct;
+		this.pagination = new SliderConfigPagerStruct;
 
 		return this;
 	};
@@ -240,20 +238,16 @@ class SliderConfig {
 
 	setNavShow(enable=true) {
 
-		return (
-			enable
-			? this.navEnable()
-			: this.navDisable()
-		);
+		this.navigation.setEnabled(enable);
+
+		return this;
 	};
 
 	setPagerShow(enable=true) {
 
-		return (
-			enable
-			? this.pagerEnable()
-			: this.pagerDisable()
-		);
+		this.pagination.setEnabled(enable);
+
+		return this;
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -261,62 +255,14 @@ class SliderConfig {
 
 	setAfterInitFunc(func) {
 
-		this.on.setAfterInit(func);
+		this.on.setAfterInitFunc(func);
 
 		return this;
 	};
 
 	setPagerBulletFunc(func) {
 
-		this.pagination.renderBullet = null;
-
-		if(typeof this.pagination === 'object')
-		this.pagination.renderBullet = func;
-
-		return this;
-	};
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	navEnable() {
-
-		this.navigation = {
-			nextEl: '.swiper-button-next',
-			prevEl: '.swiper-button-prev'
-		};
-
-		return this;
-	};
-
-	navDisable() {
-
-		this.navigation = {
-			nextEl: false,
-			prevEl: false
-		};
-
-		return this;
-	};
-
-	pagerEnable() {
-
-		this.pagination = {
-			el: '.swiper-pagination',
-			clickable: true,
-			renderBullet: null
-		};
-
-		return this;
-	};
-
-	pagerDisable() {
-
-		this.pagination = {
-			el: false,
-			clickable: false,
-			renderBullet: null
-		};
+		this.pagination.setBulletFunc(func);
 
 		return this;
 	};
@@ -327,12 +273,13 @@ class SliderConfigEventStruct {
 
 	constructor() {
 
+		// values swiper uses.
 		this.afterInit = null;
 
 		return;
 	};
 
-	setAfterInit(func) {
+	setAfterInitFunc(func) {
 
 		this.afterInit = null;
 
@@ -344,13 +291,121 @@ class SliderConfigEventStruct {
 
 };
 
+class SliderConfigNavStruct {
+
+	constructor() {
+
+		// values swiper uses.
+		this.nextEl = null;
+		this.prevEl = null;
+
+		// our own values.
+		this.nextSelector = null;
+		this.prevSelector = null;
+
+		(this)
+		.setNextSelector()
+		.setPrevSelector()
+		.setEnabled();
+
+		return;
+	};
+
+	setEnabled(enable=true) {
+
+		if(enable) {
+			this.nextEl = this.nextSelector;
+			this.prevEl = this.prevSelector;
+		}
+
+		else {
+			this.nextEl = false;
+			this.prevEl = false;
+		}
+
+		return this;
+	};
+
+	setNextSelector(selector='.swiper-button-next') {
+
+		this.nextSelector = selector;
+
+		return this;
+	};
+
+	setPrevSelector(selector='.swiper-button-prev') {
+
+		this.prevSelector = selector;
+
+		return this;
+	};
+
+};
+
+class SliderConfigPagerStruct {
+
+	constructor() {
+
+		// values swiper uses.
+		this.el = false;
+		this.clickable = false;
+		this.renderBullet = null;
+
+		(this)
+		.setSelector()
+		.setBulletFunc(SliderPageBullet.Default)
+		.setEnabled();
+
+		return;
+	};
+
+	setEnabled(enable=true) {
+
+		if(enable) {
+			this.el = this.selector;
+			this.clickable = true;
+		}
+
+		else {
+			this.el = false;
+			this.clickable = false;
+		}
+
+		return this;
+	};
+
+	setSelector(selector='.swiper-pagination') {
+
+		this.selector = selector;
+
+		return this;
+	};
+
+	setBulletFunc(func) {
+
+		this.renderBullet = null;
+
+		if(typeof func === 'function')
+		this.renderBullet = func;
+
+		return this;
+	};
+
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 class SliderPageBullet {
+
 	static Default(i, cname) {
-		return `<span class="${cname} slider-page-basic-num-circle" data-slide-key="${i}"></span>`;
+		return `<span class="${cname} swiper-pager-bullet-circle" data-slide-key="${i}"></span>`;
 	};
+
+	static Square(i, cname) {
+		return `<span class="${cname} swiper-pager-bullet-square" data-slide-key="${i}"></span>`;
+	};
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////

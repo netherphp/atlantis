@@ -5,32 +5,17 @@ namespace Nether\Atlantis\UI;
 use Nether\Common;
 use Nether\Surface;
 
+#[Common\Meta\Date('2023-09-12')]
 class Slider
 extends Surface\Element {
 
-	public string
-	$Area = 'elements/slider';
-
-	public Common\Datastore
-	$Items;
+	////////////////////////////////////////////////////////////////
+	// OVERRIDES: Surface\Element /////////////////////////////////
 
 	public string
-	$ItemArea;
+	$Area = 'elements/slider/main';
 
-	////////////////////////////////////////////////////////////////
-	// OVERRIDES: Common\Prototype /////////////////////////////////
-
-	protected function
-	OnReady(Common\Prototype\ConstructArgs $Args):
-	void {
-
-		$this->Items = new Common\Datastore;
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	// OVERRIDES: Surface\Element //////////////////////////////////
+	////////
 
 	public function
 	Render():
@@ -48,6 +33,13 @@ extends Surface\Element {
 	////////////////////////////////////////////////////////////////
 	// LOCAL: Batch Item Interface /////////////////////////////////
 
+	#[Common\Meta\PropertyObjectify]
+	public Common\Datastore
+	$Items;
+
+	////////
+
+	#[Common\Meta\Info('Get the list of items.')]
 	public function
 	GetItems():
 	iterable {
@@ -55,6 +47,7 @@ extends Surface\Element {
 		return $this->Items;
 	}
 
+	#[Common\Meta\Info('Get a list of items wrapped as SliderItems if they are not already.')]
 	public function
 	GetItemsWrapped():
 	Common\Datastore {
@@ -78,6 +71,53 @@ extends Surface\Element {
 		return $this;
 	}
 
+	////////////////////////////////////////////////////////////////
+	// LOCAL: Item Area Interface //////////////////////////////////
+
+	public string
+	$ItemArea;
+
+	#[Common\Meta\Info('Get the default area for items.')]
+	public function
+	GetItemArea():
+	string {
+
+		if(!isset($this->ItemArea))
+		throw new Common\Error\RequiredDataMissing('ItemArea', 'string');
+
+		return static::ExpandAreaPath($this->ItemArea);
+	}
+
+	#[Common\Meta\Info('Set the default area for items.')]
+	public function
+	SetItemArea(string $Area):
+	static {
+
+		$this->ItemArea = $Area;
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	// LOCAL: Rendering API ////////////////////////////////////////
+
+	public function
+	RenderItem(mixed $Item):
+	string {
+
+		if($Item instanceof SliderItem)
+		$Area = $Item->GetArea();
+		else
+		$Area = $this->GetItemArea();
+
+		////////
+
+		return $this->Surface->GetArea($Area, [
+			'Element' => $this,
+			'Item'    => $Item
+		]);
+	}
+
 	public function
 	RenderItems():
 	string {
@@ -92,34 +132,6 @@ extends Surface\Element {
 	}
 
 	public function
-	PrintItems():
-	static {
-
-		echo $this->RenderItems();
-		return $this;
-	}
-
-	////////////////////////////////////////////////////////////////
-	// LOCAL: Singular Item Interface //////////////////////////////
-
-	public function
-	RenderItem(mixed $Item):
-	string {
-
-		if($Item instanceof SliderItem)
-		$Area = static::ExpandAreaPath($Item->Area);
-		else
-		$Area = $this->GetItemArea();
-
-		////////
-
-		return $this->Surface->GetArea($Area, [
-			'Element' => $this,
-			'Item'    => $Item
-		]);
-	}
-
-	public function
 	PrintItem(mixed $Item):
 	static {
 
@@ -128,24 +140,11 @@ extends Surface\Element {
 		return $this;
 	}
 
-	////////////////////////////////////////////////////////////////
-	// LOCAL: Item Area Interface //////////////////////////////////
-
 	public function
-	GetItemArea():
-	string {
-
-		if(!isset($this->ItemArea))
-		throw new Common\Error\RequiredDataMissing('ItemArea', 'string');
-
-		return static::ExpandAreaPath($this->ItemArea);
-	}
-
-	public function
-	SetItemArea(string $Area):
+	PrintItems():
 	static {
 
-		$this->ItemArea = $Area;
+		echo $this->RenderItems();
 
 		return $this;
 	}
@@ -153,11 +152,14 @@ extends Surface\Element {
 	////////////////////////////////////////////////////////////////
 	// LOCAL: Factory API //////////////////////////////////////////
 
+	#[Common\Meta\Info('Ready an element to display a specified dataset.')]
 	static public function
-	FromDataset(Surface\Engine $Surface, iterable $Items, ?string $Area=NULL):
+	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $Area=NULL):
 	static {
 
 		$Output = new static($Surface);
+
+		if($Items !== NULL)
 		$Output->SetItems($Items);
 
 		if($Area !== NULL)

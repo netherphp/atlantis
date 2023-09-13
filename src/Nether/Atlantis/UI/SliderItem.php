@@ -2,6 +2,8 @@
 
 namespace Nether\Atlantis\UI;
 
+use Nether\Common;
+
 class SliderItem {
 
 	public string
@@ -9,6 +11,9 @@ class SliderItem {
 
 	public mixed
 	$Item;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	__Construct(string $Area, mixed $Item) {
@@ -19,18 +24,46 @@ class SliderItem {
 		return;
 	}
 
-	public function
-	GetItem():
-	mixed {
-
-		return $this->Item;
-	}
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	GetArea():
 	string {
 
-		return $this->Area;
+		if(!isset($this->Area))
+		throw new Common\Error\RequiredDataMissing('Area', 'string');
+
+		return Slider::ExpandAreaPath($this->Area);
 	}
+
+	public function
+	SetArea(string $Area):
+	static {
+
+		$this->Area = $Area;
+
+		return $this;
+	}
+
+	public function
+	GetItem():
+	mixed {
+
+		if(!isset($this->Item))
+		throw new Common\Error\RequiredDataMissing('Item', 'mixed');
+
+		return $this->Item;
+	}
+
+	public function
+	SetItem(mixed $Item):
+	static {
+
+		$this->Item = $Item;
+
+		return $this;
+	}
+
 
 };

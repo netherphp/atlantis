@@ -1,7 +1,36 @@
+/*******************************************************************************
+********************************************************************************
 
-/*
-<div class="swiper-supercontainer swiper-coldboot">
-	<div id="" class="swiper">
+Element: Nether\Atlantis\UI\Slider
+Area:    elements/slider
+
+
+* .swiper-supercontainer
+wraps the swiper and after it is rigged up reparents the button and pager docks
+into this for easier styling where the elements do not cover things up.
+
+* .swiper.swiper-coldboot
+hide the swiper untils its ready. this causes the page to grow when it turns on
+rather than shink after the swiper configures itself when it contains
+ratioboxes.
+
+* .swiper.swiper-realboot
+boot this slider swiper as part of the batch the page theme does rather than
+pinging with its own document ready func.
+
+* .swiper-buttons
+docks the next/prev buttons and gets reparented to the supercontainer when
+it is ready to go.
+
+* .swiper-pager
+docks the paginator widget and gets reparented to the supercontainer when it
+is ready to go.
+
+* swiper-pager-bullet-square
+makes the pager bullets be square instead of circle.
+
+<div class="swiper-supercontainer">
+	<div id="" class="swiper swiper-coldboot swiper-realboot">
 		<div class="swiper-wrapper">
 			<div class="swiper-slide"></div>
 			...
@@ -19,7 +48,9 @@
 		</div>
 	</div>
 </div>
-*/
+
+********************************************************************************
+*******************************************************************************/
 
 :root {
 	--theme-swiper-btn-bg:      #00000000;
@@ -48,9 +79,10 @@
 }
 
 .swiper-pager {
+	position: absolute;
 	display: flex;
-	width: 100%;
 	justify-content: center;
+	width: 100%;
 }
 
 .swiper-pagination {
@@ -63,15 +95,11 @@
 	top: 0px;
 	width: 100%;
 	height: 100%;
-	padding: 6px;
+	padding: 4px;
 
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-}
-
-.swiper-pager {
-	position: absolute;
 }
 
 .swiper-button-prev,
@@ -93,8 +121,8 @@
 }
 
 .swiper-button-prev {
-	left: 0px !important;
 	right: auto !important;
+	left: 0px !important;
 }
 
 .swiper-button-next {
@@ -106,19 +134,26 @@
 	opacity: 1.0 !important;
 	cursor: pointer !important;
 	pointer-events: initial !important;
-
 	color: var(--theme-swiper-btn-bg-stop) !important;
 }
 
+/*******************************************************************************
+**** pager tweaks *************************************************************/
+
 .swiper-pagination-bullet {
-	border-radius: 2px !important;
 	background: var(--theme-swiper-pager-bg-nope) !important;
 	opacity: initial !important;
+	height: 14px !important;
+	width: 14px !important;
 }
 
 .swiper-pagination-bullet-active {
 	background: var(--theme-swiper-pager-bg-this) !important;
 	opacity: initial !important;
+}
+
+.swiper-pager-bullet-square {
+	border-radius: 2px !important;
 }
 
 /*******************************************************************************
