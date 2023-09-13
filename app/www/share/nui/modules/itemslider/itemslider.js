@@ -1,21 +1,21 @@
 /*
-	<div class="swiper-supercontainer">
-		<div id="CatSlideIssues" class="swiper">
-			<div class="swiper-wrapper">
-				<div class="swiper-slide">
-					Slide Content Here
-				</div>
-				[ ... ]
+<div class="swiper-supercontainer">
+	<div id="CatSlideIssues" class="swiper">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide">
+				Slide Content Here
 			</div>
-			<div class="swiper-buttons">
-				<div class="swiper-button-prev"></div>
-				<div class="swiper-button-next"></div>
-			</div>
-			<div class="swiper-pager">
-				<div class="swiper-pagination"></div>
-			</div>
+			...
+		</div>
+		<div class="swiper-buttons">
+			<div class="swiper-button-prev"></div>
+			<div class="swiper-button-next"></div>
+		</div>
+		<div class="swiper-pager">
+			<div class="swiper-pagination"></div>
 		</div>
 	</div>
+</div>
 */
 
 let TemplateSliderButtons = `

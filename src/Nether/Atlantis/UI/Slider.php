@@ -77,6 +77,8 @@ extends Surface\Element {
 	public string
 	$ItemArea;
 
+	////////
+
 	#[Common\Meta\Info('Get the default area for items.')]
 	public function
 	GetItemArea():
