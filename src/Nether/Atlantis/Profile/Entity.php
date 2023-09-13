@@ -201,6 +201,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		$Input['TagID'] ??= NULL;
 		$Input['SubtagID'] ??= NULL;
+		$Input['Enabled'] ??= 1;
 
 		return;
 	}
@@ -212,6 +213,11 @@ implements Atlantis\Packages\ExtraDataInterface {
 		parent::FindExtendFilters($SQL, $Input);
 
 		////////
+
+		if($Input['Enabled'] !== NULL) {
+			if(is_int($Input['Enabled']))
+			$SQL->Where('Main.Enabled=:Enabled');
+		}
 
 		if($Input['TagID'] !== NULL)
 		static::FindExtendFilters_ByEntityFields_ByTagID($SQL, $Input);
