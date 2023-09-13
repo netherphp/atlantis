@@ -2,15 +2,18 @@
 
 namespace Nether\Atlantis\UI;
 
-class Element {
+use Stringable;
 
-	public string
+class Element
+implements Stringable {
+
+	public ?string
 	$Title;
 
-	public string
+	public ?string
 	$Icon;
 
-	public string
+	public ?string
 	$Class;
 
 	////////////////////////////////////////////////////////////////
@@ -24,6 +27,13 @@ class Element {
 		$this->Class = $Class;
 
 		return;
+	}
+
+	public function
+	__ToString():
+	string {
+
+		return $this->Render();
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -47,6 +57,27 @@ class Element {
 		////////
 
 		return $this->Icon;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	SetIcon(?string $Icon):
+	static {
+
+		$this->Icon = $Icon;
+
+		return $this;
+	}
+
+	public function
+	SetTitle(?string $Title):
+	static {
+
+		$this->Title = $Title;
+
+		return $this;
 	}
 
 	////////////////////////////////////////////////////////////////

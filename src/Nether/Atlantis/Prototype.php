@@ -10,7 +10,8 @@ use ArrayAccess;
 #[Common\Meta\Date('2023-02-15')]
 #[Common\Meta\Info('Adds core object features that anything built using the framework should expect to have.')]
 class Prototype
-extends Database\Prototype {
+extends Database\Prototype
+implements Packages\DescribeForPublicInterface {
 
 	////////////////////////////////////////////////////////////////
 	//// DATABASE FIELDS ///////////////////////////////////////////

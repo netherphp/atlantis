@@ -45,6 +45,15 @@ class TemplateHelper {
 		return;
 	}
 
+	#[Common\Meta\Date('2023-09-12')]
+	public function
+	PrintJSON(mixed $Input):
+	void {
+
+		echo json_encode($Input);
+		return;
+	}
+
 	public function
 	ThemeURL(string $In, ?string $Theme=NULL):
 	void {
@@ -95,6 +104,14 @@ class TemplateHelper {
 	//*/
 
 		return Atlantis\Filter::EncodeHTML($Input);
+	}
+
+	#[Common\Meta\Date('2023-09-12')]
+	public function
+	EncodeJSON(mixed $Input):
+	string {
+
+		return json_encode($Input);
 	}
 
 	public function

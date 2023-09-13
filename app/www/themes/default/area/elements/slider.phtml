@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\Slider $Element
+ */
+
+// @todo 2023-09-12 if using realboot css class then do not include the init
+// code afterwards as that will be handled by the mass booter.
+
+$CacheBust = $Util->GetCacheBuster();
+$ElementID = $Element->GetID();
+$ScriptURL = "/share/nui/modules/itemslider/itemslider.js?v={$CacheBust}";
+$ScriptSelector = $Element->GetSelectorID();
+
+?>
+
+<div class="swiper-supercontainer">
+	<div id="<?php $Util->Print($ElementID) ?>" class="swiper swiper-coldboot">
+		<div class="swiper-wrapper">
+			<?php $Element->PrintItems() ?>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+import ItemSlide from <?php $Util->PrintJSON($ScriptURL) ?>;
+
+jQuery(document)
+.ready(function(){
+
+	let select = <?php $Util->PrintJSON($ScriptSelector) ?>;
+	let config = new ItemSlide.Config;
+	let slider = ItemSlide.FromElement(select, config);
+
+	return;
+});
+</script>
