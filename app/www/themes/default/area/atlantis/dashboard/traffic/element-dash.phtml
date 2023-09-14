@@ -17,6 +17,8 @@ use Nether\User;
  * @var Atlantis\Dashboard\AtlantisTrafficElement $Element
  */
 
+$Domain = $App->Config[Atlantis\Key::ConfProjectDomain];
+
 $GetDateFor = function(string $When) {
 
 	$Date = Common\Date::FromDateString($When);
@@ -29,7 +31,7 @@ $GetDateFor = function(string $When) {
 <div class="jumbotron jumbotron-outline rounded">
 	<div class="row">
 		<div class="col">
-			<span class="fw-bold text-uppercase">Traffic Past 24HR</span>
+			<span class="fw-bold text-uppercase">Traffic Past 24HR (<?php $Util->Print($Domain) ?>)</span>
 		</div>
 	</div>
 	<hr class="mt-0 mb-2" />
