@@ -23,6 +23,7 @@ extends Atlantis\ProtectedWeb {
 		]);
 
 		$Filters = [
+			'Domain'    => $this->App->Config[Atlantis\Key::ConfProjectDomain],
 			'Since'     => NULL,
 			'Before'    => NULL,
 			'PathStart' => $this->Data->Path,
