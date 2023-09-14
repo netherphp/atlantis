@@ -103,10 +103,10 @@ extends Atlantis\Prototype {
 
 		$Input['Since'] ??= NULL;
 		$Input['Before'] ??= NULL;
+		$Input['Domain'] ??= NULL;
 
 		$Input['Hash'] ??= NULL;
 		$Input['PathStart'] ??= NULL;
-		$Input['FromDomain'] ??= NULL;
 
 		$Input['Group'] ??= NULL;
 
@@ -131,9 +131,11 @@ extends Atlantis\Prototype {
 			$SQL->Where('Main.Path LIKE :PathStartLike');
 		}
 
-		if($Input['FromDomain'] !== NULL) {
-			if($Input['FromDomain'] === TRUE)
-			$SQL->Where('Main.FromDomain IS NOT NULL');
+		if($Input['Domain'] !== NULL) {
+			if($Input['Domain'] === TRUE)
+			$SQL->Where('Main.Domain IS NOT NULL');
+			else
+			$SQL->Where('Main.Domain=:Domain');
 		}
 
 		if($Input['Group'] !== NULL) {
@@ -143,8 +145,8 @@ extends Atlantis\Prototype {
 			if($Input['Group'] === 'visitor')
 			$SQL->Group('Main.Visitor');
 
-			if($Input['Group'] === 'from-domain')
-			$SQL->Group('Main.FromDomain');
+			if($Input['Group'] === 'domain')
+			$SQL->Group('Main.Domain');
 
 			$SQL->Fields([ 'GroupCount'=> 'COUNT(*) AS GroupCount' ]);
 		}
@@ -184,14 +186,6 @@ extends Atlantis\Prototype {
 		$Input->BlendRight([
 			'TimeCreated' => $Now->GetUnixtime()
 		]);
-
-		if($Input['FromDomain']) {
-			if(substr_count($Input['FromDomain'], '.') > 3)
-			$Input['FromDomain'] = join('.', array_slice(
-				explode('.', $Input['FromDomain']),
-				-2, 2
-			));
-		}
 
 		return parent::Insert($Input);
 	}

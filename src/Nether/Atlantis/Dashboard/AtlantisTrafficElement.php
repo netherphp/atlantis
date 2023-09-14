@@ -33,22 +33,26 @@ extends Atlantis\Dashboard\Element {
 		$Since = new Common\Date('-24 hour');
 
 		$this->Rows = Atlantis\Struct\TrafficRow::Find([
-			'Since' => $Since->GetUnixtime(),
-			'Group' => 'path',
-			'Sort'  => 'group-count-za',
-			'Limit' => 10
+			'Domain' => $App->Config[Atlantis\Key::ConfProjectDomain],
+			'Since'  => $Since->GetUnixtime(),
+			'Group'  => 'path',
+			'Sort'   => 'group-count-za',
+			'Limit'  => 10
 		]);
 
 		$this->Hits = Atlantis\Struct\TrafficRow::FindCount([
-			'Since' => $Since->GetUnixtime()
+			'Domain' => $App->Config[Atlantis\Key::ConfProjectDomain],
+			'Since'  => $Since->GetUnixtime()
 		]);
 
 		$this->Visitors = Atlantis\Struct\TrafficRow::FindCount([
-			'Since' => $Since->GetUnixtime(),
-			'Group' => 'visitor'
+			'Domain' => $App->Config[Atlantis\Key::ConfProjectDomain],
+			'Since'  => $Since->GetUnixtime(),
+			'Group'  => 'visitor'
 		]);
 
 		$this->Sources = Atlantis\Struct\TrafficRow::Find([
+			'Domain'     => $App->Config[Atlantis\Key::ConfProjectDomain],
 			'Since'      => $Since->GetUnixtime(),
 			'FromDomain' => TRUE,
 			'Group'      => 'from-domain',
