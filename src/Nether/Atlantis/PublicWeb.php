@@ -317,7 +317,7 @@ as html pages. //*/
 		$Hash = $this->Request->GetTrafficHash();
 		$UserID = isset($this->App->User) ? $this->App->User->ID : NULL;
 		$Parts = parse_url($Hash->URL);
-		$Domain = NULL;
+		$Domain = $this->App->Config[Atlantis\Key::ConfProjectDomain];
 		$Path = NULL;
 		$Query = NULL;
 		$UserAgent = NULL;
@@ -352,8 +352,8 @@ as html pages. //*/
 		if(!$Parts)
 		return;
 
-		if(isset($Parts['host']))
-		$Domain = $Parts['host'];
+		//if(isset($Parts['host']))
+		//$Domain = $Parts['host'];
 
 		if(isset($Parts['path']))
 		$Path = $Parts['path'];
