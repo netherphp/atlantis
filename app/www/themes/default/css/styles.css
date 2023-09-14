@@ -1,5 +1,5 @@
 /*//
-@date 2023-09-13 21:42:07 UTC
+@date 2023-09-14 00:51:27 UTC
 @files 19 [
     "src\/imports.css",
     "src\/main.css",
@@ -161,6 +161,8 @@
 	--bs-secondary-bg-rgb: 236, 236, 236;
 	--bs-tertiary-bg: #F5F5F5;
 	--bs-tertiary-bg-rgb: 248, 248, 248;
+
+	--bs-border-radius: 10px;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
