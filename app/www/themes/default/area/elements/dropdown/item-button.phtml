@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\Dropdown $Element
+ * @var Nether\Atlantis\Struct\DropdownItem $Item
+ */
+
+$BtnClasses = Nether\Common\Datastore::FromArray([
+	'btn'
+]);
+
+switch($Item->Warn) {
+	case $Item::Warning:
+		$BtnClasses->Push('btn-outline-warning');
+	break;
+	case $Item::Danger:
+		$BtnClasses->Push('btn-outline-danger');
+	break;
+	default:
+		$BtnClasses->Push('btn-outline-dark');
+	break;
+}
+
+?>
+
+<div class="dropdown-div">
+	<a href="<?php $Util->Print($Item->GetURL()) ?>" class="<?php $Util->Print($BtnClasses->Join(' ')) ?>" <?php echo $Item->GetAttrForHTML() ?>>
+		<i class="<?php $Util->Print($Item->GetIcon()) ?>"></i>
+		<?php $Util->Print($Item->GetTitle()) ?>
+	</a>
+</div>

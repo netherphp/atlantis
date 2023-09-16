@@ -86,6 +86,9 @@ class Post {
 		jQuery('[data-post-cmd=draft]')
 		.on('click', this.onDraft.bind(this));
 
+		jQuery('[data-post-cmd=photoset]')
+		.on('click', this.onPhotoSet.bind(this));
+
 		return this;
 	};
 
@@ -102,6 +105,13 @@ class Post {
 
 	////////////////
 	////////////////
+
+	onPhotoSet() {
+
+		alert('TODO');
+
+		return false;
+	};
 
 	onEditTags(ev) {
 

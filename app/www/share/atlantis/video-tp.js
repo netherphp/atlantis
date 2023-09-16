@@ -128,7 +128,7 @@ class Video {
 		return false;
 	};
 
-	onDelete(ev) {
+	onDelete(ev, pUUID=null) {
 
 		let self = this;
 		let diag = null;
@@ -147,6 +147,9 @@ class Video {
 
 				let data = { ID: self.id };
 				let api = new API.Request('DELETE', self.endpoint, data);
+
+				if(pUUID !== null)
+				data['ParentUUID'] = pUUID;
 
 				(api.send())
 				.then(api.reload)
@@ -234,9 +237,10 @@ class Video {
 			let that = jQuery(this);
 			let eID = that.attr('data-id') ?? null;
 			let eUUID = that.attr('data-uuid') ?? null;
+			let pUUID = that.attr('data-delete-from') ?? null;
 
 			if(eID)
-			Video.WhenOnDelete(eID, eUUID);
+			Video.WhenOnDelete(eID, eUUID, pUUID);
 
 			return false;
 		});
@@ -329,10 +333,10 @@ class Video {
 		return;
 	};
 
-	static WhenOnDelete(eID, eUUID) {
+	static WhenOnDelete(eID, eUUID, pUUID) {
 
 		let vid = new Video(eID, eUUID);
-		vid.onDelete(null);
+		vid.onDelete(null, pUUID);
 
 		return;
 	};

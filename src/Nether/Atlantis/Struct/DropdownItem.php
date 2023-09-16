@@ -7,6 +7,12 @@ use Nether\Common;
 class DropdownItem
 extends Common\Prototype {
 
+	const
+	Normal   = 0,
+	Warning  = 1,
+	Danger   = 2,
+	Success  = 3;
+
 	public string
 	$Title;
 
@@ -16,9 +22,12 @@ extends Common\Prototype {
 	public ?string
 	$URL;
 
-	#[Common\Meta\PropertyObjectify]
-	public Common\Datastore
-	$Attr;
+	public int
+	$Warn = 0;
+
+	#[Common\Meta\PropertyFactory('FromArray', 'Attr')]
+	public array|Common\Datastore
+	$Attr = [];
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -29,7 +38,8 @@ extends Common\Prototype {
 
 		$Output = [];
 
-		$this->Attr->Each(
+		($this->Attr)
+		->Each(
 			function(mixed $V, string $K) use(&$Output) {
 				array_push($Output, "{$K}=\"{$V}\"");
 				return;
@@ -37,6 +47,13 @@ extends Common\Prototype {
 		);
 
 		return join(' ', $Output);
+	}
+
+	public function
+	GetTitle():
+	string {
+
+		return $this->Title;
 	}
 
 	public function
@@ -66,14 +83,23 @@ extends Common\Prototype {
 		return $Output;
 	}
 
+	public function
+	GetURL():
+	string {
+
+		return $this->URL ?? '#';
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $Title='Item', ?string $Icon='mdi-edit', ?string $URL=NULL, ?iterable $Attr=NULL):
+	New(?string $Title='Item', ?string $Icon='mdi-edit', ?string $URL=NULL, ?iterable $Attr=[], int $Warn=0):
 	static {
 
-		$Output = new static;
+		$Output = new static([
+			'Warn' => $Warn
+		]);
 
 		////////
 

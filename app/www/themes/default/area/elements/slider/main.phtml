@@ -25,7 +25,7 @@ $ScriptSelector = $Element->GetSelectorID();
 </div>
 
 <script type="module">
-import ItemSlide from <?php $Util->PrintJSON($ScriptURL) ?>;
+import ItemSlide from "<?php echo $ScriptURL ?>";
 
 jQuery(document)
 .ready(function(){

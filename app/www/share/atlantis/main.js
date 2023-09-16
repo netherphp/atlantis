@@ -1,3 +1,4 @@
+import Photo   from './photo.js';
 import Profile from './profile.js';
 import VideoTP from './video-tp.js';
 
@@ -6,6 +7,7 @@ import VideoTP from './video-tp.js';
 
 jQuery(function() {
 
+	Photo.WhenDocumentReady();
 	Profile.WhenDocumentReady();
 	VideoTP.WhenDocumentReady();
 
@@ -16,6 +18,7 @@ jQuery(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 export default {
+	"Photo":   Photo,
 	"Profile": Profile,
 	"VideoTP": VideoTP
 };

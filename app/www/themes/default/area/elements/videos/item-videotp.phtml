@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\VideoList $Element
+ * @var Nether\Atlantis\UI\VideoItem $Item
+ */
+
+$Admin = $Route->IsUserAdmin();
+
+$Title = $Item->Item->Title;
+$ImageURL = $Item->Item->GetCoverImageURL();
+$PageURL = $Item->Item->GetPageURL(TRUE);
+$DateShared = $Item->Item->DateCreated->Get(Nether\Common\Values::DateFormatFancyDate);
+$DateReleased = $Item->Item->DatePosted->Get(Nether\Common\Values::DateFormatFancyDate);
+$Tags = $Item->Item->GetTags();
+$VideoExtraAttr = [ ];
+
+if($Element->ParentUUID)
+$VideoExtraAttr['delete-from'] = $Element->ParentUUID;
+
+$VideoAttrHTML = $Item->Item->GetDataAttrForHTML($VideoExtraAttr);
+
+?>
+
+<div class="row">
+	<div class="col-12 col-md-3">
+		<div class="ratiobox widescreen wallpapered covered rounded bg-dark" style="background-image:url(<?php $Util->Print($ImageURL) ?>);">
+			<a class="position-absolutely" href="<?php $Util->Print($PageURL) ?>"></a>
+			<div class="position-absolute position-bottom position-right p-1">
+				<?php if($Admin): ?>
+				<button class="btn btn-light" data-videotp-cmd="edit" <?php echo $VideoAttrHTML ?>>
+					<i class="mdi mdi-pencil mr-0"></i>
+				</button>
+				<button class="btn btn-danger" data-videotp-cmd="delete" <?php echo $VideoAttrHTML ?>>
+					<i class="mdi mdi-trash-can mr-0"></i>
+				</button>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+	<div class="col-12 col-md mb-4">
+		<h3 class="mb-2">
+			<a href="<?php $Util->Print($PageURL) ?>">
+				<?php $Util->Print($Title) ?>
+			</a>
+		</h3>
+		<div>
+			<b>Date Shared:</b>
+			<?php $Util->Print($DateShared) ?>
+		</div>
+		<div>
+			<b>Date Released:</b>
+			<?php $Util->Print($DateReleased) ?>
+		</div>
+		<div class="pt-2">
+			<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
+		</div>
+	</div>
+</div>
+<hr />

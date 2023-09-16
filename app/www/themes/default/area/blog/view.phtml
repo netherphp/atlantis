@@ -22,6 +22,47 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
+$BlogUserMenu = NULL;
+
+if($BlogUser && $BlogUser->CanWrite()) {
+	$BlogUserMenu = Atlantis\Struct\DropdownMenu::New();
+
+	$BlogUserMenu
+	->ItemNew(
+		'Edit Post', 'mdi-pencil', $Post->GetEditURL()
+	)
+	->ItemNew(
+		'Edit Tags', 'mdi-tag-multiple',
+		Attr: $Post->GetDataAttr([ 'post-cmd'=> 'tags' ], TRUE)
+	)
+	->ItemNew('-')
+	->ItemNew(
+		'Add Video URL', 'mdi-video',
+		Attr: $Post->GetDataAttr([ 'videotp-cmd'=> 'new', 'parent-type'=> Blog\Key::EntityTypePost, 'parent-uuid'=> $Post->UUID ], TRUE)
+	)
+	->ItemNew(
+		'Upload Photos', 'mdi-image',
+		Attr: $Post->GetDataAttr([ 'photolib-cmd'=> 'upload', 'parent-type'=> Blog\Key::EntityTypePost, 'parent-uuid'=> $Post->UUID ], TRUE)
+	)
+	->ItemNew('-')
+	->ItemNew(
+		'Set to Draft Mode', 'mdi-eye-off',
+		Attr: $Post->GetDataAttr([ 'post-cmd'=> 'draft' ], TRUE),
+		If: $Post->Enabled
+	)
+	->ItemNew(
+		'Set to Published Mode', 'mdi-eye',
+		Attr: $Post->GetDataAttr([ 'post-cmd'=> 'publish' ], TRUE),
+		If: !$Post->Enabled
+	)
+	->ItemNew('-')
+	->ItemNew(
+		'Delete Post', 'mdi-trash-can',
+		Attr: $Post->GetDataAttr([ 'post-cmd'=> 'delete' ], TRUE),
+		Warn: Atlantis\Struct\DropdownItem::Danger
+	);
+}
+
 ?>
 
 <hr id="PostInfo" class="d-none"
@@ -44,60 +85,11 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 		</div>
 
 		<!-- EDIT CONTROLS -->
+		<?php if($BlogUserMenu !== NULL): ?>
 		<div class="col-auto">
-			<?php if($BlogUser && $BlogUser->CanWrite()): ?>
-			<div class="dropdown">
-				<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-					<i class="mdi mdi-fw mdi-cog m-0 p-0"></i>
-				</button>
-				<div class="dropdown-menu dropdown-menu-end">
-					<?php if($BlogUser->CanWrite()): ?>
-					<div class="dropdown-div">
-						<a class="btn btn-outline-dark" data-post-cmd="edit" href="<?php $Printer($Post->GetEditURL()) ?>">
-							<i class="mdi mdi-fw mdi-pencil"></i>
-							Edit Post
-						</a>
-					</div>
-					<div class="dropdown-div">
-						<a class="btn btn-outline-dark" data-post-cmd="tags" href="#">
-							<i class="mdi mdi-fw mdi-tag"></i>
-							Edit Tags
-						</a>
-					</div>
-
-					<?php $Surface->Area('blog/widgets/view-sidebar-manage', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
-
-					<hr class="mb-2 mb-3" />
-
-					<?php if(!$Post->Enabled): ?>
-					<div class="dropdown-div">
-						<a class="btn btn-outline-dark" data-post-cmd="publish" href="#">
-							<i class="mdi mdi-fw mdi-eye"></i>
-							Publish Post
-						</a>
-					</div>
-					<?php else: ?>
-					<div class="dropdown-div">
-						<a class="btn btn-outline-dark" data-post-cmd="draft" href="#">
-							<i class="mdi mdi-fw mdi-eye-off"></i>
-							Set To Draft Mode
-						</a>
-					</div>
-					<?php endif; ?>
-
-					<hr class="mb-2 mb-3" />
-
-					<div class="dropdown-div">
-						<a class="btn btn-outline-dark" data-post-cmd="delete" href="#">
-							<i class="mdi mdi-fw mdi-trash-can"></i>
-							Delete Post
-						</a>
-					</div>
-					<?php endif; ?>
-				</div>
-			</div>
-			<?php endif; ?>
+			<?php echo Atlantis\UI\Dropdown::FromMenuStruct($Surface, $BlogUserMenu) ?>
 		</div>
+		<?php endif; ?>
 
 	</div>
 	<hr class="mt-1" />
@@ -121,6 +113,26 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 			=> $Surface->Area('blog/views/html', $__SCOPE)
 		};
 		?>
+
+		<?php if(isset($Photos) && $Photos->Total): ?>
+		<!-- PHOTOS -->
+		<div class="mb-8">
+			<h4 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h4>
+			<hr class="mt-1 mb-3" />
+
+			<?php echo Atlantis\UI\Gallery::FromDataset($Surface, $Photos) ?>
+		</div>
+		<?php endif; ?>
+
+		<?php if(isset($Videos) && $Videos->Total): ?>
+		<!-- VIDEOS -->
+		<div class="mb-8">
+			<h4 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Total) ?>)</h4>
+			<hr class="mt-1 mb-3" />
+
+			<?php echo Atlantis\UI\VideoList::FromDataset($Surface, $Videos, ParentUUID: $Post->UUID) ?>
+		</div>
+		<?php endif; ?>
 
 	</div>
 </div>

@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\Gallery $Element
+ */
+
+$CacheBust = $Util->GetCacheBuster();
+$ElementID = $Element->GetID();
+$ScriptURL = "/themes/default/lib/js/simplelightbox.js?v={$CacheBust}";
+$ScriptSelector = $Element->GetSelectorID();
+
+?>
+
+<div id=<?php $Util->Print($Element->GetID()) ?> class="row">
+	<?php $Element->PrintItems() ?>
+</div>
+
+<script type="module">
+import SimpleLightbox from "<?php echo $ScriptURL ?>";
+
+jQuery(function(){
+
+	let select = <?php $Util->PrintJSON($ScriptSelector) ?>;
+
+	let gallery = new SimpleLightbox(`${select} .GalleryItem`, {
+		captions: true,
+		captionSelector: 'self',
+		scrollZoom: false,
+		fileExt: false,
+		sourceAttr: 'data-url-lg'
+	});
+
+	return;
+});
+</script>
+
+

@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\Dropdown $Element
+ */
+
+//Nether\Common\Dump::Var($Element, TRUE);
+
+?>
+
+<div class="dropdown">
+	<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+		<i class="mdi mdi-fw mdi-cog m-0 p-0"></i>
+	</button>
+
+	<div class="dropdown-menu dropdown-menu-end">
+		<?php
+
+		foreach($Element->Menu->Items as $Item) {
+			/** @var Nether\Atlantis\Struct\DropdownItem $Item */
+
+			if($Item->Title === '-')
+			$Surface->Area(
+				'elements/dropdown/item-hr',
+				[ 'Element'=> $Element, 'Item'=> $Item ]
+			);
+
+			else
+			$Surface->Area(
+				'elements/dropdown/item-button',
+				[ 'Element'=> $Element, 'Item'=> $Item ]
+			);
+		}
+
+		?>
+	</div>
+
+</div>

@@ -19,44 +19,45 @@ use Nether\User;
 
 ?>
 
-<div class="row">
+<div class="hr-hide-last">
 	<?php foreach($Videos as $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
-	<div class="col-12 col-md-3">
-		<div class="ratiobox widescreen wallpapered covered rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
-			<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"></a>
-			<div class="position-absolute position-bottom position-right p-1">
-				<?php if($Route->IsUserAdmin()): ?>
-				<button class="btn btn-light" data-videotp-cmd="edit" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-pencil mr-0"></i></button>
-				<button class="btn btn-danger" data-videotp-cmd="delete" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-trash-can mr-0"></i></button>
-				<?php endif; ?>
+	<div class="row">
+		<div class="col-12 col-md-3">
+			<div class="ratiobox widescreen wallpapered covered rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
+				<a class="position-absolutely" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"></a>
+				<div class="position-absolute position-bottom position-right p-1">
+					<?php if($Route->IsUserAdmin()): ?>
+					<button class="btn btn-light" data-videotp-cmd="edit" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-pencil mr-0"></i></button>
+					<button class="btn btn-danger" data-videotp-cmd="delete" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-trash-can mr-0"></i></button>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md mb-4">
+			<h3><a href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><?php $Util->Print($Video->Title) ?></a></h3>
+			<div>
+				<b>Date Shared:</b>
+				<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
+			</div>
+			<div>
+				<b>Date Released:</b>
+				<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
+			</div>
+			<div>
+				<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
 			</div>
 		</div>
 	</div>
-	<div class="col-12 col-md mb-4">
-		<h3><a href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><?php $Util->Print($Video->Title) ?></a></h3>
-		<div>
-			<b>Date Shared:</b>
-			<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
-		</div>
-		<div>
-			<b>Date Released:</b>
-			<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
-		</div>
-		<div>
-			<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
-		</div>
-	</div>
-	<div class="col-12">
-		<hr />
-	</div>
+	<hr />
 	<?php endforeach; unset($Video); ?>
-
-	<?php if(!$Videos->Count()): ?>
-	<div class="fst-italic">
-		No videos have been added yet.
-	</div>
-	<?php endif; ?>
 </div>
+
+<?php if(!$Videos->Count()): ?>
+<div class="fst-italic">
+	No videos have been added yet.
+</div>
+<?php endif; ?>
+
 
 
 <script type="module">

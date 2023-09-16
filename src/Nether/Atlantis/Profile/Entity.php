@@ -182,16 +182,6 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return (string)(new Atlantis\WebURL($URL));
 	}
 
-	public function
-	_Update(iterable $Dataset):
-	static {
-
-		if(isset($Dataset['SocialData']))
-		$Dataset['SocialJSON'] = json_encode($Dataset['SocialJSON']);
-
-		return parent::Update($Dataset);
-	}
-
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):
 	void {

@@ -5,15 +5,15 @@ namespace Nether\Atlantis\UI;
 use Nether\Common;
 use Nether\Surface;
 
-#[Common\Meta\Date('2023-09-12')]
-class Slider
+#[Common\Meta\Date('2023-09-15')]
+class VideoList
 extends Surface\Element {
 
 	////////////////////////////////////////////////////////////////
 	// OVERRIDES: Surface\Element /////////////////////////////////
 
 	public string
-	$Area = 'elements/slider/main';
+	$Area = 'elements/videos/main';
 
 	////////
 
@@ -35,7 +35,7 @@ extends Surface\Element {
 	string {
 
 		if(str_starts_with($Area, '~/'))
-		$Area = preg_replace('#^~/#', 'elements/slider/', $Area);
+		$Area = preg_replace('#^~/#', 'elements/videos/', $Area);
 
 		return $Area;
 	}
@@ -63,10 +63,10 @@ extends Surface\Element {
 	Common\Datastore {
 
 		$Output = $this->Items->Map(function(mixed $Item) {
-			if($Item instanceof SliderItem)
+			if($Item instanceof VideoItem)
 			return $Item;
 
-			return new SliderItem($this->ItemArea, $Item);
+			return new VideoItem($this->ItemArea, $Item);
 		});
 
 		return $Output;
@@ -117,7 +117,7 @@ extends Surface\Element {
 	RenderItem(mixed $Item):
 	string {
 
-		if($Item instanceof SliderItem)
+		if($Item instanceof VideoItem)
 		$Area = $Item->GetArea();
 		else
 		$Area = $this->GetItemArea();
@@ -166,10 +166,16 @@ extends Surface\Element {
 
 	#[Common\Meta\Info('Ready an element to display a specified dataset.')]
 	static public function
-	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $Area=NULL):
+	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $Area='~/item-videotp', ?string $ParentType=NULL, ?string $ParentUUID=NULL):
 	static {
 
 		$Output = new static($Surface);
+
+		if($ParentType !== NULL)
+		$Output->ParentType = $ParentType;
+
+		if($ParentUUID !== NULL)
+		$Output->ParentUUID = $ParentUUID;
 
 		if($Items !== NULL)
 		$Output->SetItems($Items);

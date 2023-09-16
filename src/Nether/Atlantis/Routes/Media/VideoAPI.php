@@ -63,6 +63,20 @@ extends Atlantis\ProtectedAPI {
 		if(!$this->Data->URL)
 		$this->Quit(1, 'no URL specified');
 
+		////////
+
+		$Old = Atlantis\Media\VideoThirdParty::Find([
+			'URL'   => $this->Data->URL,
+			'Limit' => 1
+		]);
+
+		if($Old->Count() > 0) {
+			$Vid = $Old[0];
+			goto Tagging;
+		}
+
+		////////
+
 		$RemoteInfo = $this->TryToGetInfo($this->Data->URL);
 
 		////////
@@ -79,14 +93,16 @@ extends Atlantis\ProtectedAPI {
 		if(!$DatePosted && isset($RemoteInfo['Date']))
 		$DatePosted = $RemoteInfo['Date'];
 
+		////////
+
+		Insertion:
 		$Vid = Atlantis\Media\VideoThirdParty::Insert([
 			'URL'        => $this->Data->URL,
 			'Title'      => $Title,
 			'TimePosted' => (Common\Date::FromDateString($DatePosted))->GetUnixtime()
 		]);
 
-		////////
-
+		Tagging:
 		if(is_iterable($this->Data->TagID))
 		foreach($this->Data->TagID as $TagID) {
 			Atlantis\Media\VideoThirdPartyTagLink::InsertByPair(
@@ -95,6 +111,7 @@ extends Atlantis\ProtectedAPI {
 			);
 		}
 
+		Relation:
 		if(is_iterable($this->Data->ParentUUID) && $this->Data->ParentType)
 		foreach($this->Data->ParentUUID as $ParentUUID) {
 			Atlantis\Struct\EntityRelationship::Insert([
@@ -142,14 +159,27 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		->ID(Common\Filters\Numbers::IntType(...));
+		->ID(Common\Filters\Numbers::IntType(...))
+		->ParentUUID(Common\Filters\Text::TrimmedNullable(...));
 
 		////////
 
 		$Video = Atlantis\Media\VideoThirdParty::GetByID($this->Data->ID);
 
-		if($Video)
-		$Video->Drop();
+		if(!$Video)
+		return;
+
+		////////
+
+		if($this->Data->ParentUUID) {
+			Atlantis\Struct\EntityRelationship::DeleteByParentUUID(
+				$this->Data->ParentUUID
+			);
+		}
+
+		else {
+			$Video->Drop();
+		}
 
 		return;
 	}

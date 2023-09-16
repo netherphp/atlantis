@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\VideoList $Element
+ */
+
+$CacheBust = $Util->GetCacheBuster();
+$ElementID = $Element->GetID();
+$ScriptURL = "/themes/default/lib/js/simplelightbox.js?v={$CacheBust}";
+$ScriptSelector = $Element->GetSelectorID();
+
+?>
+
+<div id="<?php $Util->Print($ElementID) ?>" class="hr-hide-last">
+	<?php $Element->PrintItems() ?>
+</div>

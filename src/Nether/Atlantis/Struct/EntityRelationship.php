@@ -168,6 +168,50 @@ extends Atlantis\Prototype {
 		return;
 	}
 
+	static public function
+	DeleteByParentUUID(string $UUID):
+	void {
+
+		$DBM = new Database\Manager;
+
+		$SQL = (
+			($DBM->NewVerse(static::$DBA))
+			->FromMetaDelete(static::class)
+			->Where('`ParentUUID`=:UUID')
+		);
+
+		$Result = $SQL->Query([
+			':UUID'=> $UUID
+		]);
+
+		if(!$Result->IsOK())
+		throw new Exception($Result->GetError());
+
+		return;
+	}
+
+	static public function
+	DeleteByChildUUID(string $UUID):
+	void {
+
+		$DBM = new Database\Manager;
+
+		$SQL = (
+			($DBM->NewVerse(static::$DBA))
+			->FromMetaDelete(static::class)
+			->Where('`ChildUUID`=:UUID')
+		);
+
+		$Result = $SQL->Query([
+			':UUID'=> $UUID
+		]);
+
+		if(!$Result->IsOK())
+		throw new Exception($Result->GetError());
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

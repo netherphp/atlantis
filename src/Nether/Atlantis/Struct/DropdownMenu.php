@@ -67,7 +67,7 @@ extends Common\Prototype {
 	}
 
 	public function
-	ItemNew(?string $Title=NULL, ?string $Icon=NULL, ?string $URL=NULL, ?iterable $Attr=NULL, bool $If=TRUE):
+	ItemNew(?string $Title=NULL, ?string $Icon=NULL, ?string $URL=NULL, iterable $Attr=[], int $Warn=0, bool $If=TRUE):
 	static {
 
 		if($If)
@@ -75,7 +75,8 @@ extends Common\Prototype {
 			Title: $Title,
 			Icon: $Icon,
 			URL: $URL,
-			Attr: $Attr
+			Attr: $Attr,
+			Warn: $Warn
 		));
 
 		return $this;

@@ -121,6 +121,9 @@ extends Atlantis\Prototype {
 		$Input['Search'] ??= NULL;
 		$Input['Untagged'] ??= NULL;
 
+		$Input['URL'] ??= NULL;
+		$Input['SearchURL'] ??= NULL;
+
 		return;
 	}
 
@@ -135,10 +138,20 @@ extends Atlantis\Prototype {
 		if($Input['ParentUUID'] !== NULL)
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
 
+		if($Input['URL'] !== NULL)
+		$SQL->Where('Main.URL LIKE :URL');
+
 		if($Input['Search'] !== NULL) {
 			if(is_string($Input['Search'])) {
 				$Input['SearchRegEx'] = join('|', explode(' ', $Input['Search']));
 				$SQL->Where('Main.Title REGEXP :SearchRegEx');
+			}
+		}
+
+		if($Input['SearchURL'] !== NULL) {
+			if(is_string($Input['SearchURL'])) {
+				$Input['LikeSearchURL'] = "%{$Input['SearchURL']}%";
+				$SQL->Where('Main.URL LIKE :LikeSearchURL');
 			}
 		}
 
