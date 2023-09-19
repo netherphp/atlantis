@@ -46,6 +46,9 @@ use Nether\User;
 			<div>
 				<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
 			</div>
+			<div class="mt-2">
+				<a class="btn btn-primary" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>">View Video</a>
+			</div>
 		</div>
 	</div>
 	<hr />
