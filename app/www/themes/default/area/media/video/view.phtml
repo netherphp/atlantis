@@ -59,7 +59,7 @@ data-id="<?php $Util->Print($Video->ID) ?>"
 data-uuid="<?php $Util->Print($Video->UUID) ?>"
 />
 
-<div class="row align-items-start mb-2">
+<div class="row align-items-start mb-4">
 	<div class="col">
 		<h2 class="fw-bold lh-1 mb-0">
 			Video:
@@ -73,7 +73,7 @@ data-uuid="<?php $Util->Print($Video->UUID) ?>"
 	<?php endif; ?>
 </div>
 
-<div class="mb-2">
+<div class="mb-4">
 	<span class="fw-bold text-uppercase">Date Released:</span>
 	<?php $Util->Print($Video->DatePosted->Get( Common\Values::DateFormatFancyDate )) ?>
 </div>
@@ -100,6 +100,28 @@ data-uuid="<?php $Util->Print($Video->UUID) ?>"
 	<div class="fst-italic">No additional information has been addded.</div>
 	<?php endif; ?>
 </div>
+
+<?php if($News && $News->Count()): ?>
+<!-- NEWS & UPDATES -->
+<div class="mb-8">
+	<h2 class="text-uppercase">News (<?php $Util->Print($News->Count()) ?>)</h2>
+	<hr class="mt-2 mb-4" />
+
+	<div class="hr-hide-last pb-4">
+		<?php foreach($News as $Item): ?>
+		<div>
+			<?php
+
+			if($Item instanceof Nether\Blog\Post)
+			$Surface->Area('widgets/item-blog-post', [ 'Post'=> $Item, 'ShowTags'=> TRUE, 'ShowTools'=> FALSE ]);
+
+			?>
+		</div>
+		<hr class="mb-4 mt-4" />
+		<?php endforeach; ?>
+	</div>
+</div>
+<?php endif; ?>
 
 <?php $Surface->Area('media/video/view-extend', $__SCOPE) ?>
 

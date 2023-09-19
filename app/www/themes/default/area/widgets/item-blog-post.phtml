@@ -9,6 +9,7 @@ use Nether\Common;
  */
 
 $ShowTags ??= TRUE;
+$ShowTools ??= TRUE;
 
 $GetAdminMenu = function(Blog\Post $Input): Atlantis\Struct\DropdownMenu {
 
@@ -57,7 +58,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 					<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
 				</div>
 
-				<?php if($Route->IsUserAdmin()): ?>
+				<?php if($ShowTools && $Route->IsUserAdmin()): ?>
 				<div class="col-auto opacity-25">
 					|
 				</div>

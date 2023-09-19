@@ -5,6 +5,7 @@ namespace Nether\Atlantis\Routes\Media;
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Avenue;
+use Nether\Blog;
 
 class VideoWeb
 extends Atlantis\ProtectedWeb {
@@ -15,11 +16,42 @@ extends Atlantis\ProtectedWeb {
 	View(int $VideoID, Atlantis\Media\VideoThirdParty $Video):
 	void {
 
+		$Profiles = NULL;
+		$Posts = NULL;
+
+		////////
+
+		$ProfileIndex = Atlantis\Struct\EntityRelationship::Find([
+			'ParentType' => 'Profile.Entity',
+			'ChildUUID'  => $Video->UUID
+		]);
+
+		$ProfileIndex->Remap(fn($I)=> $I->ParentUUID);
+
+		if($ProfileIndex->Count())
+		$Profiles = Atlantis\Profile\Entity::Find([ 'UUID'=> $ProfileIndex->GetData() ]);
+
+		////////
+
+		$PostIndex = Atlantis\Struct\EntityRelationship::Find([
+			'ParentType' => 'Blog.Post',
+			'ChildUUID'  => $Video->UUID
+		]);
+
+		$PostIndex->Remap(fn($I)=> $I->ParentUUID);
+
+		if($PostIndex->Count())
+		$Posts = Blog\Post::Find([ 'UUID'=> $PostIndex->GetData() ]);
+
+		////////
+
 		$this->Surface
 		->Set('Page.Title', sprintf('Video: %s', $Video->Title))
 		->Wrap('media/video/view', [
-			'Video' => $Video,
-			'Tags'  => $Video->GetTags()
+			'Video'    => $Video,
+			'Tags'     => $Video->GetTags(),
+			'News'     => $Posts,
+			'Profiles' => $Profiles
 		]);
 
 		return;
