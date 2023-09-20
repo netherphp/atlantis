@@ -6,6 +6,7 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
 use Nether\Surface;
+use Nether\Storage;
 
 use ArrayAccess;
 use Exception;
@@ -217,6 +218,22 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	IsVimeo():
+	bool {
+
+		$URL = strtolower($this->URL);
+
+		return match(TRUE) {
+			str_contains($URL, 'vimeo.com'),
+			str_contains($URL, 'player.vimeo.com')
+			=> TRUE,
+
+			default
+			=> FALSE
+		};
+	}
+
+	public function
 	IsYouTube():
 	bool {
 
@@ -230,6 +247,31 @@ extends Atlantis\Prototype {
 			default
 			=> FALSE
 		};
+	}
+
+	public function
+	GetVimeoID():
+	?string {
+
+		$URL = parse_url($this->URL);
+		$Vars = NULL;
+
+		if(!$URL)
+		return NULL;
+
+
+
+		//https://vimeo.com/video/<VideoID>
+		//https://player.vimeo.com/video/<VideoID>
+		if(isset($URL['path'])) {
+			if(preg_match('#/video/(\d+)#', $URL['path'], $Vars))
+			return $Vars[1];
+
+			if(preg_match('#/(\d+)#', $URL['path'], $Vars))
+			return $Vars[1];
+		}
+
+		return NULL;
 	}
 
 	public function
@@ -271,10 +313,67 @@ extends Atlantis\Prototype {
 			return (string)Atlantis\WebURL::FromString($URL);
 		}
 
-		if($this->IsYouTube())
-		return $this->FetchCoverFromYouTube();
+		return match(TRUE) {
+			$this->IsVimeo()
+			=> $this->FetchCoverFromVimeo(),
 
+			$this->IsYouTube()
+			=> $this->FetchCoverFromYouTube(),
+
+			default
+			=> NULL
+		};
+	}
+
+	public function
+	FetchCoverFromVimeo():
+	?string {
+
+		$VimKey = (
+			Atlantis\Library::Get('Vimeo.PublicAPI.Key')
+			?? throw new Common\Error\RequiredDataMissing(
+				'Vimeo.PublicAPI.Key', 'config'
+			)
+		);
+
+		$VimID = $this->GetVimeoID();
+		$VimURL = sprintf('https://api.vimeo.com/videos/%s?access_token=%s', $VimID, $VimKey);
+		$VimFile = sprintf('vid/vimeo-%s.jpg', $VimID);
+
+		$Storage = new Storage\Manager(Atlantis\Library::Config());
+		$Store = $Storage->Location('Default');
+		$Browser = NULL;
+		$File = NULL;
+		$Data = NULL;
+		$Image = NULL;
+
+		// check if we already have the thumbnail.
+
+		$File = $Store->GetFileObject($VimFile);
+
+		if($File->Exists())
+		return $File->GetPublicURL() . '?v=cache';
+
+		// check if we can find out what the thumbnail is.
+
+		$Browser = Common\Browser\Client::FromURL($VimURL);
+		$Data = $Browser->FetchJSON();
+
+		if(!$Data || !isset($Data['pictures']) || !isset($Data['pictures']['base_link']))
 		return NULL;
+
+		// cache the thumbnail locally.
+
+		$Browser->SetURL($Data['pictures']['base_link']);
+		$Image = $Browser->Fetch();
+
+		if(!$Image)
+		return NULL;
+
+		$Store->Put($VimFile, $Image);
+		$File = $Store->GetFileObject($VimFile);
+
+		return $File->GetPublicURL() . '?v=fresh';
 	}
 
 	public function
@@ -311,7 +410,16 @@ extends Atlantis\Prototype {
 	GetPlayerArea():
 	string {
 
-		return 'media/video/players/youtube';
+		return match(TRUE) {
+			$this->IsVimeo()
+			=> 'media/video/players/vimeo',
+
+			$this->IsYouTube()
+			=> 'media/video/players/youtube',
+
+			default
+			=> 'media/video/unknown-video-host'
+		};
 	}
 
 	////////////////////////////////////////////////////////////////
