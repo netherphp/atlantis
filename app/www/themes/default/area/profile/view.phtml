@@ -85,7 +85,12 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 		<div class="row">
 			<?php if(isset($Profile->CoverImage)): ?>
 			<div class="col-12 col-md-3 mb-4 mb-md-0">
-				<div class="ratiobox widescreen wallpapered rounded contained" style="border:1px solid #dadada; background-image:url(<?php $Util->Print($Profile->CoverImage->GetPublicURL()) ?>);"></div>
+				<div class="ratiobox widescreen rounded">
+					<div class="position-absolutely wallpapered covered rounded" style="transform:scale(1.1);filter:blur(26px);background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);"></div>
+					<div class="position-absolutely wallpapered rounded contained bg-transparent" style="background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);">
+						<a class="position-absolutely" href="<?php $Util->Print($Profile->Alias) ?>"></a>
+					</div>
+				</div>
 			</div>
 			<?php endif; ?>
 			<div class="col">
