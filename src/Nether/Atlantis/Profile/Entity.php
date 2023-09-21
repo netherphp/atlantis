@@ -168,6 +168,8 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		$URL = NULL;
 
+		//var_dump($URL);
+
 		if(isset($this->CoverImage)) {
 			$URL = $this->CoverImage->GetPublicURL();
 
@@ -179,7 +181,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 			}
 		}
 
-		return (string)(new Atlantis\WebURL($URL));
+		return (string)(new Atlantis\WebURL($URL ?? ''));
 	}
 
 	static protected function

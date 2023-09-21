@@ -161,7 +161,7 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 					<div class="position-absolute position-bottom position-right p-1">
 						<?php if($Route->IsUserAdmin()): ?>
 						<button class="btn <?php $Util->Print($Profile->CoverImageID === $Photo->ID ? 'btn-success' : 'btn-dark') ?>" <?php echo $Profile->GetDataAttrForHTML(['profile-cmd'=> 'photoset', 'photo-id'=> $Photo->ID]) ?>><i class="mdi mdi-account-star mr-0"></i></button>
-						<button class="btn btn-danger" <?php echo $Photo->GetDataAttrForHTML(['photo-cmd'=> 'delete']) ?>><i class="mdi mdi-trash-can mr-0"></i></button>
+						<button class="btn btn-danger" <?php echo $Photo->GetDataAttrForHTML(['photolib-cmd'=> 'delete']) ?>><i class="mdi mdi-trash-can mr-0"></i></button>
 						<?php endif; ?>
 					</div>
 				</div>
