@@ -333,6 +333,15 @@ implements Atlantis\Packages\ExtraDataInterface {
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
+		switch($Input['Sort']) {
+			case 'title-az':
+				$SQL->Sort('Main.Title', $SQL::SortAsc);
+			break;
+			case 'title-za':
+				$SQL->Sort('Main.Title', $SQL::SortDesc);
+			break;
+		}
+
 		return;
 	}
 
