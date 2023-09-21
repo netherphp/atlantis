@@ -2085,12 +2085,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/surface.git",
-                "reference": "6b93d867ef5afd6406afdd9172eb162fd85c51fb"
+                "reference": "5f8ac45520662e1dfc923e669d6dbd179382b5a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/surface/zipball/6b93d867ef5afd6406afdd9172eb162fd85c51fb",
-                "reference": "6b93d867ef5afd6406afdd9172eb162fd85c51fb",
+                "url": "https://api.github.com/repos/netherphp/surface/zipball/5f8ac45520662e1dfc923e669d6dbd179382b5a1",
+                "reference": "5f8ac45520662e1dfc923e669d6dbd179382b5a1",
                 "shasum": ""
             },
             "require": {
@@ -2131,7 +2131,7 @@
                 "issues": "https://github.com/netherphp/surface/issues",
                 "source": "https://github.com/netherphp/surface/tree/redux"
             },
-            "time": "2023-09-16T01:33:28+00:00"
+            "time": "2023-09-21T18:11:17+00:00"
         },
         {
             "name": "netherphp/user",
