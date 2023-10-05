@@ -64,6 +64,7 @@ class Key {
 	ConfAccessIgnoreAgentHard = 'Nether.Atlantis.Access.IgnoreAgentHard',
 	ConfAccessIgnoreAgentSoft = 'Nether.Atlantis.Access.IgnoreAgentSoft',
 	ConfUserAgent             = 'Nether.Atlantis.UserAgent',
+	ConfTrafficReporting      = 'Nether.Atlantis.TrafficReporting',
 	ConfDevLinkRewriter       = 'Nether.Atlantis.DevLinkRewrite',
 	ConfNetworkJSON           = 'Nether.Atlantis.Network.Filename';
 

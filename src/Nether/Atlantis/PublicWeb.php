@@ -292,6 +292,9 @@ as html pages. //*/
 	HandleTrafficReporting(Common\Prototype\MethodInfo $MethodInfo):
 	void {
 
+		if(!$this->App->Config[Atlantis\Key::ConfTrafficReporting])
+		return;
+
 		// @todo 2023-07-21
 		// this unit test const should be replaced with a database
 		// availability check instead.

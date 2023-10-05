@@ -127,6 +127,7 @@ implements
 
 			Key::ConfErrorDisplay          => NULL,
 			Key::ConfErrorLogPath          => NULL,
+			Key::ConfTrafficReporting      => TRUE,
 
 			Key::PageTagIndexURL           => '/tags',
 			Key::PageTagViewURL            => '/tag/:Alias:',
