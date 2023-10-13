@@ -1,12 +1,14 @@
 <?php
 
-$Surface->Area('widgets/video-promo', [
+$Promo = Nether\Atlantis\UI\PromoVideo::FromSurface($Surface, [
 	'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
 	'Overlay'  => 'grad-focus-dark',
 	'Title'    => 'Hi.',
 	'Subline'  => 'I\'m a Website.',
 	'Typeify'  => TRUE
 ]);
+
+echo $Promo;
 
 ?>
 
