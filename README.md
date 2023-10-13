@@ -6,7 +6,41 @@
 
 Standards non-compliant website framework.
 
+----
+----
+----
+----
 
+## **NOTES FOR README UPDATE LATER**
+
+### **Install**
+
+* `git clone git@github.com:netherphp/project app`
+* `cd app`
+* `rm -rf .git`
+* `composer require netherphp/atlantis dev-master`
+* `composer update`
+
+### **Setup**
+
+The following commands bootstrap the rest of this project directory structures
+and generate the SSL cert configs.
+
+* `dev.atl init`
+* `ssl.atl setup`
+
+### **Sanity Checks**
+
+The following commands can be re-run to re-configure things using the values
+from the previous setup to breeze through them.
+
+* `dev.atl setup`
+* `ssl.atl setup`
+
+----
+----
+----
+----
 
 ## **PREAMBLE**
 
