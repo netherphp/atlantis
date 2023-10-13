@@ -12,7 +12,8 @@
 		}
 	},
 	"require": {
-		"netherphp/atlantis": "dev-master"
+		"netherphp/atlantis": "dev-master",
+		"netherphp/common": "dev-master as 5.0.99"
 	},
 	"require-dev": {
 		"netherphp/standards": "^0.2.9",

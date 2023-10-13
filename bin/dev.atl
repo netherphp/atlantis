@@ -241,15 +241,260 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('init')]
+	#[Console\Meta\Info('Begin setting up the project from scratch.')]
+	public function
+	HandleInit():
+	int {
+
+		// git clone git@github.com:netherphp/project .
+		// composer require netherphp/atlantis dev-master
+
+		// dev.atl init
+		// atlantis setup (move the mkdir/link to dev.atl)
+		// ssl.atl setup
+
+		$this->HandleSetupAppDist();
+		$this->HandleSetupGitIgnore();
+		$this->HandleSetup();
+
+		return 0;
+	}
+
 	#[Console\Meta\Command('setup')]
-	#[Console\Meta\Info('Experience the entire setup tool in series.')]
+	#[Console\Meta\Info('Reconfigure anything that can be reconfigured easily.')]
 	public function
 	HandleSetup():
 	int {
 
+		$this->HandleSetupProjectPaths();
 		$this->HandleSetupWebserver();
 
 		return 0;
+	}
+
+	#[Console\Meta\Command('setup-project')]
+	public function
+	HandleSetupProjectPaths():
+	int {
+
+		$Project = AtlantisProjectJSON::FromApp($this->App);
+		$OptFix = $this->GetOption('fix') ?? FALSE;
+
+		$this->SetupProjectDirs($Project, $OptFix);
+		$this->SetupProjectLinks($Project, $OptFix);
+
+		return 0;
+	}
+
+	protected function
+	SetupProjectDirs(AtlantisProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Dir = NULL;
+		$Path = NULL;
+		$Reports = new Common\Datastore;
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Project Directories'), 2);
+
+		foreach($Project->Dirs as $Dir) {
+			/** @var Common\Filesystem\Directory $Dir */
+
+			$Path = $this->App->FromProjectRoot($Dir->Path);
+
+			if(is_link($Path)) {
+				if($OptFix)
+				unlink($Path);
+
+				if(is_link($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'HM', 'Dir'=> $Dir, 'Status'=> 'primary',
+						'Message'=> sprintf('exists as symlink to %s', readlink($Path))
+					]);
+
+					continue;
+				}
+			}
+
+			if(is_dir($Path)) {
+				$Reports->Push((object)[
+					'Prefix'=> 'OK', 'Dir'=> $Dir, 'Status'=> TRUE
+				]);
+
+				continue;
+			}
+
+			if(!file_exists($Path))
+			if(Common\Filesystem\Util::MkDir($Path, $Dir->Mode)) {
+				$Reports->Push((object)[
+					'Prefix'  => 'OK', 'Dir'=> $Dir, 'Status'=> TRUE,
+					'Message' => 'NEW'
+				]);
+
+				continue;
+			}
+
+			$Reports->Push((object)[
+				'Prefix' => 'ER',
+				'Dir'    => $Dir,
+				'Status' => FALSE
+			]);
+
+			continue;
+		}
+
+		$Reports->Each(function(object $Row) {
+
+			$Fmt1 = $this->GetFormatForStatus($Row->Status);
+			$Fmt2 = $this->GetFormatForStatus($Row->Status, 'alt1');
+
+			$this->PrintLn(sprintf(
+				'[%s] %s%s',
+				$this->Format($Row->Prefix, ...$Fmt1),
+				$Row->Dir->Path,
+				(property_exists($Row, 'Message')
+					? $this->Format(" ({$Row->Message})", ...$Fmt2)
+					: ''
+				)
+			));
+
+			return;
+		});
+
+		$this->PrintLn();
+
+		return $this;
+	}
+
+	protected function
+	SetupProjectLinks(Atlantis\Struct\AtlantisProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Link = NULL;
+		$Path = NULL;
+		$Source = NULL;
+		$Reports = new Common\Datastore;
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Project Symlinks'), 2);
+
+		foreach($Project->Links as $Link) {
+			/** @var Common\Filesystem\Symlink $Link */
+
+			$Path = $this->App->FromProjectRoot($Link->Path);
+			$Source = $this->App->FromProjectRoot($Link->Source);
+
+			if(is_link($Path)) {
+				if(Common\Filesystem\Util::IsLinkTo($Path, $Source)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'OK', 'Link'=> $Link, 'Status'=> TRUE
+					]);
+
+					continue;
+				}
+
+				if($OptFix) {
+					if(PHP_OS_FAMILY === 'Windows') {
+						if(is_dir($Path) || !file_exists(realpath($Path)))
+						rmdir($Path);
+
+						else
+						unlink($Path);
+					}
+
+					else
+					unlink($Path);
+				}
+
+				if(is_link($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+						'Message'=> sprintf('exists as symlink to %s', readlink($Path))
+					]);
+
+					continue;
+				}
+			}
+
+			if(is_dir($Path)) {
+
+				if($OptFix)
+				Common\Filesystem\Util::RmDir($Path);
+
+				if(is_dir($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+						'Message'=> 'exists as normal directory'
+					]);
+
+					continue;
+				}
+			}
+
+			if(is_file($Path)) {
+
+				if($OptFix)
+				unlink($Path);
+
+				if(is_file($Path)) {
+					$Reports->Push((object)[
+						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
+						'Message'=> 'exists as normal file'
+					]);
+
+					continue;
+				}
+			}
+
+			if(symlink($Source, $Path)) {
+				$Reports->Push((object)[
+					'Prefix'  => 'OK',
+					'Link'    => $Link,
+					'Status'  => TRUE,
+					'Message' => 'NEW'
+				]);
+
+				continue;
+			}
+
+			$Reports->Push((object)[
+				'Prefix' => 'ER',
+				'Link'   => $Link,
+				'Status' => FALSE
+			]);
+
+			continue;
+		}
+
+		$Reports->Each(function(object $Row) {
+
+			$Fmt1 = $this->GetFormatForStatus($Row->Status);
+			$Fmt2 = $this->GetFormatForStatus($Row->Status, 'alt1');
+
+			$this->PrintLn(sprintf(
+				'[%s] %s%s',
+				$this->Format($Row->Prefix, ...$Fmt1),
+				$Row->Link->Path,
+				(property_exists($Row, 'Message')
+					? $this->Format(" ({$Row->Message})", ...$Fmt2)
+					: ''
+				)
+			));
+
+			$this->PrintLn($this->Format(
+				"     {$Row->Link->Source}",
+				static::FmtMuted
+			), 2);
+
+			return;
+		});
+
+		$this->PrintLn();
+
+		return $this;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -274,15 +519,15 @@ extends Console\Client {
 
 		switch($Project->Web->Type) {
 			case 'apachectl':
-				$this->HandleSetupWebserverApache24($Project);
+				$this->WriteConfigApache24($Project);
 				break;
 		}
 
 		return 0;
 	}
 
-	public function
-	HandleSetupWebserverApache24(AtlantisProjectJSON $Project):
+	protected function
+	WriteConfigApache24(AtlantisProjectJSON $Project):
 	int {
 
 		$Filename = $this->App->FromConfEnv('apache24.conf');
@@ -443,6 +688,138 @@ extends Console\Client {
 		////////
 
 		return $Server;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('setup-appdist')]
+	public function
+	HandleSetupAppDist():
+	int {
+
+		$AppRoot = $this->App->FromProjectRoot();
+		$DistRoot = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(
+			'vendor', 'netherphp', 'atlantis'
+		));
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Setup Atlantis Structure...'), 2);
+
+		Common\Datastore::FromArray([
+			Common\Filesystem\Util::Pathify($AppRoot, 'conf', 'env', 'dev'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'core', 'Local'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'data'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'logs'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'temp'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'www')
+		])
+		->Each(function(string $Dir) {
+			$this->PrintLn(sprintf('[%s] %s',
+				$this->Format('DIR', static::FmtAccent),
+				$Dir
+			));
+
+			Common\Filesystem\Util::MkDir($Dir);
+			return;
+		});
+
+		$this->PrintLn();
+
+		////////
+
+		$Todo = Common\Datastore::FromArray([
+			Common\Filesystem\Util::Pathify('app', 'conf')
+			=> 'conf',
+
+			Common\Filesystem\Util::Pathify('app', 'routes')
+			=> 'routes',
+
+			Common\Filesystem\Util::Pathify('app', 'atlantis.json')
+			=> Common\Filesystem\Util::Pathify('atlantis.json'),
+
+			Common\Filesystem\Util::Pathify('app', 'composer.json')
+			=> Common\Filesystem\Util::Pathify('composer.json'),
+
+			Common\Filesystem\Util::Pathify('app', 'www', 'index.php')
+			=> Common\Filesystem\Util::Pathify('www', 'index.php')
+		]);
+
+		$Todo->Each(function(string $Dst, string $Src) use($DistRoot, $AppRoot) {
+
+			$Copy = Atlantis\Util::CopyWithConfirm(
+				Common\Filesystem\Util::Pathify($DistRoot, $Src),
+				Common\Filesystem\Util::Pathify($AppRoot, $Dst)
+			);
+
+			$Cur = NULL;
+
+			foreach($Copy as $Cur) {
+				if(is_string($Cur)) {
+					$Copy->Send(!$this->PromptTrue(
+						"Overwrite {$Cur}?", '[N/y]'
+					));
+
+					continue;
+				}
+			}
+
+			return;
+		});
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('setup-gitignore')]
+	#[Console\Meta\Info('Add things this framework knows you need to .gitignore')]
+	public function
+	HandleSetupGitIgnore():
+	int {
+
+		$this->PrintLn($this->FormatHeading('Setup Git Ignore...'), 2);
+
+		$File = $this->App->FromProjectRoot('.gitignore');
+		$Ignore = new Atlantis\Util\GitIgnoreTool($File);
+
+		$Ignore->Append([
+
+			// local app things.
+			'/.phpunit.cache',
+			'/env.lock',
+			'/backups',
+			'/logs',
+			'/temp',
+			'/vendor',
+
+			// web dir things.
+			'/www/.well-known',
+			'/www/share/atlantis', // symlink to dist (atlantis.json)
+			'/www/share/nui',      // symlink to dist (atlantis.json)
+			'/www/themes/default', // symlink to dist (atlantis.json)
+			'/www/themes/soon',    // symlink to dist (atlantis.json)
+
+			// data managed content things.
+			'/data/blog',     // managed by db (atlantis.json)
+			'/www/data/blog', // symlink to data (atlantis.json)
+
+			'/data/qr',       // managed by db (atlantis.json)
+			'/www/data/qr',   // symlink to data (atlantis.json)
+
+			'/data/upl',      // managed by db (atlantis.json)
+			'/www/data/upl',  // symlink to data (atlantis.json)
+
+			'/data/vid',      // managed by db (atlantis.json)
+			'/www/data/vid'   // symlink to data (atlantis.json)
+
+		]);
+
+		$Ignore->Write();
+
+		return 0;
 	}
 
 	////////////////////////////////////////////////////////////////

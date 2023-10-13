@@ -1,19 +1,44 @@
 {
 	"Dirs": [
 		{
+			"Path": "data\/qr",
+			"Mode": "0o777"
+		},
+		{
 			"Path": "data\/upl",
 			"Mode": "0o777"
 		},
 		{
+			"Path": "data\/vid",
+			"Mode": "0o777"
+		},
+		{
+			"Comment": "Public web mount point for managed content.",
 			"Path": "www\/data",
 			"Mode": "0o777"
 		},
 		{
+			"Comment": "Public web mount point for managed resources.",
 			"Path": "www\/share",
+			"Mode": "0o777"
+		},
+		{
+			"Comment": "Public web mount point for managed themes.",
+			"Path": "www\/themes",
 			"Mode": "0o777"
 		}
 	],
 	"Links": [
+		{
+			"Path": "www\/data\/vid",
+			"Source": "data\/vid",
+			"Mode": "0o777"
+		},
+		{
+			"Path": "www\/data\/qr",
+			"Source": "data\/qr",
+			"Mode": "0o777"
+		},
 		{
 			"Path": "www\/data\/upl",
 			"Source": "data\/upl",

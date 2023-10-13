@@ -27,13 +27,11 @@ use Nether\User;
 // PROJECT CONFIG.
 
 ($Config)
-->Set(Atlantis\Key::ConfProjectID, 'atlantis')
-->Set(Atlantis\Key::ConfProjectName, 'Atlantis WebApp')
-->Set(Atlantis\Key::ConfProjectDomain, 'whatever.tld')
+->Set(Atlantis\Key::ConfProjectID,        'atlantis')
+->Set(Atlantis\Key::ConfProjectName,      'Atlantis WebApp')
+->Set(Atlantis\Key::ConfProjectDomain,    'whatever.tld')
 ->Set(Atlantis\Key::ConfProjectDescShort, 'Example project built on Nether Atlantis')
-->Set(Atlantis\Key::ConfProjectWebserver, Atlantis\Key::WebServerTypeApache24)
-->Set(Atlantis\Key::ConfProjectWebCertType, Atlantis\Key::WebCertTypeAcmePHP)
-->Set(Atlantis\Key::ConfContactTo, 'someone@whatever.tld');
+->Set(Atlantis\Key::ConfContactTo,        'someone@whatever.tld');
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,9 +39,13 @@ use Nether\User;
 // FRAMEWORK CONFIG.
 
 ($Config)
-->Set(Atlantis\Key::ConfLibraries, [ ])
+->Set(Atlantis\Key::ConfLibraries,   [ ])
 ->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
-->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))
+->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'));
+
+// FRAMEWORK STORAGE API.
+
+($Config)
 ->Set(Storage\Library::ConfStorageLocations, [
 	new Storage\Adaptors\Local(
 		Name: 'Default',
