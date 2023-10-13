@@ -16,13 +16,9 @@ use Nether\Atlantis\Struct\AtlantisProjectSSL;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+#[Console\Meta\Application('Atlantis SSL Tool', '5.0.0-dev')]
 class CertTool
 extends Console\Client {
-
-	const
-	AppName    = 'Atlantis SSL Tool',
-	AppVersion = '5.0.0-dev',
-	AppDev     = TRUE;
 
 	protected Atlantis\Engine
 	$App;
@@ -51,7 +47,7 @@ extends Console\Client {
 
 	#[Common\Meta\Date('2023-10-12')]
 	#[Console\Meta\Command('setup')]
-	#[Console\Meta\Info('Run the setup wizard to configure the SSL for this environment.')]
+	#[Console\Meta\Info('Run the setup wizard to configure the SSL for this Environment.')]
 	#[Console\Meta\Toggle('--appconf', 'Write to the App atlantis.json file instead of the Env atlantis.json')]
 	#[Console\Meta\Error(1, 'No atlantis.json file found.')]
 	public function
@@ -398,7 +394,7 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('cron')]
-	#[Console\meta\Info('Show you the entry that should be added to CRON to auto-renew SSL.')]
+	#[Console\Meta\Info('Shows the line to be added to crontab to auto-renew SSL.')]
 	public function
 	HandleGenerateCron():
 	int {

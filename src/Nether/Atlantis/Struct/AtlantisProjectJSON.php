@@ -11,6 +11,9 @@ extends Common\Prototype {
 	public ?Atlantis\Struct\AtlantisProjectSSL
 	$SSL = NULL;
 
+	public ?Atlantis\Struct\AtlantisProjectWebServer
+	$Web = NULL;
+
 	#[Common\Meta\PropertyObjectify]
 	public Common\Datastore
 	$Dirs;
@@ -70,6 +73,10 @@ extends Common\Prototype {
 		if(is_object($this->File['SSL']))
 		$this->SSL = new Atlantis\Struct\AtlantisProjectSSL($this->File['SSL']);
 
+		if(isset($this->File['Web']))
+		if(is_object($this->File['Web']))
+		$this->Web = new Atlantis\Struct\AtlantisProjectWebServer($this->File['Web']);
+
 		if(isset($this->File['Dirs']))
 		if(is_iterable($this->File['Dirs'])) {
 			($this->Dirs)
@@ -126,6 +133,9 @@ extends Common\Prototype {
 
 		if(isset($this->SSL))
 		$this->File['SSL'] = $this->SSL->ToArray();
+
+		if(isset($this->Web))
+		$this->File['Web'] = $this->Web->ToArray();
 
 		if(isset($this->Dirs) && $this->Dirs->Count())
 		$this->File['Dirs'] = $this->Dirs->Values();

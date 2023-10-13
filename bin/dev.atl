@@ -6,6 +6,9 @@ use Nether\Console;
 use Nether\Storage;
 use Nether\User;
 
+use Nether\Atlantis\Struct\AtlantisProjectJSON;
+use Nether\Atlantis\Struct\AtlantisProjectWebServer;
+
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
 	return;
@@ -14,14 +17,10 @@ use Nether\User;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+#[Console\Meta\Application('Project Dev Tools', '5.0.0-dev')]
+#[Common\Meta\Info('Some cheat tools mostly at the Local project level.')]
 class DevTool
 extends Console\Client {
-
-	const
-	AppName    = 'Nether Atlantis Dev Tools',
-	AppDesc    = 'Mostly cheat tools for working on the framework.',
-	AppVersion = '5.0.0-dev',
-	AppDebug   = TRUE;
 
 	protected Atlantis\Engine
 	$App;
@@ -80,7 +79,7 @@ extends Console\Client {
 			=> $Date->SetTimezone('UTC')->Get(Common\Values::DateFormatYMDT24VO),
 
 			"Time (UTC)"
-			=> $Date->GetUnixtime(),
+			=> $Date->GetUnixtime()
 		];
 
 		foreach($Info as $Key => $Val) {
@@ -238,6 +237,230 @@ extends Console\Client {
 
 		return 0;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('setup')]
+	#[Console\Meta\Info('Experience the entire setup tool in series.')]
+	public function
+	HandleSetup():
+	int {
+
+		$this->HandleSetupWebserver();
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('setup-webserver')]
+	#[Console\Meta\Info('Run the web server config setup tool.')]
+	public function
+	HandleSetupWebserver():
+	int {
+
+		$Confs = AtlantisProjectJSON::FromAppStacked($this->App);
+		$Project = $Confs['Env'];
+		$Server = $this->QueryUserForWebserverInfo($Project);
+
+		/** @var AtlantisProjectJSON $Project */
+
+		$this->PrintLn("Updating {$Project->GetFilename()}...", 2);
+
+		$Project->Web = $Server;
+		$Project->Write();
+
+		return 0;
+	}
+
+	protected function
+	QueryUserForWebserverInfo(AtlantisProjectJSON $Project):
+	AtlantisProjectWebServer {
+
+		$Server = (
+			isset($Project->Web)
+			? $Project->Web
+			: new AtlantisProjectWebServer
+		);
+
+		$Default = function(AtlantisProjectJSON $S, string $P) {
+			if(!isset($S->Web))
+			return NULL;
+
+			return $S->Web->{$P};
+		};
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Webserver Types'), 2);
+		$this->PrintLn($this->FormatBulletList(array_filter(
+			array_merge([ 'lol' ], AtlantisProjectWebServer::Types),
+			fn(string $Type)=> $Type !== 'lol'
+		)));
+
+		$Server->Type = $this->PromptForValue(
+			'Select Type', 'integer/name',
+			Required: TRUE,
+			Default: $Default($Project, 'Type'),
+			Filter: function(?string $In) {
+				if(in_array($In, AtlantisProjectWebServer::Types))
+				return $In;
+
+				if(!is_numeric($In))
+				return NULL;
+
+				return AtlantisProjectWebServer::Type((int)$In - 1);
+			}
+		);
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Webserver Features'), 2);
+
+		$Server->HTTPS = $this->PromptForValue(
+			'Use HTTPS?', 'y/n', TRUE,
+			Default: ($Default($Project, 'HTTPS') ? 'Y' : 'N'),
+			Filter: Common\Filters\Numbers::BoolType(...)
+		);
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Domains To Serve'), 2);
+
+		while(TRUE) {
+
+			// make an index of the ones we already have.
+
+			$Index = $Server->Domains->MapKeys(
+				fn(mixed $K, mixed $V)
+				=> [ explode(' ', $V, 2)[0] => $V ]
+			);
+
+			$this->PrintLn(match(TRUE) {
+				$Index->Count() > 0
+				=> rtrim($this->FormatBulletList($Index)),
+
+				default
+				=> $this->Format('No domains have been added yet.', static::FmtMuted)
+			}, 2);
+
+			$this->PrintLn($this->FormatTopicList([
+				'Set/Overwrite Domain Line'
+				=> '@domain.tld[ secondary.tld tertiary.tld]',
+
+				'Append to Domain Line'
+				=> '+domain.tld[ secondary.tld tertiary.tld]',
+
+				'Remove Domain Line'
+				=> '-domain.tld'
+			], static::FmtDefault, static::FmtMuted));
+
+			// fetch the user input.
+
+			$Input = $this->PromptForValue(
+				'Command',
+				'@dom.tld, +dom.tld, -dom.tld',
+				FALSE
+			);
+
+			if($Input === NULL)
+			break;
+
+			////////
+
+			$Bits = explode(' ', substr($Input, 1));
+			$Dom = current($Bits);
+
+			// straight up overwrite.
+
+			if(str_starts_with($Input, '@')) {
+				$Index[$Dom] = join(' ', $Bits);
+			}
+
+			// append the things from here onto there.
+
+			elseif(str_starts_with($Input, '+')) {
+				$Index[$Dom] = match($Index->HasKey($Dom)) {
+					TRUE
+					=> sprintf(
+						'%s %s',
+						$Index[$Dom],
+						join(' ', array_slice($Bits, 1))
+					),
+
+					default
+					=> join(' ', $Bits)
+				};
+			}
+
+			// remove this line completely.
+
+			elseif(str_starts_with($Input, '-')) {
+				if($Index->HasKey($Dom))
+				unset($Index[$Dom]);
+			}
+
+			// update the config with the bashed index.
+
+			($Server->Domains)
+			->SetData($Index->Values());
+		}
+
+		////////
+
+		return $Server;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('reboot')]
+	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
+	#[Console\Meta\Error(2, 'No valid server Type')]
+	public function
+	HandleWebserverRehash():
+	int {
+
+		$Project = AtlantisProjectJSON::FromApp($this->App);
+		$Command = NULL;
+
+		if(!isset($Project->Web))
+		$this->Quit(1);
+
+		if($Project->Web->Sudo && $this->Sudo())
+		$this->Quit(0);
+
+		////////
+
+		switch($Project->Web->Type) {
+			case 'apachectl': {
+				$Command = 'apachectl graceful 2>&1';
+				break;
+			}
+			default: {
+				$this->Quit(2);
+				break;
+			}
+		}
+
+		////////
+
+		$Result = $this->ExecuteCommandLine($Command);
+
+		if($Result->Error) {
+			$this->PrintLn();
+			$this->PrintLn($this->Format('Command Output:', static::FmtError));
+			$Result->Print('> ');
+			$this->PrintLn();
+		}
+
+		return $Result->Error;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 }
 

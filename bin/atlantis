@@ -859,7 +859,7 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Console\Meta\Command('acmephp-config')]
+	#[Console\Meta\Command('acmephp-config', TRUE)]
 	#[Console\Meta\Info('Generate a new acmephp.yml file for SSL reg.')]
 	#[Console\Meta\Value('--filename', 'Filename of config file (default: acmephp.yml)')]
 	#[Console\Meta\Toggle('--raw', 'Only print the config contents.')]
@@ -927,7 +927,7 @@ extends Console\Client {
 		return 0;
 	}
 
-	#[Console\Meta\Command('acmephp-run')]
+	#[Console\Meta\Command('acmephp-run', TRUE)]
 	#[Console\Meta\Info('Run the AcmePHP for the current env.')]
 	#[Console\Meta\Value('--filename', 'Filename of config file in environment config (default: acmephp.yml).')]
 	#[Console\Meta\Toggle('--sudo', 'Try to run with sudo for admin needs.')]
