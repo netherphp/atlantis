@@ -251,12 +251,17 @@ extends Console\Client {
 		// composer require netherphp/atlantis dev-master
 
 		// dev.atl init
-		// atlantis setup (move the mkdir/link to dev.atl)
 		// ssl.atl setup
+
+		// things best only done once.
 
 		$this->HandleSetupAppDist();
 		$this->HandleSetupGitIgnore();
+
+		// things that are safer to repeat technically.
+
 		$this->HandleSetup();
+		$this->CheckProjectUpdateNotes();
 
 		return 0;
 	}
@@ -493,6 +498,33 @@ extends Console\Client {
 		});
 
 		$this->PrintLn();
+
+		return $this;
+	}
+
+	protected function
+	CheckProjectUpdateNotes():
+	static {
+
+		$Messages = new Common\Datastore;
+
+		////////
+
+		if($this->App->Config->HasKey('AcmePHP.Domain'))
+		$Messages->Shove(
+			'Old SSL Config Found',
+			'Configuration is still including old AcmePHP values in the PHP config. '.
+			'Run `ssl.atl setup` to reconfigure the cert in atlantis.json. '.
+			'Afterwards remove references to AcmePHP (Atlantis\Key::ConfAcme*) values in config.php files. '.
+			'Current acmephp.yml files are still perfectly valid.'
+		);
+
+		////////
+
+		if($Messages->Count()) {
+			$this->PrintLn($this->FormatHeading("{$Messages->Count()} WARNINGS FOUND"), 2);
+			$this->PrintLn($this->FormatTopicList($Messages));
+		}
 
 		return $this;
 	}
