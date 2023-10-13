@@ -102,19 +102,52 @@ extends Console\Client {
 
 		$this->PrintLn();
 
-		if($OptDirs)
-		$this->SetupProjectDirs($Project, $OptFix);
+		if($OptDirs) {
+			$this->SetupProjectDirs($Project, $OptFix);
+			$this->PrintLn();
+		}
 
-		if($OptLinks)
-		$this->SetupProjectLinks($Project, $OptFix);
+		if($OptLinks) {
+			$this->SetupProjectLinks($Project, $OptFix);
+			$this->PrintLn();
+		}
 
 		if($OptRewrite) {
 			$this->PrintLn('Rewriting atlantis.json...');
+			$this->PrintLn();
 			$Project->Write();
 		}
 
-		$this->PrintLn();
+		$this->CheckProjectUpdateNotes();
+
 		return 0;
+	}
+
+	protected function
+	CheckProjectUpdateNotes():
+	static {
+
+		$Messages = new Common\Datastore;
+
+		////////
+
+		if($this->App->Config->HasKey('AcmePHP.Phar'))
+		$Messages->Shove(
+			'Old SSL Config Found',
+			'Configuration is still including old AcmePHP values in the PHP config. '.
+			'Run `ssl.atl setup` to reconfigure the cert in atlantis.json. '.
+			'Afterwards remove references to AcmePHP (Atlantis\Key::ConfAcme*) values in config.php files. '.
+			'Current acmephp.yml files are still perfectly valid.'
+		);
+
+		////////
+
+		if($Messages->Count()) {
+			$this->PrintLn($this->FormatHeading("{$Messages->Count()} WARNINGS FOUND"), 2);
+			$this->PrintLn($this->FormatTopicList($Messages));
+		}
+
+		return $this;
 	}
 
 	protected function
@@ -196,7 +229,6 @@ extends Console\Client {
 			return;
 		});
 
-		$this->PrintLn();
 		return $this;
 	}
 
@@ -322,7 +354,6 @@ extends Console\Client {
 			return;
 		});
 
-		$this->PrintLn();
 		return $this;
 	}
 

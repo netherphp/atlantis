@@ -259,7 +259,7 @@ extends Console\Client {
 
 		$Found = (
 			$File
-			->Distill(Common\Struct\CrontabFile::CleanCrontabLine(...))
+			->Distill(Common\Struct\CrontabFile::FilterCrontabLine(...))
 			->Filter(
 				fn(Common\Struct\CrontabEntry $Row)
 				=> str_starts_with($Row->Command, $Command)

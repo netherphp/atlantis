@@ -8,6 +8,9 @@ use Nether\Common;
 class AtlantisProjectJSON
 extends Common\Prototype {
 
+	public ?Atlantis\Struct\AtlantisProjectSSL
+	$SSL = NULL;
+
 	#[Common\Meta\PropertyObjectify]
 	public Common\Datastore
 	$Dirs;
@@ -45,8 +48,27 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	GetFilename():
+	?string {
+
+		return $this->File->GetFilename();
+	}
+
+	public function
+	SetFilename(string $Filename):
+	static {
+
+		$this->File->SetFilename($Filename);
+		return $this;
+	}
+
+	public function
 	Read():
 	static {
+
+		if(isset($this->File['SSL']))
+		if(is_object($this->File['SSL']))
+		$this->SSL = new Atlantis\Struct\AtlantisProjectSSL($this->File['SSL']);
 
 		if(isset($this->File['Dirs']))
 		if(is_iterable($this->File['Dirs'])) {
@@ -100,8 +122,19 @@ extends Common\Prototype {
 
 		$this->Sort();
 
+		////////
+
+		if(isset($this->SSL))
+		$this->File['SSL'] = $this->SSL->ToArray();
+
+		if(isset($this->Dirs) && $this->Dirs->Count())
 		$this->File['Dirs'] = $this->Dirs->Values();
+
+		if(isset($this->Links) && $this->Links->Count())
 		$this->File['Links'] = $this->Links->Values();
+
+		////////
+
 		$this->File->Write();
 
 		return $this;
@@ -111,8 +144,14 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	FromFile(string $Filename):
+	FromFile(string $Filename, bool $Create=TRUE):
 	static {
+
+		if(!file_exists($Filename))
+		if($Create && is_writable(dirname($Filename)))
+		file_put_contents($Filename, '{}');
+
+		////////
 
 		return new static([
 			'File' => Common\Datastore::NewFromFile($Filename)
@@ -138,9 +177,27 @@ extends Common\Prototype {
 			: []
 		);
 
-		////////
+		$Output = new static([ 'File'=> $Data ]);
 
-		return new static([ 'File'=> $Data ]);
+		return $Output;
+	}
+
+	static public function
+	FromAppStacked(Atlantis\Engine $App):
+	Common\Datastore {
+
+		$Files = (
+			Common\Datastore::FromArray([
+				'App' => $App->FromProjectRoot('atlantis.json'),
+				'Env' => $App->FromConfEnv('atlantis.json')
+			])
+			->Remap(
+				fn(string $File)
+				=> static::FromFile($File, TRUE)
+			)
+		);
+
+		return $Files;
 	}
 
 }

@@ -24,7 +24,7 @@ class Key {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	const
+	const // @deprecated 2023-10-13 moved to atlantis.json
 	ConfAcmePhar       = 'AcmePHP.Phar',
 	ConfAcmeCertRoot   = 'AcmePHP.CertRoot',
 	ConfAcmeDomain     = 'AcmePHP.Domain',

@@ -119,18 +119,15 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 
 		<ul class="mb-8">
 			<li class="mb-4">
-				<p>Edit <code class="file">conf/env/dev/config.php</code> to fill in <code class="file">AcmePHP</code> values.</p>
-			</li>
-			<li class="mb-4">
-				<p>Generate a <code class="file">conf/env/dev/acmephp.yml</code> file using the <code>config.php</code> values.</p>
+				<p>Generate a <code class="file">conf/env/dev/acmephp.yml</code> file using <code>ssl.atl</code> cert setup tool. It will ask for the most basic info required to generate an SSL cert from LetsEncrypt using AcmePHP.</p>
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ atlantis acmephp-config</code></div>
+					<div class="mb-2"><code class="cli">$ ssl.atl setup</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-4">
 				<p>Have AcmePHP get your SSL cert:</p>
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ atlantis acmephp-run --sudo</code></div>
+					<div class="mb-2"><code class="cli">$ ssl.atl renew</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-4">
@@ -145,10 +142,13 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 		<div class="fw-bold mb-4">Auto-renew the certificate.</div>
 		<ul class="mb-0">
 			<li class="mb-0">
-				<p>Add an item to cron. This example checks every Monday morning at 4:20am.</p>
+				<p>Generate the line to paste into <code>crontab -e</code> so that the cert will auto renew.</p>
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ crontab -e</code></div>
-					<div class="mb-0"><code class="file">20 4 * * 1 /path/to/project/vendor/bin/atlantis acmephp-run --sudo --rehash</code></div>
+					<div class="mb-2"><code class="cli">$ ssl.atl cron</code></div>
+					<div class="mb-0">
+						<div><tt><b>Crontab:</b> 20 4 * * * env php /opt/web-new/vendor/bin/ssl.atl renew</tt></div>
+						<div><tt><b>Runs At:</b> 2023-10-13 23:20:00 CDT (in 12hr 23min)</tt></div>
+					</div>
 				</blockquote>
 			</li>
 		</ul>
