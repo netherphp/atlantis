@@ -272,6 +272,38 @@ extends Console\Client {
 		$Project->Web = $Server;
 		$Project->Write();
 
+		switch($Project->Web->Type) {
+			case 'apachectl':
+				$this->HandleSetupWebserverApache24($Project);
+				break;
+		}
+
+		return 0;
+	}
+
+	public function
+	HandleSetupWebserverApache24(AtlantisProjectJSON $Project):
+	int {
+
+		$Filename = $this->App->FromConfEnv('apache24.conf');
+
+		////////
+
+		if(file_exists($Filename) && !is_writable($Filename))
+		throw new Common\Error\FileUnwritable($Filename);
+
+		elseif(!is_writable(dirname($Filename)))
+		throw new Common\Error\DirUnwritable($Filename);
+
+		////////
+
+		$this->PrintLn("Updating {$Filename}...", 2);
+
+		file_put_contents(
+			$Filename,
+			$Project->Web->ToApache24($this->App)
+		);
+
 		return 0;
 	}
 
