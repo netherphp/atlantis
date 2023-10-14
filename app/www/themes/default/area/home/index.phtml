@@ -2,6 +2,9 @@
 
 use Nether\Atlantis;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 $PromoVideo = (fn()=> Atlantis\UI\PromoVideo::FromSurfaceWith($Surface, [
 	'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
 	'Overlay'  => 'grad-focus-dark',
@@ -10,9 +13,12 @@ $PromoVideo = (fn()=> Atlantis\UI\PromoVideo::FromSurfaceWith($Surface, [
 	'Typeify'  => TRUE
 ]));
 
-$Example = (fn()=> Atlantis\UI\Example::FromSurfaceWith($Surface, [
+$HelloWorld = (fn()=> Atlantis\UI\Example::FromSurfaceWith($Surface, [
 	'Title' => 'Hello World'
 ]));
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 ?>
 
@@ -24,7 +30,7 @@ $Example = (fn()=> Atlantis\UI\Example::FromSurfaceWith($Surface, [
 	<section>
 		<div class="container pt-6 pb-6">
 			<div class="mb-4">
-				<?php echo $Example() ?>
+				<?php echo $HelloWorld() ?>
 			</div>
 		</div>
 	</section>
