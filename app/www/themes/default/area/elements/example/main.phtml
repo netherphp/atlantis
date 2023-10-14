@@ -9,14 +9,15 @@
 ?>
 
 <div class="jumbotron rounded">
-	<h1>Element</h1>
+	<h1><?php $Util->Print($Element->Title) ?></h1>
 	<div class="mb-4">
 		This is an example widget. They are defined by a class that extends
 		the base Element and a Surface theme file.
 	</div>
 	<ul class="mb-0">
 		<li class="mb-2"><code>class Atlantis\UI\Example extends Surface\Element</code>.</li>
-		<li class="mb-2">Override <code>$Area</code> property to set the theme area.</li>
+		<li class="mb-2">Override <code>Surface\Element::$Area</code> to set the theme area.</li>
+		<li class="mb-2">Override <code>Common\Prototype::OnReady()</code> to do additional setup.</li>
 		<li class="mb-0">Print/Echo the object to render it.</li>
 	</ul>
 </div>

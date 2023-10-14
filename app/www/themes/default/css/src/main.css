@@ -307,17 +307,20 @@ strong {
 **** alternating background rows **********************************************/
 
 .bg-alt0,
-.bg-alt-rows > div:nth-of-type(3n+1) {
+.bg-alt-rows > div:nth-of-type(3n+1),
+.bg-alt-rows > section:nth-of-type(3n+1) {
 	background-color: var(--theme-body-bg-alt0);
 }
 
 .bg-alt1,
-.bg-alt-rows > div:nth-of-type(3n+2) {
+.bg-alt-rows > div:nth-of-type(3n+2),
+.bg-alt-rows > section:nth-of-type(3n+2) {
 	background-color: var(--theme-body-bg-alt1);
 }
 
 .bg-alt2,
-.bg-alt-rows > div:nth-of-type(3n+3) {
+.bg-alt-rows > div:nth-of-type(3n+3),
+.bg-alt-rows > section:nth-of-type(3n+3) {
 	background-color: var(--theme-body-bg-alt2);
 }
 

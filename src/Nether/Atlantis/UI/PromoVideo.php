@@ -28,19 +28,6 @@ extends Surface\Element {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	static public function
-	FromSurfaceWith(Surface\Engine $Surface, iterable $Opts):
-	static {
 
-		$Output = static::FromSurface($Surface);
-		$Key = NULL;
-		$Val = NULL;
-
-		foreach($Opts as $Key => $Val)
-		if(property_exists($Output, $Key))
-		$Output->{$Key} = $Val;
-
-		return $Output;
-	}
 
 }

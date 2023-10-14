@@ -10,4 +10,7 @@ extends Surface\Element {
 	public string
 	$Area = 'elements/example/main';
 
+	public string
+	$Title = 'Element';
+
 }
