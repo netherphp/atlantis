@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @var Surface\Engine $Surface
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Atlantis\UI\Article $Element
+ */
+
+$Class ??= $Element->Class ?: NULL;
+
+$Section ??= $Element->Section ?: NULL;
+$SectionClass ??= $Element->SectionClass ?: NULL;
+
+$Title ??= $Element->Title ?: NULL;
+$TitleClass ??= $Element->TitleClass ?: NULL;
+
+$Date ??= $Element->Date ?: NULL;
+$DateClass ??= $Element->DateClass ?: NULL;
+
+$Content ??= $Element->Content ?: NULL;
+$ContentClass ??= $Element->ContentClass ?: NULL;
+
+?>
+
+<article class="Article <?php $Util->Print($Class) ?>">
+
+	<?php if($Section): ?>
+	<div class="Section <?php $Util->Print($SectionClass) ?>"><?php $Util->Print($Section) ?></div>
+	<?php endif; ?>
+
+	<?php if($Title): ?>
+	<h1 class="Title <?php $Util->Print($TitleClass) ?>"><?php $Util->Print($Title) ?></h1>
+	<?php endif; ?>
+
+	<?php if($Date): ?>
+	<div class="Date <?php $Util->Print($DateClass) ?>"><?php $Util->Print($Date) ?></div>
+	<?php endif; ?>
+
+	<?php if($Content): ?>
+	<div class="Content <?php $Util->Print($ContentClass) ?>">
+		<?php echo $Content ?>
+	</div>
+	<?php endif; ?>
+
+</article>

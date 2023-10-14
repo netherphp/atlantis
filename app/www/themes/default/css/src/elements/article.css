@@ -1,7 +1,22 @@
-.ArticlePrelabel {
+.Article > .Section {
 	color: var(--theme-primary);
 	font-size: 0.8em;
 	font-weight: bold;
 	line-height: 1rem;
 	text-transform: uppercase;
+}
+
+.Article > .Title {
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+
+.Article > .Date {
+	font-style: italic;
+	font-size: 0.8em;
+	opacity: 0.65;
+}
+
+.Article > .Content {
+	padding-top: 1.0rem;
 }
