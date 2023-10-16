@@ -112,7 +112,7 @@ extends PublicWeb {
 		return Response::CodeOK;
 	}
 
-	#[RouteHandler('/docs/:Path:')]
+	#[RouteHandler('/docs/::Path::')]
 	#[ConfirmWillAnswerRequest]
 	public function
 	Page(string $Path):

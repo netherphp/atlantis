@@ -1,0 +1,34 @@
+<?php
+
+use Nether\Atlantis;
+
+$Sections = [
+	(fn()=> Atlantis\UI\PromoVideo::FromSurfaceWith($Surface, [
+		'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
+		'Overlay'  => 'grad-focus-dark',
+		'Title'    => 'Hello',
+		'Subline'  => 'This is a promo video.'
+	])),
+	(fn()=> Atlantis\UI\Article::FromSurfaceWith($Surface, [
+		'Section' => 'UI Showcase',
+		'Title'   => 'Element displays content in the style of an Article.',
+		'Content' => <<< LOL
+			<p>Mostly designed to be a quick dump of HTML content.</p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. Neque volutpat ac tincidunt vitae semper quis. Diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Elit eget gravida cum sociis. Sit amet consectetur adipiscing elit duis tristique sollicitudin nibh sit. Dui id ornare arcu odio ut sem nulla pharetra diam. Lacinia quis vel eros donec ac. Ut consequat semper viverra nam libero. Massa tincidunt nunc pulvinar sapien et. Sagittis purus sit amet volutpat. Lacus vestibulum sed arcu non. Sed id semper risus in hendrerit gravida. Posuere urna nec tincidunt praesent semper feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames. Non pulvinar neque laoreet suspendisse.</p>
+		LOL
+	]))
+];
+
+?>
+
+<div class="container pt-6 pb-6">
+
+	<div class="row">
+		<?php foreach($Sections as $Section): ?>
+		<div class="col-12 mb-4">
+			<div class="jumbotron rounded"><?php echo $Section() ?></div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+
+</div>
