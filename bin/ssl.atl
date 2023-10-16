@@ -48,13 +48,15 @@ extends Console\Client {
 	#[Common\Meta\Date('2023-10-12')]
 	#[Console\Meta\Command('setup')]
 	#[Console\Meta\Info('Run the setup wizard to configure the SSL for this Environment.')]
-	#[Console\Meta\Toggle('--appconf', 'Write to the App atlantis.json file instead of the Env atlantis.json')]
+	#[Console\Meta\Toggle('--appconf', 'Write to the root atlantis.json file instead of the environment atlantis.json.')]
+	#[Console\Meta\Toggle('--verbose', 'Shows the resulting configuration values in the output as well.')]
 	#[Console\Meta\Error(1, 'No atlantis.json file found.')]
 	public function
 	HandleSetupCert():
 	int {
 
-		$OptUseAppConf = $this->GetOption('appconf') ?? FALSE;
+		$OptUseAppConf = $this->GetOption('appconf') ?: FALSE;
+		$OptVerbose = $this->GetOption('verbose') ?: FALSE;
 
 		////////
 
@@ -73,14 +75,18 @@ extends Console\Client {
 
 		$this->PrintLn($this->FormatHeading('Project SSL Config'));
 		$this->PrintLn($this->Format($Proj->GetFilename(), static::FmtMuted), 2);
+
+		if($OptVerbose)
 		$this->PrintLn($this->FormatBulletList($Proj->SSL->ToArrayFlat()));
 
-		if($Proj->SSL->Service === 'AcmePHP') (function() use($Proj) {
+		if($Proj->SSL->Service === 'AcmePHP') (function() use($Proj, $OptVerbose) {
 			$AcmeConf = $this->App->GetEnvConfigRoot('acmephp.yml');
-			$AcmeYaml = $Proj->SSL->ToAcmeYaml($this->App->GetWebRoot());
+			$AcmeYaml = $Proj->SSL->ToAcmeYaml($this->App);
 
 			$this->PrintLn($this->FormatHeading('AcmePHP YAML'));
 			$this->PrintLn($this->Format($AcmeConf, static::FmtMuted), 2);
+
+			if($OptVerbose)
 			$this->PrintLn($this->Format($AcmeYaml, static::FmtDefault), 2);
 
 			file_put_contents($AcmeConf, $AcmeYaml);

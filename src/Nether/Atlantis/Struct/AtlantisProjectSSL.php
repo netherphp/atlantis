@@ -70,60 +70,92 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	public function
-	ToAcmeYaml(string $WebRoot, string $CertRoot='/opt/ssl'):
+	ToAcmeYaml(Atlantis\Engine $App, string $CertRoot='/opt/ssl'):
 	string {
+
+		$WebRoot = $App->GetWebRoot();
 
 		// @todo 2023-10-13
 		// this will eventually be done by a service interface during
 		// phase two of the ssl handling update.
 
-		$Data = (
+		$TemplateFile = Common\Filesystem\Util::Pathify(
+			$App->FromProjectRoot(),
+			'vendor', 'netherphp', 'atlantis',
+			'templates', 'acmephp.txt'
+		);
+
+		if(!file_exists($TemplateFile))
+		throw new Common\Error\FileNotFound($TemplateFile);
+
+		if(!is_readable($TemplateFile))
+		throw new Common\Error\FileUnreadable($TemplateFile);
+
+		// generate the acmephp.yml final file filling in all the tokens
+		// from the template with final data.
+
+		$TemplateData = file_get_contents($TemplateFile);
+		$TemplateTokens = Common\Text::TemplateFindTokens($TemplateData);
+		$TemplateValues = (
+			// merge datasets.
 			Common\Datastore::FromStackMerged($this->ToArray(), [
 				'WebRoot'  => $WebRoot,
 				'CertRoot' => $CertRoot
 			])
+
+			// turning ' into '' seems to be how yaml escapes omfg.
 			->Remap(function(mixed $V) {
 				if(is_string($V))
 				return preg_replace("#'{1}#", "''", $V);
 
 				if($V instanceof Common\Datastore)
-				return $V->Map(fn(string $W)=> addslashes($W));
+				return $V->Map(fn(string $W)=> preg_replace("#'{1}#", "''", $W));
 
 				return $V;
 			})
+
+			// handle special dataatypes.
+			->MapKeys(function(string $K, mixed $V) {
+				return [ $K=> match($K) {
+					'AltDomains'
+					=> trim(array_reduce(
+						$V,
+						fn(string $P, string $N)
+						=> sprintf('%s      - \'%s\'%s', $P, $N, PHP_EOL),
+						''
+					)),
+
+					default
+					=> trim($V)
+				} ];
+			})
 		);
 
-		////////
+		// at some point found out that adding the primary domain as an
+		// alternate domain would fix some problem where they said no.
 
-		$Lines = new Common\Datastore([
-			"contact_email: '{$Data['Email']}'",
-			"certificates:",
-			"  - domain: '{$Data['Domain']}'",
-			"    subject_alternative_names:",
-			"      - '{$Data['Domain']}'"
-		]);
+		$TemplateValues['AltDomains'] = trim(sprintf(
+			'- \'%s\'%s      %s',
+			$TemplateValues['Domain'],
+			PHP_EOL,
+			$TemplateValues['AltDomains']
+		));
 
-		array_map(
-			function(string $D) use($Lines) { $Lines->Push("      - '{$D}'"); return; },
-			$Data['AltDomains']
+		// compile the final data to write to disk.
+
+		$TemplateData = $TemplateTokens->Accumulate(
+			$TemplateData,
+			function(string $Output, string $Current)
+			use($TemplateValues) {
+				return str_replace(
+					Common\Text::TemplateMakeToken($Current),
+					($TemplateValues[$Current] ? $TemplateValues[$Current] : ''),
+					$Output
+				);
+			}
 		);
 
-		$Lines->MergeRight([
-			"    distinguished_name:",
-			"      organization_name: '{$Data['OrgName']}'",
-			"      country: '{$Data['Country']}'",
-			"      locality: '{$Data['City']}'",
-			"    solver:",
-			"      name: 'http-file'",
-			"      adapter: 'local'",
-			"      root: '{$Data['WebRoot']}'",
-			"    install:",
-			"      - action: 'mirror_file'",
-			"        adapter: 'local'",
-			"        root: '{$Data['CertRoot']}'"
-		]);
-
-		return $Lines->Join(chr(10));
+		return $TemplateData;
 	}
 
 	////////////////////////////////////////////////////////////////

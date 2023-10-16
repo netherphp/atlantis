@@ -1,17 +1,17 @@
-contact_email: '{Email}'
+contact_email: '{%Email%}'
 certificates:
-  - domain: '{Domain}'
+  - domain: '{%Domain%}'
     subject_alternative_names:
-      {AltDomains}
+      {%AltDomains%}
     distinguished_name:
-      country: '{Country}'
-      locality: '{City}'
-      organization_name: '{OrgName}'
+      country: '{%Country%}'
+      locality: '{%City%}'
+      organization_name: '{%OrgName%}'
     solver:
       name: 'http-file'
       adapter: 'local'
-      root: '{WebRoot}'
+      root: '{%WebRoot%}'
     install:
       - action: 'mirror_file'
         adapter: 'local'
-        root: '{CertRoot}'
+        root: '{%CertRoot%}'
