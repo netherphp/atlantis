@@ -75,87 +75,51 @@ implements
 
 		$WebRoot = $App->GetWebRoot();
 
-		// @todo 2023-10-13
-		// this will eventually be done by a service interface during
-		// phase two of the ssl handling update.
+		// generate a merged list of values.
 
-		$TemplateFile = Common\Filesystem\Util::Pathify(
+		$Values = Common\Datastore::FromStackMerged($this->ToArray(), [
+			'WebRoot'  => $WebRoot,
+			'CertRoot' => $CertRoot
+		]);
+
+		// try to load the template file.
+
+		$File = Common\Filesystem\Util::Pathify(
 			$App->FromProjectRoot(),
 			'vendor', 'netherphp', 'atlantis',
 			'templates', 'acmephp.txt'
 		);
 
-		if(!file_exists($TemplateFile))
-		throw new Common\Error\FileNotFound($TemplateFile);
+		$Template = Common\TemplateFile::FromFile($File);
 
-		if(!is_readable($TemplateFile))
-		throw new Common\Error\FileUnreadable($TemplateFile);
+		// bake the values as needed before shipping them out.
 
-		// generate the acmephp.yml final file filling in all the tokens
-		// from the template with final data.
+		$Values->RemapKeys(function(string $K, mixed $V, Common\Datastore $D) {
+			switch($K) {
+				case 'AltDomains': {
+					$V = trim(
+						Common\Datastore::FromArray($V)
+						->Unshift($D['Domain'])
+						->Accumulate('', fn(string $P, string $N)=> sprintf(
+							'%s      - \'%s\'%s',
+							$P,
+							Common\Filters\Text::YamlEscapeSingleQuote($N),
+							PHP_EOL
+						))
+					);
+					break;
+				}
 
-		$TemplateData = file_get_contents($TemplateFile);
-		$TemplateTokens = Common\Text::TemplateFindTokens($TemplateData);
-		$TemplateValues = (
-			// merge datasets.
-			Common\Datastore::FromStackMerged($this->ToArray(), [
-				'WebRoot'  => $WebRoot,
-				'CertRoot' => $CertRoot
-			])
-
-			// turning ' into '' seems to be how yaml escapes omfg.
-			->Remap(function(mixed $V) {
-				if(is_string($V))
-				return preg_replace("#'{1}#", "''", $V);
-
-				if($V instanceof Common\Datastore)
-				return $V->Map(fn(string $W)=> preg_replace("#'{1}#", "''", $W));
-
-				return $V;
-			})
-
-			// handle special dataatypes.
-			->MapKeys(function(string $K, mixed $V) {
-				return [ $K=> match($K) {
-					'AltDomains'
-					=> trim(array_reduce(
-						$V,
-						fn(string $P, string $N)
-						=> sprintf('%s      - \'%s\'%s', $P, $N, PHP_EOL),
-						''
-					)),
-
-					default
-					=> trim($V)
-				} ];
-			})
-		);
-
-		// at some point found out that adding the primary domain as an
-		// alternate domain would fix some problem where they said no.
-
-		$TemplateValues['AltDomains'] = trim(sprintf(
-			'- \'%s\'%s      %s',
-			$TemplateValues['Domain'],
-			PHP_EOL,
-			$TemplateValues['AltDomains']
-		));
-
-		// compile the final data to write to disk.
-
-		$TemplateData = $TemplateTokens->Accumulate(
-			$TemplateData,
-			function(string $Output, string $Current)
-			use($TemplateValues) {
-				return str_replace(
-					Common\Text::TemplateMakeToken($Current),
-					($TemplateValues[$Current] ? $TemplateValues[$Current] : ''),
-					$Output
-				);
+				default: {
+					$V = trim(Common\Filters\Text::YamlEscapeSingleQuote($V));
+					break;
+				}
 			}
-		);
 
-		return $TemplateData;
+			return [ $K=> $V ];
+		});
+
+		return $Template->ReplaceTokensWith($Values);
 	}
 
 	////////////////////////////////////////////////////////////////
