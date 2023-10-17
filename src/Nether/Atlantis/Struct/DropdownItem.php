@@ -94,7 +94,7 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $Title='Item', ?string $Icon='mdi-edit', ?string $URL=NULL, ?iterable $Attr=[], int $Warn=0):
+	New(?string $Title='Item', ?string $Icon='mdi-edit', ?string $URL=NULL, ?iterable $Attr=[], ?int $Warn=0):
 	static {
 
 		$Output = new static([
@@ -106,6 +106,7 @@ extends Common\Prototype {
 		$Output->Title = $Title;
 		$Output->Icon = $Icon;
 		$Output->URL = $URL;
+		$Output->Warn = $Warn;
 
 		if($Attr !== NULL)
 		$Output->Attr->SetData($Attr);

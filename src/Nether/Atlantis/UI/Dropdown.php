@@ -53,8 +53,19 @@ extends Surface\Element {
 	////////////////////////////////////////////////////////////////
 	// LOCAL: Factory API //////////////////////////////////////////
 
+	#[Common\Meta\Deprecated('2023-10-17')]
 	static public function
 	FromMenuStruct(Surface\Engine $Surface, Atlantis\Struct\DropdownMenu $Menu):
+	static {
+
+		$Output = new static($Surface);
+		$Output->SetMenuStruct($Menu);
+
+		return $Output;
+	}
+
+	static public function
+	FromSurfaceWithMenu(Surface\Engine $Surface, Atlantis\Struct\DropdownMenu $Menu):
 	static {
 
 		$Output = new static($Surface);
