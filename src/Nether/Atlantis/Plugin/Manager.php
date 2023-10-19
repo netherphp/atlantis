@@ -37,9 +37,20 @@ class Manager {
 
 	public function
 	Get(string $IFace):
-	?Common\Datastore {
+	Common\Datastore {
 
 		return $this->Interfaces[$IFace] ?? new Common\Datastore;
+	}
+
+	public function
+	GetInstanced(string $IFace):
+	Common\Datastore {
+
+		$Output = $this->Get($IFace);
+
+		$Output->Remap(fn(string $Class)=> new $Class);
+
+		return $Output;
 	}
 
 	public function
@@ -64,7 +75,5 @@ class Manager {
 
 		return $this;
 	}
-
-
 
 }

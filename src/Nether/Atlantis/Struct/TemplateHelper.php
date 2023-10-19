@@ -5,6 +5,8 @@ namespace Nether\Atlantis\Struct;
 use Nether\Atlantis;
 use Nether\Common;
 
+use Exception;
+
 #[Common\Meta\Date('2023-06-07')]
 class TemplateHelper {
 
@@ -67,6 +69,35 @@ class TemplateHelper {
 
 	////////////////////////////////////////////////////////////////
 	// methods that return values //////////////////////////////////
+
+	#[Common\Meta\Date('2023-10-18')]
+	public function
+	ValueFrom(string $What, ...$Argv):
+	mixed {
+
+		$Arg = NULL;
+
+		foreach($Argv as $Arg) {
+
+			if(is_array($Arg)) {
+				if(array_key_exists($What, $Arg))
+				return $Arg[$What];
+			}
+
+			elseif($Arg instanceof Common\Datastore) {
+				if($Arg->HasKey($What))
+				return $Arg->Get($What);
+			}
+
+			elseif(is_object($Arg)) {
+				if(property_exists($Arg, $What))
+				return $Arg->{$What};
+			}
+
+		}
+
+		return '';
+	}
 
 	#[Common\Meta\Date('2023-08-07')]
 	#[Common\Meta\Info('Mostly for rewriting URLs to our own application.')]
