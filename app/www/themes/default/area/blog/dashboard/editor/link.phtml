@@ -8,20 +8,18 @@ use Nether\Surface;
 use Nether\User;
 
 /**
- * @var Atlantis\Engine $App
+ * @var Atlantis\Engine                $App
  * @var Atlantis\Struct\TemplateHelper $Util
- * @var Avenue\Router $Router
- * @var Surface\Engine $Surface
- * @var User\EntitySession $User
+ * @var Avenue\Router                  $Router
+ * @var Surface\Engine                 $Surface
+ * @var User\EntitySession             $User
  *
- * @var Atlantis\PublicWeb $Route
- * @var ?Blog\Post $Post
- * @var ?Common\Datastore $Values
+ * @var Blog\Routes\BlogDashboard      $Route
+ * @var Common\Datastore               $SiteTags
+ * @var Common\Datastore               $Values
+ * @var ?Blog\Post                     $Post
+ * @var string                         $PluginData
  */
-
-// fetch the raw plugin data to be passed along to the next step
-
-$PluginData = $Router->Request->Data->Plugins;
 
 // digest the link data.
 
@@ -55,6 +53,19 @@ $Link = (
 		<!-- TITLE AND IMAGE -->
 		<div class="row mb-0">
 			<div class="col-12 col-md mb-4 mb-md-0">
+
+				<div class="<?php $Util->Print($SiteTags->Count() > 1 ? 'd-block' : 'd-none') ?> mb-6">
+					<div class="fw-bold text-uppercase">Select Sites</div>
+					<?php foreach($SiteTags as $SiteTag): ?>
+					<div class="form-check form-switch mb-2">
+						<label>
+							<input class="form-check-input" type="checkbox" name="SiteTags[]" value="<?php $Util->Print($SiteTag->Tag->ID) ?>" <?php echo $Util->GetCheckedHTML($SiteTag->Selected) ?> />
+							<?php $Util->Print($SiteTag->Tag->Name) ?>
+						</label>
+					</div>
+					<?php endforeach; ?>
+				</div>
+
 				<div class="mb-6">
 					<div class="fw-bold text-uppercase">Post Title</div>
 					<input type="text" name="Title" class="form-control" value="<?php $Printer($Util->ValueFrom('Title', $Post, $Values)) ?>" />

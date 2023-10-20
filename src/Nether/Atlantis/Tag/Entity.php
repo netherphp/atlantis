@@ -116,6 +116,8 @@ implements
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
+		parent::FindExtendFilters($SQL, $Input);
+
 		if($Input['Type'] !== NULL)
 		$SQL->Where('Main.Type=:Type');
 

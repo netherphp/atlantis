@@ -249,6 +249,38 @@ implements Packages\DescribeForPublicInterface {
 		return $Links;
 	}
 
+	public function
+	GetTagsIndexedByID():
+	Common\Datastore {
+
+		$Output = new Common\Datastore;
+
+		($this)
+		->GetTagLinks()
+		->Each(function(Tag\EntityLink $Link) use($Output) {
+			$Output->Set($Link->Tag->ID, $Link->Tag);
+			return;
+		});
+
+		return $Output;
+	}
+
+	public function
+	GetTagsIndexedByAlias():
+	Common\Datastore {
+
+		$Output = new Common\Datastore;
+
+		($this)
+		->GetTagLinks()
+		->Each(function(Tag\EntityLink $Link) use($Output) {
+			$Output->Set($Link->Tag->Alias, $Link->Tag);
+			return;
+		});
+
+		return $Output;
+	}
+
 	#[Common\Meta\Date('2023-07-25')]
 	#[Common\Meta\Info('Get a list of common attributes used with external systems.')]
 	public function

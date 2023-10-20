@@ -441,6 +441,7 @@ class Util {
 		};
 	}
 
+	#[Common\Meta\Info('Fetch the site tags for the current site.')]
 	static public function
 	FetchSiteTags():
 	Common\Datastore {
@@ -473,6 +474,20 @@ class Util {
 			if($Tag instanceof Atlantis\Tag\Entity)
 			$Output->Push($Tag);
 		}
+
+		return $Output;
+	}
+
+	#[Common\Meta\Info('Fetch all of the site tags that exist.')]
+	static public function
+	FetchSiteTagsAll():
+	Common\Datastore {
+
+		$Output = Atlantis\Tag\Entity::Find([
+			'Type'  => 'site',
+			'Sort'  => 'title-az',
+			'Limit' => 0
+		]);
 
 		return $Output;
 	}
