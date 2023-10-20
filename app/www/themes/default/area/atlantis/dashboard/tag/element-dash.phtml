@@ -27,13 +27,17 @@ $Buttons = Common\Datastore::FromArray([
 
 ($App->Plugins)
 ->Get(Atlantis\Plugins\Dashboard\OverviewElementButtonInterface::class)
-->Remap(fn(string $C)=> new $C)
+->Remap(fn(string $C)=> new $C($App))
 ->Each(function(Atlantis\Plugins\Dashboard\OverviewElementButtonInterface $P) use($Buttons) {
+	if(!$P->GetShow())
+	return;
+
 	$Buttons->Push(Atlantis\Struct\DropdownItem::New(
 		$P->GetName(),
 		$P->GetIcon(),
 		$P->GetURL()
 	));
+
 	return;
 });
 
