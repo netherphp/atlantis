@@ -3,6 +3,7 @@
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Blog;
+use Nether\Common;
 use Nether\Surface;
 use Nether\User;
 
@@ -17,12 +18,24 @@ use Nether\User;
  * @var Atlantis\Dashboard\AtlantisTagsElement $Element
  */
 
-$Buttons = [
+$Buttons = Common\Datastore::FromArray([
 	Atlantis\Struct\DropdownItem::New('Tags', 'mdi-tag-multiple', '/dashboard/tags'),
 	Atlantis\Struct\DropdownItem::New('Profiles', 'mdi-file-account-outline', '/dashboard/profiles'),
 	Atlantis\Struct\DropdownItem::New('Photos', 'mdi-image', '/dashboard/media/images'),
 	Atlantis\Struct\DropdownItem::New('Videos', 'mdi-video', '/dashboard/media/videos-tp')
-];
+]);
+
+($App->Plugins)
+->Get(Atlantis\Plugins\Dashboard\OverviewElementButtonInterface::class)
+->Remap(fn(string $C)=> new $C)
+->Each(function(Atlantis\Plugins\Dashboard\OverviewElementButtonInterface $P) use($Buttons) {
+	$Buttons->Push(Atlantis\Struct\DropdownItem::New(
+		$P->GetName(),
+		$P->GetIcon(),
+		$P->GetURL()
+	));
+	return;
+});
 
 ?>
 
