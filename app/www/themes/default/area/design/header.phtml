@@ -21,7 +21,7 @@
 			<div class="col"><hr class="opacity-10" /></div>
 
 			<div class="col-auto">
-				<span data-bs-toggle="offcanvas" data-bs-target="#PageMenuMain" class="cursor-pointer text-uppercase">
+				<span class="cursor-pointer text-uppercase" data-sitemenu="SiteMenuMain">
 					<span class="text-muted">Menu</span>
 					<i class="mdi mdi-menu font-size-most-large lh-1 mr-0"></i>
 				</span>
@@ -31,25 +31,101 @@
 	</div>
 </header>
 
-<div id="PageMenuMain" class="offcanvas offcanvas-end offcanvas-glass zindex-high">
-	<button data-bs-dismiss="offcanvas" class="btn-close m-2 opacity-100 position-absolute position-top position-right" type="button"></button>
-	<div class="offcanvas-body">
-		<div class="ratiobox widescreen wallpapered rounded bg-black mt-4 mb-4" style="background-image:url(/themes/default/gfx/bob.jpg);">
-			<div class="position-absolutely grad-focus-darker rounded"></div>
-			<div class="position-absolute position-h-center position-v-center">
-				W U Z Z U P
-			</div>
-		</div>
+<div id="PageMenuStack" class="PageMenuStack">
 
-		<div>
-			<a href="/" class="border-0">Home</a>
-		</div>
-		<div><hr /></div>
-		<div>
-			<a href="/docs" class="border-0">Docs</a>
-		</div>
-		<div>
-			<a href="/docs/css" class="border-0">- CSS Reference</a>
+	<div id="SiteMenuMain" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
+		<button type="button" data-sitemenu-close="parent" class="btn-close opacity-100 position-absolute position-top position-right m-2"></button>
+		<div class="offcanvas-body">
+			<div class="ratiobox widescreen wallpapered rounded bg-black mt-4 mb-4" style="background-image:url(/themes/default/gfx/bob.jpg);">
+				<div class="position-absolutely grad-focus-darker rounded"></div>
+				<div class="position-absolute position-h-center position-v-center">
+					W U Z Z U P
+				</div>
+			</div>
+			<nav>
+				<div>
+					<a href="/" class="border-0">Home</a>
+				</div>
+				<div><hr /></div>
+				<a href="/docs" data-sitemenu="SiteMenuDocs">
+					<div class="row">
+						<div class="col">
+							Docs
+						</div>
+						<div class="col-auto">
+							<i class="mdi mdi-chevron-right"></i>
+						</div>
+					</div>
+				</a>
+
+				<div><hr /></div>
+				<a href="#" data-sitemenu="SiteMenuSecond">
+					<div class="row">
+						<div class="col">
+							Second Level
+						</div>
+						<div class="col-auto">
+							<i class="mdi mdi-chevron-right"></i>
+						</div>
+					</div>
+				</a>
+
+			</nav>
 		</div>
 	</div>
+
+	<div id="SiteMenuSecond" data-sitemenu-path="SiteMenuMain" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
+		<button type="button" data-sitemenu-close="parent" class="btn-close opacity-100 position-absolute position-top position-right m-2"></button>
+		<div class="offcanvas-body">
+			<strong>Second Level</strong>
+
+			<div><hr /></div>
+			<a href="#" data-sitemenu="SiteMenuThird">
+				<div class="row">
+					<div class="col">
+						Third Level
+					</div>
+					<div class="col-auto">
+						<i class="mdi mdi-chevron-right"></i>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<div id="SiteMenuThird" data-sitemenu-path="SiteMenuMain/SiteMenuSecond" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
+		<button type="button" data-sitemenu-close="parent" class="btn-close opacity-100 position-absolute position-top position-right m-2"></button>
+		<div class="offcanvas-body">
+			<strong>Third Level</strong>
+
+			<div><hr /></div>
+			<a href="#" data-sitemenu="SiteMenuMain/SiteMenuThird/SiteMenuSecond">
+				<div class="row">
+					<div class="col">
+						Surprise Reorder
+					</div>
+					<div class="col-auto">
+						<i class="mdi mdi-chevron-right"></i>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<div id="SiteMenuDocs" data-sitemenu-path="SiteMenuMain" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-backdrop="false">
+		<button type="button" data-sitemenu-close="parent" class="btn-close opacity-100 position-absolute position-top position-right m-2"></button>
+		<div class="offcanvas-body">
+			totally docs
+		</div>
+	</div>
+
 </div>
+
+<script type="module">
+import Menu from '/share/nui/modules/sitemenu/offcanvas.js';
+
+jQuery(function(){
+	let menu = new Menu('#PageMenuStack');
+	return;
+});
+</script>
