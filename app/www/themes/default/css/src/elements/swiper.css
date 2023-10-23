@@ -90,6 +90,10 @@ makes the pager bullets be square instead of circle.
 	flex-grow: 0;
 }
 
+.swiper-pagination-horizontal {
+	line-height: 1.0em;
+}
+
 .swiper-buttons {
 	position: absolute;
 	top: 0px;
@@ -154,6 +158,15 @@ makes the pager bullets be square instead of circle.
 
 .swiper-pager-bullet-square {
 	border-radius: 2px !important;
+}
+
+.swiper-supercontainer .swiper-pager {
+	position: relative !important;
+	padding-top: 0.75rem;
+}
+
+.swiper-supercontainer .swiper-pagination {
+	position: relative !important;
 }
 
 /*******************************************************************************

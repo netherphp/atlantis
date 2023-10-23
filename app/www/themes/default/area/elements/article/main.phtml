@@ -1,5 +1,7 @@
 <?php
 
+use Nether\Atlantis;
+
 /**
  * @var Surface\Engine $Surface
  * @var Atlantis\Struct\TemplateHelper $Util
@@ -13,6 +15,10 @@ $SectionClass ??= $Element->SectionClass ?: NULL;
 
 $Title ??= $Element->Title ?: NULL;
 $TitleClass ??= $Element->TitleClass ?: NULL;
+
+$Authour ??= $Element->Authour ?: NULL;
+$AuthourClass ??= $Element->AuthourClass ?: NULL;
+$AuthourURL ??= $Element->AuthourURL ?: NULL;
 
 $Date ??= $Element->Date ?: NULL;
 $DateClass ??= $Element->DateClass ?: NULL;
@@ -32,9 +38,25 @@ $ContentClass ??= $Element->ContentClass ?: NULL;
 	<h1 class="Title <?php $Util->Print($TitleClass) ?>"><?php $Util->Print($Title) ?></h1>
 	<?php endif; ?>
 
-	<?php if($Date): ?>
-	<div class="Date <?php $Util->Print($DateClass) ?>"><?php $Util->Print($Date) ?></div>
-	<?php endif; ?>
+	<div class="Subline1">
+		<?php if($Date): ?>
+		<div class="Date <?php $Util->Print($DateClass) ?>">
+			<?php $Util->Print($Date) ?>
+		</div>
+		<?php endif; ?>
+		<?php if($Authour): ?>
+		<div class="Authour <?php $Util->Print($AuthourClass) ?>">
+			By
+			<?php if($AuthourURL): ?>
+			<a href="<?php $Util->Print($AuthourURL) ?>">
+			<?php endif; ?>
+			<?php $Util->Print($Authour) ?>
+			<?php if($AuthourURL): ?>
+			</a>
+			<?php endif; ?>
+		</div>
+		<?php endif; ?>
+	</div>
 
 	<?php if($Content): ?>
 	<div class="Content <?php $Util->Print($ContentClass) ?>">

@@ -26,6 +26,15 @@ extends Surface\Element {
 	$DateClass = NULL;
 
 	public ?string
+	$Authour = NULL;
+
+	public ?string
+	$AuthourClass = NULL;
+
+	public ?string
+	$AuthourURL = NULL;
+
+	public ?string
 	$Section = NULL;
 
 	public ?string

@@ -11,12 +11,26 @@
 	margin-bottom: 0px;
 }
 
-.Article > .Date {
+.Article > .Content {
+	padding-top: 1.0rem;
+}
+
+.Article > .Subline1 {
+	display: flex;
+}
+
+.Article > .Subline1 > div {
+	margin-right: 1.5rem;
+}
+
+.Article > .Subline1 > .Date {
 	font-style: italic;
 	font-size: 0.8em;
 	opacity: 0.65;
 }
 
-.Article > .Content {
-	padding-top: 1.0rem;
+.Article > .Subline1 > .Authour {
+	font-style: italic;
+	font-size: 0.8em;
+	opacity: 0.65;
 }

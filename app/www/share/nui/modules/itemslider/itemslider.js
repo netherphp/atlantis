@@ -116,9 +116,9 @@ class Slider {
 		// rigged up to everything.
 
 		if(this.element.parent().hasClass('swiper-supercontainer')) {
-			(this.element)
-			.find('.swiper-buttons')
-			.appendTo(this.element.parent());
+			//(this.element)
+			//.find('.swiper-buttons')
+			//.appendTo(this.element.parent());
 
 			(this.element)
 			.find('.swiper-pager')

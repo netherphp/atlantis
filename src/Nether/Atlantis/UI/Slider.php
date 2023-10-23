@@ -166,7 +166,7 @@ extends Surface\Element {
 
 	#[Common\Meta\Info('Ready an element to display a specified dataset.')]
 	static public function
-	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $Area=NULL):
+	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $ItemArea=NULL):
 	static {
 
 		$Output = new static($Surface);
@@ -174,8 +174,8 @@ extends Surface\Element {
 		if($Items !== NULL)
 		$Output->SetItems($Items);
 
-		if($Area !== NULL)
-		$Output->SetItemArea($Area);
+		if($ItemArea !== NULL)
+		$Output->SetItemArea($ItemArea);
 
 		return $Output;
 	}

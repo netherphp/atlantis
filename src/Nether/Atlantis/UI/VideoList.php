@@ -41,6 +41,27 @@ extends Surface\Element {
 	}
 
 	////////////////////////////////////////////////////////////////
+	// LOCAL: Parent Atlantis\Prototype API ////////////////////////
+
+	#[Common\Meta\Info('Define the object type Parent UUID is.')]
+	public ?string
+	$ParentType = NULL;
+
+	#[Common\Meta\Info('Define a Prototype based object this is related to.')]
+	public ?string
+	$ParentUUID = NULL;
+
+	public function
+	SetParent(?string $Type=NULL, ?string $UUID=NULL):
+	static {
+
+		$this->ParentType = $Type;
+		$this->ParentUUID = $UUID;
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
 	// LOCAL: Batch Item Interface /////////////////////////////////
 
 	#[Common\Meta\PropertyObjectify]

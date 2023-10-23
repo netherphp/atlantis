@@ -67,7 +67,7 @@ class StackItem {
 
 class StackManager {
 
-	constructor(selector='#PageMenuStack', conf={}) {
+	constructor(selector='#SiteMenu', conf={}) {
 
 		this.element = jQuery(selector);
 		this.conf = StackManagerConfig.FromObject(conf);
@@ -280,6 +280,9 @@ class StackManager {
 
 		if(id.indexOf('/') >= 0)
 		return this.open(id);
+
+		if(typeof this.items[id] === 'undefined')
+		throw `menu not found: ${id}`;
 
 		////////
 
