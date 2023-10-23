@@ -25,4 +25,11 @@ extends Surface\Element {
 		'SiteMenu' => 'let sitemenu = new SiteMenu("{%SelectorID%}");'
 	];
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\PropertyFactory('FromArray', 'Pages')]
+	public array|Common\Datastore
+	$Pages = [ ];
+
 }

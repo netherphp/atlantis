@@ -1,1 +1,20 @@
-sitemenu
+<?php
+
+/**
+ * @var Nether\Atlantis\UI\SiteMenu $Element
+ */
+
+$ID ??= $Element->GetID();
+
+?>
+
+<div id="<?php $Util->Print($ID) ?>" class="PageMenuStack">
+
+	<?php
+	$Element->Pages
+	->Each(fn(Nether\Atlantis\UI\SiteMenuPage $Page)=> print($Page))
+	?>
+
+</div>
+
+<?php $Element->PrintJSModule() ?>

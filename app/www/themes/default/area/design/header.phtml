@@ -31,4 +31,21 @@
 	</div>
 </header>
 
-<?php $Surface->Area('design/header-sitemenu') ?>
+<?php
+
+echo Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
+	'Pages' => [
+		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'SiteMenuMain',
+			'Title'   => 'Main Menu',
+			'Content' => 'area:sitemenu-main/index'
+		]),
+		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'SiteMenuDocs',
+			'Title'   => 'Documentation',
+			'Content' => 'area:sitemenu-main/docs'
+		])
+	]
+]);
+
+?>
