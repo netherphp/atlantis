@@ -106,7 +106,7 @@ $Link = (
 		<div class="mb-6">
 			<div class="mb-0">
 				<div class="fw-bold text-uppercase">Source Excerpt/Highlight</div>
-				<div id="EditorExcerpt" class="Editor d-none"><?php echo $Link ? $Link->Excerpt : '' ?></div>
+				<div id="EditorExcerpt" class="Editor d-none"><?php echo $Util->ValueFrom('Excerpt', $Link, $Values) ?></div>
 			</div>
 		</div>
 
