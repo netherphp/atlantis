@@ -10,5 +10,5 @@
 ($Surface)
 ->AddStyleURL('/themes/default/lib/css/swiper-bundle.min.css')
 ->AddScriptURL('/themes/default/lib/js/swiper-bundle.min.js')
-//->AddScriptURL('https://cdn.jsdelivr.net/npm/swiper@10/swiper-element-bundle.min.js')
+->Set('Theme.Header.Contain', FALSE)
 ->Set('Theme.Page.Wrapper', 'design/page-wrapper');

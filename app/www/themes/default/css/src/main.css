@@ -111,6 +111,18 @@
 	--theme-body-bg-alt2: #EAEAEA;
 	--theme-body-fg:      #161616;
 
+	--theme-dark-bg: #5a5a5a;
+	--theme-dark-glass: #09090988;
+	--theme-dark-fg: #FAFAFA;
+	--theme-darker-bg: #474747;
+	--theme-darker-fg: var(--theme-body-fg);
+
+	--theme-glass-bg-100: #FFFFFFFF;
+	--theme-glass-bg-75:  #FFFFFFBD;
+	--theme-glass-bg-50:  #FFFFFF7F;
+	--theme-glass-bg-25:  #FFFFFF3F;
+	--theme-glass-bg-0:   #FFFFFF00;
+
 	/* this section needs to be auditied */
 
 	--theme-dark-glass: #cccccc34;

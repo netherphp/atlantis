@@ -4,16 +4,18 @@
  * @var Nether\Atlantis\Engine $App
  */
 
+$Contain = $Surface->Get('Theme.Header.Contain');
+
 ?>
 
 <header class="PageHeader">
-	<div class="container">
+	<div class="<?php $Util->Print($Contain ? 'container' : 'container-fluid') ?>">
 		<div class="row align-items-center justify-content-between">
 
 			<!-- LOGO -->
 			<div class="col-auto">
 				<a href="/">
-					<img src="/themes/default/gfx/atlantis-word.png" alt="Atlantis" style="max-height:20px;" />
+					<img src="/themes/default/gfx/atlantis-word.png" alt="Atlantis" class="on-light-invert" style="max-height:20px;" />
 				</a>
 			</div>
 
@@ -28,6 +30,7 @@
 			</div>
 
 		</div>
+
 	</div>
 </header>
 
