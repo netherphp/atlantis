@@ -90,6 +90,9 @@ extends PublicWeb {
 	PageActivate():
 	void {
 
+		if($this->User && $this->User->Activated)
+		$this->Goto('/');
+
 		($this->App->Surface)
 		->Wrap('user/activate',[
 			'RequireAlias' => $this->Config[Atlantis\Key::ConfUserRequireAlias],

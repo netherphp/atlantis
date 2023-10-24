@@ -114,6 +114,7 @@ $NeedAlias = ($RequireAlias && $User->Alias === NULL);
 	</div>
 </div>
 
+<?php if($NeedAlias): ?>
 <div class="row justify-content-center">
 	<div class="col-12 col-md-7 col-lg-5">
 		<dl class="PrettyModernBox">
@@ -121,7 +122,7 @@ $NeedAlias = ($RequireAlias && $User->Alias === NULL);
 				<span class="fw-bold">Username Selection</span>
 				<hr />
 			</dt>
-			<?php if($NeedAlias): ?>
+
 			<dd>
 				<p>
 					You need to select a unique Username for your account to be known by.
@@ -130,7 +131,7 @@ $NeedAlias = ($RequireAlias && $User->Alias === NULL);
 					<?php $Surface->Area('user/alias-set') ?>
 				</div>
 			</dd>
-			<?php else:?>
+
 			<dd>
 				<div class="row align-items-center">
 					<div class="col-auto">Username: <?php $Printer($User->Alias) ?></div>
@@ -140,7 +141,8 @@ $NeedAlias = ($RequireAlias && $User->Alias === NULL);
 					</div>
 				</div>
 			</dd>
-			<?php endif; ?>
+
 		</dl>
 	</div>
 </div>
+<?php endif; ?>

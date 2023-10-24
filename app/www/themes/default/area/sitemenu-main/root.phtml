@@ -22,7 +22,7 @@ $Menu = (
 	->ItemNew('Docs', 'mdi-file-document', '#',
 		Attr: [ 'data-sitemenu' => 'SiteMenuMain/SiteMenuDocs' ]
 	)
-	->ItemNew('Dashboard', 'mdi-logout', '/dashboard',
+	->ItemNew('Dashboard', 'mdi-view-dashboard', '/dashboard',
 		If: ($User instanceof User\EntitySession)
 	)
 	->ItemNew('Log Out', 'mdi-logout', '/logout',

@@ -1,5 +1,14 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var User\EntitySession $User
+ */
+
 $Trail ??= $Surface->Get('Trail') ?? [];
 $Key = NULL;
 $Val = NULL;
@@ -33,7 +42,7 @@ $Val = NULL;
 			<div class="col"></div>
 			<div class="col-auto justify-self-end">
 				Hello,
-				<a href="/dashboard"><?php $Util->Print($User->GetAlias()) ?></a>
+				<a href="/dashboard"><?php $Util->Print($User->GetAlias(TRUE)) ?></a>
 			</div>
 		</div>
 	</div>
