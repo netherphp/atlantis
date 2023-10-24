@@ -36,7 +36,10 @@ if($User instanceof User\EntitySession) {
 }
 
 else {
+	if($AllowLogin)
 	$Menu->ItemNew('Log In', 'mdi-login', '/login');
+
+	if($AllowSignup)
 	$Menu->ItemNew('Sign Up', 'mdi-account', '/signup');
 }
 
