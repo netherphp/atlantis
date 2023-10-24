@@ -442,7 +442,8 @@
 	box-shadow: none !important;
 }
 
-.form-control:focus {
+.form-control:focus,
+.form-check-input:focus {
 	outline: none !important;
 	box-shadow: none !important;
 }

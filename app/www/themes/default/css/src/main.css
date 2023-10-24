@@ -229,6 +229,15 @@ strong {
 	--bs-btn-color: var(--theme-dark-bg);
 }
 
+.form-check-input:checked {
+	background-color: var(--theme-primary);
+}
+
+.form-check-input.nui-theme-switch:checked {
+	background-color: #d9aa51;
+	border-color: #a5813e;
+}
+
 /*******************************************************************************
 **** form stuff ***************************************************************/
 
