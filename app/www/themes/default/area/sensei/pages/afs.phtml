@@ -27,11 +27,13 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<li>Ubuntu Server</li>
 				<li>PHP 8.1</li>
 				<li>Apache 2.4</li>
+				<li>AcmePHP at <code>/opt/ssl/acmephp.phar</code></li>
 			</ul>
 			<div class="edged-left opacity-75 mb-0">
 				<div class="fw-bold">Note:</div>
 				Commands provided by Atlantis (or any Composer based packages) will only work as shown if <code>./vendor/bin</code> is in the shell <code>$PATH</code>.
 				Otherwise commands may need to be manually prefixed with <code>vendor/bin</code> when calling them.
+				This includes <code>atlantis</code>, <code>dev.atl</code>, <code>ssl.atl</code>, etc.
 			</div>
 		</div>
 		<div class="col-12 col-lg-4">
@@ -42,10 +44,10 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				</h3>
 				<div>
 					<ul class="list-unstyled">
-						<li class="mb-2"><a class="underdot" href="#bootstrap">1) Bootstrap The Project</a></li>
-						<li class="mb-2"><a class="underdot" href="#apache">2) Apache Web Server Config</a></li>
-						<li class="mb-2"><a class="underdot" href="#acmephp">3) AcmePHP &amp; SSL Cert</a></li>
-						<li class="mb-2"><a class="underdot" href="#env">4) Environment Config</a></li>
+						<li class="mb-2"><a class="underdot" href="#bootstrap">1) Bootstrap Project</a></li>
+						<li class="mb-2"><a class="underdot" href="#apache">2) Configure Apache 2.4</a></li>
+						<li class="mb-2"><a class="underdot" href="#acmephp">3) Configure SSL</a></li>
+						<li class="mb-2"><a class="underdot" href="#env">4) Configure Environment</a></li>
 					</ul>
 				</div>
 			</div>
@@ -57,7 +59,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 <!-- SUMMARY -->
 <div id="bootstrap" class="bg-alt1">
 	<div class="container pt-8 pb-8">
-		<h2 class="fw-bold mb-4">Bootstrap The Project.</h2>
+		<h2 class="fw-bold mb-4">Bootstrap Project</h2>
 		<ul class="mb-0">
 			<li class="mb-4">
 				<p>Grab the Project template.</p>
@@ -76,7 +78,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				</blockquote>
 			</li>
 			<li class="mb-0">
-				<p>At this stage it is already &quot;working&quot; in that it will serve the app over basic HTTP, and can be tested with PHP's built-in web server.</p>
+				<p>At this stage it should be working in that it will serve the app over basic HTTP with PHP's built-in webserver.</p>
 				<blockquote class="edged-left">
 					<div class="mb-2"><code class="cli">$ php -S localhost:80 -t www</code></div>
 				</blockquote>
@@ -88,24 +90,18 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 <!-- WEB SERVER -->
 <div id="apache" class="bg-alt2">
 	<div class="container pt-8 pb-8">
-		<h2 class="fw-bold mb-4">Apache Web Server Config.</h2>
+		<h2 class="fw-bold mb-4">Configure Apache 2.4</h2>
 		<ul class="mb-0">
 			<li class="mb-4">
-				<p>Edit <code class="file">conf/env/dev/apache24.conf</code> using the HTTP macro for now.</p>
+				<p>Run the web config tool to generate an <code>apache24.conf</code> file and link it into the Apache sites directory.</p>
+
+				<div class="edged-left opacity-75 mb-2">
+					<div class="fw-bold">Note:</div>
+					If this is your first time choose NO when it asks about SSL.
+				</div>
+
 				<blockquote class="edged-left">
-					<div class="mb-0">You are looking for the line near the bottom of the file that start with <code>Use HTTP</code>, that is the example to edit.</div>
-				</blockquote>
-			</li>
-			<li class="mb-4">
-				<p>Link <code class="file">conf/env/dev/apache24.conf</code> into Apache's config file location:</p>
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ atlantis webserver-link --sudo</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-2">
-				<p>Have Apache rehash its config files.</p>
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ atlantis webserver-rehash --sudo</code></div>
+					<div class="mb-2"><code class="cli">$ dev.atl webconfig</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-0">
@@ -118,42 +114,40 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 <!-- SSL CERT -->
 <div id="acmephp" class="bg-alt0">
 	<div class="container pt-8 pb-8">
-		<h2 class="fw-bold mb-4">SSL Config.</h2>
-		<div class="fw-bold mb-4">Configure and Fetch initial certificate.</div>
-
-		<ul class="mb-8">
+		<h2 class="fw-bold mb-4">Configure SSL</h2>
+		<ul class="mb-0">
 			<li class="mb-4">
-				<p>Generate a <code class="file">conf/env/dev/acmephp.yml</code> file using <code>ssl.atl</code> cert setup tool. It will ask for the most basic info required to generate an SSL cert from LetsEncrypt using AcmePHP.</p>
+				<p>Run the SSL config tool to generate an <code>acmephp.yml</code> file.</p>
+
 				<blockquote class="edged-left">
 					<div class="mb-2"><code class="cli">$ ssl.atl setup</code></div>
 				</blockquote>
 			</li>
-			<li class="mb-4">
-				<p>Have AcmePHP get your SSL cert:</p>
+			<li class="mb-0">
+				<p>Run the SSL renew tool to get the certs.</p>
+
 				<blockquote class="edged-left">
 					<div class="mb-2"><code class="cli">$ ssl.atl renew</code></div>
 				</blockquote>
 			</li>
-			<li class="mb-4">
-				<p>Edit <code class="file">conf/env/dev/apache24.conf</code> to use the HTTPS macro instead. Literally change it from <code>Use HTTP</code> to <code>Use HTTPS</code> and rehash the configuration.</p>
+			<li class="mb-0">
+				<p>If this is the first time ever, re-run the web config tool saying yes to SSL this time.</p>
+
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ atlantis webserver-rehash --sudo</code></div>
+					<div class="mb-2"><code class="cli">$ dev.atl webconfig --update</code></div>
 				</blockquote>
 			</li>
-			<li class="mb-0">Apache should now be serving the project over both HTTP and HTTPS.</li>
-		</ul>
-
-		<div class="fw-bold mb-4">Auto-renew the certificate.</div>
-		<ul class="mb-0">
 			<li class="mb-0">
-				<p>Generate the line to paste into <code>crontab -e</code> so that the cert will auto renew.</p>
+				<p>Setup a cronjob to automatically renew the SSL. The following command will display the cron line that can be setup on the system.</p>
+
 				<blockquote class="edged-left">
 					<div class="mb-2"><code class="cli">$ ssl.atl cron</code></div>
-					<div class="mb-0">
-						<div><tt><b>Crontab:</b> 20 4 * * * env php /opt/web-new/vendor/bin/ssl.atl renew</tt></div>
-						<div><tt><b>Runs At:</b> 2023-10-13 23:20:00 CDT (in 12hr 23min)</tt></div>
-					</div>
 				</blockquote>
+
+				<div class="edged-left">
+					<div><code class="cli">Crontab: 20 4 * * * env php /opt/web-atl/vendor/bin/ssl.atl renew</code></div>
+					<div><code class="cli">Runs At: 2023-10-23 23:20:00 CDT (in 5min 26sec)</code></div>
+				</div>
 			</li>
 		</ul>
 	</div>
@@ -162,7 +156,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 <!-- ENV CONF -->
 <div id="env" class="bg-alt1">
 	<div class="container pt-6 pb-6">
-		<h2 class="fw-bold mb-4">Environment Config.</h2>
+		<h2 class="fw-bold mb-4">Configure Environment</h2>
 		<ul class="mb-0">
 			<li class="mb-0">
 				<p>

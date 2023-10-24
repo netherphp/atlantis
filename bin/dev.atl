@@ -858,6 +858,7 @@ extends Console\Client {
 
 	#[Console\Meta\Command('webconfig')]
 	#[Console\Meta\Value('--filename', 'Name of the config file in the server dir.')]
+	#[Console\Meta\Toggle('--update', 'Re-run the configuration update wizard.')]
 	#[Console\Meta\Info('Symlink our web config into the webserver config system.')]
 	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
 	#[Console\Meta\Error(2, 'No valid server Type')]
