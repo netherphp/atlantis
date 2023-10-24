@@ -12,6 +12,7 @@ $HasThirdPartyAuth = User\Library::HasAnyThirdPartyAuth();
 $TitleCSS = $HasThirdPartyAuth ? 'text-left' : 'text-center';
 $ShiftyColumnCSS = $HasThirdPartyAuth ? 'justify-content-between' : 'justify-content-center';
 $PasswordTester = new Nether\Atlantis\Util\PasswordTester;
+$Captcha = new Nether\Atlantis\Util\Captcha($App);
 
 ?>
 
@@ -40,6 +41,11 @@ $PasswordTester = new Nether\Atlantis\Util\PasswordTester;
 						<input type="password" class="form-control" name="Password2" placeholder="Confirm Password..." />
 						<div class="text-muted font-size-smaller"><?php $Printer($PasswordTester->GetDescription()) ?></div>
 					</div>
+					<?php if($Captcha->IsConfigured()): ?>
+					<div class="col-12 mb-4">
+						<?php echo $Captcha->GetHTML() ?>
+					</div>
+					<?php endif; ?>
 					<div class="col-12">
 						<input type="hidden" name="Session" value="1" />
 						<button type="submit" class="btn btn-primary d-block w-100">Create Account</button>

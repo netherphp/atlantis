@@ -5,6 +5,7 @@ namespace Nether\Atlantis\Routes\User;
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
+use Nether\Email;
 use Nether\User;
 
 use Nether\Avenue\Meta\RouteHandler;
@@ -341,13 +342,27 @@ extends Atlantis\PublicAPI {
 		->Password2(Common\Filters\Text::StringNullable(...))
 		->Session(Common\Filters\Numbers::BoolType(...));
 
+		$Captcha = new Atlantis\Util\Captcha($this->App);
 		$RequireEmail = $this->Config[Atlantis\Key::ConfUserEmailActivate];
 		$RequireAlias = $this->Config[Atlantis\Key::ConfUserRequireAlias];
+		$RequireActivation = TRUE;
+
 		$PasswordTester = new Atlantis\Util\PasswordTester;
 		$User = NULL;
 		$RemoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : NULL;
 
 		////////
+
+		if(!$this->App->Config[Email\Library::ConfOutboundVia]) {
+			$RequireEmail = FALSE;
+			$RequireActivation = FALSE;
+		}
+
+		////////
+
+		if($Captcha->IsConfigured())
+		if(!$Captcha->IsValid())
+		$this->Quit(9, 'Failed to prove as human');
 
 		if(!$this->Data->Email)
 		$this->Quit(1, 'Invalid Email');
@@ -388,7 +403,8 @@ extends Atlantis\PublicAPI {
 			'Alias'      => $RequireAlias ? $this->Data->Alias : NULL,
 			'Email'      => $this->Data->Email,
 			'PHash'      => User\Entity::GeneratePasswordHash($this->Data->Password1),
-			'RemoteAddr' => $RemoteAddr
+			'RemoteAddr' => $RemoteAddr,
+			'Activated'  => !$RequireActivation
 		]);
 
 		if(!$User)

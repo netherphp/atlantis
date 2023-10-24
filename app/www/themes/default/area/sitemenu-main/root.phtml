@@ -16,25 +16,32 @@ $AllowLogin = $App->Config[Atlantis\Key::ConfUserAllowLogin];
 $AllowSignup = $App->Config[Atlantis\Key::ConfUserAllowSignup];
 $ItemArea = $Surface->Get('Theme.SiteMenu.ItemArea');
 
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
 $Menu = (
 	Atlantis\Struct\DropdownMenu::New()
 	->ItemNew('Home', 'mdi-home', '/')
 	->ItemNew('Docs', 'mdi-file-document', '#',
 		Attr: [ 'data-sitemenu' => 'SiteMenuMain/SiteMenuDocs' ]
 	)
-	->ItemNew('Dashboard', 'mdi-view-dashboard', '/dashboard',
-		If: ($User instanceof User\EntitySession)
-	)
-	->ItemNew('Log Out', 'mdi-logout', '/logout',
-		If: ($User instanceof User\EntitySession)
-	)
-	->ItemNew('Log In', 'mdi-login', '/login',
-		If: (!$User && $AllowLogin)
-	)
-	->ItemNew('Sign Up', 'mdi-account', '/signup',
-		If: (!$User && $AllowSignup)
-	)
 );
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+if($User instanceof User\EntitySession) {
+	$Menu->ItemNew('Dashboard', 'mdi-view-dashboard', '/dashboard');
+	$Menu->ItemNew(sprintf('Log Out (%s)', $User->GetAlias(TRUE)), 'mdi-logout', '/logout');
+}
+
+else {
+	$Menu->ItemNew('Log In', 'mdi-login', '/login');
+	$Menu->ItemNew('Sign Up', 'mdi-account', '/signup');
+}
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
 $Menu->Items->Each(
 	fn(Atlantis\Struct\DropdownItem $Item)

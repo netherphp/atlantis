@@ -1,12 +1,13 @@
 /*//
-@date 2023-10-20 20:21:49 UTC
-@files 19 [
+@date 2023-10-24 21:09:11 UTC
+@files 21 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-materialdesignicons.css",
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
+    "src\/ext-grecaptcha.css",
     "src\/fx-text.css",
     "src\/design\/footer.css",
     "src\/design\/header.css",
@@ -19,6 +20,7 @@
     "src\/elements\/nether-sensei.css",
     "src\/elements\/pretty-modern-box.css",
     "src\/elements\/pretty-modern-navbar.css",
+    "src\/elements\/sitemenu.css",
     "src\/elements\/swiper.css"
 ]
 //*/
@@ -144,6 +146,18 @@
 	--theme-body-bg-alt2: #EAEAEA;
 	--theme-body-fg:      #161616;
 
+	--theme-dark-bg: #5a5a5a;
+	--theme-dark-glass: #09090988;
+	--theme-dark-fg: #FAFAFA;
+	--theme-darker-bg: #474747;
+	--theme-darker-fg: var(--theme-body-fg);
+
+	--theme-glass-bg-100: #FFFFFFFF;
+	--theme-glass-bg-75:  #FFFFFFBD;
+	--theme-glass-bg-50:  #FFFFFF7F;
+	--theme-glass-bg-25:  #FFFFFF3F;
+	--theme-glass-bg-0:   #FFFFFF00;
+
 	/* this section needs to be auditied */
 
 	--theme-dark-glass: #cccccc34;
@@ -167,6 +181,10 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// MISC ////////////////////////////////////////////////////////////////////*/
+
+* {
+	scrollbar-width: thin;
+}
 
 html, body {
 	font-family: var(--theme-font-normal-family);
@@ -248,6 +266,15 @@ strong {
 .btn-outline-dark {
 	--bs-btn-border-color: var(--theme-dark-bg);
 	--bs-btn-color: var(--theme-dark-bg);
+}
+
+.form-check-input:checked {
+	background-color: var(--theme-primary);
+}
+
+.form-check-input.nui-theme-switch:checked {
+	background-color: #d9aa51;
+	border-color: #a5813e;
 }
 
 /*******************************************************************************
@@ -848,7 +875,8 @@ strong {
 	box-shadow: none !important;
 }
 
-.form-control:focus {
+.form-control:focus,
+.form-check-input:focus {
 	outline: none !important;
 	box-shadow: none !important;
 }
@@ -974,13 +1002,15 @@ strong {
 .offcanvas {
 	box-shadow: 0px 0px 24px var(--theme-glass-bg-50);
 	z-index: 9101;
+	scrollbar-gutter: auto;
 
-	transition: transform var(--theme-anim-ease-fast);
+	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast);
 }
 
 .offcanvas.offcanvas-glass {
 	background-color: var(--theme-glass-bg-50);
 	backdrop-filter: var(--theme-glass-filter-thick);
+	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
 }
 
 .offcanvas-backdrop {
@@ -990,6 +1020,8 @@ strong {
 .offcanvas-backdrop.fade {
 	background-color: var(--theme-glass-bg-0);
 	backdrop-filter: var(--theme-glass-filter-out);
+	-webkit-backdrop-filter: var(--theme-glass-filter-out);
+
 	opacity: 1.0;
 
 	transition: backdrop-filter var(--theme-anim-ease-fast), background-color var(--theme-anim-ease-fast);
@@ -998,6 +1030,8 @@ strong {
 .offcanvas-backdrop.fade.show {
 	background-color: var(--theme-glass-bg-25);
 	backdrop-filter: var(--theme-glass-filter-frost-thin);
+	-webkit-backdrop-filter: var(--theme-glass-filter-frost-thin);
+
 	opacity: 1.0;
 }
 
@@ -1046,6 +1080,18 @@ strong {
 	border-radius: 4px;
 	color: #444 !important;
 	padding: 4px;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-grecaptcha.css //////////////////////////////////////////////////*/
+
+.g-recaptcha iframe {
+
+	border-width: 2px !important;
+	border-style: solid !important;
+	border-color: transparent !important;
+	border-radius: 4px;
+
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1172,7 +1218,7 @@ strong {
 	z-index: 9001;
 
 	background-color: var(--theme-header-bg);
-	padding: 14px 0px 14px 0px;
+	padding: 0.75rem 0px 0.75rem 0px;
 }
 
 .PageHeader a:link:not(.btn),
@@ -1214,14 +1260,28 @@ strong {
 	margin-bottom: 0px;
 }
 
-.Article > .Date {
+.Article > .Content {
+	padding-top: 1.0rem;
+}
+
+.Article > .Subline1 {
+	display: flex;
+}
+
+.Article > .Subline1 > div {
+	margin-right: 1.5rem;
+}
+
+.Article > .Subline1 > .Date {
 	font-style: italic;
 	font-size: 0.8em;
 	opacity: 0.65;
 }
 
-.Article > .Content {
-	padding-top: 1.0rem;
+.Article > .Subline1 > .Authour {
+	font-style: italic;
+	font-size: 0.8em;
+	opacity: 0.65;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1707,6 +1767,16 @@ strong {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/sitemenu.css ///////////////////////////////////////////////*/
+
+.sitemenu-body-lock {
+	position: fixed;
+	overflow-y: hidden;
+	scrollbar-gutter: stable;
+	width: 100%;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/swiper.css /////////////////////////////////////////////////*/
 
 /*******************************************************************************
@@ -1801,6 +1871,10 @@ makes the pager bullets be square instead of circle.
 	flex-grow: 0;
 }
 
+.swiper-pagination-horizontal {
+	line-height: 1.0em;
+}
+
 .swiper-buttons {
 	position: absolute;
 	top: 0px;
@@ -1865,6 +1939,15 @@ makes the pager bullets be square instead of circle.
 
 .swiper-pager-bullet-square {
 	border-radius: 2px !important;
+}
+
+.swiper-supercontainer .swiper-pager {
+	position: relative !important;
+	padding-top: 0.75rem;
+}
+
+.swiper-supercontainer .swiper-pagination {
+	position: relative !important;
 }
 
 /*******************************************************************************

@@ -4,6 +4,7 @@ namespace Nether\Atlantis\Routes\User;
 
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Email;
 use Nether\User;
 
 use Nether\Atlantis\PublicWeb;
@@ -57,6 +58,14 @@ extends PublicWeb {
 	public function
 	PageForgot():
 	void {
+
+		if(!$this->App->Config->Get(Email\Library::ConfOutboundVia))
+		$this->ErrorDevQuit(
+			'No Email Config',
+			'This app requires Outbound email to be configured.'
+		);
+
+		//////
 
 		$Sent = $this->App->YoinkLocalData('LoginResetSent');
 		$Code = $this->Query->Code;
