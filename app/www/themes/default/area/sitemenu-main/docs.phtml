@@ -11,14 +11,11 @@ use Nether\User;
  */
 
 $Element->Title = 'Documentation';
-
-$AllowLogin = $App->Config[Atlantis\Key::ConfUserAllowLogin];
-$AllowSignup = $App->Config[Atlantis\Key::ConfUserAllowSignup];
 $ItemArea = $Surface->Get('Theme.SiteMenu.ItemArea');
 
 $Menu = (
 	Atlantis\Struct\DropdownMenu::New()
-	->ItemNew('Overview', '', '/docs')
+	->ItemNew('Overview', 'mdi-file-document', '/docs')
 	->ItemNew('Install & Setup', '', '/docs/afs')
 	->ItemNew('CSS Reference', '', '/docs/css')
 	->ItemNew('UI Element Reference', '', '/docs/ui')
