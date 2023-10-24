@@ -1,0 +1,32 @@
+<?php
+
+use Nether\Atlantis;
+
+/**
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Atlantis\Struct\DropdownMenu   $Menu
+ * @var Atlantis\Struct\DropdownItem   $Item
+ */
+
+$UseIcons = $Surface->Get('Theme.SiteMenu.Icons');
+$NoIconIcon = $Surface->Get('Theme.SiteMenu.Icons.NoIcon');
+$NextIcon = $Surface->Get('Theme.SiteMenu.Icons.Next');
+
+?>
+
+<a href="<?php $Util->Print($Item->URL) ?>" class="row border-0 pt-3 pb-3" <?php echo $Item->GetAttrForHTML() ?>>
+	<span class="col">
+		<?php
+
+		if($UseIcons)
+		printf('<i class="%s mr-1"></i> ', $Item->GetIcon() ?: $NoIconIcon);
+
+		$Util->Print($Item->Title);
+
+		?>
+	</span>
+	<?php if($Item->Attr->HasKey('data-sitemenu')): ?>
+	<span class="col-auto"><i class="<?php echo $NextIcon ?>"></i></span>
+	<?php endif; ?>
+</a>
+<hr class="mt-0 mb-0" />

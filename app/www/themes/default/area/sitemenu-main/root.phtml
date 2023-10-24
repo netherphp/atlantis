@@ -10,7 +10,7 @@ use Nether\User;
  * @var Atlantis\UI\SiteMenuPage       $Element
  */
 
-$Element->Title = 'Documentation';
+$Element->Title = 'Main Menu';
 
 $AllowLogin = $App->Config[Atlantis\Key::ConfUserAllowLogin];
 $AllowSignup = $App->Config[Atlantis\Key::ConfUserAllowSignup];
@@ -18,10 +18,22 @@ $ItemArea = $Surface->Get('Theme.SiteMenu.ItemArea');
 
 $Menu = (
 	Atlantis\Struct\DropdownMenu::New()
-	->ItemNew('Overview', '', '/docs')
-	->ItemNew('Install & Setup', '', '/docs/afs')
-	->ItemNew('CSS Reference', '', '/docs/css')
-	->ItemNew('UI Element Reference', '', '/docs/ui')
+	->ItemNew('Home', 'mdi-home', '/')
+	->ItemNew('Docs', 'mdi-file-document', '#',
+		Attr: [ 'data-sitemenu' => 'SiteMenuMain/SiteMenuDocs' ]
+	)
+	->ItemNew('Dashboard', 'mdi-logout', '/dashboard',
+		If: ($User instanceof User\EntitySession)
+	)
+	->ItemNew('Log Out', 'mdi-logout', '/logout',
+		If: ($User instanceof User\EntitySession)
+	)
+	->ItemNew('Log In', 'mdi-login', '/login',
+		If: (!$User && $AllowLogin)
+	)
+	->ItemNew('Sign Up', 'mdi-account', '/signup',
+		If: (!$User && $AllowSignup)
+	)
 );
 
 $Menu->Items->Each(
@@ -32,3 +44,9 @@ $Menu->Items->Each(
 		'Item'    => $Item
 	])
 );
+
+?>
+
+<div class="pt-3 pb-3">
+	<?php $Surface->Area('widgets/theme-switcher') ?>
+</div>

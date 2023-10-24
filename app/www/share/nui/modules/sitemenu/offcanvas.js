@@ -146,6 +146,11 @@ class StackManager {
 		return;
 	};
 
+	isBodyLongEnough() {
+
+		return (jQuery('body').height() > jQuery(window).height());
+	};
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -262,6 +267,7 @@ class StackManager {
 			setTimeout(()=> drop.addClass('show'), 0);
 
 			if(this.useBodyLockCSS) {
+				if(this.isBodyLongEnough())
 				jQuery('html').addClass('sitemenu-body-lock');
 			}
 

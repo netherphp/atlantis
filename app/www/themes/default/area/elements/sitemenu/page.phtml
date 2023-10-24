@@ -20,32 +20,28 @@ use Nether\User;
 // data-bs-scroll="true" no bootstrap auto managed body props/classes.
 // data-bs-backdrop="false" no bootstrap auto managed overlay backdrops.
 
-$ID ??= $Element->GetID();
-$Title ??= $Element->Title;
-$Content ??= $Element->Content;
-
 $Content = match(TRUE) {
-	($Content instanceof Surface\Element)
-	=> $Content->Render(),
+	($Element->Content instanceof Surface\Element)
+	=> $Element->Content->Render(),
 
-	(is_callable($Content))
-	=> ($Content)($__SCOPE),
+	(is_callable($Element->Content))
+	=> ($Element->Content)($__SCOPE),
 
 	default
 	=> match(TRUE) {
-		(str_starts_with($Content, 'area:'))
-		=> $Surface->GetArea(substr($Content, 4), $__SCOPE),
+		(str_starts_with($Element->Content, 'area:'))
+		=> $Surface->GetArea(substr($Element->Content, 4), $__SCOPE),
 
 		default
-		=> $Content
+		=> $Element->Content
 	}
 };
 
 ?>
 
-<div id="<?php $Util->Print($ID) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
+<div id="<?php $Util->Print($Element->GetID()) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
 	<div class="offcanvas-header">
-		<h5 class="offcanvas-title"><?php $Util->Print($Title) ?></h5>
+		<h5 class="offcanvas-title"><?php $Util->Print($Element->Title) ?></h5>
 		<button type="button" data-sitemenu-close="parent" class="btn-close">
 		</button>
 	</div>
