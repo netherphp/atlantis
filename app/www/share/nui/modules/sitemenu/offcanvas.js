@@ -91,6 +91,9 @@ class StackManager {
 
 		this.mode = 'width';
 
+		this.useBodyLockCSS = true;
+		this.useBodyLockJS = false;
+
 		////////
 
 		if(this.conf.autorun)
@@ -257,11 +260,41 @@ class StackManager {
 			);
 
 			setTimeout(()=> drop.addClass('show'), 0);
+
+			if(this.useBodyLockCSS) {
+				jQuery('html').addClass('sitemenu-body-lock');
+			}
+
+			if(this.useBodyLockJS) {
+				jQuery('body').attr('data-sitemenu-scroll-pos', jQuery(window).scrollTop());
+
+				jQuery(window)
+				.on('scroll.sitemenu', function(ev) {
+					ev.preventDefault();
+
+					window.scroll({
+						top: 0, left: 0,
+						behavior: 'instant'
+					});
+
+					return false;
+				});
+			}
+
 			return;
 		}
 
 		if(enable === false) {
 			drops.removeClass('show');
+
+			if(this.useBodyLockCSS) {
+				jQuery('html').removeClass('sitemenu-body-lock');
+			}
+
+			if(this.useBodyLockJS) {
+				jQuery('body').removeAttr('data-sitemenu-scroll-pos');
+				jQuery(window).off('scroll.sitemenu');
+			}
 
 			setTimeout(()=> drops.remove(), 200);
 			return;

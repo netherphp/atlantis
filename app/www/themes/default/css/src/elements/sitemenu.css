@@ -1,0 +1,8 @@
+
+.sitemenu-body-lock {
+	position: fixed;
+	overflow-y: hidden;
+	scrollbar-gutter: stable;
+	width: 100%;
+}
+
