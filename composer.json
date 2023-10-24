@@ -34,6 +34,7 @@
 		"netherphp/sensei": "dev-redux",
 		"netherphp/email": "dev-master",
 		"netherphp/storage": "dev-master",
+		"netherphp/browser": "dev-master",
 		"monolog/monolog": "^3.2",
 		"google/recaptcha": "^1.2.4",
 		"gravitypdf/querypath": "^3.2"
