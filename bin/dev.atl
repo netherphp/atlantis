@@ -273,7 +273,6 @@ extends Console\Client {
 	int {
 
 		$this->HandleSetupProjectPaths();
-		$this->HandleSetupWebserver();
 
 		return 0;
 	}
@@ -857,7 +856,111 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('reboot')]
+	#[Console\Meta\Command('webconfig')]
+	#[Console\Meta\Value('--filename', 'Name of the config file in the server dir.')]
+	#[Console\Meta\Info('Symlink our web config into the webserver config system.')]
+	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
+	#[Console\Meta\Error(2, 'No valid server Type')]
+	public function
+	HandleWebserverConfig():
+	int {
+
+		////////
+
+		$Project = AtlantisProjectJSON::FromApp($this->App);
+		$OptUpdate = $this->GetOption('update');
+
+		if($Project->Web->Sudo && $this->Sudo())
+		$this->Quit(0);
+
+		if(!isset($Project->Web) || $OptUpdate) {
+			$this->HandleSetupWebserver();
+		}
+
+		////////
+
+		switch($Project->Web->Type) {
+			case 'apachectl': {
+				$this->ConfigApache24($Project);
+				$this->HandleWebserverRehash();
+				break;
+			}
+			default: {
+				$this->Quit(2);
+				break;
+			}
+		}
+
+		return 0;
+	}
+
+	protected function
+	ConfigApache24(AtlantisProjectJSON $Project):
+	static {
+
+		$ApacheBaseDir = '/etc/apache2/sites-enabled';
+		$LocalConfigFile = 'apache24.conf';
+
+		$SourceFile = $this->App->FromConfEnv($LocalConfigFile);
+		$Filename = $this->GetOption('filename');
+		$EnvType = $this->App->GetProjectEnvType();
+		$EnvName = $this->App->Config[Atlantis\Key::ConfProjectID];
+		$EnvNum = match($EnvType) {
+			'dev'  => 100,
+			'demo' => 800,
+			'prod' => 900
+		};
+
+		////////
+
+		if($Filename === NULL)
+		$Filename = sprintf('%s-%s-%s.conf', $EnvNum, $EnvName, $EnvType);
+
+		$LinkFile = Common\Filesystem\Util::Pathify(
+			$ApacheBaseDir, $Filename
+		);
+
+		////////
+
+		$this->PrintLn($this->FormatBulletList([
+			'Source' => $SourceFile,
+			'Link'   => $LinkFile
+		]));
+
+		if(file_exists($LinkFile)) {
+			if(is_link($LinkFile)) {
+				if(readlink($LinkFile) === $SourceFile) {
+					$this->PrintLn('OK - Symlink exists and is correct.', 2);
+				}
+
+				else {
+					$this->PrintLn(sprintf(
+						'ERR - Symlink exists but points to %s.',
+						readlink($LinkFile)
+					), 2);
+				}
+			}
+
+			else {
+				$this->PrintLn('ERR - File exists where we want to put the Symlink.', 2);
+			}
+
+			return $this;
+		}
+
+		////////
+
+		symlink($SourceFile, $LinkFile);
+
+		if(file_exists($LinkFile))
+		$this->PrintLn('OK', 2);
+		else
+		$this->PrintLn('ERR', 2);
+
+		return $this;
+	}
+
+	#[Console\Meta\Command('webreload')]
 	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
 	#[Console\Meta\Error(2, 'No valid server Type')]
 	public function

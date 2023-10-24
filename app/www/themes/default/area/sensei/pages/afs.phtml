@@ -18,16 +18,20 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 	<h1 class="mb-0">Atlantis From Scratch.</h1>
 	<div class="row">
 		<div class="col-12 col-lg">
-			<p class="mb-4">This guide will walk through the process of starting with an empty directory and ending with a working website with SSL. The following assumptions in this guide are just reasonable defaults not requirements. You may need to adjust commands based on your environment.</p>
-			<div class="edged-left opacity-75 mb-4">
-				<div class="fw-bold">Assumptions:</div>
-				<ul>
-					<li>Composer for PHP is installed system wide.</li>
-					<li>User has <code>./vendor/bin</code> in <code>$PATH</code>.</li>
-					<li>User is setup to be able to use sudo.</li>
-					<li>Server is Debian flavoured with Apache 2.4.</li>
-					<li>AcmePHP is setup in <code>/opt/ssl</code>.</li>
-				</ul>
+			<p class="mb-4">
+				The process of starting with an empty directory and ending with a working website with SSL.
+				The following assumptions in this guide are just reasonable defaults not requirements.
+				You may need to adjust commands based on your environment.
+			</p>
+			<ul class="mb-4">
+				<li>Ubuntu Server</li>
+				<li>PHP 8.1</li>
+				<li>Apache 2.4</li>
+			</ul>
+			<div class="edged-left opacity-75 mb-0">
+				<div class="fw-bold">Note:</div>
+				Commands provided by Atlantis (or any Composer based packages) will only work as shown if <code>./vendor/bin</code> is in the shell <code>$PATH</code>.
+				Otherwise commands may need to be manually prefixed with <code>vendor/bin</code> when calling them.
 			</div>
 		</div>
 		<div class="col-12 col-lg-4">
@@ -42,7 +46,6 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 						<li class="mb-2"><a class="underdot" href="#apache">2) Apache Web Server Config</a></li>
 						<li class="mb-2"><a class="underdot" href="#acmephp">3) AcmePHP &amp; SSL Cert</a></li>
 						<li class="mb-2"><a class="underdot" href="#env">4) Environment Config</a></li>
-
 					</ul>
 				</div>
 			</div>
@@ -69,6 +72,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<blockquote class="edged-left">
 					<div class="mb-0"><code class="cli">$ composer require netherphp/atlantis</code></div>
 					<div class="mb-0"><code class="cli">$ dev.atl init</code></div>
+					<div class="mb-0"><code class="cli">$ composer update</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-0">
