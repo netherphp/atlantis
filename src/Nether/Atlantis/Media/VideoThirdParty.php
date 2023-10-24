@@ -3,6 +3,7 @@
 namespace Nether\Atlantis\Media;
 
 use Nether\Atlantis;
+use Nether\Browser;
 use Nether\Common;
 use Nether\Database;
 use Nether\Surface;
@@ -356,8 +357,8 @@ extends Atlantis\Prototype {
 
 		// check if we can find out what the thumbnail is.
 
-		$Browser = Common\Browser\Client::FromURL($VimURL);
-		$Data = $Browser->FetchJSON();
+		$Browser = Browser\Client::FromURL($VimURL);
+		$Data = $Browser->FetchAsJSON();
 
 		if(!$Data || !isset($Data['pictures']) || !isset($Data['pictures']['base_link']))
 		return NULL;
