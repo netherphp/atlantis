@@ -3,12 +3,30 @@
 namespace Nether\Atlantis\Routes\User;
 
 use Nether\Atlantis;
+use Nether\Common;
+use Nether\User;
 
 use Nether\Atlantis\PublicWeb;
 use Nether\Avenue\Meta\RouteHandler;
 
 class UserSessionWeb
 extends PublicWeb {
+
+	public function
+	OnReady(?Common\Datastore $Data):
+	void {
+
+		parent::OnReady($Data);
+
+		if(!User\Entity::HasDB())
+		$this->ErrorDevQuit(
+			'Missing Database Config',
+			sprintf('No database for %s found', User\Entity::$DBA)
+		);
+
+
+		return;
+	}
 
 	#[RouteHandler('/login')]
 	#[Atlantis\Meta\UserActivationFlow]

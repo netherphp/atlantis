@@ -3,6 +3,7 @@
 namespace Nether\Atlantis\Routes\User;
 
 use Nether\Atlantis;
+use Nether\Avenue;
 use Nether\Common;
 use Nether\User;
 
@@ -10,6 +11,21 @@ use Nether\Avenue\Meta\RouteHandler;
 
 class UserSessionAPI
 extends Atlantis\PublicAPI {
+
+	public function
+	OnReady(?Avenue\Struct\ExtraData $ExtraData):
+	void {
+
+		parent::OnReady($ExtraData);
+
+		if(!User\Entity::HasDB())
+		$this->ErrorDevQuit(
+			'Missing Database Config',
+			sprintf('No database for %s found', User\Entity::$DBA)
+		);
+
+		return;
+	}
 
 	#[RouteHandler('/api/user/session', Verb: 'LOGIN')]
 	public function

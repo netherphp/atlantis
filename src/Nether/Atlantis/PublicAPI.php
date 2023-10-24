@@ -225,4 +225,29 @@ does not do any additional access checking.
 		return;
 	}
 
+	#[Common\Meta\Date('2023-10-24')]
+	#[Common\Meta\Info('If a dev env it will show the error and quit. Else it will show a generic error and quit.')]
+	public function
+	ErrorDevQuit(string $Title='Error', ?string $Message=NULL, int $Code=-1):
+	void {
+
+		if($this->App->GetProjectEnvType() !== 'dev') {
+			$Code = NULL;
+			$Title = 'System Error';
+			$Message = 'Something has gone wrong.';
+		}
+
+		////////
+
+		if($Title && $Message)
+		$Title .= ": {$Message}";
+
+		////////
+
+		$this->Quit($Code, $Title);
+
+		return;
+	}
+
+
 }
