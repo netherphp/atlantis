@@ -8,11 +8,11 @@ $ID ??= $Element->GetID();
 
 ?>
 
-<div id="<?php $Util->Print($ID) ?>" class="sitemenu">
+<div id="<?php $Util->Print($ID) ?>" class="sitemenu" data-sitemenu-datakey="<?php $Util->Print($Element->DataKey) ?>">
 
 	<?php
 	$Element->Pages
-	->Each(fn(Nether\Atlantis\UI\SiteMenuPage $Page)=> print($Page))
+	->Each(fn(Nether\Atlantis\UI\SiteMenuPage $Page)=> print($Page->SetMenu($Element)))
 	?>
 
 </div>

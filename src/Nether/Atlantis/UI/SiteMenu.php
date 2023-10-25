@@ -9,6 +9,9 @@ use Nether\Surface;
 class SiteMenu
 extends Surface\Element {
 
+	////////////////////////////////////////////////////////////////
+	// IMPLEMENTS: Surface\Element /////////////////////////////////
+
 	public string
 	$Area = 'elements/sitemenu/main';
 
@@ -22,11 +25,25 @@ extends Surface\Element {
 
 	public array|Common\Datastore
 	$JSReady = [
-		'SiteMenu' => 'let sitemenu = new SiteMenu("{%SelectorID%}");'
+		'SiteMenu' => 'let sitemenu = new SiteMenu("{%SelectorID%}", { datakey: "{%DataKey%}" });'
 	];
+
+	#[Common\Meta\Date('2023-10-25')]
+	public function
+	TokenJSReady():
+	Common\Datastore {
+
+		$Output = parent::TokenJSReady();
+		$Output['DataKey'] = $this->DataKey;
+
+		return $Output;
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public string
+	$DataKey = 'sitemenu';
 
 	#[Common\Meta\PropertyFactory('FromArray', 'Pages')]
 	public array|Common\Datastore

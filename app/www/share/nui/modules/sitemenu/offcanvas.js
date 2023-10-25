@@ -4,9 +4,9 @@
 
 class StackManagerConfig {
 
-	constructor(autorun=true, name='sitemenu') {
+	constructor(autorun=true, datakey='sitemenu') {
 		this.autorun = autorun;
-		this.name = name;
+		this.datakey = datakey;
 		return;
 	};
 
@@ -68,6 +68,8 @@ class StackItem {
 class StackManager {
 
 	constructor(selector='#SiteMenu', conf={}) {
+
+		console.log(`[StackManager] ${selector}`);
 
 		this.element = jQuery(selector);
 		this.conf = StackManagerConfig.FromObject(conf);
@@ -173,11 +175,13 @@ class StackManager {
 
 		////////
 
-		jQuery(`[data-${this.conf.name}]`)
+		jQuery(`[data-${this.conf.datakey}]`)
 		.bind('click', this.onSiteMenuUnfold.bind(this));
 
-		jQuery(`[data-${this.conf.name}-close]`)
-		.bind('click', this.onSiteMenuClose.bind(this));
+		let closers = this.element.find(`[data-${this.conf.datakey}-close]`);
+
+		closers.bind('click', this.onSiteMenuClose.bind(this));
+		console.log(`found ${closers.length} ${this.conf.datakey} closers`);
 
 		////////
 
@@ -223,8 +227,15 @@ class StackManager {
 			// isOpen does like a, duh duh.
 			// isVisible does like an async.
 
-			if(!item.isVisible())
+			if(item.element.hasClass('hiding'))
 			continue;
+
+			if(!item.element.hasClass('showing'))
+			if(!item.element.hasClass('show'))
+			continue;
+
+			//if(!item.isVisible())
+			//continue;
 
 			one = true;
 			padd = mult * this.xbase;
@@ -327,7 +338,7 @@ class StackManager {
 
 		let path = id;
 		let item = this.items[id];
-		let prefix = jQuery.trim(item.element.attr(`data-${this.conf.name}-path`));
+		let prefix = jQuery.trim(item.element.attr(`data-${this.conf.datakey}-path`));
 
 		////////
 
@@ -429,7 +440,7 @@ class StackManager {
 			parent = parent.parentElement;
 		}
 
-		if(parent)
+		if(parent && this.items[parent.id])
 		this.items[parent.id].bsapi.hide();
 
 		return false;
@@ -438,7 +449,9 @@ class StackManager {
 	onSiteMenuUnfold(jEv) {
 
 		let that = jQuery(jEv.currentTarget);
-		let path = that.attr(`data-${this.conf.name}`);
+		let path = that.attr(`data-${this.conf.datakey}`);
+
+		console.log(path);
 
 		this.unfold(path);
 

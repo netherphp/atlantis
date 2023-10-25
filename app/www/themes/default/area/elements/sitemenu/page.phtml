@@ -13,6 +13,7 @@ use Nether\User;
  * @var User\EntitySession $User
  *
  * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\UI\SiteMenu $Menu
  * @var Atlantis\UI\SiteMenuPage $Element
  * ...
  */
@@ -42,7 +43,7 @@ $Content = match(TRUE) {
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
 	<div class="offcanvas-header">
 		<h5 class="offcanvas-title"><?php $Util->Print($Element->Title) ?></h5>
-		<button type="button" data-sitemenu-close="parent" class="btn-close">
+		<button type="button" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent" class="btn-close">
 		</button>
 	</div>
 	<div class="offcanvas-body">
