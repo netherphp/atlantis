@@ -57,8 +57,8 @@ $Link = (
 				<div class="<?php $Util->Print($SiteTags->Count() > 1 ? 'd-block' : 'd-none') ?> mb-6">
 					<div class="fw-bold text-uppercase">Select Sites</div>
 					<?php foreach($SiteTags as $SiteTag): ?>
-					<div class="form-check form-switch mb-2">
-						<label>
+					<div class="form-check -form-switch mb-2">
+						<label class="fw-bold">
 							<input class="form-check-input" type="checkbox" name="SiteTags[]" value="<?php $Util->Print($SiteTag->Tag->ID) ?>" <?php echo $Util->GetCheckedHTML($SiteTag->Selected) ?> />
 							<?php $Util->Print($SiteTag->Tag->Name) ?>
 						</label>
@@ -82,7 +82,7 @@ $Link = (
 						<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Util->ValueFrom('Date', $Link, $Values)) ?>" />
 					</div>
 
-					<div class="form-check form-switch">
+					<div class="form-check -form-switch">
 						<label class="form-check-label fw-bold">
 							<input class="form-check-input" name="OptUseLinkDate" type="checkbox" value="1" <?php $Util->Print($Util->GetCheckedHTML( $Post && $Link ? $Post->TimeSorted === $Link->GetTime() : FALSE )) ?>>
 							Sort post by Source Date?
