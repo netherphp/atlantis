@@ -111,15 +111,15 @@ $Pages = [
 		<?php endforeach; ?>
 	</div>
 
-	<div class="jumbotron">
+	<div class="jumbotron rounded">
 		<div>
 			<h3>UI Elements</h3>
 		</div>
 		<?php foreach($Pages as $Title => $URL): ?>
-		<hr />
+		<hr class="opacity-20" />
 		<div class="row align-items-center">
 			<div class="col">
-				<?php $Util->Print($Title) ?>
+				<a href="<?php $Util->Print($URL) ?>"><?php $Util->Print($Title) ?></a>
 			</div>
 			<div class="col-auto">
 				<a class="btn btn-primary" href="<?php $Util->Print($URL) ?>">

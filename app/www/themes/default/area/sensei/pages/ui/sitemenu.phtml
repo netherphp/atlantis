@@ -7,8 +7,8 @@ $Intro = (fn()=> Nether\Atlantis\UI\Article::FromSurfaceWith($Surface, [
 ]));
 
 $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
-	'DataKey' => 'examplemenu',
 	'UUID'    => 'ExampleMenu1',
+	'DataKey' => 'examplemenu',
 	'Title'   => 'Example Menu',
 	'Pages'   => [
 		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
@@ -52,28 +52,31 @@ $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 
 <div class="container pt-6 pb-6">
 
-	<div class="mb-6">
-		<?php echo $Intro() ?>
+	<div class="jumbotron rounded mb-4">
+		<div class="mb-4">
+			<?php echo $Intro() ?>
+		</div>
+
+		<div class="row">
+			<div class="col-12 mb-2">
+				<button class="btn btn-primary" data-examplemenu="ExamplePage1">
+					Open ExampleMenu1
+				</button>
+			</div>
+			<div class="col-12 mb-2">
+				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
+					Open ExampleMenu1 to Level 4
+				</button>
+			</div>
+			<div class="col-12 mb-2">
+				<button class="btn btn-primary" data-examplemenu="ExamplePage4">
+					Open only Level 4 from ExampleMenu1
+				</button>
+			</div>
+		</div>
+
 	</div>
 
-	<div class="row">
-		<div class="col-12 mb-2">
-			<button class="btn btn-primary" data-examplemenu="ExamplePage1">
-				Open ExampleMenu1
-			</button>
-		</div>
-		<div class="col-12 mb-2">
-			<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
-				Open ExampleMenu1 to Level 4
-			</button>
-		</div>
-		<div class="col-12 mb-2">
-			<button class="btn btn-primary" data-examplemenu="ExamplePage4">
-				Open only Level 4 from ExampleMenu1
-			</button>
-		</div>
-	</div>
-
-<?php echo $Menu ?>
+	<?php echo $Menu ?>
 
 </div>
