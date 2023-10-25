@@ -1,5 +1,11 @@
 <?php
 
+$Intro = (fn()=> Nether\Atlantis\UI\Article::FromSurfaceWith($Surface, [
+	'Title'   => 'Site Menu',
+	'Section' => 'Atlantis\\UI\\SiteMenu',
+	'Content' => 'Provides a stack of off-screen sidebars in the style of mobile app menus using the offcanvas element in Bootstrap.'
+]));
+
 $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 	'DataKey' => 'examplemenu',
 	'UUID'    => 'ExampleMenu1',
@@ -10,7 +16,7 @@ $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 			'Title'   => 'Example Page 1',
 			'Content' => <<< EOL
 				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2">
-					Open ExampleMenu2
+					Go Deeper <i class="mdi mdi-chevron-right"></i>
 				</button>
 			EOL
 		]),
@@ -19,7 +25,7 @@ $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 			'Title'   => 'Example Page 2',
 			'Content' => <<< EOL
 				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3">
-					Open ExampleMenu3
+					Go Deeper <i class="mdi mdi-chevron-right"></i>
 				</button>
 			EOL
 		]),
@@ -28,7 +34,7 @@ $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 			'Title'   => 'Example Page 3',
 			'Content' => <<< EOL
 				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
-					Open ExampleMenu4
+					Go Deeper <i class="mdi mdi-chevron-right"></i>
 				</button>
 			EOL
 		]),
@@ -36,7 +42,7 @@ $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 			'UUID'    => 'ExamplePage4',
 			'Title'   => 'Example Page 4',
 			'Content' => <<< EOL
-				Example Page 4
+				So Deep.
 			EOL
 		])
 	]
@@ -47,13 +53,23 @@ $Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
 <div class="container pt-6 pb-6">
 
 	<div class="mb-6">
-		Offcanvas Site Menu
+		<?php echo $Intro() ?>
 	</div>
 
 	<div class="row">
-		<div class="col">
+		<div class="col-12 mb-2">
 			<button class="btn btn-primary" data-examplemenu="ExamplePage1">
 				Open ExampleMenu1
+			</button>
+		</div>
+		<div class="col-12 mb-2">
+			<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
+				Open ExampleMenu1 to Level 4
+			</button>
+		</div>
+		<div class="col-12 mb-2">
+			<button class="btn btn-primary" data-examplemenu="ExamplePage4">
+				Open only Level 4 from ExampleMenu1
 			</button>
 		</div>
 	</div>

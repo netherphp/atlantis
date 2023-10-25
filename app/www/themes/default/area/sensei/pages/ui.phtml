@@ -53,7 +53,29 @@ $Sections = [
 			'Title'    => 'Hello',
 			'Subline'  => 'This is a promo video.'
 		]))
+	],
+	(object)[
+		'Title' => 'More...',
+		'Class' => NULL,
+		'Page'  => NULL,
+		'Func'  => (fn()=> <<< EOL
+			<div class="row">
+				<div class="col">
+					Site Menu
+				</div>
+				<div class="col-auto">
+					<a href="/docs/ui/sitemenu">View Docs <i class="mdi mdi-chevron-right"></i></a>
+				</div>
+			</div>
+		EOL)
 	]
+];
+
+$Pages = [
+	'Article'     => '/docs/ui/article',
+	'Promo Video' => '/docs/ui/promo-video',
+	'Slider'      => '/docs/ui/slider',
+	'Site Menu'   => '/docs/ui/sitemenu'
 ];
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +85,7 @@ $Sections = [
 
 <div class="container pt-6 pb-6">
 
-	<div class="row">
+	<div class="d-none row">
 		<?php foreach($Sections as $Section): ?>
 		<div class="col-12 mb-8">
 			<div class="row align-items-center">
@@ -87,6 +109,26 @@ $Sections = [
 			</div>
 		</div>
 		<?php endforeach; ?>
+	</div>
+
+	<div class="jumbotron">
+		<div>
+			<h3>UI Elements</h3>
+		</div>
+		<?php foreach($Pages as $Title => $URL): ?>
+		<hr />
+		<div class="row align-items-center">
+			<div class="col">
+				<?php $Util->Print($Title) ?>
+			</div>
+			<div class="col-auto">
+				<a class="btn btn-primary" href="<?php $Util->Print($URL) ?>">
+					View Docs
+					<i class="mdi mdi-chevron-right mr-0"></i>
+				</a>
+			</div>
+		</div>
+		<?php endforeach; unset($Title, $URL); ?>
 	</div>
 
 </div>
