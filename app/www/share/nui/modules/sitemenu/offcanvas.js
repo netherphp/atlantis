@@ -221,11 +221,9 @@ class StackManager {
 
 		let mult = 0;
 		let padd = 0;
+		let lite = 1.0;
 
 		for(const item of items) {
-
-			// isOpen does like a, duh duh.
-			// isVisible does like an async.
 
 			if(item.element.hasClass('hiding'))
 			continue;
@@ -233,9 +231,6 @@ class StackManager {
 			if(!item.element.hasClass('showing'))
 			if(!item.element.hasClass('show'))
 			continue;
-
-			//if(!item.isVisible())
-			//continue;
 
 			one = true;
 			padd = mult * this.xbase;
@@ -245,9 +240,12 @@ class StackManager {
 				item.element.css({
 					'width': `calc(var(--bs-offcanvas-width) + ${padd}px)`,
 					'padding-right': `${padd}px`,
+					'filter': `brightness(${lite})`,
 					'z-index': `${(this.zbase - mult)}`,
 				});
 			}
+
+			lite -= 0.1;
 		}
 
 		this.backdrop(one);
