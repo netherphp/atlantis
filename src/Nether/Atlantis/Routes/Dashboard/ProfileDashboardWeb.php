@@ -25,6 +25,7 @@ extends Atlantis\ProtectedWeb {
 		]);
 
 		$Filters = [
+			'Enabled'  => FALSE,
 			'Search'   => $this->Data->Q,
 			'Untagged' => $this->Data->Untagged,
 			'Page'     => $this->Data->Page,

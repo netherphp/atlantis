@@ -1,11 +1,22 @@
 import ModalDialog from '../modal/modal.js';
 import API from '../../api/json.js';
 
+// @todo 2023-10-26 restructure this entire to take better advantage of better
+// async management. the single promise that was just bolted on to the queueRun
+// method is a bit janky of a way to throttle it to only process one at a time.
+// would rather see the queue get populated with something such UploadQueueItem
+// instances then run over that and await directly upon the transmission of
+// that item. this structure would also make it easier to make it optional to
+// wait until the entire queue is done before doing the POSTFINALs or not.
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 let UploaderTemplate = `
 	<div class="row">
 		<div class="col-12">
 			<button class="btn btn-primary btn-block font-weight-bold text-uppercase">Click To Choose Files...</button>
-			<input type="file" class="d-none" />
+			<input type="file" class="d-none" multiple="multiple" />
 		</div>
 		<div class="col-12 mt-4 text-center d-none">
 			<div class="progress"><div class="progress-bar" style="width: 0%"></div></div>
@@ -13,6 +24,9 @@ let UploaderTemplate = `
 		</div>
 	</div>
 `;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 class UploadChunker {
 
@@ -73,6 +87,9 @@ class UploadChunker {
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class UploadButtonDialog
 extends ModalDialog {
 
@@ -90,6 +107,10 @@ extends ModalDialog {
 		this.bar = this.body.find('.progress:first');
 		this.fill = this.body.find('.progress-bar:first');
 		this.status = this.body.find('.status:first');
+
+		this.runCount = 0;
+		this.runTotal = 0;
+		this.throttle = null;
 
 		this.url = main.options.url;
 		this.method = main.options.method;
@@ -207,9 +228,9 @@ extends ModalDialog {
 		.addClass('bg-success progress-bar-striped progress-bar-animated')
 		.css({ 'width': '100%' });
 
-		this.status.text('Processing...');
+		this.status.text(`Processing ${item.file.name} (${this.runCount} of ${this.queue.length})`);
 
-		console.log(`chunk ${iter + 1} of ${item.count} done`);
+		//console.log(`chunk ${iter + 1} of ${item.count} done`);
 		console.log(`file ${item.file.name} done`);
 
 		////////
@@ -223,12 +244,15 @@ extends ModalDialog {
 		for(const dkey in this.dataset)
 		finish[dkey] = this.dataset[dkey];
 
-		console.log('finish');
-
 		////////
 
 		(api.send(finish))
 		.then(function(result) {
+			if(self.runCount < self.queue.length) {
+				self.throttle();
+				return;
+			}
+
 			if(typeof self.onSuccess === 'function') {
 				(self.onSuccess)(result);
 			}
@@ -266,14 +290,28 @@ extends ModalDialog {
 		return;
 	};
 
-	queueRun() {
+	async queueRun() {
+
+		let that = this;
+
+		this.runCount = 0;
+
+		this.queue.sort(function(a, b){ return a.file.name > b.file.name; });
 
 		this.fill.removeClass('bg-danger bg-success');
 		this.bar.parent().removeClass('d-none');
-		this.status.text('Uploading...');
 
 		for(let item of this.queue) {
-			this.upload(item);
+			this.runCount += 1;
+			this.status.text(`Uploading ${item.file.name} (${this.runCount} of ${this.queue.length})`);
+
+			//this.upload(item);
+
+			await new Promise(function(ok, fail) {
+				that.throttle = ok;
+				that.upload(item, null);
+				return;
+			});
 		}
 
 		return;
@@ -321,6 +359,9 @@ extends ModalDialog {
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class UploadButtonOptions {
 
 	constructor(input={}) {
@@ -359,6 +400,9 @@ class UploadButtonOptions {
 	};
 
 };
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 class UploadButton {
 
@@ -423,6 +467,9 @@ class UploadButton {
 	};
 
 };
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 export default UploadButton;
 export { UploadButton, UploadButtonDialog, UploadChunker };
