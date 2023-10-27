@@ -2,15 +2,13 @@
 
 namespace Routes;
 
-use Nether\Atlantis\PublicWeb;
-use Nether\Avenue\Meta\RouteHandler;
-use Nether\Avenue\Meta\ErrorHandler;
-use Nether\Avenue\Response;
+use Nether\Atlantis;
+use Nether\Avenue;
 
 class Home
-extends PublicWeb {
+extends Atlantis\PublicWeb {
 
-	#[RouteHandler('/index')]
+	#[Atlantis\Meta\RouteHandler('/index')]
 	public function
 	Index():
 	void {
@@ -21,7 +19,8 @@ extends PublicWeb {
 		return;
 	}
 
-	#[ErrorHandler(Response::CodeForbidden)]
+	#[Avenue\Meta\ErrorHandler(Avenue\Response::CodeForbidden)]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	ErrorForbidden():
 	void {
@@ -32,7 +31,8 @@ extends PublicWeb {
 		return;
 	}
 
-	#[ErrorHandler(Response::CodeNotFound)]
+	#[Avenue\Meta\ErrorHandler(Avenue\Response::CodeNotFound)]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	ErrorNotFound():
 	void {

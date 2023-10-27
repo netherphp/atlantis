@@ -78,7 +78,8 @@ as html pages. //*/
 
 		////////
 
-		return Avenue\Response::CodeOK;
+		//return Avenue\Response::CodeOK;
+		return $this->Response->Code;
 	}
 
 	public function
@@ -109,8 +110,13 @@ as html pages. //*/
 
 		////////
 
-		if($Code >= 400)
-		$this->Quit($Code);
+		if($Code >= 400) {
+			// terminate the app if there is no custom error handler for
+			// whatever state we landed in.
+
+			if(!$this->App->Router->GetErrorHandlers()->HasKey("e{$Code}"))
+			$this->Quit($Code);
+		}
 
 		////////
 

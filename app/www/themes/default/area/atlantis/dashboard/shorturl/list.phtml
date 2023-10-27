@@ -1,0 +1,114 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\Routes\Dashboard\ShortURLDashboardWeb $Route
+ * @var Database\ResultSet $Results
+ */
+
+$Surface
+->Area('media/dashboard/scripts', $__SCOPE)
+->Area('dashboard/nav', [ 'Trail' => $Trail ]);
+
+$GetLiterallyShortenedMaybe = function(?string $URL) {
+
+	if($URL && strlen($URL) > 48)
+	return sprintf('%s...', substr($URL, 0, 48));
+
+	return $URL;
+}
+
+?>
+
+<?php $Surface->Area('atlantis/dashboard/shorturl/form') ?>
+
+<hr />
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th class="th-shrink white-space-nowrap">Date</th>
+			<th class="white-space-nowrap">URL</th>
+			<th class="th-shrink white-space-nowrap">Hits</th>
+			<th class="th-shrink white-space-nowrap"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach($Results as $ShortURL): /** @var Atlantis\ShortURL\Entity $ShortURL */ ?>
+			<tr>
+				<td class="white-space-nowrap">
+					<div class="fw-bold"><?php $Util->Print($ShortURL->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?></div>
+					<div class="font-size-small text-muted"><?php $Util->Print($ShortURL->DateCreated->Get(Common\Values::DateFormatT12Z)) ?></div>
+				</td>
+				<td>
+					<div style="overflow:hidden; white-space: nowrap; max-width: 100%;"><?php $Util->Print($GetLiterallyShortenedMaybe($ShortURL->URL)) ?></div>
+					<div class="font-size-small text-muted"><?php $Util->Print($ShortURL->GetShortURL()) ?></div>
+				</td>
+				<td class="text-center">
+					<?php $Util->Print($ShortURL->CountHits) ?>
+				</td>
+				<td class="white-space-nowrap">
+					<button class="btn btn-primary" data-nui-copy-value="<?php $Util->Print($ShortURL->GetShortURL()) ?>">Copy Short URL</button>
+					<button class="btn btn-danger" data-shorturl-cmd="delete" data-shorturl-id="<?php $Util->Print($ShortURL->ID) ?>" data-shorturl-title="<?php $Util->Print($GetLiterallyShortenedMaybe($ShortURL->URL)) ?>"><i class="mdi mdi-close mr-0"></i></button>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import FormUtil from '/share/nui/util/form.js';
+import ConfirmDialog from '/share/nui/modules/modal/confirm.js';
+
+jQuery(function() {
+
+	jQuery('[data-shorturl-cmd=delete]')
+	.on('click', function() {
+
+		let that = jQuery(this);
+		let id = that.attr('data-shorturl-id');
+		let title = that.attr('data-shorturl-title');
+		let api = new API.Request('DELETE', '/api/shorturl/entity');
+		let data = { ID: id };
+
+		let dialog = new ConfirmDialog({
+			message: `Really Delete?<br /><span class="text-muted">${title}</span>`,
+			btnAccept: 'btn-danger',
+			labelAccept: 'Delete',
+			onAccept: (function() {
+
+				let after = (
+					(typeof goto === 'string' && goto.length)
+					? (()=> location.href = goto)
+					: api.reload
+				);
+
+				(api.send(data))
+				.then(after)
+				.catch(api.catch);
+
+				return;
+			})
+		});
+
+		dialog.show();
+
+		return;
+	});
+
+	return;
+});
+</script>
