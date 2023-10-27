@@ -114,7 +114,7 @@ as html pages. //*/
 			// terminate the app if there is no custom error handler for
 			// whatever state we landed in.
 
-			if(!$this->App->Router->GetErrorHandlers()->HasKey("e{$Code}"))
+			if(!($Handler instanceof Avenue\Meta\ErrorHandler))
 			$this->Quit($Code);
 		}
 
@@ -486,7 +486,6 @@ as html pages. //*/
 			->Set('Message', $Msg)
 			->Area('error/error');
 		}
-
 
 		$this->Handler->Method = '__RewireDoNothing';
 

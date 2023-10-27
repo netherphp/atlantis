@@ -58,7 +58,7 @@ extends Atlantis\Util\Tests\TestCasePU9 {
 		// to check CodeNotFound afterwards.
 
 		$this->AssertEquals(
-			Avenue\Response::CodeOK,
+			Avenue\Response::CodeNotFound,
 			$App->Router->Response->Code
 		);
 
