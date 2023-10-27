@@ -16,3 +16,5 @@ ndb sql-create Nether.Atlantis.Media.TagLink --drop -y
 
 ndb sql-create Nether.Atlantis.Page.Entity --drop -y
 ndb sql-create Nether.Atlantis.Page.Section --drop -y
+
+ndb sql-create Nether.Atlantis.ShortURL.Entity --drop -y
