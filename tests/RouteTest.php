@@ -53,10 +53,6 @@ extends Atlantis\Util\Tests\TestCasePU9 {
 		$App = static::BuildAtlantis();
 		$Out = static::RunAtlantis($App);
 
-		// @todo 2023-05-02 the code from the handler needs to be set in
-		// the response by the avenue router and this needs to be updated
-		// to check CodeNotFound afterwards.
-
 		$this->AssertEquals(
 			Avenue\Response::CodeNotFound,
 			$App->Router->Response->Code
