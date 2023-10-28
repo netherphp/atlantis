@@ -488,10 +488,10 @@ extends Console\Client {
 				)
 			));
 
-			$this->PrintLn($this->Format(
-				"     {$Row->Link->Source}",
-				static::FmtMuted
-			), 2);
+			//$this->PrintLn($this->Format(
+			//	"     {$Row->Link->Source}",
+			//	static::FmtMuted
+			//), 2);
 
 			return;
 		});
