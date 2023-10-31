@@ -1,0 +1,104 @@
+<div class="jumbotron rounded">
+	<div class="fw-bold text-uppercase">
+		Video
+		<?php if($Route->IsUserAdmin()): ?>
+		<span class="fw-normal">(<a href="/dashboard/media/videos-tp">View All</a>)</span>
+		<?php endif; ?>
+	</div>
+
+	<hr class="mt-0 mb-3" />
+
+	<form id="VideoTPSubmitForm" method="post">
+		<div class="row">
+			<div class="col-12 mb-4">
+				<div class="font-size-small text-uppercase fw-bold">URL</div>
+				<input type="text" name="URL" class="form-control" />
+			</div>
+			<div class="d-none col-12 mb-4">
+				<div class="font-size-small text-uppercase fw-bold">Title <span class="text-muted">(Optional)</span></div>
+				<input type="text" name="Title" class="form-control" />
+			</div>
+			<div class="col-12 text-align-right">
+				<button type="submit" class="btn btn-dark">Submit Video</button>
+			</div>
+		</div>
+	</form>
+
+	<div id="VideoTPSubmitHistory" class="d-none mt-4">
+
+	</div>
+
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import NUIUtil from '/share/nui/util.js';
+import FormUtil from '/share/nui/util/form.js';
+
+jQuery(function(){
+
+	jQuery('#VideoTPSubmitForm')
+	.on('submit', function(){
+
+		let form = new FormUtil(this);
+		let api = new API.Request('POST', '/api/video-tp/entity');
+
+		api.send(form.read())
+		.then(function(result) {
+
+			jQuery('#VideoTPSubmitHistory')
+			.removeClass('d-none')
+			.prepend(
+				jQuery('<div />')
+				.addClass('row tight mt-2')
+				.append(
+					jQuery('<div />')
+					.addClass('col')
+					.append(
+						jQuery('<div />')
+						.addClass('fw-bold')
+						.text(result.payload.Title)
+					)
+					.append(
+						jQuery('<div />')
+						.addClass('text-muted')
+						.text(result.payload.PageURL)
+					)
+				)
+				.append(
+					jQuery('<div />')
+					.addClass('col-auto text-muted')
+					.append(
+						jQuery('<button />')
+						.addClass('btn btn-primary')
+						.attr('data-nui-copy-value', result.payload.PageURL)
+						.text('Copy Video Page URL')
+						.on('click', NUIUtil.elementCopyValueToClipboard)
+					)
+				)
+				.append(
+					jQuery('<div />')
+					.addClass('col-auto text-muted')
+					.append(
+						jQuery('<a />')
+						.addClass('btn btn-dark')
+						.attr('target', '_blank')
+						.attr('href', result.payload.PageURL)
+						.html('<i class="mdi mdi-open-in-new"></i>')
+					)
+				)
+			);
+
+			jQuery('#VideoTPSubmitForm input')
+			.val('');
+
+			return;
+		})
+		.catch(api.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

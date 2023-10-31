@@ -98,6 +98,16 @@ extends Atlantis\Prototype {
 		return;
 	}
 
+	public function
+	DescribeForPublicAPI():
+	array {
+
+		$Output = parent::DescribeForPublicAPI();
+		$Output['PageURL'] = $this->GetPageURL(FALSE);
+
+		return $Output;
+	}
+
 	////////////////////////////////////////////////////////////////
 	// OVERRIDE Database\Prototype /////////////////////////////////
 
@@ -401,10 +411,7 @@ extends Atlantis\Prototype {
 	GetPageURL(bool $Truth=FALSE):
 	string {
 
-		if(!$Truth)
-		return $this->URL;
-
-		return sprintf('/video/%d', $this->ID);
+		return (new Atlantis\WebURL("/video/{$this->ID}"));
 	}
 
 	public function

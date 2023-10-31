@@ -12,6 +12,7 @@ class VideoAPI
 extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/media/video-tp', Verb: 'GET')]
+	#[Atlantis\Meta\RouteHandler('/api/video-tp/entity', Verb: 'GET')]
 	public function
 	VideoThirdPartyGet():
 	void {
@@ -33,6 +34,7 @@ extends Atlantis\ProtectedAPI {
 	}
 
 	#[Atlantis\Meta\RouteHandler('/api/media/video-tp', Verb: 'POST')]
+	#[Atlantis\Meta\RouteHandler('/api/video-tp/entity', Verb: 'POST')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	VideoThirdPartyPost():
@@ -129,6 +131,7 @@ extends Atlantis\ProtectedAPI {
 	}
 
 	#[Atlantis\Meta\RouteHandler('/api/media/video-tp', Verb: 'PATCH')]
+	#[Atlantis\Meta\RouteHandler('/api/video-tp/entity', Verb: 'PATCH')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	VideoThirdPartyPatch():
@@ -153,6 +156,7 @@ extends Atlantis\ProtectedAPI {
 	}
 
 	#[Atlantis\Meta\RouteHandler('/api/media/video-tp', Verb: 'DELETE')]
+	#[Atlantis\Meta\RouteHandler('/api/video-tp/entity', Verb: 'DELETE')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	VideoThirdPartyDelete():
