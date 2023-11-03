@@ -1,15 +1,18 @@
 <?php
 
-$Error ??= $Surface->Get('Error') ?? 'x_x';
+$Error ??= $Surface->Get('Error');
 $Title ??= $Surface->Get('Title') ?? 'Error';
 $Message ??= $Surface->Get('Message') ?? 'There was an error processing your request.';
+
+if($Error === TRUE)
+$Error = 'x_x';
 
 ?>
 
 <div class="container pt-8 pb-8">
 	<h1>
 		<span class="text-uppercase"><?php $Util->Print($Title) ?></span>
-		<sup class="opacity-25">(<?php $Util->Print($Error) ?>)</sup>
+		<?php if($Error !== NULL): ?><sup class="opacity-25">(<?php $Util->Print($Error) ?>)</sup><?php endif; ?>
 	</h1>
 
 	<p><?php $Util->Print($Message) ?></p>

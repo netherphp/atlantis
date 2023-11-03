@@ -981,7 +981,7 @@ extends Console\Client {
 
 		$Domain = (
 			$this->GetOption('Domain')
-			?? Atlantis->Config[ Atlantis\Key::ConfProjectDomain ]
+			?? $this->App->Config[ Atlantis\Key::ConfProjectDomain ]
 		);
 
 		$Domains = [ $Domain ];
@@ -1011,24 +1011,24 @@ extends Console\Client {
 
 		$this
 		->PrintLn($this->FormatSecondary('[Info] Put the P8 file here:'))
-		->PrintLn(sprintf('conf/env/%s/keys/apple-authkey.p8', Atlantis->GetProjectEnv()))
+		->PrintLn(sprintf('conf/env/%s/keys/apple-authkey.p8', $this->App->GetProjectEnv()))
 		->PrintLn();
 
-		if(!Atlantis->Config[User\Library::ConfAppleID]) {
+		if(!$this->App->Config[User\Library::ConfAppleID]) {
 			$this
 			->PrintLn($this->FormatSecondary('[Info] User\Library::ConfAppleID'))
 			->PrintLn('The reverse DNS for the Service ID. Ex: tld.something.www')
 			->PrintLn();
 		}
 
-		if(!Atlantis->Config[User\Library::ConfAppleTeamID]) {
+		if(!$this->App->Config[User\Library::ConfAppleTeamID]) {
 			$this
 			->PrintLn($this->FormatSecondary('[Info] User\Library::ConfAppleTeamID'))
 			->PrintLn('The gibberish alpha-numeric ID of the Apple Developer account.')
 			->PrintLn();
 		}
 
-		if(!Atlantis->Config[User\Library::ConfAppleKeyFileID]) {
+		if(!$this->App->Config[User\Library::ConfAppleKeyFileID]) {
 			$this
 			->PrintLn($this->FormatSecondary('[Info] User\Library::ConfAppleKeyFileID'))
 			->PrintLn('The gibberish alpha-numeric ID of the Key File.')
