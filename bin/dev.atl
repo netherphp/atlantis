@@ -146,11 +146,18 @@ extends Console\Client {
 						$Command, $Tokens
 					),
 
+					str_starts_with($Command, '_')
+					=> NULL,
+
 					default
 					=> Console\CommandLibrary::FromString(
 						$Command, $Tokens
 					)
 				};
+
+				if($Cmd === NULL) {
+					return;
+				}
 
 				$CmdOutStyle = static::FmtMuted;
 				$CmdOutLabel = 'STDOUT';
