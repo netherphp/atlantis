@@ -97,7 +97,8 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('shovenew')]
-	#[Console\Meta\Toggle('--cmd', 'Show the command that it will execute.')]
+	#[Console\Meta\Toggle('--dry', 'Only make believe.')]
+	#[Console\Meta\Toggle('--cmd', 'Show the command that it executes.')]
 	#[Console\Meta\Toggle('--hush', 'Do not show the output of commands unless error.')]
 	public function
 	HandleShoveCommand():
