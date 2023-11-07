@@ -136,7 +136,8 @@ extends Console\Client {
 			));
 
 			$this->PrintLn((
-				'atlantis.json > Dev > Shove > Steps ' .
+				join($this->Format(' > ', static::FmtMuted), [ 'atlantis.json', 'Dev', 'Shove', 'Steps' ]).
+				//'atlantis.json > Dev > Shove > Steps ' .
 				'{ "Label": "shell-cmd", ... }'
 			), 2);
 
