@@ -135,10 +135,15 @@ extends Console\Client {
 				static::FmtAccent
 			));
 
-			$this->PrintLn((
-				join($this->Format(' > ', static::FmtMuted), [ 'atlantis.json', 'Dev', 'Shove', 'Steps' ]).
-				//'atlantis.json > Dev > Shove > Steps ' .
-				'{ "Label": "shell-cmd", ... }'
+			$this->PrintLn(sprintf(
+				'%s %s %s %s',
+				join(
+					$this->Format(' > ', static::FmtMuted),
+					[ 'atlantis.json', 'Dev', 'Shove', 'Steps' ]
+				),
+				$this->Format('{', static::FmtMuted),
+				'"Label": "shell-cmd", ...',
+				$this->Format('}', static::FmtMuted)
 			), 2);
 
 			return 0;
