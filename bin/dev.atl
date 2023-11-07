@@ -194,7 +194,7 @@ extends Console\Client {
 				));
 
 				if(!$OptHushOut) {
-					$this->PrintLn($this->FormatHeaderPoint($CmdOutLabel, $CmdStatusStyle));
+					$this->PrintLn($this->FormatHeaderPoint($CmdOutLabel, $CmdOutStyle));
 					$this->PrintLn($this->Format($Result->GetOutputString(), $CmdOutStyle), 2);
 				}
 
