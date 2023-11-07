@@ -85,7 +85,7 @@ extends Console\Client {
 		foreach($Info as $Key => $Val) {
 			$this->PrintLn(sprintf(
 				'%s: %s',
-				$this->Format($Key, Bold: TRUE),
+				$this->Format($Key, Bd: TRUE),
 				$Val
 			));
 		}
@@ -97,15 +97,13 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('shovenew')]
-	#[Console\Meta\Toggle('showcmd', 'Display the CLI commands being executed.')]
-	#[Console\Meta\Toggle('showout', 'Display the command output regardless of error state.')]
 	public function
 	HandleShoveCommand():
 	int {
 
 		$Conf = Atlantis\Struct\ProjectJSON::FromApp($this->App);
-		$OptShowCmd = $this->GetOption('showcmd') ?? FALSE;
-		$OptShowOut = $this->GetOption('showout') ?? FALSE;
+		$OptShowCmd = $this->GetOption('cmd') ?? FALSE;
+		$OptHushOut = $this->GetOption('hush') ?? TRUE;
 		$OptDry = $this->GetOption('dry') ?? FALSE;
 		$OptMsg = $this->GetOption('msg') ?? 'thusfar';
 
@@ -140,7 +138,7 @@ extends Console\Client {
 
 		$Conf->Dev->Shove->Steps->Each(
 			function(string $Command, string $Label)
-			use($OptShowCmd, $OptShowOut, $OptDry) {
+			use($OptShowCmd, $OptHushOut, $OptDry) {
 
 				$Tokens = [
 					'ProjectRoot' => $this->App->FromProjectRoot()
@@ -181,10 +179,10 @@ extends Console\Client {
 				if($Result->HasError()) {
 					$CmdOutStyle = static::FmtError;
 					$CmdOutLabel = sprintf('ERROR(%d)', $Result->Error);
-					$OptShowOut = TRUE;
+					$OptHushOut = FALSE;
 				}
 
-				if($OptShowOut) {
+				if(!$OptHushOut) {
 					$this->PrintLn($this->FormatHeaderPoint($CmdOutLabel, $CmdOutStyle));
 					$this->PrintLn($this->Format($Result->GetOutputString(), $CmdOutStyle), 2);
 				}
@@ -222,7 +220,7 @@ extends Console\Client {
 				if($OptDry) {
 					$this->PrintLn(sprintf(
 						'%s %s',
-						$this->Format('[PseudoCommandLine]', Bold: TRUE),
+						$this->Format('[PseudoCommandLine]', Bd: TRUE),
 						$Cmd
 					));
 
@@ -232,7 +230,7 @@ extends Console\Client {
 				$Result = $this->ExecuteCommandLine($Cmd);
 
 				if($Result->Error) {
-					$this->FormatLn('ERROR', Bold: TRUE);
+					$this->FormatLn('ERROR', Bd: TRUE);
 					$this->PrintLn($Result->GetOutputString());
 				}
 
@@ -248,7 +246,7 @@ extends Console\Client {
 				if($OptDry) {
 					$this->PrintLn(sprintf(
 						'%s %s',
-						$this->Format('[PseudoExecuteCommand]', Bold: TRUE),
+						$this->Format('[PseudoExecuteCommand]', Bd: TRUE),
 						$Cmd
 					));
 
@@ -282,7 +280,7 @@ extends Console\Client {
 				if($OptDry) {
 					$this->PrintLn(sprintf(
 						'%s %s',
-						$this->Format('[PseudoExecuteCommand]', Bold: TRUE),
+						$this->Format('[PseudoExecuteCommand]', Bd: TRUE),
 						$Cmd
 					));
 
@@ -325,7 +323,7 @@ extends Console\Client {
 				if($OptDry) {
 					$this->PrintLn(sprintf(
 						'%s %s',
-						$this->Format('[PseudoCommandLine]', Bold: TRUE),
+						$this->Format('[PseudoCommandLine]', Bd: TRUE),
 						$Cmd
 					));
 
@@ -335,7 +333,7 @@ extends Console\Client {
 				$Result = $this->ExecuteCommandLine($Cmd);
 
 				if($Result->Error) {
-					$this->FormatLn('ERROR', Bold: TRUE);
+					$this->FormatLn('ERROR', Bd: TRUE);
 					$this->PrintLn($Result->GetOutputString());
 				}
 
@@ -351,7 +349,7 @@ extends Console\Client {
 				if($OptDry) {
 					$this->PrintLn(sprintf(
 						'%s %s',
-						$this->Format('[PseudoExecuteCommand]', Bold: TRUE),
+						$this->Format('[PseudoExecuteCommand]', Bd: TRUE),
 						$Cmd
 					));
 
