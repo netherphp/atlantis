@@ -103,7 +103,7 @@ extends Console\Client {
 
 		$Conf = Atlantis\Struct\ProjectJSON::FromApp($this->App);
 		$OptShowCmd = $this->GetOption('cmd') ?? FALSE;
-		$OptHushOut = $this->GetOption('hush') ?? TRUE;
+		$OptHushOut = $this->GetOption('hush') ?? FALSE;
 		$OptDry = $this->GetOption('dry') ?? FALSE;
 		$OptMsg = $this->GetOption('msg') ?? 'thusfar';
 
