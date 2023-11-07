@@ -164,7 +164,6 @@ extends Console\Client {
 
 				if($OptShowCmd) {
 					$this->PrintLn($this->FormatHeaderPoint('Command', static::FmtAccent));
-					$this->PrintLn($this->Format('Command:', static::FmtAccent));
 					$this->PrintLn($Cmd, 2);
 				}
 
