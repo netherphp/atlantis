@@ -70,35 +70,35 @@ extends Common\Prototype {
 	static {
 
 		if(isset($this->File['SSL']))
-		if(is_object($this->File['SSL']))
+		if(isset($this->File['SSL']))
 		$this->SSL = new Atlantis\Struct\AtlantisProjectSSL($this->File['SSL']);
 
 		if(isset($this->File['Web']))
-		if(is_object($this->File['Web']))
+		if(isset($this->File['Web']))
 		$this->Web = new Atlantis\Struct\AtlantisProjectWebServer($this->File['Web']);
 
 		if(isset($this->File['Dirs']))
-		if(is_iterable($this->File['Dirs'])) {
+		if(isset($this->File['Dirs'])) {
 			($this->Dirs)
 			->SetData($this->File['Dirs'])
-			->Remap(fn(object $D)=> new Common\Filesystem\Directory($D));
+			->Remap(fn(array $D)=> new Common\Filesystem\Directory($D));
 		}
 
 		if(isset($this->File['Links']))
-		if(is_iterable($this->File['Links'])) {
+		if(isset($this->File['Links'])) {
 			($this->Links)
 			->SetData($this->File['Links'])
-			->Remap(fn(object $L)=> new Common\Filesystem\Symlink($L));
+			->Remap(fn(array $L)=> new Common\Filesystem\Symlink($L));
 		}
 
 		if(isset($this->File['StepsForRelease']))
-		if(is_iterable($this->File['StepsForRelease'])) {
+		if(isset($this->File['StepsForRelease'])) {
 			($this->StepsForRelease)
 			->SetData($this->File['StepsForRelease']);
 		}
 
 		if(isset($this->File['StepsForShove']))
-		if(is_iterable($this->File['StepsForShove'])) {
+		if(isset($this->File['StepsForShove'])) {
 			($this->StepsForShove)
 			->SetData($this->File['StepsForShove']);
 		}
