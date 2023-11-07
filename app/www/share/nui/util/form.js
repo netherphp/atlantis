@@ -23,8 +23,20 @@ class FormUtil {
 
 		this.data = [];
 
-		for(const item of this.element.serializeArray())
-		this.data[item.name] = item.value;
+		for(const item of this.element.serializeArray()) {
+			if(item.name.match(/\[\]$/)) {
+				let kname = item.name.replace(/\[\]$/,'');
+
+				if(!Array.isArray(this.data[kname]))
+				this.data[kname] = [];
+
+				this.data[kname].push(item.value);
+			}
+
+			else {
+				this.data[item.name] = item.value;
+			}
+		}
 
 		return this;
 	};

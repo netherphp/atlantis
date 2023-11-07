@@ -189,6 +189,9 @@ jQuery(function(){
 		let api = new API.Request('POST', '/api/blog/post');
 		let form = new FormUtil(this);
 
+		//console.log(form.read());
+		//return false;
+
 		(form.read())
 		.set('Editor', 'link')
 		.set('CoverImageID', cover.attr('data-id'))
