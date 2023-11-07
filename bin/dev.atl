@@ -108,10 +108,10 @@ extends Console\Client {
 		$OptShowCmd = $this->GetOption('cmd') ?? FALSE;
 		$OptHushOut = $this->GetOption('hush') ?? FALSE;
 		$OptDry = $this->GetOption('dry') ?? FALSE;
-		$OptMsg = $this->GetOption('msg') ?? 'thusfar';
 
-		$Label = NULL;
-		$Command = NULL;
+		$Tokens = Common\Datastore::FromArray([
+			'ProjectRoot' => $this->App->GetProjectRoot()
+		]);
 
 		////////
 
@@ -125,8 +125,6 @@ extends Console\Client {
 			return 0;
 		}
 
-		////////
-
 		$this->PrintLn(sprintf(
 			'Found %d %s to do.',
 			$Conf->Dev->Shove->Steps->Count(),
@@ -136,24 +134,29 @@ extends Console\Client {
 			)
 		), 2);
 
+		////////
+
 		$Conf->Dev->Shove->Steps->Each(
 			function(string $Command, string $Label)
-			use($OptShowCmd, $OptHushOut, $OptDry) {
-
-				$Tokens = [
-					'ProjectRoot' => $this->App->FromProjectRoot()
-				];
+			use($OptShowCmd, $OptHushOut, $OptDry, $Tokens) {
 
 				$Cmd = match(TRUE) {
 					str_starts_with($Command, '@')
-					=> Console\CommandLibrary::FromNote($Command),
+					=> Console\CommandLibrary::FromNote(
+						$Command, $Tokens
+					),
 
 					default
-					=> Console\CommandLibrary::FromStringWithTokens($Command, $Tokens)
+					=> Console\CommandLibrary::FromString(
+						$Command, $Tokens
+					)
 				};
 
 				$CmdOutStyle = static::FmtMuted;
 				$CmdOutLabel = 'STDOUT';
+
+				$CmdStatusStyle = static::FmtOK;
+				$CmdStatusLabel = 'OK';
 
 				////////
 
@@ -185,7 +188,7 @@ extends Console\Client {
 				}
 
 				else {
-					$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK));
+					$this->PrintLn($this->FormatHeaderPoint($CmdStatusLabel, $CmdStatusStyle));
 				}
 
 				if(!$OptHushOut) {
