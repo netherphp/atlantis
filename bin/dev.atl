@@ -105,6 +105,8 @@ extends Console\Client {
 	int {
 
 		$Conf = Atlantis\Struct\ProjectJSON::FromApp($this->App);
+		$Steps = $Conf->Dev->Shove->Steps->Map(fn($V)=> $V);
+
 		$OptShowCmd = $this->GetOption('cmd') ?? FALSE;
 		$OptHushOut = $this->GetOption('hush') ?? FALSE;
 		$OptDry = $this->GetOption('dry') ?? FALSE;
@@ -117,47 +119,72 @@ extends Console\Client {
 
 		$this->PrintLn($this->FormatHeaderLine('DevTool: Shove'));
 
-		if(!$Conf->Dev->Shove->Steps->Count()) {
+		// items with their label prefixed with a hash are disabled
+		// such that they should be skipped completely.
+
+		$Steps->Filter(
+			fn(string $Command, string $Label)
+			=> !str_starts_with($Label, '#')
+		);
+
+		if(!$Steps->Count()) {
 			$this->PrintLn('Nothing to do.', 2);
 
-			$this->PrintLn($this->Format('Add add steps to the Project JSON:', static::FmtAccent));
-			$this->PrintLn('atlantis.json > Dev > Shove > Steps { "Label": "shell-cmd", ... }', 2);
+			$this->PrintLn($this->Format(
+				'Add add steps to the Project JSON:',
+				static::FmtAccent
+			));
+
+			$this->PrintLn((
+				'atlantis.json > Dev > Shove > Steps ' .
+				'{ "Label": "shell-cmd", ... }'
+			), 2);
+
 			return 0;
 		}
 
+		////////
+
 		$this->PrintLn(sprintf(
 			'Found %d %s to do.',
-			$Conf->Dev->Shove->Steps->Count(),
+			$Steps->Count(),
 			Atlantis\Util::IfOneOrMore(
-				$Conf->Dev->Shove->Steps->Count(),
+				$Steps->Count(),
 				'step', 'steps'
 			)
 		), 2);
 
 		////////
 
-		$Conf->Dev->Shove->Steps->Each(
+		$Steps->Each(
 			function(string $Command, string $Label)
 			use($OptShowCmd, $OptHushOut, $OptDry, $Tokens) {
 
 				$Cmd = match(TRUE) {
+
+					// prefixing the command with # becomes a soft
+					// skip where it will mention it skipped it.
+
+					str_starts_with($Command, '#')
+					=> NULL,
+
+					// prefixing the command with an at-sign makes it
+					// a library alias.
+
 					str_starts_with($Command, '@')
 					=> Console\CommandLibrary::FromNote(
 						$Command, $Tokens
 					),
 
-					str_starts_with($Command, '_')
-					=> NULL,
+					// anything else is just treated as a command
+					// line string.
 
 					default
 					=> Console\CommandLibrary::FromString(
 						$Command, $Tokens
 					)
-				};
 
-				if($Cmd === NULL) {
-					return;
-				}
+				};
 
 				$CmdOutStyle = static::FmtMuted;
 				$CmdOutLabel = 'STDOUT';
@@ -167,20 +194,36 @@ extends Console\Client {
 
 				////////
 
-				$this->PrintLn($this->FormatHeaderLine($Label, static::FmtAccent));
-
 				if($Cmd === NULL) {
-					$this->PrintLn(sprintf('No Cmd Generated: %s', $Command), 2);
+					$this->PrintLn($this->FormatHeaderLine(
+						"Skipped: {$Label}",
+						Console\Theme::Muted
+					));
+
 					return;
 				}
 
+				////////
+
+				$this->PrintLn($this->FormatHeaderLine(
+					"Step: {$Label}",
+					static::FmtAccent
+				));
+
 				if($OptShowCmd) {
-					$this->PrintLn($this->Format('Command:', static::FmtAccent));
+					$this->PrintLn($this->Format(
+						'Command:',
+						static::FmtAccent
+					));
 					$this->PrintLn($Cmd, 2);
 				}
 
 				if($OptDry) {
-					$this->PrintLn($this->FormatHeaderPoint('DRY RUN', Console\Theme::Muted));
+					$this->PrintLn($this->FormatHeaderPoint(
+						'DRY RUN',
+						Console\Theme::Muted
+					));
+
 					return;
 				}
 
@@ -200,9 +243,18 @@ extends Console\Client {
 					$CmdStatusStyle
 				));
 
+				////////
+
 				if(!$OptHushOut) {
-					$this->PrintLn($this->FormatHeaderPoint($CmdOutLabel, $CmdOutStyle));
-					$this->PrintLn($this->Format($Result->GetOutputString(), $CmdOutStyle), 2);
+					$this->PrintLn($this->FormatHeaderPoint(
+						$CmdOutLabel,
+						$CmdOutStyle
+					));
+
+					$this->PrintLn($this->Format(
+						$Result->GetOutputString(),
+						$CmdOutStyle
+					), 2);
 				}
 
 				return;
