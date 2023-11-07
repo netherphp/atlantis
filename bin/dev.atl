@@ -181,7 +181,7 @@ extends Console\Client {
 
 				$Result = $this->ExecuteCommandLine($Cmd, TRUE);
 
-				if(!$Result->HasError()) {
+				if($Result->HasError()) {
 					$CmdOutStyle = static::FmtError;
 					$CmdStatusStyle = static::FmtError;
 					$CmdStatusLabel = sprintf('ERROR: %d', $Result->Error);
