@@ -184,7 +184,7 @@ extends Console\Client {
 				if(!$Result->HasError()) {
 					$CmdOutStyle = static::FmtError;
 					$CmdStatusStyle = static::FmtError;
-					$CmdStatusLabel = sprintf('ERROR(%d)', $Result->Error);
+					$CmdStatusLabel = sprintf('ERROR: %d', $Result->Error);
 					$OptHushOut = FALSE;
 				}
 
