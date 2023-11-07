@@ -182,6 +182,10 @@ extends Console\Client {
 					$OptHushOut = FALSE;
 				}
 
+				else {
+					$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK));
+				}
+
 				if(!$OptHushOut) {
 					$this->PrintLn($this->FormatHeaderPoint($CmdOutLabel, $CmdOutStyle));
 					$this->PrintLn($this->Format($Result->GetOutputString(), $CmdOutStyle), 2);
