@@ -142,18 +142,22 @@ extends Console\Client {
 			function(string $Command, string $Label)
 			use($OptShowCmd, $OptShowOut, $OptDry) {
 
-				$CmdOutStyle = static::FmtMuted;
-				$CmdOutLabel = 'STDOUT';
-
-				////////
+				$Tokens = [
+					'ProjectRoot' => $this->App->FromProjectRoot()
+				];
 
 				$Cmd = match(TRUE) {
 					str_starts_with($Command, '@')
 					=> Console\CommandLibrary::FromNote($Command),
 
 					default
-					=> trim($Command)
+					=> Console\CommandLibrary::FromStringWithTokens($Command, $Tokens)
 				};
+
+				$CmdOutStyle = static::FmtMuted;
+				$CmdOutLabel = 'STDOUT';
+
+				////////
 
 				$this->PrintLn($this->FormatHeaderLine($Label, static::FmtAccent));
 
