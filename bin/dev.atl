@@ -114,9 +114,6 @@ extends Console\Client {
 
 		$this->PrintLn($this->FormatHeaderLine('DevTool: Shove'));
 
-		if($OptDry)
-		$this->PrintLn($this->Format('[ Dry Run ]', static::FmtMuted), 2);
-
 		if(!$Conf->Dev->Shove->Steps->Count()) {
 			$this->PrintLn('Nothing to do.', 2);
 
@@ -169,8 +166,10 @@ extends Console\Client {
 					$this->PrintLn($Cmd, 2);
 				}
 
-				if($OptDry)
-				return;
+				if($OptDry) {
+					$this->PrintLn($this->FormatHeaderPoint('DRY RUN', Console\Theme::Muted));
+					return;
+				}
 
 				////////
 
