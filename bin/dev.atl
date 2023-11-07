@@ -97,6 +97,7 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('shovenew')]
+	#[Console\Meta\Toggle('--hush', 'Do not show the output of commands unless error.')]
 	public function
 	HandleShoveCommand():
 	int {
