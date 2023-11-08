@@ -17,7 +17,7 @@ use Nether\Atlantis\Struct\AtlantisProjectWebServer;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-#[Console\Meta\Application('Project Dev Tools', '5.0.0-dev')]
+#[Console\Meta\Application('DevTool', '5.0.0-dev')]
 #[Common\Meta\Info('Some cheat tools mostly at the Local project level.')]
 class DevTool
 extends Console\Client {
@@ -35,6 +35,8 @@ extends Console\Client {
 		$this->App = new Atlantis\Engine(
 			Atlantis\Util::GetBinProjectDirectory(__FILE__)
 		);
+
+		$this->Size->ClampX(0, 80);
 
 		return;
 	}
@@ -96,70 +98,130 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Common\Meta\Date('2023-11-07')]
-	#[Console\Meta\Command('shove')]
+	#[Common\Meta\Date('2023-11-08')]
+	#[Console\Meta\Command('run')]
+	#[Console\Meta\Arg('cmdname', 'The command list to run.')]
+	#[Console\Meta\Error(1, 'no command specified')]
+	#[Console\Meta\Error(2, 'command not found (%s)')]
 	#[Console\Meta\Toggle('--dry', 'Only make believe.')]
 	#[Console\Meta\Toggle('--cmd', 'Show the command that it executes.')]
 	#[Console\Meta\Toggle('--hush', 'Do not show the output of commands unless error.')]
 	public function
-	HandleShoveCommand():
+	HandleRunCommand():
 	int {
 
 		$Conf = Atlantis\Struct\ProjectJSON::FromApp($this->App);
-		$Steps = $Conf->Dev->Shove->Steps->Map(fn($V)=> $V);
+		$InputCmd = $this->GetInput(1) ?? NULL;
 
 		$OptShowCmd = $this->GetOption('cmd') ?? FALSE;
 		$OptHushOut = $this->GetOption('hush') ?? FALSE;
 		$OptDry = $this->GetOption('dry') ?? FALSE;
 
+		$Command = NULL;
+		$Steps = NULL;
+
 		$Tokens = Common\Datastore::FromArray([
 			'ProjectRoot' => $this->App->GetProjectRoot()
 		]);
 
-		////////
+		$PrintHelpRegardingKnownCommands = function(Atlantis\Struct\ProjectJSON $C) {
 
-		$this->PrintLn($this->FormatHeaderLine('DevTool: Shove'));
-
-		// items with their label prefixed with a hash are disabled
-		// such that they should be skipped completely.
-
-		$Steps->Filter(
-			fn(string $Command, string $Label)
-			=> !str_starts_with($Label, '#')
-		);
-
-		if(!$Steps->Count()) {
-			$this->PrintLn('Nothing to do.', 2);
-
-			$this->PrintLn($this->Format(
-				'Add add steps to the Project JSON:',
+			$this->PrintLn($this->FormatHeaderPoint(
+				'Known Commands:',
 				static::FmtAccent
 			));
 
-			$this->PrintLn(sprintf(
-				'%s %s %s %s',
-				join(
-					$this->Format(' > ', static::FmtMuted),
-					[ 'atlantis.json', 'Dev', 'Shove', 'Steps' ]
-				),
-				$this->Format('{', static::FmtMuted),
-				'"Label": "shell-cmd", ...',
-				$this->Format('}', static::FmtMuted)
+			$this->PrintLn(
+				join(', ', $C->Dev->Run->Commands->Keys()),
+				2
+			);
+
+			return;
+		};
+
+		$PrintHelpRegardingJSON = function(string $Name=NULL) {
+
+			$this->PrintLn($this->FormatHeaderPoint(
+				'Project JSON:',
+				static::FmtAccent
+			));
+
+			$this->PrintLn(join(
+				$this->Format(' > ', static::FmtMuted),
+				[ 'atlantis.json', 'Dev', 'Run', 'Commands' ]
 			), 2);
 
-			return 0;
+			$Output = Common\Text::ReadableJSON([
+				'Dev' => [ 'Run' => [ 'Commands' => (
+					Common\Struct\CommandList::FromArray([
+						'{%CmdName%}' => [ 'Steps'=> [
+							'{%CmdLabel%}'=> '{%CmdLine%}'
+						] ]
+					])
+					->ToArray()
+				) ] ]
+			]);
+
+			$Output = Common\Datastore::FromArray([
+				[ 'CmdName', ($Name ?? 'your-command-name') ]
+			])
+			->Accumulate($Output, fn($C, $I)
+				=> str_replace(
+					Common\Text::TemplateMakeToken($I[0]), $I[1], $C
+				)
+			);
+
+			$Output = preg_replace_callback(
+				'/([\{\}]$|[\:] )/ms',
+				(fn(array $M)=> $this->Format($M[0], static::FmtMuted)),
+				$Output
+			);
+
+			$this->PrintLn($Output, 2);
+
+			return;
+		};
+
+		////////
+
+		if(!$InputCmd) {
+			$PrintHelpRegardingKnownCommands($Conf);
+			$PrintHelpRegardingJSON();
+			return 1;
+		}
+
+		if(!$Conf->Dev->Run->Commands->HasKey($InputCmd)) {
+			$PrintHelpRegardingKnownCommands($Conf);
+			$PrintHelpRegardingJSON($InputCmd);
+			return 2;
 		}
 
 		////////
 
-		$this->PrintLn(sprintf(
-			'Found %d %s to do.',
-			$Steps->Count(),
-			Atlantis\Util::IfOneOrMore(
-				$Steps->Count(),
-				'step', 'steps'
-			)
-		), 2);
+		$Command = $Conf->Dev->Run->Commands->Get($InputCmd);
+		$Steps = $Command->Steps->Map(fn($D)=> $D);
+
+		// items with their label prefixed with a hash are disabled
+		// such that they should be skipped completely by pulling them out
+		// of the todo list.
+
+		$Steps->Filter(
+			fn(string $Cmd, string $Lbl)
+			=> !str_starts_with($Lbl, '#')
+		);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderBlock(sprintf(
+			'%s Run: %s',
+			$this->AppInfo->Name,
+			$InputCmd
+		)));
+
+		if(!$Steps->Count()) {
+			$this->PrintLn('Nothing to do.', 2);
+			return 0;
+		}
 
 		////////
 
