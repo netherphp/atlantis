@@ -1,0 +1,51 @@
+<?php
+
+define('AppRoot', dirname(__FILE__, 2));
+require(sprintf('%s/vendor/autoload.php', AppRoot));
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('AppName')]
+class App
+extends Console\Client {
+
+	public Atlantis\Engine
+	$App;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnPrepare():
+	void {
+
+		$this->App = new Atlantis\Engine($this->GetOption('AppRoot'));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('run')]
+	#[Console\Meta\Info('Runs the thing.')]
+	public function
+	HandleRun():
+	int {
+
+		// do your things.
+
+		return 0;
+	}
+
+};
+
+exit(App::Realboot([
+	'AppRoot' => AppRoot
+]));
+
