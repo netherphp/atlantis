@@ -186,14 +186,12 @@ extends Console\Client {
 
 		if(!$InputCmd) {
 			$PrintHelpRegardingKnownCommands($Conf);
-			$PrintHelpRegardingJSON();
-			return 1;
+			$this->Quit(1);
 		}
 
 		if(!$Conf->Dev->Run->Commands->HasKey($InputCmd)) {
-			$PrintHelpRegardingKnownCommands($Conf);
 			$PrintHelpRegardingJSON($InputCmd);
-			return 2;
+			$this->Quit(2, $InputCmd);
 		}
 
 		////////
@@ -1175,6 +1173,141 @@ extends Console\Client {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('projectjson')]
+	#[Console\Meta\Info('Debug tool for atlantis.json')]
+	#[Console\Meta\Error(1, 'no project json selected')]
+	#[Console\Meta\Toggle('--struct', 'Print the parsed structure.')]
+	#[Console\Meta\Toggle('--json', 'Print the JSON structure.')]
+	#[Console\Meta\Toggle('--touch', 'Touch the selected JSON file.')]
+	#[Console\Meta\Toggle('--rewrite', 'Rewrite the selected JSON file.')]
+	public function
+	HandleDebugAtlantisJSON():
+	int {
+
+		$Now = Common\Date::Unixtime();
+		$Confs = Atlantis\Struct\ProjectJSON::FromAppStacked($this->App);
+		$OptStruct = $this->GetOption('struct') ?? FALSE;
+		$OptJSON = $this->GetOption('json') ?? FALSE;
+		$OptTouch = $this->GetOption('touch') ?? FALSE;
+		$OptRewrite = $this->GetOption('rewrite') ?? FALSE;
+
+		$Project = NULL;
+		$Listable = NULL;
+
+		////////
+
+		$Project = $this->PromptSelectAtlantisJSON($Confs);
+
+		if(!$Project)
+		$this->Quit(1);
+
+		$this->PrintLn($this->FormatHeading('Selected:', static::FmtAccent));
+		$this->PrintLn($Project->GetFilename(), 2);
+
+		////////
+
+		if($OptStruct) {
+			$this->PrintLn($this->FormatHeaderLine('ProjectJSON Structures'));
+
+			$Listable = Common\Datastore::FromArray(Common\Meta\PropertyListable::FromClass($Project::class));
+			$Listable->Each(function(Common\Prototype\PropertyInfo $P) use($Project) {
+				$this->PrintLn($this->FormatHeaderPoint("ProjectJSON.{$P->Name}", static::FmtAccent));
+				Common\Dump::Var($Project->{$P->Name});
+				$this->PrintLn();
+				return;
+			});
+		}
+
+		if($OptJSON) {
+			$this->PrintLn($this->FormatHeaderLine('ProjectJSON as JSON'));
+			$this->PrintLn($Project->ToJSON());
+			$this->PrintLn();
+		}
+
+		if($OptTouch) {
+			$this->PrintLn($this->FormatHeaderLine('Touching ProjectJSON'));
+
+			(function(Atlantis\Struct\ProjectJSON $P, int $T) {
+				$Touched = touch($P->GetFilename(), $T, $T);
+
+				if($Touched)
+				$this->PrintLn($this->FormatHeaderPoint(
+					'OK',
+					static::FmtOK
+				));
+
+				else
+				$this->PrintLn($this->FormatHeaderPoint(
+					'Failed to touch file.',
+					static::FmtError
+				));
+
+				return;
+			})($Project, $Now);
+		}
+
+		if($OptRewrite) {
+			$this->PrintLn($this->FormatHeaderLine('Rewriting ProjectJSON'));
+
+			(function(Atlantis\Struct\ProjectJSON $P) {
+
+				$Err = NULL;
+
+				try { $P->Write(); }
+				catch(Exception $Err) {
+					$this->PrintLn($this->FormatHeaderPoint("Error: {$Err->GetMessage()}", static::FmtError), 2);
+				}
+
+				if($Err === NULL)
+				$this->PrintLn($this->FormatHeaderPoint('OK', static::FmtOK), 2);
+
+				return;
+			})($Project);
+
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	PromptSelectAtlantisJSON(Common\Datastore $Confs):
+	?Atlantis\Struct\ProjectJSON {
+
+		$MakeConfList = function(Common\Datastore $Confs) {
+			$Out = new Common\Datastore;
+
+			$Confs->Each(
+				fn(Atlantis\Struct\ProjectJSON $P, string $Key)
+				=> $Out->Push(sprintf(
+					'%s %s',
+					$Key,
+					$this->Format("({$P->GetFilename()})", static::FmtMuted)
+				))
+			);
+
+			return $Out;
+		};
+
+		$this->PrintLn($this->FormatHeaderLine('ProjectJSON Tool'));
+
+		$this->PrintLn($this->FormatHeaderPoint('Atlantis ProjectJSON Files:', static::FmtAccent));
+		$this->PrintLn($this->FormatBulletList($MakeConfList($Confs)), 2);
+
+		////////
+
+		$Key = $this->PromptForValue(
+			'Select File', 'Number', TRUE,
+			Common\Filters\Numbers::IntType(...)
+		);
+
+		////////
+
+		return $Confs->Values()->Get($Key - 1);
+	}
 
 }
 
