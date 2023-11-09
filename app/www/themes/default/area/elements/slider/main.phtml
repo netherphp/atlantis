@@ -31,7 +31,10 @@ jQuery(document)
 .ready(function(){
 
 	let select = <?php $Util->PrintJSON($ScriptSelector) ?>;
+
 	let config = new ItemSlide.Config;
+	config.setSlideCount(4);
+
 	let slider = ItemSlide.FromElement(select, config);
 
 	return;
