@@ -64,23 +64,19 @@ implements
 	array {
 
 		$Out = [];
+		$Prop = NULL;
 
 		////////
 
-		if($this->Dirs->Count())
-		$Out['Dirs'] = $this->Dirs->GetData();
+		foreach(['Dirs', 'Symlinks'] as $Prop) {
+			if($this->{$Prop}->Count())
+			$Out[$Prop] = $this->{$Prop}->GetData();
+		}
 
-		if($this->Symlinks->Count())
-		$Out['Symlinks'] = $this->Symlinks->GetData();
-
-		if($this->Web->Type)
-		$Out['Web'] = $this->Web->ToArray();
-
-		if($this->SSL->Domain)
-		$Out['Domain'] = $this->SSL->ToArray();
-
-		if($this->Dev->HasAnything())
-		$Out['Dev'] = $this->Dev->ToArray();
+		foreach(['Web', 'SSL', 'Dev'] as $Prop) {
+			if($this->{$Prop}->HasAnything())
+			$Out[$Prop] = $this->{$Prop}->ToArray();
+		}
 
 		return $Out;
 	}
@@ -148,28 +144,11 @@ implements
 	Write():
 	static {
 
-		if($this->Dirs->Count())
-		$this->File['Dirs'] = $this->Dirs->ToArray();
-		else
-		unset($this->File['Dirs']);
+		$JSON = $this->ToJSON();
+		$Filename = $this->File->GetFilename();
+		$Bytes = file_put_contents($Filename, $JSON);
 
-		////////
-
-		if($this->Symlinks->Count())
-		$this->File['Symlinks'] = $this->Symlinks->ToArray();
-		else
-		unset($this->File['Symlinks']);
-
-		////////
-
-		if($this->Dev->HasAnything())
-		$this->File['Dev'] = $this->Dev->ToArray();
-		else
-		unset($this->File['Dev']);
-
-		////////
-
-		$this->File->Write();
+		// $this->File->Read();
 
 		return $this;
 	}

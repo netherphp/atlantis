@@ -126,6 +126,16 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	public function
+	HasAnything():
+	bool {
+
+		if($this->Type)
+		return TRUE;
+
+		return FALSE;
+	}
+
+	public function
 	ToArray():
 	array {
 
