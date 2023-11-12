@@ -48,6 +48,7 @@
 		"bin/atlantis",
 		"bin/backup.atl",
 		"bin/cron.atl",
+		"bin/date.atl",
 		"bin/dev.atl",
 		"bin/gfx.atl",
 		"bin/nether.atl",

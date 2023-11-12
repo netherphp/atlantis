@@ -6,9 +6,6 @@ use Nether\Console;
 use Nether\Storage;
 use Nether\User;
 
-use Nether\Atlantis\Struct\AtlantisProjectJSON;
-use Nether\Atlantis\Struct\AtlantisProjectWebServer;
-
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
 	return;
@@ -18,7 +15,7 @@ use Nether\Atlantis\Struct\AtlantisProjectWebServer;
 ////////////////////////////////////////////////////////////////
 
 #[Console\Meta\Application('DevTool', '5.0.0-dev')]
-#[Common\Meta\Info('Some cheat tools mostly at the Local project level.')]
+#[Common\Meta\Info('Handles configuration and setup for project development.')]
 class DevTool
 extends Console\Client {
 
@@ -36,7 +33,59 @@ extends Console\Client {
 			Atlantis\Util::GetBinProjectDirectory(__FILE__)
 		);
 
+		$this->ApplySizeAdjustment();
+		$this->ApplyColourTheme();
+		$this->ApplyCommandSort();
+
+		return;
+	}
+
+	protected function
+	ApplySizeAdjustment():
+	void {
+
 		$this->Size->ClampX(0, 80);
+
+		return;
+	}
+
+	protected function
+	ApplyColourTheme():
+	void {
+
+		if($this->IsUserAdmin()) {
+			$this->AppInfo->Name .= ' (Admin)';
+			$this->Theme->Primary = [ 'Colour'=> '#BB69A7', 'Bold'=> TRUE ];
+		}
+
+		return;
+	}
+
+	protected function
+	ApplyCommandSort():
+	void {
+
+		// this will create a group sorted specifically how i want and
+		// cram it at the beginning of the comman list for the help.
+
+		$Sorted = (
+			Common\Datastore::FromArray([
+				'run',
+				'project-init', 'project-setup',
+				'web-config', 'web-setup', 'web-reload'
+			])
+			->MapKeys(
+				fn(int $K, string $C)
+				=> [ $C => $this->Commands->Get($C) ]
+			)
+			->Each(
+				fn(Common\Prototype\MethodInfo $C, string $K)
+				=> $this->Commands->Remove($K)
+			)
+		);
+
+		($this->Commands)
+		->MergeLeft($Sorted);
 
 		return;
 	}
@@ -44,62 +93,9 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('datetime')]
-	#[Console\Meta\Info('Show date and time stamp info.')]
-	#[Console\Meta\Value('--date', 'A date component to use as input.')]
-	#[Console\Meta\Value('--time', 'A time component to use as input.')]
-	#[Console\Meta\Value('--tz', 'A timezone component to use as input.')]
-	#[Console\Meta\Value('--unix', 'Unix timestamp as an integer to use as input date. Overrides all other input options.')]
-	public function
-	DateTimeInfo():
-	int {
-
-		$Now = new Common\Date;
-		$Date = NULL;
-		$Key = NULL;
-		$Val = NULL;
-
-		$InputUnix = $this->GetOption('unix');
-		$InputDate = $this->GetOption('date') ?? $Now->Get(Common\Values::DateFormatYMD);
-		$InputTime = $this->GetOption('time') ?? $Now->Get(Common\Values::DateFormatT24V);
-		$InputZone = $this->GetOption('tz') ?? $Now->Get(Common\Values::DateFormatTO);
-
-		////////
-
-		if($InputUnix !== NULL)
-		$Date = Common\Date::FromTime($InputUnix);
-		else
-		$Date = Common\Date::FromDateString("{$InputDate} {$InputTime} {$InputZone}");
-
-		////////
-
-		$Info = [
-			"Date ({$Date->Get('T')})"
-			=> $Date->Get(Common\Values::DateFormatYMDT24VO),
-
-			"Date (UTC)"
-			=> $Date->SetTimezone('UTC')->Get(Common\Values::DateFormatYMDT24VO),
-
-			"Time (UTC)"
-			=> $Date->GetUnixtime()
-		];
-
-		foreach($Info as $Key => $Val) {
-			$this->PrintLn(sprintf(
-				'%s: %s',
-				$this->Format($Key, Bd: TRUE),
-				$Val
-			));
-		}
-
-		return 0;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
 	#[Common\Meta\Date('2023-11-08')]
 	#[Console\Meta\Command('run')]
+	#[Console\Meta\Info('Run one of the pre-defined command sequences from the project config.')]
 	#[Console\Meta\Arg('cmdname', 'The command list to run.')]
 	#[Console\Meta\Error(1, 'no command specified')]
 	#[Console\Meta\Error(2, 'command not found (%s)')]
@@ -110,8 +106,30 @@ extends Console\Client {
 	HandleRunCommand():
 	int {
 
-		$Conf = Atlantis\Struct\ProjectJSON::FromApp($this->App);
+		$Confs = Atlantis\Struct\ProjectJSON::FromApp($this->App);
 		$InputCmd = $this->GetInput(1) ?? NULL;
+
+		// this was the most hillarious way to quickly pivot to the app
+		// returning a stack. but i want to build this kind of merging
+		// into the project json itself later anyway.
+
+		$Conf = new Atlantis\Struct\ProjectJSON([
+			'Dev' => ([
+				'Run' => ([
+					'Commands' => (
+						Common\Struct\CommandList::FromStackMerged([], ...(
+							$Confs->Map(
+								fn(Atlantis\Struct\ProjectJSON $D)
+								=> $D->Dev->Run->Commands
+							)
+							->GetData()
+						))
+					)
+				])
+			])
+		]);
+
+		////////
 
 		$OptShowCmd = $this->GetOption('cmd') ?? FALSE;
 		$OptHushOut = $this->GetOption('hush') ?? FALSE;
@@ -129,12 +147,9 @@ extends Console\Client {
 			$this->PrintLn($this->FormatHeaderPoint(
 				'Known Commands:',
 				static::FmtAccent
-			));
+			), 2);
 
-			$this->PrintLn(
-				join(', ', $C->Dev->Run->Commands->Keys()),
-				2
-			);
+			$this->PrintLn(join(', ', $C->Dev->Run->Commands->Keys()), 2);
 
 			return;
 		};
@@ -144,7 +159,7 @@ extends Console\Client {
 			$this->PrintLn($this->FormatHeaderPoint(
 				'Project JSON:',
 				static::FmtAccent
-			));
+			), 2);
 
 			$this->PrintLn(join(
 				$this->Format(' > ', static::FmtMuted),
@@ -214,7 +229,7 @@ extends Console\Client {
 			'%s Run: %s',
 			$this->AppInfo->Name,
 			$InputCmd
-		)));
+		)), 2);
 
 		if(!$Steps->Count()) {
 			$this->PrintLn('Nothing to do.', 2);
@@ -265,7 +280,7 @@ extends Console\Client {
 					$this->PrintLn($this->FormatHeaderLine(
 						"Skipped: {$Label}",
 						Console\Theme::Muted
-					));
+					), 2);
 
 					return;
 				}
@@ -275,7 +290,7 @@ extends Console\Client {
 				$this->PrintLn($this->FormatHeaderLine(
 					"Step: {$Label}",
 					static::FmtAccent
-				));
+				), 2);
 
 				if($OptShowCmd) {
 					$this->PrintLn($this->Format(
@@ -289,7 +304,7 @@ extends Console\Client {
 					$this->PrintLn($this->FormatHeaderPoint(
 						'DRY RUN',
 						Console\Theme::Muted
-					));
+					), 2);
 
 					return;
 				}
@@ -308,7 +323,7 @@ extends Console\Client {
 				$this->PrintLn($this->FormatHeaderPoint(
 					$CmdStatusLabel,
 					$CmdStatusStyle
-				));
+				), 2);
 
 				////////
 
@@ -316,7 +331,7 @@ extends Console\Client {
 					$this->PrintLn($this->FormatHeaderPoint(
 						$CmdOutLabel,
 						$CmdOutStyle
-					));
+					), 2);
 
 					$this->PrintLn($this->Format(
 						$Result->GetOutputString(),
@@ -334,81 +349,7 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('release')]
-	#[Console\Meta\Info('Perform all the actions needed to update this project installation.')]
-	#[Console\Meta\Toggle('--dry', 'Just pretend.')]
-	public function
-	ProjectPullToRelease():
-	int {
-
-		$Conf = Atlantis\Struct\AtlantisProjectJSON::FromApp($this->App);
-		$Steps = new Common\Datastore($Conf->StepsForRelease);
-		$OptDry = $this->GetOption('Dry');
-
-		$Steps->Each(function(mixed $Line) use($OptDry) {
-			if(!is_string($Line))
-			return;
-
-			// execute a command. only show the output if the command
-			// resulted in an error code.
-
-			$Cmd = NULL;
-
-			if(str_starts_with($Line, '$$ ')) {
-				$Cmd = substr($Line, 3);
-
-				if($OptDry) {
-					$this->PrintLn(sprintf(
-						'%s %s',
-						$this->Format('[PseudoCommandLine]', Bd: TRUE),
-						$Cmd
-					));
-
-					return;
-				}
-
-				$Result = $this->ExecuteCommandLine($Cmd);
-
-				if($Result->Error) {
-					$this->FormatLn('ERROR', Bd: TRUE);
-					$this->PrintLn($Result->GetOutputString());
-				}
-
-				return;
-			}
-
-			// execute a command and always show the output regardless
-			// of the result it had.
-
-			if(str_starts_with($Line, '$! ')) {
-				$Cmd = substr($Line, 3);
-
-				if($OptDry) {
-					$this->PrintLn(sprintf(
-						'%s %s',
-						$this->Format('[PseudoExecuteCommand]', Bd: TRUE),
-						$Cmd
-					));
-
-					return;
-				}
-
-				$Result = $this->ExecuteCommandLine(substr($Line, 3));
-				$this->PrintLn($Result->GetOutputString());
-
-				return;
-			}
-
-			return;
-		});
-
-		return 0;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	#[Console\Meta\Command('init')]
+	#[Console\Meta\Command('project-init')]
 	#[Console\Meta\Info('Begin setting up the project from scratch.')]
 	public function
 	HandleInit():
@@ -422,478 +363,72 @@ extends Console\Client {
 
 		// things best only done once.
 
-		$this->HandleSetupAppDist();
-		$this->HandleSetupGitIgnore();
+		$this->HandleProjectDist();
+		$this->HandleProjectGitIgnore();
 
 		// things that are safer to repeat technically.
 
 		$this->HandleSetup();
-		$this->CheckProjectUpdateNotes();
 
 		return 0;
 	}
 
-	#[Console\Meta\Command('setup')]
+	#[Console\Meta\Command('project-setup')]
 	#[Console\Meta\Info('Reconfigure anything that can be reconfigured easily.')]
+	#[Console\Meta\Toggle('--fix', 'Try to forcefully fix things considered errors.')]
 	public function
 	HandleSetup():
 	int {
 
-		$this->HandleSetupProjectPaths();
+		$this->HandleProjectPaths();
 
 		return 0;
 	}
 
-	#[Console\Meta\Command('setup-project')]
+	#[Common\Meta\Date('2023-11-11')]
+	#[Console\Meta\Command('project-paths', TRUE)]
+	#[Console\Meta\Toggle('--fix', 'Try to forcefully fix things considered errors.')]
 	public function
-	HandleSetupProjectPaths():
+	HandleProjectPaths():
 	int {
 
-		$Project = AtlantisProjectJSON::FromApp($this->App);
 		$OptFix = $this->GetOption('fix') ?? FALSE;
 
-		$this->SetupProjectDirs($Project, $OptFix);
-		$this->SetupProjectLinks($Project, $OptFix);
+		////////
 
-		return 0;
-	}
-
-	protected function
-	SetupProjectDirs(AtlantisProjectJSON $Project, bool $OptFix=FALSE):
-	static {
-
-		$Dir = NULL;
-		$Path = NULL;
-		$Reports = new Common\Datastore;
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Project Path Setup', $this->AppInfo->Name)
+		), 2);
 
 		////////
 
-		$this->PrintLn($this->FormatHeading('Project Directories'), 2);
-
-		foreach($Project->Dirs as $Dir) {
-			/** @var Common\Filesystem\Directory $Dir */
-
-			$Path = $this->App->FromProjectRoot($Dir->Path);
-
-			if(is_link($Path)) {
-				if($OptFix)
-				unlink($Path);
-
-				if(is_link($Path)) {
-					$Reports->Push((object)[
-						'Prefix'=> 'HM', 'Dir'=> $Dir, 'Status'=> 'primary',
-						'Message'=> sprintf('exists as symlink to %s', readlink($Path))
-					]);
-
-					continue;
-				}
+		Atlantis\Struct\ProjectJSON::FromApp($this->App)
+		->Filter(
+			fn(Atlantis\Struct\ProjectJSON $Project)
+			=> !!$Project->Dirs->Count() && !!$Project->Symlinks->Count()
+		)
+		->Each(
+			function(Atlantis\Struct\ProjectJSON $Project, string $Key)
+			use($OptFix) {
+				$this->PrintLn($this->FormatHeaderPoint(
+					"{$Key} ({$Project->Filename})",
+					Console\Theme::Accent
+				), 2);
+				$this->SetupProjectDirs($Project, $OptFix);
+				$this->SetupProjectLinks($Project, $OptFix);
+				return;
 			}
-
-			if(is_dir($Path)) {
-				$Reports->Push((object)[
-					'Prefix'=> 'OK', 'Dir'=> $Dir, 'Status'=> TRUE
-				]);
-
-				continue;
-			}
-
-			if(!file_exists($Path))
-			if(Common\Filesystem\Util::MkDir($Path, $Dir->Mode)) {
-				$Reports->Push((object)[
-					'Prefix'  => 'OK', 'Dir'=> $Dir, 'Status'=> TRUE,
-					'Message' => 'NEW'
-				]);
-
-				continue;
-			}
-
-			$Reports->Push((object)[
-				'Prefix' => 'ER',
-				'Dir'    => $Dir,
-				'Status' => FALSE
-			]);
-
-			continue;
-		}
-
-		$Reports->Each(function(object $Row) {
-
-			$Fmt1 = $this->GetFormatForStatus($Row->Status);
-			$Fmt2 = $this->GetFormatForStatus($Row->Status, 'alt1');
-
-			$this->PrintLn(sprintf(
-				'[%s] %s%s',
-				$this->Format($Row->Prefix, ...$Fmt1),
-				$Row->Dir->Path,
-				(property_exists($Row, 'Message')
-					? $this->Format(" ({$Row->Message})", ...$Fmt2)
-					: ''
-				)
-			));
-
-			return;
-		});
-
-		$this->PrintLn();
-
-		return $this;
-	}
-
-	protected function
-	SetupProjectLinks(Atlantis\Struct\AtlantisProjectJSON $Project, bool $OptFix=FALSE):
-	static {
-
-		$Link = NULL;
-		$Path = NULL;
-		$Source = NULL;
-		$Reports = new Common\Datastore;
-
-		////////
-
-		$this->PrintLn($this->FormatHeading('Project Symlinks'), 2);
-
-		foreach($Project->Links as $Link) {
-			/** @var Common\Filesystem\Symlink $Link */
-
-			$Path = $this->App->FromProjectRoot($Link->Path);
-			$Source = $this->App->FromProjectRoot($Link->Source);
-
-			if(is_link($Path)) {
-				if(Common\Filesystem\Util::IsLinkTo($Path, $Source)) {
-					$Reports->Push((object)[
-						'Prefix'=> 'OK', 'Link'=> $Link, 'Status'=> TRUE
-					]);
-
-					continue;
-				}
-
-				if($OptFix) {
-					if(PHP_OS_FAMILY === 'Windows') {
-						if(is_dir($Path) || !file_exists(realpath($Path)))
-						rmdir($Path);
-
-						else
-						unlink($Path);
-					}
-
-					else
-					unlink($Path);
-				}
-
-				if(is_link($Path)) {
-					$Reports->Push((object)[
-						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
-						'Message'=> sprintf('exists as symlink to %s', readlink($Path))
-					]);
-
-					continue;
-				}
-			}
-
-			if(is_dir($Path)) {
-
-				if($OptFix)
-				Common\Filesystem\Util::RmDir($Path);
-
-				if(is_dir($Path)) {
-					$Reports->Push((object)[
-						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
-						'Message'=> 'exists as normal directory'
-					]);
-
-					continue;
-				}
-			}
-
-			if(is_file($Path)) {
-
-				if($OptFix)
-				unlink($Path);
-
-				if(is_file($Path)) {
-					$Reports->Push((object)[
-						'Prefix'=> 'ER', 'Link'=> $Link, 'Status'=> FALSE,
-						'Message'=> 'exists as normal file'
-					]);
-
-					continue;
-				}
-			}
-
-			if(symlink($Source, $Path)) {
-				$Reports->Push((object)[
-					'Prefix'  => 'OK',
-					'Link'    => $Link,
-					'Status'  => TRUE,
-					'Message' => 'NEW'
-				]);
-
-				continue;
-			}
-
-			$Reports->Push((object)[
-				'Prefix' => 'ER',
-				'Link'   => $Link,
-				'Status' => FALSE
-			]);
-
-			continue;
-		}
-
-		$Reports->Each(function(object $Row) {
-
-			$Fmt1 = $this->GetFormatForStatus($Row->Status);
-			$Fmt2 = $this->GetFormatForStatus($Row->Status, 'alt1');
-
-			$this->PrintLn(sprintf(
-				'[%s] %s%s',
-				$this->Format($Row->Prefix, ...$Fmt1),
-				$Row->Link->Path,
-				(property_exists($Row, 'Message')
-					? $this->Format(" ({$Row->Message})", ...$Fmt2)
-					: ''
-				)
-			));
-
-			//$this->PrintLn($this->Format(
-			//	"     {$Row->Link->Source}",
-			//	static::FmtMuted
-			//), 2);
-
-			return;
-		});
-
-		$this->PrintLn();
-
-		return $this;
-	}
-
-	protected function
-	CheckProjectUpdateNotes():
-	static {
-
-		$Messages = new Common\Datastore;
-
-		////////
-
-		if($this->App->Config->HasKey('AcmePHP.Domain'))
-		$Messages->Shove(
-			'Old SSL Config Found',
-			'Configuration is still including old AcmePHP values in the PHP config. '.
-			'Run `ssl.atl setup` to reconfigure the cert in atlantis.json. '.
-			'Afterwards remove references to AcmePHP (Atlantis\Key::ConfAcme*) values in config.php files. '.
-			'Current acmephp.yml files are still perfectly valid.'
 		);
 
 		////////
 
-		if($Messages->Count()) {
-			$this->PrintLn($this->FormatHeading("{$Messages->Count()} WARNINGS FOUND"), 2);
-			$this->PrintLn($this->FormatTopicList($Messages));
-		}
-
-		return $this;
+		return 0;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	#[Console\Meta\Command('setup-webserver')]
-	#[Console\Meta\Info('Run the web server config setup tool.')]
+	#[Common\Meta\Date('2023-11-11')]
+	#[Console\Meta\Command('project-dist', TRUE)]
 	public function
-	HandleSetupWebserver():
-	int {
-
-		$Confs = AtlantisProjectJSON::FromAppStacked($this->App);
-		$Project = $Confs['Env'];
-		$Server = $this->QueryUserForWebserverInfo($Project);
-
-		/** @var AtlantisProjectJSON $Project */
-
-		$this->PrintLn("Updating {$Project->GetFilename()}...", 2);
-
-		$Project->Web = $Server;
-		$Project->Write();
-
-		switch($Project->Web->Type) {
-			case 'apachectl':
-				$this->WriteConfigApache24($Project);
-				break;
-		}
-
-		return 0;
-	}
-
-	protected function
-	WriteConfigApache24(AtlantisProjectJSON $Project):
-	int {
-
-		$Filename = $this->App->FromConfEnv('apache24.conf');
-
-		////////
-
-		if(file_exists($Filename) && !is_writable($Filename))
-		throw new Common\Error\FileUnwritable($Filename);
-
-		elseif(!is_writable(dirname($Filename)))
-		throw new Common\Error\DirUnwritable($Filename);
-
-		////////
-
-		$this->PrintLn("Updating {$Filename}...", 2);
-
-		file_put_contents(
-			$Filename,
-			$Project->Web->ToApache24($this->App)
-		);
-
-		return 0;
-	}
-
-	protected function
-	QueryUserForWebserverInfo(AtlantisProjectJSON $Project):
-	AtlantisProjectWebServer {
-
-		$Server = (
-			isset($Project->Web)
-			? $Project->Web
-			: new AtlantisProjectWebServer
-		);
-
-		$Default = function(AtlantisProjectJSON $S, string $P) {
-			if(!isset($S->Web))
-			return NULL;
-
-			return $S->Web->{$P};
-		};
-
-		////////
-
-		$this->PrintLn($this->FormatHeading('Webserver Types'), 2);
-		$this->PrintLn($this->FormatBulletList(array_filter(
-			array_merge([ 'lol' ], AtlantisProjectWebServer::Types),
-			fn(string $Type)=> $Type !== 'lol'
-		)));
-
-		$Server->Type = $this->PromptForValue(
-			'Select Type', 'integer/name',
-			Required: TRUE,
-			Default: $Default($Project, 'Type'),
-			Filter: function(?string $In) {
-				if(in_array($In, AtlantisProjectWebServer::Types))
-				return $In;
-
-				if(!is_numeric($In))
-				return NULL;
-
-				return AtlantisProjectWebServer::Type((int)$In - 1);
-			}
-		);
-
-		////////
-
-		$this->PrintLn($this->FormatHeading('Webserver Features'), 2);
-
-		$Server->HTTPS = $this->PromptForValue(
-			'Use HTTPS?', 'y/n', TRUE,
-			Default: ($Default($Project, 'HTTPS') ? 'Y' : 'N'),
-			Filter: Common\Filters\Numbers::BoolType(...)
-		);
-
-		////////
-
-		$this->PrintLn($this->FormatHeading('Domains To Serve'), 2);
-
-		while(TRUE) {
-
-			// make an index of the ones we already have.
-
-			$Index = $Server->Domains->MapKeys(
-				fn(mixed $K, mixed $V)
-				=> [ explode(' ', $V, 2)[0] => $V ]
-			);
-
-			$this->PrintLn(match(TRUE) {
-				$Index->Count() > 0
-				=> rtrim($this->FormatBulletList($Index)),
-
-				default
-				=> $this->Format('No domains have been added yet.', static::FmtMuted)
-			}, 2);
-
-			$this->PrintLn($this->FormatTopicList([
-				'Set/Overwrite Domain Line'
-				=> '@domain.tld[ secondary.tld tertiary.tld]',
-
-				'Append to Domain Line'
-				=> '+domain.tld[ secondary.tld tertiary.tld]',
-
-				'Remove Domain Line'
-				=> '-domain.tld'
-			], static::FmtDefault, static::FmtMuted));
-
-			// fetch the user input.
-
-			$Input = $this->PromptForValue(
-				'Command',
-				'@dom.tld, +dom.tld, -dom.tld',
-				FALSE
-			);
-
-			if($Input === NULL)
-			break;
-
-			////////
-
-			$Bits = explode(' ', substr($Input, 1));
-			$Dom = current($Bits);
-
-			// straight up overwrite.
-
-			if(str_starts_with($Input, '@')) {
-				$Index[$Dom] = join(' ', $Bits);
-			}
-
-			// append the things from here onto there.
-
-			elseif(str_starts_with($Input, '+')) {
-				$Index[$Dom] = match($Index->HasKey($Dom)) {
-					TRUE
-					=> sprintf(
-						'%s %s',
-						$Index[$Dom],
-						join(' ', array_slice($Bits, 1))
-					),
-
-					default
-					=> join(' ', $Bits)
-				};
-			}
-
-			// remove this line completely.
-
-			elseif(str_starts_with($Input, '-')) {
-				if($Index->HasKey($Dom))
-				unset($Index[$Dom]);
-			}
-
-			// update the config with the bashed index.
-
-			($Server->Domains)
-			->SetData($Index->Values());
-		}
-
-		////////
-
-		return $Server;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	#[Console\Meta\Command('setup-appdist')]
-	public function
-	HandleSetupAppDist():
+	HandleProjectDist():
 	int {
 
 		$AppRoot = $this->App->FromProjectRoot();
@@ -903,7 +438,10 @@ extends Console\Client {
 
 		////////
 
-		$this->PrintLn($this->FormatHeading('Setup Atlantis Structure...'), 2);
+		$this->PrintLn($this->FormatHeaderPoint(
+			'Setup Atlantis Structure...',
+			Console\Theme::Accent
+		), 2);
 
 		Common\Datastore::FromArray([
 			Common\Filesystem\Util::Pathify($AppRoot, 'conf', 'env', 'dev'),
@@ -956,7 +494,8 @@ extends Console\Client {
 			foreach($Copy as $Cur) {
 				if(is_string($Cur)) {
 					$Copy->Send(!$this->PromptTrue(
-						"Overwrite {$Cur}?", '[N/y]'
+						$this->Format("Overwrite {$Cur}?", Console\Theme::Accent),
+						'[N/y]'
 					));
 
 					continue;
@@ -969,53 +508,69 @@ extends Console\Client {
 		return 0;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	#[Console\Meta\Command('setup-gitignore')]
+	#[Common\Meta\Date('2023-11-11')]
+	#[Console\Meta\Command('project-gitignore', TRUE)]
 	#[Console\Meta\Info('Add things this framework knows you need to .gitignore')]
+	#[Console\Meta\Error(1, 'file write error: %s')]
 	public function
-	HandleSetupGitIgnore():
+	HandleProjectGitIgnore():
 	int {
 
-		$this->PrintLn($this->FormatHeading('Setup Git Ignore...'), 2);
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Git Ignore Config', $this->AppInfo->Name)
+		), 2);
+
+		$Things = Common\Datastore::FromArray([
+			'Local Dev Things' => Common\Datastore::FromArray([
+				'PHPUnit'                     => '/.phpunit.cache',
+				'Composer'                    => '/vendor',
+				'Local Environment Lock File' => '/env.lock',
+				'Local Backup Dir'            => '/backups',
+				'Local Log Dir'               => '/logs',
+				'Local Temporary Thrash Dir'  => '/temp'
+			]),
+
+			'Local Web Things' => Common\Datastore::FromArray([
+				'AcmePHP Server Validation'  => '/www/.well-known',
+				'Atlantis App Scripts'       => '/www/share/atlantis',
+				'Atlantis NUI Scripts'       => '/www/share/nui',
+				'Atlantis Default Theme'     => '/www/themes/default',
+				'Atlantis Coming Soon Theme' => '/www/themes/soon'
+			]),
+
+			'Framework Managed Things' => Common\Datastore::FromArray([
+				'Nether Blog Uploads'              => '/data/blog',
+				'Nether Blog Uploads (Symlink)'    => '/www/data/blog',
+				'Atlantis QR Codes'                => '/data/qr',
+				'Atlantis QR Codes (Symlink)'      => '/www/data/qr',
+				'Atlantis File Uploads'            => '/data/upl',
+				'Atlantis File Uploads (Symlink)'  => '/www/data/upl',
+				'Atlantis VideoTP Cache'           => '/data/vid',
+				'Atlantis VideoTP Cache (Symlink)' => '/www/data/vid'
+			])
+		]);
 
 		$File = $this->App->FromProjectRoot('.gitignore');
 		$Ignore = new Atlantis\Util\GitIgnoreTool($File);
 
-		$Ignore->Append([
+		$Things->Each(function(Common\Datastore $Group, string $Key) use($Ignore) {
+			$this->PrintLn($this->FormatHeaderPoint($Key, Console\Theme::Accent), 2);
+			$this->PrintLn($this->FormatBulletList($Group), 2);
+			$Ignore->Append($Group->Values(TRUE));
+			return;
+		});
 
-			// local app things.
-			'/.phpunit.cache',
-			'/env.lock',
-			'/backups',
-			'/logs',
-			'/temp',
-			'/vendor',
+		try { $Ignore->Write(); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
 
-			// web dir things.
-			'/www/.well-known',
-			'/www/share/atlantis', // symlink to dist (atlantis.json)
-			'/www/share/nui',      // symlink to dist (atlantis.json)
-			'/www/themes/default', // symlink to dist (atlantis.json)
-			'/www/themes/soon',    // symlink to dist (atlantis.json)
+			$this->Quit(1, $Err->GetMessage());
+		}
 
-			// data managed content things.
-			'/data/blog',     // managed by db (atlantis.json)
-			'/www/data/blog', // symlink to data (atlantis.json)
-
-			'/data/qr',       // managed by db (atlantis.json)
-			'/www/data/qr',   // symlink to data (atlantis.json)
-
-			'/data/upl',      // managed by db (atlantis.json)
-			'/www/data/upl',  // symlink to data (atlantis.json)
-
-			'/data/vid',      // managed by db (atlantis.json)
-			'/www/data/vid'   // symlink to data (atlantis.json)
-
-		]);
-
-		$Ignore->Write();
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
 
 		return 0;
 	}
@@ -1023,170 +578,178 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('webconfig')]
-	#[Console\Meta\Value('--filename', 'Name of the config file in the server dir.')]
-	#[Console\Meta\Toggle('--update', 'Re-run the configuration update wizard.')]
-	#[Console\Meta\Info('Symlink our web config into the webserver config system.')]
-	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
-	#[Console\Meta\Error(2, 'No valid server Type')]
+	#[Console\Meta\Command('web-config')]
+	#[Console\Meta\Info('Prepare web server configuration files.')]
+	#[Console\Meta\Toggle('--dry', 'Show the resulting JSON instead of updating the file.')]
+	#[Console\Meta\Error(1, 'No atlantis.json selected.')]
+	#[Console\Meta\Error(2, 'Write error on project json: %s')]
+	#[Console\Meta\Error(3, 'Write error on server config: %s')]
 	public function
-	HandleWebserverConfig():
+	HandleWebConfig():
 	int {
 
-		////////
+		$OptDry = $this->GetOption('dry') ?? FALSE;
+		$Project = NULL;
+		$Err = NULL;
 
-		$Project = AtlantisProjectJSON::FromApp($this->App);
-		$OptUpdate = $this->GetOption('update');
-
-		if($Project->Web->Sudo && $this->Sudo())
-		$this->Quit(0);
-
-		if(!isset($Project->Web) || $OptUpdate) {
-			$this->HandleSetupWebserver();
-		}
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Web Server Config', $this->AppInfo->Name)
+		), 2);
 
 		////////
 
-		switch($Project->Web->Type) {
-			case 'apachectl': {
-				$this->ConfigApache24($Project);
-				$this->HandleWebserverRehash();
-				break;
-			}
-			default: {
-				$this->Quit(2);
-				break;
-			}
-		}
-
-		return 0;
-	}
-
-	protected function
-	ConfigApache24(AtlantisProjectJSON $Project):
-	static {
-
-		$ApacheBaseDir = '/etc/apache2/sites-enabled';
-		$LocalConfigFile = 'apache24.conf';
-
-		$SourceFile = $this->App->FromConfEnv($LocalConfigFile);
-		$Filename = $this->GetOption('filename');
-		$EnvType = $this->App->GetProjectEnvType();
-		$EnvName = $this->App->Config[Atlantis\Key::ConfProjectID];
-		$EnvNum = match($EnvType) {
-			'dev'  => 100,
-			'demo' => 800,
-			'prod' => 900
-		};
-
-		////////
-
-		if($Filename === NULL)
-		$Filename = sprintf('%s-%s-%s.conf', $EnvNum, $EnvName, $EnvType);
-
-		$LinkFile = Common\Filesystem\Util::Pathify(
-			$ApacheBaseDir, $Filename
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $V, string $K)
+			=> $K === 'Env'
 		);
 
+		if(!$Project)
+		$this->Quit(1);
+
+		$Project->Web = $this->QueryWebServerConfig($Project);
+
 		////////
 
-		$this->PrintLn($this->FormatBulletList([
-			'Source' => $SourceFile,
-			'Link'   => $LinkFile
-		]));
-
-		if(file_exists($LinkFile)) {
-			if(is_link($LinkFile)) {
-				if(readlink($LinkFile) === $SourceFile) {
-					$this->PrintLn('OK - Symlink exists and is correct.', 2);
-				}
-
-				else {
-					$this->PrintLn(sprintf(
-						'ERR - Symlink exists but points to %s.',
-						readlink($LinkFile)
-					), 2);
-				}
-			}
-
-			else {
-				$this->PrintLn('ERR - File exists where we want to put the Symlink.', 2);
-			}
-
-			return $this;
+		if($OptDry) {
+			$this->PrintLn($this->FormatHeaderPoint('Dry Run', Console\Theme::Muted), 2);
+			$this->PrintLn($Project->Web->ToJSON(), 2);
+			return 0;
 		}
 
 		////////
 
-		symlink($SourceFile, $LinkFile);
+		try { $this->WriteProjectConfig($Project); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
 
-		if(file_exists($LinkFile))
-		$this->PrintLn('OK', 2);
-		else
-		$this->PrintLn('ERR', 2);
+			$this->Quit(2, $Err->GetMessage());
+		}
 
-		return $this;
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+
+		////////
+
+		try { $this->WriteWebServerConfig($Project); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
+
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+
+		return 0;
 	}
 
-	#[Console\Meta\Command('webreload')]
-	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
-	#[Console\Meta\Error(2, 'No valid server Type')]
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('web-setup')]
+	#[Console\Meta\Info('Push and confirm web server configuration setup.')]
+	#[Console\Meta\Error(1, 'No atlantis.json selected.')]
+	#[Console\Meta\Error(2, 'No Web configuration or incomplete.')]
+	#[Console\Meta\Error(3, 'Invalid/Unsupported web server type.')]
 	public function
-	HandleWebserverRehash():
+	HandleWebSetup():
 	int {
 
-		$Project = AtlantisProjectJSON::FromApp($this->App);
-		$Command = NULL;
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Web Server Setup', $this->AppInfo->Name)
+		), 2);
 
-		if(!isset($Project->Web))
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $V, string $K)
+			=> $K === 'Env'
+		);
+
+		if(!$Project)
 		$this->Quit(1);
+
+		if(!$Project->Web->IsConfigured())
+		$this->Quit(2);
 
 		if($Project->Web->Sudo && $this->Sudo())
 		$this->Quit(0);
 
 		////////
 
-		switch($Project->Web->Type) {
-			case 'apachectl': {
-				$Command = 'apachectl graceful 2>&1';
-				break;
-			}
-			default: {
-				$this->Quit(2);
-				break;
-			}
+		try { $this->SetupWebServer($Project); }
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
 		}
 
-		////////
-
-		$Result = $this->ExecuteCommandLine($Command);
-
-		if($Result->Error) {
-			$this->PrintLn();
-			$this->PrintLn($this->Format('Command Output:', static::FmtError));
-			$Result->Print('> ');
-			$this->PrintLn();
+		try { $this->RehashWebServer($Project); }
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
 		}
 
-		return $Result->Error;
+		return 0;
 	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('projectjson')]
+	#[Console\Meta\Command('web-reload')]
+	#[Console\Meta\Info('Kick web server to reload configuration.')]
+	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
+	#[Console\Meta\Error(2, 'No valid server Type')]
+	#[Console\Meta\Error(3, 'server error: %s')]
+	public function
+	HandleWebReload():
+	int {
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Web Server Reload', $this->AppInfo->Name)
+		), 2);
+
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $V, string $K)
+			=> $K === 'Env'
+		);
+
+		if(!$Project)
+		$this->Quit(1);
+
+		if(!$Project->Web->IsConfigured())
+		$this->Quit(2);
+
+		if($Project->Web->Sudo && $this->Sudo())
+		$this->Quit(0);
+
+		////////
+
+		try { $this->RehashWebServer($Project); }
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		////////
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('jsondbg', TRUE)]
 	#[Console\Meta\Info('Debug tool for atlantis.json')]
 	#[Console\Meta\Error(1, 'no project json selected')]
 	#[Console\Meta\Toggle('--struct', 'Print the parsed structure.')]
 	#[Console\Meta\Toggle('--json', 'Print the JSON structure.')]
 	#[Console\Meta\Toggle('--touch', 'Touch the selected JSON file.')]
 	#[Console\Meta\Toggle('--rewrite', 'Rewrite the selected JSON file.')]
+	#[Common\Meta\Date('2023-11-10')]
 	public function
 	HandleDebugAtlantisJSON():
 	int {
 
 		$Now = Common\Date::Unixtime();
-		$Confs = Atlantis\Struct\ProjectJSON::FromAppStacked($this->App);
 		$OptStruct = $this->GetOption('struct') ?? FALSE;
 		$OptJSON = $this->GetOption('json') ?? FALSE;
 		$OptTouch = $this->GetOption('touch') ?? FALSE;
@@ -1197,22 +760,26 @@ extends Console\Client {
 
 		////////
 
-		$Project = $this->PromptSelectAtlantisJSON($Confs);
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Project JSON Debugger', $this->AppInfo->Name)
+		), 2);
+
+		$Project = $this->QuerySelectProjectConfig();
 
 		if(!$Project)
 		$this->Quit(1);
 
 		$this->PrintLn($this->FormatHeading('Selected:', static::FmtAccent));
-		$this->PrintLn($Project->GetFilename(), 2);
+		$this->PrintLn($Project->Filename, 2);
 
 		////////
 
 		if($OptStruct) {
-			$this->PrintLn($this->FormatHeaderLine('ProjectJSON Structures'));
+			$this->PrintLn($this->FormatHeaderLine('ProjectJSON Structures'), 2);
 
 			$Listable = Common\Datastore::FromArray(Common\Meta\PropertyListable::FromClass($Project::class));
 			$Listable->Each(function(Common\Prototype\PropertyInfo $P) use($Project) {
-				$this->PrintLn($this->FormatHeaderPoint("ProjectJSON.{$P->Name}", static::FmtAccent));
+				$this->PrintLn($this->FormatHeaderPoint("ProjectJSON.{$P->Name}", static::FmtAccent), 2);
 				Common\Dump::Var($Project->{$P->Name});
 				$this->PrintLn();
 				return;
@@ -1220,35 +787,35 @@ extends Console\Client {
 		}
 
 		if($OptJSON) {
-			$this->PrintLn($this->FormatHeaderLine('ProjectJSON as JSON'));
+			$this->PrintLn($this->FormatHeaderLine('ProjectJSON as JSON'), 2);
 			$this->PrintLn($Project->ToJSON());
 			$this->PrintLn();
 		}
 
 		if($OptTouch) {
-			$this->PrintLn($this->FormatHeaderLine('Touching ProjectJSON'));
+			$this->PrintLn($this->FormatHeaderLine('Touching ProjectJSON'), 2);
 
 			(function(Atlantis\Struct\ProjectJSON $P, int $T) {
-				$Touched = touch($P->GetFilename(), $T, $T);
+				$Touched = touch($P->Filename, $T, $T);
 
 				if($Touched)
 				$this->PrintLn($this->FormatHeaderPoint(
 					'OK',
 					static::FmtOK
-				));
+				), 2);
 
 				else
 				$this->PrintLn($this->FormatHeaderPoint(
 					'Failed to touch file.',
 					static::FmtError
-				));
+				), 2);
 
 				return;
 			})($Project, $Now);
 		}
 
 		if($OptRewrite) {
-			$this->PrintLn($this->FormatHeaderLine('Rewriting ProjectJSON'));
+			$this->PrintLn($this->FormatHeaderLine('Rewriting ProjectJSON'), 2);
 
 			(function(Atlantis\Struct\ProjectJSON $P) {
 
@@ -1273,9 +840,401 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-11')]
 	public function
-	PromptSelectAtlantisJSON(Common\Datastore $Confs):
+	RehashWebServer(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		match(TRUE) {
+			$Project->Web->IsType(($Project->Web)::TypeApacheCtl)
+			=> $this->RehashWebServerApache24($Project),
+
+			default
+			=> throw new Exception('Unknown Web Server Type')
+		};
+
+		return;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	RehashWebServerApache24(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$Result = $this->ExecuteCommandLine('apachectl graceful', TRUE);
+
+		if($Result->HasError()) {
+			$this->PrintLn($this->FormatHeaderPoint('ERROR', Console\Theme::Error), 2);
+			$this->PrintLn($this->Format(
+				$Result->GetOutputString(),
+				Console\Theme::Error
+			));
+
+			return;
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK - Web Server Rehashed',
+			Console\Theme::OK
+		), 2);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupWebServer(Atlantis\Struct\ProjectJSON $Project):
+	static {
+
+		return match(TRUE) {
+			$Project->Web->IsType(($Project->Web)::TypeApacheCtl)
+			=> $this->SetupWebServerApache24($Project),
+
+			default
+			=> throw new Exception('Unknown Web Server Type')
+		};
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupWebServerApache24(Atlantis\Struct\ProjectJSON $Project):
+	static {
+
+		$ApacheBaseDir = '/etc/apache2/sites-enabled';
+		$LocalConfigFile = 'apache24.conf';
+
+		$SourceFile = $this->App->FromConfEnv($LocalConfigFile);
+		$EnvType = $this->App->GetProjectEnvType();
+		$EnvName = $this->App->Config[Atlantis\Key::ConfProjectID];
+		$EnvNum = match($EnvType) {
+			'dev'   => 100,
+			'demo'  => 800,
+			'prod'  => 900,
+			default => 999
+		};
+
+		$Filename = sprintf('%s-%s-%s.conf', $EnvNum, $EnvName, $EnvType);
+		$LinkFile = Common\Filesystem\Util::Pathify($ApacheBaseDir, $Filename);
+
+		////////
+
+		$this->PrintLn($this->FormatBulletList([
+			'Source' => $SourceFile,
+			'Link'   => $LinkFile
+		]), 2);
+
+		if(file_exists($LinkFile)) {
+			if(is_link($LinkFile)) {
+				if(Common\Filesystem\Util::IsLinkTo($LinkFile, $SourceFile))
+				$this->PrintLn($this->FormatHeaderPoint(
+					'OK - Symlink exists and is correct.',
+					Console\Theme::OK
+				), 2);
+
+				else
+				$this->PrintLn($this->FormatHeaderPoint(
+					sprintf('ERROR - Symlink exists but points to %s', readlink($LinkFile)),
+					Console\Theme::Error
+				), 2);
+			}
+
+			else {
+				$this->PrintLn($this->FormatHeaderPoint(
+					"ERROR - File exists where we want to put the symlink: {$LinkFile}",
+					Console\Theme::Error
+				), 2);
+			}
+
+			return $this;
+		}
+
+		////////
+
+		symlink(realpath($SourceFile), $LinkFile);
+
+		if(file_exists($LinkFile))
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+		else
+		$this->PrintLn($this->FormatHeaderPoint('ERROR', Console\Theme::Error), 2);
+
+		return $this;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupProjectDirs(Atlantis\Struct\ProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Report = new Common\Datastore;
+
+		$Printer = function(string $V, string $K) {
+			$Label = 'DIR';
+
+			if($V === 'OK' || $V === 'NEW' || $V === 'FIXED') {
+				$this->PrintLn(sprintf(
+					'[%s] %s (%s)',
+					$this->Format($Label, Console\Theme::OK),
+					$K, $V
+				));
+
+				return;
+			}
+
+			$this->PrintLn(sprintf(
+				'[%s] %s (%s)',
+				$this->Format($Label, Console\Theme::Error),
+				$K, $V
+			));
+
+			return;
+		};
+
+		$Tester = function(Common\Filesystem\Directory $Dir) use($Report) {
+
+			if(is_dir($Dir->Path)) {
+				$Report[$Dir->Path] = 'OK';
+				return;
+			}
+
+			if(is_file($Dir->Path)) {
+				$Report[$Dir->Path] = 'ERROR: Exists as File';
+				return;
+			}
+
+			Common\Filesystem\Util::MkDir($Dir->Path);
+
+			if(!is_dir($Dir->Path)) {
+				$Report[$Dir->Path] = "ERROR: Permission Denied";
+				return;
+			}
+
+			$Report[$Dir->Path] = 'NEW';
+
+			return;
+		};
+
+		$Fixer = function(Common\Filesystem\Directory $Dir) use($Report) {
+
+			if(is_file($Dir->Path)) {
+				unlink($Dir->Path);
+				Common\Filesystem\Util::MkDir($Dir->Path);
+
+				if(is_dir($Dir->Path)) {
+					$Report[$Dir->Path] = 'FIXED';
+				}
+
+				return;
+			}
+
+			return;
+		};
+
+		////////
+
+		$Project->Dirs->Each($Tester);
+		$Report->Each($Printer);
+		$this->PrintLn();
+
+		////////
+
+		$Retry = $Project->Dirs->Distill(
+			fn(Common\Filesystem\Directory $D)
+			=> str_starts_with($Report[$D->Path], 'ERROR:')
+		);
+
+		if($Retry->Count() === 0)
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK', Console\Theme::OK
+		), 2);
+
+		else
+		$this->PrintLn($this->FormatHeaderPoint(
+			"ERROR: Needs fixed: {$Retry->Count()}", Console\Theme::Error
+		), 2);
+
+		if($Retry->Count() && $OptFix) {
+			$Report->Clear();
+			$Retry->Each($Fixer);
+			$Report->Each($Printer);
+			$this->PrintLn();
+		}
+
+		////////
+
+		return $this;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupProjectLinks(Atlantis\Struct\ProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Report = new Common\Datastore;
+
+		$Printer = function(string $V, string $K) {
+			$Label = 'SYM';
+
+			if($V === 'OK' || $V === 'NEW' || $V === 'FIXED') {
+				$this->PrintLn(sprintf(
+					'[%s] %s (%s)',
+					$this->Format($Label, Console\Theme::OK),
+					$K, $V
+				));
+
+				return;
+			}
+
+			$this->PrintLn(sprintf(
+				'[%s] %s (%s)',
+				$this->Format($Label, Console\Theme::Error),
+				$K, $V
+			));
+
+			return;
+		};
+
+		$Tester = function(Common\Filesystem\Symlink $Dir) use($Report) {
+
+			if(is_file($Dir->Path)) {
+				if(is_link($Dir->Path)) {
+					if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+						$Report[$Dir->Path] = 'OK';
+						return;
+					}
+
+					$Report[$Dir->Path] = 'Error: Exists as a symlink pointing to wrong thing.';
+					return;
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Exists as File';
+				return;
+			}
+
+			if(is_dir($Dir->Path)) {
+				if(is_link($Dir->Path)) {
+					if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+						$Report[$Dir->Path] = 'OK';
+						return;
+					}
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Exists as Directory';
+				return;
+			}
+
+			if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+				$Report[$Dir->Path] = 'OK';
+				return;
+			}
+
+			symlink(realpath($Dir->Source), $Dir->Path);
+
+			if(!is_link($Dir->Path)) {
+				$Report[$Dir->Path] = "ERROR: Permission Denied";
+				return;
+			}
+
+			$Report[$Dir->Path] = 'NEW';
+			return;
+		};
+
+		$Fixer = function(Common\Filesystem\Symlink $Dir) use($Report) {
+
+			if(is_link($Dir->Path) || is_file($Dir->Path)) {
+				unlink($Dir->Path);
+				symlink(realpath($Dir->Source), $Dir->Path);
+
+				if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+					$Report[$Dir->Path] = 'FIXED';
+					return;
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Fixing failed.';
+				return;
+			}
+
+			if(is_dir($Dir->Path)) {
+				Common\Filesystem\Util::RmDir($Dir->Path);
+				symlink(realpath($Dir->Source), $Dir->Path);
+
+				if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+					$Report[$Dir->Path] = 'FIXED';
+					return;
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Fixing failed.';
+				return;
+			}
+
+			$Report[$Dir->Path] = 'ERROR: No fix available for whatever is wrong.';
+			return;
+		};
+
+		////////
+
+		$Project->Symlinks->Each($Tester);
+		$Report->Each($Printer);
+		$this->PrintLn();
+
+		////////
+
+		$Retry = $Project->Symlinks->Distill(
+			fn(Common\Filesystem\Symlink $D)=>
+			str_starts_with($Report[$D->Path], 'ERROR:')
+		);
+
+		if($Retry->Count() === 0)
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK', Console\Theme::OK
+		), 2);
+
+		else
+		$this->PrintLn($this->FormatHeaderPoint(
+			"ERROR: Needs fixed: {$Retry->Count()}", Console\Theme::Error
+		), 2);
+
+		if($Retry->Count() && $OptFix) {
+			$Report->Clear();
+			$Retry->Each($Fixer);
+			$Report->Each($Printer);
+			$this->PrintLn();
+		}
+
+		////////
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-09')]
+	#[Common\Meta\Info('Prompt the user to select from the supplied config files.')]
+	public function
+	QuerySelectProjectConfig(callable $Filter=NULL):
 	?Atlantis\Struct\ProjectJSON {
+
+		$Confs = Atlantis\Struct\ProjectJSON::FromApp($this->App);
+		$Output = NULL;
+
+		if(is_callable($Filter))
+		$Confs->Filter($Filter);
+
+		if($Confs->Count() === 1) {
+			$Output = $Confs->Revalue()[0];
+
+			$this->PrintLn($this->FormatHeaderPoint(
+				"Selected: {$Output->Filename}",
+				Console\Theme::Muted
+			), 2);
+
+			return $Output;
+		}
+
+		////////
 
 		$MakeConfList = function(Common\Datastore $Confs) {
 			$Out = new Common\Datastore;
@@ -1285,16 +1244,14 @@ extends Console\Client {
 				=> $Out->Push(sprintf(
 					'%s %s',
 					$Key,
-					$this->Format("({$P->GetFilename()})", static::FmtMuted)
+					$this->Format("({$P->Filename})", static::FmtMuted)
 				))
 			);
 
 			return $Out;
 		};
 
-		$this->PrintLn($this->FormatHeaderLine('ProjectJSON Tool'));
-
-		$this->PrintLn($this->FormatHeaderPoint('Atlantis ProjectJSON Files:', static::FmtAccent));
+		$this->PrintLn($this->FormatHeaderPoint('Atlantis ProjectJSON Files:', static::FmtAccent), 2);
 		$this->PrintLn($this->FormatBulletList($MakeConfList($Confs)), 2);
 
 		////////
@@ -1306,7 +1263,284 @@ extends Console\Client {
 
 		////////
 
-		return $Confs->Values()->Get($Key - 1);
+		$Output = $Confs->Values()->Get($Key - 1);
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Selected: {$Output->Filename}",
+			Console\Theme::Muted
+		), 2);
+
+		return $Output;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	#[Common\Meta\Info('Engage an interaction mode to extract web server configuration from the user.')]
+	public function
+	QueryWebServerConfig(Atlantis\Struct\ProjectJSON $Project):
+	Atlantis\Struct\ProjectJSON\WebJSON {
+
+		$Server = (
+			isset($Project->Web)
+			? $Project->Web
+			: new Atlantis\Struct\ProjectJSON\WebJSON
+		);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine('Web Server Types', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatBulletList(Atlantis\Struct\ProjectJSON\WebJSON::Types), 2);
+
+		$Server->Type = $this->PromptForValue(
+			Required: TRUE,
+			Name: 'Select Type',
+			Type: 'Number',
+			Default: (
+				$Server->Type
+				? ($Server::Type($Server->Type) + 1)
+				: NULL
+			),
+			Filter: function(?string $In) {
+				if(in_array($In, Atlantis\Struct\ProjectJSON\WebJSON::Types))
+				return $In;
+
+				if(!is_numeric($In))
+				return NULL;
+
+				return Atlantis\Struct\ProjectJSON\WebJSON::Type((int)$In - 1);
+			}
+		);
+
+		$this->PrintLn($this->FormatHeaderLine(
+			"Selected: {$Server->Type}", static::FmtMuted
+		), 2);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine('HTTPS/SSL', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatWrap(''
+			. 'First Time setup or Local Dev it is useful to say no here to get it running on basic HTTP. '
+			. 'Once the cert is acquired this tool may be ran again to update the required configuration files.'
+		), 2);
+
+		$Server->HTTPS = $this->PromptForValue(
+			Required: TRUE,
+			Name: 'Use HTTPS?',
+			Type: 'y/n',
+			Default: ($Server->HTTPS ? 'y' : 'n'),
+			Filter: Common\Filters\Numbers::BoolType(...)
+		);
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('Selected: %s', ($Server->HTTPS ? 'Yes' : 'No')),
+			static::FmtMuted
+		), 2);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine('Domains', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatWrap(''
+			. 'The domain editor works with space delimited input. '
+			. 'First domain on that line is considered the primary domain. '
+			. 'Other domains on that same line point to the same web root and SSL cert. '
+			. 'In the SSL cert this would be your primary domain and alt domains.'
+		), 2);
+
+		$Server->Domains = $this->QueryDomainMasterList(
+			$Server->Domains
+		);
+
+		return $Server;
+	}
+
+	#[Common\Meta\Date('2023-11-10')]
+	#[Common\Meta\Info('Engage an interaction mode to extract domain configuration from the user.')]
+	public function
+	QueryDomainMasterList(Common\Datastore $Domains):
+	Common\Datastore {
+
+		// [
+		// 	"primary.tld secondary.tld tertiary.tld"
+		// 	...
+		// ]
+
+		// the first domain is used as the domain that owns the ssl
+		// and the secondary domains all grift off that cert in the
+		// webserver config. in apache speak it would look like this:
+
+		// Use HTTPS primary.tld primary.tld /web/root
+		// Use HTTPS secondary.tld primary.tld /web/root
+		// Use HTTPS tertiary.tld primary.tld /web/root
+
+		$Index = (
+			($Domains)
+			->MapKeys(fn(string $K, string $D)=> [ explode(' ', $D, 2)[0] => $D ])
+			->Filter(fn(string $D)=> !!$D)
+		);
+
+		(function(Common\Datastore $Index) {
+			$Input = NULL;
+			$Line = NULL;
+
+			while(TRUE) {
+				$this->PrintLn($this->FormatHeaderPoint(
+					'Current Config:',
+					static::FmtAccent
+				), 2);
+
+				$this->PrintLn(match(TRUE) {
+					$Index->Count() > 0
+					=> rtrim($this->FormatBulletList($Index)),
+
+					default
+					=> $this->Format('No domains have been added yet.', static::FmtMuted)
+				}, 2);
+
+				$this->PrintLn($this->FormatTopicList([
+					'Set or overwrite Domain Line'
+					=> sprintf('> %s primary.tld %s', $this->Format('set', static::FmtAccent), $this->Format('secondary.tld tertiary.tld', static::FmtMuted)),
+
+					'Add Domain to existing Domain Line.'
+					=> sprintf('> %s primary.tld to-append.tld', $this->Format('add', static::FmtAccent)),
+
+					'Delete Domain or Domain Line.'
+					=> sprintf('> %s primary.tld %s', $this->Format('del', static::FmtAccent), $this->Format('to-delete.tld', static::FmtMuted))
+				], static::FmtStrong, static::FmtDefault), 2);
+
+				////////
+
+				$Input = $this->PromptForValue(
+					'Domain Command',
+					'[set|add|del]',
+					FALSE
+				);
+
+				if($Input === NULL)
+				break;
+
+				////////
+
+				$Line = new Atlantis\Struct\DomainLine($Input, TRUE);
+
+				if(!$Line->IsConfigured()) {
+					$this->PrintLn($this->FormatHeaderPoint(
+						'ERROR: Failed to parse input.',
+						Console\Theme::Error
+					), 2);
+
+					continue;
+				}
+
+				////////
+
+				if(str_starts_with($Input, 'set')) {
+					$Index[$Line->Primary] = $Line->ToString();
+					continue;
+				}
+
+				if(str_starts_with($Input, 'add')) {
+					if(!$Index->HasKey($Line->Primary))
+					$Index[$Line->Primary] = $Line->Primary;
+
+					if($Line->Secondary)
+					$Index[$Line->Primary] = Atlantis\Struct\DomainLine::MergeLines(
+						$Index[$Line->Primary],
+						$Line->Secondary
+					);
+
+					continue;
+				}
+
+				if(str_starts_with($Input, 'del')) {
+					if(!$Index->HasKey($Line->Primary)) {
+						$this->PrintLn($this->FormatHeaderPoint(
+							"ERROR: No Domain Line {$Line->Primary} found",
+							Console\Theme::Error
+						), 2);
+
+						continue;
+					}
+
+					if($Line->Secondary) {
+						$Index[$Line->Primary] = Atlantis\Struct\DomainLine::Strip(
+							$Index[$Line->Primary],
+							$Line->Secondary
+						);
+
+						continue;
+					}
+
+					unset($Index[$Line->Primary]);
+					continue;
+				}
+
+				////////
+
+				continue;
+			}
+
+			return;
+		})($Index);
+
+		return $Index->Values();
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	WriteProjectConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Project->Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		if(!$Project->Write())
+		throw new Common\Error\FileWriteError($Project->Filename);
+
+		return;
+	}
+
+	#[Common\Meta\Date('2023-11-10')]
+	public function
+	WriteWebServerConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$Filename = NULL;
+		$Contents = NULL;
+
+		if($Project->Web->Type === 'apachectl') {
+			$Filename = 'apache24.conf';
+			$Contents = $Project->Web->ToApache24($this->App);
+		}
+
+		////////
+
+		$Filename = $this->App->FromConfEnv($Filename);
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		////////
+
+		if(file_exists($Filename) && !is_writable($Filename))
+		throw new Common\Error\FileUnwritable($Filename);
+
+		elseif(!is_writable(dirname($Filename)))
+		throw new Common\Error\DirUnwritable($Filename);
+
+		////////
+
+		$Bytes = file_put_contents($Filename, $Contents);
+
+		if($Bytes === FALSE)
+		throw new Common\Error\FileWriteError($Filename);
+
+		return;
 	}
 
 }

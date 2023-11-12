@@ -2,6 +2,8 @@
 
 namespace Nether\Atlantis\Util;
 
+use Nether\Common;
+
 use Exception;
 
 class GitIgnoreTool {
@@ -53,7 +55,7 @@ things can be programatically added to it.
 
 		if(file_exists($this->Filename)) {
 			if(!is_writable($this->Filename))
-			throw new Exception("{$this->Filename} not writable");
+			throw new Common\Error\FileUnwritable($this->Filename);
 		}
 
 		// do not know if it is still true but a long time ago i suffered
@@ -61,7 +63,7 @@ things can be programatically added to it.
 		// honoured if there was no new line at the end of it and i am
 		// still butthurt over it.
 
-		$Output = join(PHP_EOL, $this->Lines);
+		$Output = trim(join(PHP_EOL, $this->Lines));
 		$Output .= PHP_EOL;
 
 		file_put_contents($this->Filename, $Output);
@@ -90,6 +92,7 @@ things can be programatically added to it.
 
 		$this->Lines = array_merge(
 			array_values($this->Lines),
+			[ '' ],
 			array_values(array_diff($Lines, $this->Lines))
 		);
 

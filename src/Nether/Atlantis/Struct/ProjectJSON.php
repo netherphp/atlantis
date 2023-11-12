@@ -5,60 +5,61 @@ namespace Nether\Atlantis\Struct;
 use Nether\Atlantis;
 use Nether\Common;
 
+use Exception;
+
 class ProjectJSON
 extends Common\Prototype
 implements
 	Common\Interfaces\ToArray,
-	Common\Interfaces\ToJSON {
+	Common\Interfaces\ToJSON,
+	Common\Interfaces\ToString {
 
 	use
-	Common\Package\ToJSON;
-
-	#[Common\Meta\PropertyListable]
-	#[Common\Meta\PropertyObjectify]
-	public Common\Struct\DirectoryList
-	$Dirs;
-
-	#[Common\Meta\PropertyListable]
-	#[Common\Meta\PropertyObjectify]
-	public Common\Struct\SymlinkList
-	$Symlinks;
-
-	#[Common\Meta\PropertyListable]
-	#[Common\Meta\PropertyObjectify]
-	public Atlantis\Struct\AtlantisProjectWebServer
-	$Web;
-
-	#[Common\Meta\PropertyListable]
-	#[Common\Meta\PropertyObjectify]
-	public Atlantis\Struct\AtlantisProjectSSL
-	$SSL;
-
-	#[Common\Meta\PropertyListable]
-	#[Common\Meta\PropertyObjectify]
-	public Atlantis\Struct\ProjectJSON\DevJSON
-	$Dev;
-
-	////////
-
-	protected Common\Datastore
-	$File;
+	Common\Package\ToJSON,
+	Common\Package\ToString;
 
 	////////////////////////////////////////////////////////////////
-	// IMPLEMENTS Common\Prototype /////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-	protected function
-	OnReady(Common\Prototype\ConstructArgs $Args):
-	void {
+	#[Common\Meta\Date('2023-11-10')]
+	#[Common\Meta\Info('Filename of the JSON file, not stored within it.')]
+	public string
+	$Filename;
 
-		$this->Read();
+	#[Common\Meta\Date('2023-11-08')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFactory('FromArray')]
+	public array|Common\Struct\DirectoryList
+	$Dirs = [];
 
-		return;
-	}
+	#[Common\Meta\Date('2023-11-08')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFactory('FromArray')]
+	public array|Common\Struct\SymlinkList
+	$Symlinks = [];
+
+	#[Common\Meta\Date('2023-11-08')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFactory('FromArray')]
+	public array|ProjectJSON\WebJSON
+	$Web = [];
+
+	#[Common\Meta\Date('2023-11-08')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFactory('FromArray')]
+	public array|ProjectJSON\CertJSON
+	$Cert = [];
+
+	#[Common\Meta\Date('2023-11-08')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFactory('FromArray')]
+	public array|ProjectJSON\DevJSON
+	$Dev = [];
 
 	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Common\Interfaces\ToArray ////////////////////////
 
+	#[Common\Meta\Date('2023-11-08')]
 	public function
 	ToArray():
 	array {
@@ -73,7 +74,7 @@ implements
 			$Out[$Prop] = $this->{$Prop}->GetData();
 		}
 
-		foreach(['Web', 'SSL', 'Dev'] as $Prop) {
+		foreach(['Web', 'Cert', 'Dev'] as $Prop) {
 			if($this->{$Prop}->HasAnything())
 			$Out[$Prop] = $this->{$Prop}->ToArray();
 		}
@@ -84,78 +85,42 @@ implements
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	public function
-	GetFilename():
-	?string {
-
-		return $this->File->GetFilename();
-	}
-
-	public function
-	SetFilename(string $Filename):
-	static {
-
-		$this->File->SetFilename($Filename);
-		return $this;
-	}
-
-	public function
-	Read():
-	static {
-
-		if(isset($this->File['Dirs']) && is_array($this->File['Dirs']))
-		$this->Dirs = Common\Struct\DirectoryList::FromArray($this->File['Dirs']);
-
-		if(isset($this->File['Symlinks']) && is_array($this->File['Symlinks']))
-		$this->Symlinks = Common\Struct\SymlinkList::FromArray($this->File['Symlinks']);
-
-		if(isset($this->File['Dev']) && is_array($this->File['Dev']))
-		$this->Dev = ProjectJSON\DevJSON::FromArray($this->File['Dev']);
-
-		if(isset($this->File['Web']) && is_iterable($this->File['Web']))
-		$this->Web = AtlantisProjectWebServer::FromArray($this->File['Web']);
-
-		if(isset($this->File['SSL']) && is_iterable($this->File['SSL']))
-		$this->SSL = AtlantisProjectSSL::FromArray($this->File['SSL']);
-
-		return $this;
-	}
-
-	public function
-	Sort():
-	static {
-
-		/*
-		$this->Dirs->Sort(
-			fn(Common\Filesystem\Directory $A, Common\Filesystem\Directory $B)
-			=> $A->Path <=> $B->Path
-		);
-
-		$this->Links->Sort(
-			fn(Common\Filesystem\Symlink $A, Common\Filesystem\Symlink $B)
-			=> $A->Path <=> $B->Path
-		);
-		*/
-
-		return $this;
-	}
-
+	#[Common\Meta\Date('2023-11-10')]
 	public function
 	Write():
-	static {
+	bool {
 
 		$JSON = $this->ToJSON();
-		$Filename = $this->File->GetFilename();
-		$Bytes = file_put_contents($Filename, $JSON);
+		$Bytes = file_put_contents($this->Filename, $JSON);
 
-		// $this->File->Read();
+		if($Bytes === FALSE)
+		throw new Exception('failed to write (permissions?)');
 
-		return $this;
+		if($Bytes !== mb_strlen($JSON))
+		throw new Exception('written did not match expected');
+
+		return TRUE;
 	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-10')]
+	#[Common\Meta\Info('Parse a JSON dump.')]
+	static public function
+	FromJSON(string $JSON):
+	static {
+
+		$Data = json_decode($JSON, TRUE);
+
+		if(!is_array($Data))
+		$Data = [];
+
+		return new static($Data);
+	}
+
+	#[Common\Meta\Date('2023-11-09')]
+	#[Common\Meta\Info('Load a JSON file from disk.')]
 	static public function
 	FromFile(string $Filename, bool $Create=TRUE):
 	static {
@@ -166,37 +131,21 @@ implements
 
 		////////
 
-		return new static([
-			'File' => Common\Datastore::FromFile($Filename)
-		]);
-	}
-
-	static public function
-	FromApp(Atlantis\Engine $App):
-	static {
-
-		$ProjectFile = $App->FromProjectRoot('atlantis.json');
-		$EnvFile = $App->FromConfEnv('atlantis.json');
-
-		// load in the base config
-
-		$Data = Common\Datastore::FromStackMerged(
-			file_exists($ProjectFile)
-			? Common\Datastore::FromFile($ProjectFile)
-			: [],
-
-			file_exists($EnvFile)
-			? Common\Datastore::FromFile($EnvFile)
-			: []
+		$Output = static::FromJSON(
+			file_get_contents($Filename) ?: '{}'
 		);
 
-		$Output = new static([ 'File'=> $Data ]);
+		$Output->Filename = $Filename;
+
+		////////
 
 		return $Output;
 	}
 
+	#[Common\Meta\Date('2023-11-10')]
+	#[Common\Meta\Info('Fetch all the config files in play from Atlantis.')]
 	static public function
-	FromAppStacked(Atlantis\Engine $App):
+	FromApp(Atlantis\Engine $App):
 	Common\Datastore {
 
 		$Files = (
