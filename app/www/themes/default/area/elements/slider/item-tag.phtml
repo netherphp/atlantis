@@ -7,15 +7,22 @@
  */
 
 $Tag = $Item->GetItem();
+$Label = $Tag->Name;
+$LabelPosition = 'position-bottom';
+$CoverImageURL = $Tag->GetCoverImageURL();
+$GotoURL = $Tag->GetPageURL();
+
+if(!$CoverImageURL)
+$LabelPosition = 'position-v-center';
 
 ?>
 
 <div class="swiper-slide">
-	<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($Tag->GetCoverImageURL()) ?>);">
+	<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($CoverImageURL) ?>);">
 		<div class="position-absolutely grad-bottom-normal"></div>
-		<div class="position-absolute position-bottom w-100 text-align-center">
-			<span class="fw-bold text-uppercase"><?php $Util->Print($Tag->Name) ?></span>
+		<div class="position-absolute <?php $Util->Print($LabelPosition) ?> w-100 text-align-center">
+			<span class="fw-bold text-uppercase"><?php $Util->Print($Label) ?></span>
 		</div>
-		<a href="<?php $Util->Print($Tag->GetPageURL()) ?>" class="position-absolutely"></a>
+		<a href="<?php $Util->Print($GotoURL) ?>" class="position-absolutely"></a>
 	</div>
 </div>
