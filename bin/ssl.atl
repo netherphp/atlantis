@@ -3,10 +3,8 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
-use Nether\User;
 
-use Nether\Atlantis\Struct\AtlantisProjectJSON;
-use Nether\Atlantis\Struct\AtlantisProjectSSL;
+use Nether\Atlantis\Struct\ProjectJSON;
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
@@ -16,9 +14,13 @@ use Nether\Atlantis\Struct\AtlantisProjectSSL;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-#[Console\Meta\Application('Atlantis SSL Tool', '5.0.0-dev')]
+#[Console\Meta\Application('CertTool', '5.0.0-dev', Phar: 'ssl.phar')]
 class CertTool
 extends Console\Client {
+
+	use
+	Atlantis\Packages\DevTool\QuerySelectProjectConfig,
+	Atlantis\Packages\DevTool\QueryDomainLineList;
 
 	protected Atlantis\Engine
 	$App;
@@ -42,165 +44,132 @@ extends Console\Client {
 		return;
 	}
 
+	protected function
+	ApplyDefaultSort():
+	void {
+
+		$this->Commands = (
+			Common\Datastore::FromArray([ 'config', 'renew', 'cron', 'lookup' ])
+			->MapKeys(fn(int $K, string $C)=> [ $C => $this->Commands->Get($C) ])
+			->Each(fn(object $C, string $K)=> $this->Commands->Remove($K))
+			->MergeRight($this->Commands)
+		);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Common\Meta\Date('2023-10-12')]
-	#[Console\Meta\Command('setup')]
-	#[Console\Meta\Info('Run the setup wizard to configure the SSL for this Environment.')]
-	#[Console\Meta\Toggle('--appconf', 'Write to the root atlantis.json file instead of the environment atlantis.json.')]
-	#[Console\Meta\Toggle('--verbose', 'Shows the resulting configuration values in the output as well.')]
+	#[Common\Meta\Date('2023-11-14')]
+	#[Console\Meta\Command('config')]
+	#[Console\Meta\Info('Tool to configure the SSL cert for this project.')]
 	#[Console\Meta\Error(1, 'No atlantis.json file found.')]
 	public function
-	HandleSetupCert():
+	HandleConfig():
 	int {
 
-		$OptUseAppConf = $this->GetOption('appconf') ?: FALSE;
-		$OptVerbose = $this->GetOption('verbose') ?: FALSE;
+		$this->PrintLn($this->FormatH1(sprintf(
+			'%s: Config',
+			$this->AppInfo->Name
+		)));
 
 		////////
 
-		$Projs = AtlantisProjectJSON::FromAppStacked($this->App);
-		$Proj = $Projs['Env'];
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $P, string $K)
+			=> $K === 'Env'
+		);
 
-		if($OptUseAppConf)
-		$Proj = $Projs['App'];
-
-		if($Proj === NULL)
+		if(!$Project)
 		$this->Quit(1);
 
 		////////
 
-		$Proj->SSL = $this->QueryUserForCertInfo($Proj);
+		$Project->Cert = $this->QueryUserForCertInfo($Project);
 
-		$this->PrintLn($this->FormatHeading('Project SSL Config'));
-		$this->PrintLn($this->Format($Proj->GetFilename(), static::FmtMuted), 2);
+		$this->PrintLn($this->FormatH2('Cert Config'));
+		$this->PrintLn($this->FormatCertConfig($Project->Cert));
 
-		if($OptVerbose)
-		$this->PrintLn($this->FormatBulletList($Proj->SSL->ToArrayFlat()));
+		////////
 
-		if($Proj->SSL->Service === 'AcmePHP') (function() use($Proj, $OptVerbose) {
-			$AcmeConf = $this->App->GetEnvConfigRoot('acmephp.yml');
-			$AcmeYaml = $Proj->SSL->ToAcmeYaml($this->App);
+		try { $this->WriteProjectConfig($Project); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
 
-			$this->PrintLn($this->FormatHeading('AcmePHP YAML'));
-			$this->PrintLn($this->Format($AcmeConf, static::FmtMuted), 2);
+			$this->Quit(2, $Err->GetMessage());
+		}
 
-			if($OptVerbose)
-			$this->PrintLn($this->Format($AcmeYaml, static::FmtDefault), 2);
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
 
-			file_put_contents($AcmeConf, $AcmeYaml);
-			return;
-		})();
+		////////
 
-		$Proj->Write();
+		try { $this->WriteCertConfig($Project); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
+
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
 
 		return 0;
 	}
 
-	#[Common\Meta\Date('2023-10-12')]
-	protected function
-	QueryUserForCertInfo(AtlantisProjectJSON $Project):
-	Atlantis\Struct\AtlantisProjectSSL {
+	#[Common\Meta\Date('2023-11-14')]
+	#[Console\Meta\Command('renew')]
+	#[Console\Meta\Info('Renew the SSL cert for this project.')]
+	#[Console\Meta\Error(1, 'no project json selected')]
+	public function
+	HandleRenew():
+	int {
 
-		$SSL = new AtlantisProjectSSL;
-
-		$DefaultSSL = fn(?AtlantisProjectSSL $J, string $P)=> match(TRUE) {
-			(is_object($J) && isset($J->{$P}))
-			=> match(TRUE) {
-				($J->{$P} instanceof Common\Datastore)
-				=> $J->{$P}->Join(', '),
-
-				default
-				=> $J->{$P}
-			},
-
-			default
-			=> NULL
-		};
+		$this->PrintLn($this->FormatH1(sprintf(
+			'%s: Renew',
+			$this->AppInfo->Name
+		)));
 
 		////////
 
-		$SSL->Domain = $this->PromptForValue(
-			'Primary Domain',
-			'domain.tld', TRUE,
-			Default: $DefaultSSL($Project->SSL, 'Domain')
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $P, string $K)
+			=> $K === 'Env'
 		);
+
+		if(!$Project)
+		$this->Quit(1);
 
 		////////
 
-		($SSL->AltDomains)
-		->SetData($this->PromptForValue(
-			'Alt Domains',
-			'domain.tld csv, "none" to unset', FALSE,
-			Filter: function(?string $In) {
-				if(!$In)
-				return [ ];
-
-				if(!str_contains($In, ','))
-				return [ $In ];
-
-				return explode(',', $In);
-			},
-			Default: $DefaultSSL($Project->SSL, 'AltDomains')
-		))
-		->Remap(fn(string $D)=> trim($D))
-		->Filter(fn(string $D)=> !!$D)
-		->Filter(fn(string $D)=> $D !== 'none' && $D !== 'null');
+		if($Project->Cert->Sudo && $this->Sudo())
+		return 0;
 
 		////////
 
-		$SSL->OrgName = $this->PromptForValue(
-			'Company/Org Name',
-			'string', TRUE,
-			Default: $DefaultSSL($Project->SSL, 'OrgName')
-		);
+		$this->RenewProjectCert($Project);
 
-		$SSL->Country = $this->PromptForValue(
-			'Company/Org Country',
-			'string, UNLOCODE preferred', TRUE,
-			Default: $DefaultSSL($Project->SSL, 'Country')
-		);
-
-		$SSL->City = $this->PromptForValue(
-			'Company/Org City',
-			'string, UNLOCODE preferred', TRUE,
-			Default: $DefaultSSL($Project->SSL, 'City')
-		);
-
-		////////
-
-		$SSL->Email = $this->PromptForValue(
-			'Tech Contact Email',
-			'string', TRUE,
-			Common\Filters\Text::Email(...),
-			Default: $DefaultSSL($Project->SSL, 'Email')
-		);
-
-		////////
-
-		return $SSL;
+		return 0;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
+	#[Common\Meta\Date('2023-11-14')]
 	#[Console\Meta\Command('lookup')]
 	#[Console\Meta\Info('Check the status of an SSL cert for any domain on the internet.')]
 	#[Console\Meta\Arg('domain')]
 	#[Console\Meta\Error(1, 'no domain specified')]
-	#[Console\Meta\Error(2, 'cert lookup failure: %s')]
-	#[Console\Meta\Error(3, 'cert unexpected format: %s')]
 	public function
 	HandleLookupCert():
 	int {
 
-		$Domain = $this->GetInput(1);
+		$Domain = strtoupper($this->GetInput(1));
 		$Via = 'openssl';
 		$Format = 'cli';
 		$Result = NULL;
-		$Key = NULL;
-		$Val = NULL;
 
 		////////
 
@@ -209,13 +178,18 @@ extends Console\Client {
 
 		////////
 
+		$this->PrintLn($this->FormatH1(sprintf(
+			'%s: Lookup %s',
+			$this->AppInfo->Name,
+			$Domain
+		)));
+
 		if($this->GetOption('json')) {
 			if($this->GetOption('pretty'))
 			$Format = 'json-pretty';
 			else
 			$Format = 'json';
 		}
-
 
 		if($this->GetOption('openssl'))
 		$Via = 'openssl';
@@ -237,41 +211,19 @@ extends Console\Client {
 
 		catch(Throwable $Error) { }
 
-		$Output = [
-			'Domain' => $Domain,
-			'Status' => (
-				$Result
-				? $Result->GetStatusWord()
-				: NULL
-			),
-			'Code' => (
-				$Result
-				? $Result->GetStatusCode()
-				: NULL
-			),
-			'Date' => (
-				$Result
-				? (string)($Result->DateStart)
-				: NULL
-			),
-			'ExpireDate' => (
-				$Result
-				? (string)($Result->DateExpire)
-				: NULL
-			),
-			'ExpireTimeframe' => (
-				$Result
-				? (string)($Result->GetTimeframe())
-				: NULL
-			),
-			'Source' => (
-				$Result
-				? (string)($Result->Source)
-				: NULL
-			)
-		];
+		$Output = Common\Datastore::FromArray([
+			'Domain'          => $Domain,
+			'Status'          => ($Result ? $Result->GetStatusWord() : 'ERROR'),
+			'Date'            => ($Result ? (string)($Result->DateStart) : NULL),
+			'ExpireDate'      => ($Result ? (string)($Result->DateExpire) : NULL),
+			'ExpireTimeframe' => ($Result ? (string)($Result->GetTimeframe()) : NULL),
+			'Source'          => ($Result ? (string)($Result->Source) : NULL),
+			'Code'            => ($Result ? $Result->GetStatusCode() : -1)
+		]);
 
 		////////
+
+		$Output->Filter(fn(mixed $D)=> $D !== NULL);
 
 		if($Format === 'json') {
 			$this->PrintLn(json_encode($Output));
@@ -279,239 +231,83 @@ extends Console\Client {
 		}
 
 		if($Format === 'json-pretty') {
-			$this->PrintLn(json_encode($Output, JSON_PRETTY_PRINT));
+			$this->PrintLn(Common\Text::ReadableJSON($Output));
 			return 0;
 		}
 
 		////////
 
-		foreach($Output as $Key => $Val) {
+		$Codes = [
+			-1 => Console\Theme::Error,
+			0  => Console\Theme::Error,
+			1  => Console\Theme::OK,
+			2  => Console\Theme::Warning,
+			3  => Console\Theme::Alert
+		];
 
-			if($Output['Code'] !== NULL)
-			if($Key === 'Domain' || $Key === 'Status') {
-				$this->PrintLn(sprintf(
-					'%s %s',
-					$this->FormatPrimary("{$Key}:"),
-					match($Output['Code']) {
-						0=> $this->Formatter->BoldRed(strtoupper($Val)),
-						1=> $this->Formatter->BoldGreen(strtoupper($Val)),
-						2=> $this->Formatter->BoldYellow(strtoupper($Val)),
-						3=> $this->Formatter->BoldMagenta(strtoupper($Val)),
-						default=> strtoupper($Val)
-					}
-				));
-
-				continue;
-			}
-
-			$this->PrintLn(sprintf(
-				'%s %s',
-				$this->FormatPrimary("{$Key}:"),
-				$Val !== NULL
-				? $Val
-				: $this->FormatErrorPrimary('ERROR')
-			));
+		if(isset($Codes[$Output['Code']])) {
+			$Output['Domain'] = $this->Format($Output['Domain'], $Codes[$Output['Code']]);
+			$Output['Status'] = $this->Format($Output['Status'], $Codes[$Output['Code']]);
 		}
+
+		$this->PrintLn($this->FormatBulletList($Output), 2);
 
 		return 0;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	#[Console\Meta\Command('renew')]
-	#[Console\Meta\Info('Renew the certificate for the currently configured Environment.')]
-	#[Console\Meta\Value('--env', 'Run for specified Environment instead of current.')]
-	#[Console\Meta\Error(1, 'EXCEPTION: %s')]
-	#[Console\Meta\Error(2, 'Renewal Failure')]
-	public function
-	HandleRenewCert():
-	int {
-
-		$EnvConf = $this->App->GetEnvConfigRoot('atlantis.json');
-		$EnvProj = NULL;
-
-		try { $EnvProj = AtlantisProjectJSON::FromFile($EnvConf); }
-		catch(Exception $E) { }
-
-		////////
-
-		$UseSudo = TRUE;
-		$UseRehash = TRUE;
-
-		if($UseSudo && $this->Sudo())
-		return 0;
-
-		////////
-
-		try {
-			$Result = match($EnvProj->SSL->Service) {
-				default
-				=> $this->HandleRenewCert_ViaAcmePHP($EnvProj)
-			};
-		}
-
-		catch(Exception $Err) { $this->Quit(1, $Err); }
-
-		////////
-
-		if(!$Result)
-		$this->Quit(2);
-
-		////////
-
-		if($UseRehash)
-		$this->RehashWebserver($UseSudo);
-
-		return 0;
-	}
-
-	protected function
-	HandleRenewCert_ViaAcmePHP(AtlantisProjectJSON $Project):
-	bool {
-
-		$Filename = $this->GetOption('filename') ?? 'acmephp.yml';
-		$AcmeConf = $this->App->GetEnvConfigRoot($Filename);
-		$AcmeBin = '/opt/ssl/acmephp.phar';
-
-		$Command = NULL;
-		$Result = NULL;
-
-		////////
-
-		if(!file_exists($AcmeConf))
-		throw new Common\Error\FileNotFound($AcmeConf);
-
-		////////
-
-		$Command = sprintf('%s run %s 2>&1', $AcmeBin, $AcmeConf);
-		$Result = $this->ExecuteCommandLine($Command);
-
-		if($Result->Error) {
-			$this->PrintLn($this->FormatPrimary('Command Output:'));
-			$Result->Print('> ');
-			return FALSE;
-		}
-
-		return TRUE;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
+	#[Common\Meta\Date('2023-11-14')]
 	#[Console\Meta\Command('cron')]
 	#[Console\Meta\Info('Shows the line to be added to crontab to auto-renew SSL.')]
 	public function
-	HandleGenerateCron():
+	HandleCron():
 	int {
 
-		$Time = $this->GetOption('time') ?? '0420';
-		$ShouldAdd = $this->GetOption('add') ?? FALSE;
-		$ShouldRemove = $this->GetOption('remove') ?? FALSE;
-		$UseLocalTime = $this->GetOption('local') ?? FALSE;
+		$this->PrintLn($this->FormatH1(sprintf(
+			'%s: Renew via Crontab',
+			$this->AppInfo->Name
+		)));
 
 		$Crontab = Common\Struct\CrontabFile::FetchViaSystemUser();
-		$Command = $this->GenerateCommmandForAtlantisSSL();
-		$HasAtlantisSSL = $this->CheckForAtlantisSSL($Crontab);
-		$Count = NULL;
+		$Time = $this->GetOption('time') ?? '0420';
+		$Command = $this->GenerateCommandRenewCert();
+
+		////////
 
 		$Row = new Common\Struct\CrontabEntry;
 		$Row->SetCommand($Command);
-		$Row->SetupDailyTime($Time, $UseLocalTime);
-
-		$this
-		->PrintLn(sprintf(
-			'%s %s',
-			$this->FormatPrimary('Crontab:'),
-			$Row->GetAsCrontab()
-		))
-		->PrintLn(sprintf(
-			'%s %s (in %s)',
-			$this->FormatSecondary('Runs At:'),
-			$Row->GetTimerAsWords(),
-			$Row->GetTimerAsTimeframe()
-		));
+		$Row->SetupDailyTime($Time);
 
 		////////
 
-		if($ShouldAdd && $HasAtlantisSSL) {
-			$this
-			->PrintLn(sprintf(
-				'%s %s',
-				$this->FormatSecondary('Result:'),
-				'Entry for SSL renewals already found in Crontab.'
-			))
-			->PrintLn();
-
-			return 0;
-		}
-
-		if($ShouldAdd && !$HasAtlantisSSL) {
-			$Crontab->Push($Row);
-			$Crontab->Write();
-
-			////////
-
-			$Crontab = Common\Struct\CrontabFile::FetchViaSystemUser();
-			$HasAtlantisSSL = $this->CheckForAtlantisSSL($Crontab);
-
-			if(!$HasAtlantisSSL) {
-				$this
-				->PrintLn(sprintf(
-					'%s %s',
-					$this->FormatErrorPrimary('ERROR:'),
-					'The entry to add via Crontab did not stick.'
-				))
-				->PrintLn();
-
-				return 1;
-			}
-
-			$this
-			->PrintLn(sprintf(
-				'%s %s',
-				$this->FormatSecondary('Result:'),
-				'The entry has been added to Crontab.'
-			))
-			->PrintLn();
-		}
-
-		if($ShouldRemove) {
-			$Count = $Crontab->Count();
-
-			$Crontab->Filter(function(?Common\Struct\CrontabEntry $Item) {
-				if(!$Item)
-				return TRUE;
-
-				if(str_contains($Item->Command, 'atlantis acmephp-run'))
-				return FALSE;
-
-				return TRUE;
-			});
-
-			$Crontab->Write();
-
-			if($Count === $Crontab->Count()) {
-				$this
-				->PrintLn(sprintf(
-					'%s %s',
-					$this->FormatErrorPrimary('ERROR:'),
-					'Did not find any entries to remove.'
-				))
-				->PrintLn();
-
-				return 1;
-			}
-
-		}
-
-		////////
+		$this->PrintLn($this->FormatTopicList([
+			'Crontab Line:' => $Row->GetAsCrontab(),
+			'Runs At:'      => sprintf('%s (in %s)', $Row->GetTimerAsWords(), $Row->GetTimerAsTimeframe())
+		]), 2);
 
 		return 0;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
-	GenerateCommmandForAtlantisSSL(int $Version=1):
+	FormatCertConfig(ProjectJSON\CertJSON $Cert):
+	string {
+
+		$Data = new Common\Datastore($Cert->ToArray());
+
+		$Data->Remap(function(mixed $D) {
+			if(is_array($D) || is_object($D))
+			return json_encode($D);
+
+			return (string)$D;
+		});
+
+		return sprintf('%s%s', $this->FormatBulletList($Data), PHP_EOL);
+	}
+
+	public function
+	GenerateCommandRenewCert(int $Version=1):
 	string {
 
 		return match($Version) {
@@ -525,46 +321,191 @@ extends Console\Client {
 		};
 	}
 
+	#[Common\Meta\Date('2023-11-14')]
 	public function
-	CheckForAtlantisSSL(Common\Struct\CrontabFile $File):
+	RenewProjectCert(Atlantis\Struct\ProjectJSON $Project):
 	bool {
 
-		$Command = $this->GenerateCommmandForAtlantisSSL();
+		if($Project->Cert->Type === ($Project->Cert)::TypeAcmePHP)
+		return $this->RenewProjectCertAcmePHP($Project);
 
-		$Found = (
-			$File
-			->Distill(Common\Struct\CrontabFile::FilterCrontabLine(...))
-			->Filter(
-				fn(Common\Struct\CrontabEntry $Row)
-				=> str_starts_with($Row->Command, $Command)
-			)
-			->Count()
-		);
-
-		return $Found !== 0;
+		return FALSE;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
+	#[Common\Meta\Date('2023-11-14')]
 	protected function
-	RehashWebserver(bool $UseSudo=FALSE):
-	void {
+	RenewProjectCertAcmePHP(Atlantis\Struct\ProjectJSON $Project):
+	bool {
 
-		$Command = sprintf(
-			'%s webserver-rehash %s',
-			Common\Filesystem\Util::Pathify(
-				$this->App->GetProjectRoot(),
-				'vendor', 'bin', 'atlantis'
-			),
-			($UseSudo ? '--sudo' : '')
+		$AcmeConf = $this->App->GetEnvConfigRoot('acmephp.yml');
+		$AcmeBin = '/opt/ssl/acmephp.phar';
+
+		$Command = NULL;
+		$Result = NULL;
+
+		////////
+
+		if(!file_exists($AcmeConf))
+		throw new Common\Error\FileNotFound($AcmeConf);
+
+		////////
+
+		$Command = sprintf('%s run %s 2>&1', $AcmeBin, $AcmeConf);
+		$Result = $this->ExecuteCommandLine($Command, TRUE);
+
+		$this->PrintLn($this->FormatHeaderLine(
+			'Run AcmePHP', Console\Theme::Accent
+		), 2);
+
+		$this->PrintLn($Command, 2);
+
+		if($Result->Error) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				'ERROR', Console\Theme::Error
+			), 2);
+
+			$this->PrintLn($this->Format(
+				$Result->GetOutputString(),
+				Console\Theme::Error
+			), 2);
+
+			return FALSE;
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK', Console\Theme::OK
+		), 2);
+
+		return TRUE;
+	}
+
+	#[Common\Meta\Date('2023-10-12')]
+	protected function
+	QueryUserForCertInfo(ProjectJSON $Project):
+	ProjectJSON\CertJSON {
+
+		$Cert = new ProjectJSON\CertJSON($Project->Cert->ToArray());
+
+		////////
+
+		$Cert->Domain = $this->PromptForValue(
+			Required: TRUE,
+			Name: 'Primary Domain',
+			Type: 'domain.tld',
+			Default: $Cert->Domain
 		);
 
-		$this->ExecuteCommandLine($Command);
+		////////
+
+		($Cert->AltDomains)
+		->SetData($this->PromptForValue(
+			'Alt Domains',
+			'domain.tld csv, "none" to unset', FALSE,
+			Filter: function(?string $In) {
+				if(!$In)
+				return [ ];
+
+				if(!str_contains($In, ','))
+				return [ $In ];
+
+				return explode(',', $In);
+			},
+			Default: $Project->Cert->AltDomains->Join(', ')
+		))
+		->Remap(fn(string $D)=> trim($D))
+		->Filter(fn(string $D)=> !!$D)
+		->Filter(fn(string $D)=> $D !== 'none' && $D !== 'null');
+
+		////////
+
+		$Cert->OrgName = $this->PromptForValue(
+			'Company/Org Name',
+			'string', TRUE,
+			Default: $Project->Cert->OrgName
+		);
+
+		$Cert->OrgCountry = $this->PromptForValue(
+			'Company/Org Country',
+			'string, UNLOCODE preferred', TRUE,
+			Default: $Project->Cert->OrgCountry
+		);
+
+		$Cert->OrgCity = $this->PromptForValue(
+			'Company/Org City',
+			'string, UNLOCODE preferred', TRUE,
+			Default: $Project->Cert->OrgCity
+		);
+
+		////////
+
+		$Cert->TechEmail = $this->PromptForValue(
+			'Tech Contact Email',
+			'string', TRUE,
+			Common\Filters\Text::Email(...),
+			Default: $Project->Cert->TechEmail
+		);
+
+		////////
+
+		return $Cert;
+	}
+
+	#[Common\Meta\Date('2023-11-14')]
+	public function
+	WriteProjectConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Project->Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		if(!$Project->Write())
+		throw new Common\Error\FileWriteError($Project->Filename);
+
+		return;
+	}
+
+	#[Common\Meta\Date('2023-11-10')]
+	public function
+	WriteCertConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$Filename = NULL;
+		$Contents = NULL;
+
+		if($Project->Cert->Type === 'acmephp') {
+			$Filename = 'acmephp.yml';
+			$Contents = $Project->Cert->ToAcmeYaml($this->App);
+		}
+
+		////////
+
+		$Filename = $this->App->FromConfEnv($Filename);
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		////////
+
+		if(file_exists($Filename) && !is_writable($Filename))
+		throw new Common\Error\FileUnwritable($Filename);
+
+		elseif(!is_writable(dirname($Filename)))
+		throw new Common\Error\DirUnwritable($Filename);
+
+		////////
+
+		$Bytes = file_put_contents($Filename, $Contents);
+
+		if($Bytes === FALSE)
+		throw new Common\Error\FileWriteError($Filename);
 
 		return;
 	}
 
 }
 
-exit((new CertTool)->Run());
+exit(CertTool::Realboot());

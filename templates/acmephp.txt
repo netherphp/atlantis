@@ -1,11 +1,11 @@
-contact_email: '{%Email%}'
+contact_email: '{%TechEmail%}'
 certificates:
   - domain: '{%Domain%}'
     subject_alternative_names:
       {%AltDomains%}
     distinguished_name:
-      country: '{%Country%}'
-      locality: '{%City%}'
+      country: '{%OrgCountry%}'
+      locality: '{%OrgCity%}'
       organization_name: '{%OrgName%}'
     solver:
       name: 'http-file'

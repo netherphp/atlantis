@@ -11,6 +11,7 @@ class CertInfo
 extends Common\Prototype {
 
 	const
+	StatusFailure         = -1,
 	StatusExpired         = 0,
 	StatusOK              = 1,
 	StatusExpireSoon      = 2,
@@ -18,6 +19,7 @@ extends Common\Prototype {
 
 	const
 	StatusWords = [
+		self::StatusFailure        => 'ERROR',
 		self::StatusExpired        => 'EXPIRED',
 		self::StatusOK             => 'OK',
 		self::StatusExpireSoon     => 'SOON',
