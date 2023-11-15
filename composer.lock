@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.285.2",
+            "version": "3.286.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "93165f8e241678b17f15212523dfe96f50307af1"
+                "reference": "33a763586e840e5162ff8144a9532aa43172e11c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/93165f8e241678b17f15212523dfe96f50307af1",
-                "reference": "93165f8e241678b17f15212523dfe96f50307af1",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/33a763586e840e5162ff8144a9532aa43172e11c",
+                "reference": "33a763586e840e5162ff8144a9532aa43172e11c",
                 "shasum": ""
             },
             "require": {
@@ -151,9 +151,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.285.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.286.2"
             },
-            "time": "2023-11-09T01:20:37+00:00"
+            "time": "2023-11-15T19:19:39+00:00"
         },
         {
             "name": "brick/math",
@@ -212,16 +212,16 @@
         },
         {
             "name": "cakephp/core",
-            "version": "4.5.0",
+            "version": "4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
-                "reference": "a95f5d8eb0de3876027cc6c8aff7c9284194efc8"
+                "reference": "c2f4dff110d41e475d1041f2abe236f1c62d0cd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/core/zipball/a95f5d8eb0de3876027cc6c8aff7c9284194efc8",
-                "reference": "a95f5d8eb0de3876027cc6c8aff7c9284194efc8",
+                "url": "https://api.github.com/repos/cakephp/core/zipball/c2f4dff110d41e475d1041f2abe236f1c62d0cd0",
+                "reference": "c2f4dff110d41e475d1041f2abe236f1c62d0cd0",
                 "shasum": ""
             },
             "require": {
@@ -268,20 +268,20 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/core"
             },
-            "time": "2023-09-08T02:51:25+00:00"
+            "time": "2023-10-21T13:30:46+00:00"
         },
         {
             "name": "cakephp/database",
-            "version": "4.5.0",
+            "version": "4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/database.git",
-                "reference": "115d0516dedac7523173ad2d81b6db5264227506"
+                "reference": "8ea6bcc91e008b95e959861450c9078d84b704f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/database/zipball/115d0516dedac7523173ad2d81b6db5264227506",
-                "reference": "115d0516dedac7523173ad2d81b6db5264227506",
+                "url": "https://api.github.com/repos/cakephp/database/zipball/8ea6bcc91e008b95e959861450c9078d84b704f2",
+                "reference": "8ea6bcc91e008b95e959861450c9078d84b704f2",
                 "shasum": ""
             },
             "require": {
@@ -324,20 +324,20 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/database"
             },
-            "time": "2023-08-12T02:59:31+00:00"
+            "time": "2023-10-26T10:37:21+00:00"
         },
         {
             "name": "cakephp/datasource",
-            "version": "4.5.0",
+            "version": "4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/datasource.git",
-                "reference": "65e974aef29e8f0fc142a49f0d63ad629c9e511b"
+                "reference": "5d11a35ffc09dee744faaab7f758aeb42c17cfec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/datasource/zipball/65e974aef29e8f0fc142a49f0d63ad629c9e511b",
-                "reference": "65e974aef29e8f0fc142a49f0d63ad629c9e511b",
+                "url": "https://api.github.com/repos/cakephp/datasource/zipball/5d11a35ffc09dee744faaab7f758aeb42c17cfec",
+                "reference": "5d11a35ffc09dee744faaab7f758aeb42c17cfec",
                 "shasum": ""
             },
             "require": {
@@ -382,11 +382,11 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/datasource"
             },
-            "time": "2023-10-15T02:23:51+00:00"
+            "time": "2023-11-05T07:32:10+00:00"
         },
         {
             "name": "cakephp/utility",
-            "version": "4.5.0",
+            "version": "4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
@@ -445,16 +445,16 @@
         },
         {
             "name": "fileeye/mimemap",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FileEye/MimeMap.git",
-                "reference": "befb9f1ee77dbf6b74a2c578874e128c9a5c1a2d"
+                "reference": "0795b7db12838ffb7bc564e0a02cf53fb1463ec0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FileEye/MimeMap/zipball/befb9f1ee77dbf6b74a2c578874e128c9a5c1a2d",
-                "reference": "befb9f1ee77dbf6b74a2c578874e128c9a5c1a2d",
+                "url": "https://api.github.com/repos/FileEye/MimeMap/zipball/0795b7db12838ffb7bc564e0a02cf53fb1463ec0",
+                "reference": "0795b7db12838ffb7bc564e0a02cf53fb1463ec0",
                 "shasum": ""
             },
             "require": {
@@ -501,9 +501,9 @@
             ],
             "support": {
                 "issues": "https://github.com/FileEye/MimeMap/issues",
-                "source": "https://github.com/FileEye/MimeMap/tree/2.0.2"
+                "source": "https://github.com/FileEye/MimeMap/tree/2.0.3"
             },
-            "time": "2023-08-29T16:20:26+00:00"
+            "time": "2023-11-11T14:14:23+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -1638,12 +1638,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/avenue.git",
-                "reference": "1322870891d86d9c5c3623408bdff67e39304344"
+                "reference": "e30a34fbaa270f605c4f4d8676dd79c05129650a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/avenue/zipball/1322870891d86d9c5c3623408bdff67e39304344",
-                "reference": "1322870891d86d9c5c3623408bdff67e39304344",
+                "url": "https://api.github.com/repos/netherphp/avenue/zipball/e30a34fbaa270f605c4f4d8676dd79c05129650a",
+                "reference": "e30a34fbaa270f605c4f4d8676dd79c05129650a",
                 "shasum": ""
             },
             "require": {
@@ -1690,7 +1690,7 @@
                 "issues": "https://github.com/netherphp/avenue/issues",
                 "source": "https://github.com/netherphp/avenue/tree/redux"
             },
-            "time": "2023-10-27T21:42:09+00:00"
+            "time": "2023-11-14T22:16:04+00:00"
         },
         {
             "name": "netherphp/browser",
@@ -1809,12 +1809,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/console.git",
-                "reference": "9ce97b2057a18a5cc25d95545791c2fde6ff501c"
+                "reference": "1ebe472196245d228ae1c3055d54566748410a7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/console/zipball/9ce97b2057a18a5cc25d95545791c2fde6ff501c",
-                "reference": "9ce97b2057a18a5cc25d95545791c2fde6ff501c",
+                "url": "https://api.github.com/repos/netherphp/console/zipball/1ebe472196245d228ae1c3055d54566748410a7d",
+                "reference": "1ebe472196245d228ae1c3055d54566748410a7d",
                 "shasum": ""
             },
             "require": {
@@ -1860,7 +1860,7 @@
                 "issues": "https://github.com/netherphp/console/issues",
                 "source": "https://github.com/netherphp/console/tree/redux"
             },
-            "time": "2023-11-09T09:35:50+00:00"
+            "time": "2023-11-15T22:51:37+00:00"
         },
         {
             "name": "netherphp/database",
@@ -1868,12 +1868,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/database.git",
-                "reference": "0274b7c9dfd1299c4c55f64f5792acbdbf4a30db"
+                "reference": "02d25d20781b1ba2afd801f2159b9ec65ff611e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/database/zipball/0274b7c9dfd1299c4c55f64f5792acbdbf4a30db",
-                "reference": "0274b7c9dfd1299c4c55f64f5792acbdbf4a30db",
+                "url": "https://api.github.com/repos/netherphp/database/zipball/02d25d20781b1ba2afd801f2159b9ec65ff611e9",
+                "reference": "02d25d20781b1ba2afd801f2159b9ec65ff611e9",
                 "shasum": ""
             },
             "require": {
@@ -1920,7 +1920,7 @@
                 "issues": "https://github.com/netherphp/database/issues",
                 "source": "https://github.com/netherphp/database/tree/redux"
             },
-            "time": "2023-09-05T01:13:37+00:00"
+            "time": "2023-11-14T22:16:10+00:00"
         },
         {
             "name": "netherphp/email",
@@ -2140,12 +2140,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/surface.git",
-                "reference": "978d957a15670a6cd28e9b70ea724ba5297a75f8"
+                "reference": "c3889c630f0c8b220405001e59f5c9307930065f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/surface/zipball/978d957a15670a6cd28e9b70ea724ba5297a75f8",
-                "reference": "978d957a15670a6cd28e9b70ea724ba5297a75f8",
+                "url": "https://api.github.com/repos/netherphp/surface/zipball/c3889c630f0c8b220405001e59f5c9307930065f",
+                "reference": "c3889c630f0c8b220405001e59f5c9307930065f",
                 "shasum": ""
             },
             "require": {
@@ -2186,7 +2186,7 @@
                 "issues": "https://github.com/netherphp/surface/issues",
                 "source": "https://github.com/netherphp/surface/tree/redux"
             },
-            "time": "2023-11-03T01:28:38+00:00"
+            "time": "2023-11-14T22:16:12+00:00"
         },
         {
             "name": "netherphp/user",
@@ -3456,16 +3456,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v6.3.2",
+            "version": "v6.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "b47ca238b03e7b0d7880ffd1cf06e8d637ca1467"
+                "reference": "b7a63887960359e5b59b15826fa9f9be10acbe88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/b47ca238b03e7b0d7880ffd1cf06e8d637ca1467",
-                "reference": "b47ca238b03e7b0d7880ffd1cf06e8d637ca1467",
+                "url": "https://api.github.com/repos/symfony/config/zipball/b7a63887960359e5b59b15826fa9f9be10acbe88",
+                "reference": "b7a63887960359e5b59b15826fa9f9be10acbe88",
                 "shasum": ""
             },
             "require": {
@@ -3511,7 +3511,7 @@
             "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/config/tree/v6.3.2"
+                "source": "https://github.com/symfony/config/tree/v6.3.8"
             },
             "funding": [
                 {
@@ -3527,20 +3527,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-19T20:22:16+00:00"
+            "time": "2023-11-09T08:28:21+00:00"
         },
         {
             "name": "symfony/console",
-            "version": "v6.3.4",
+            "version": "v6.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "eca495f2ee845130855ddf1cf18460c38966c8b6"
+                "reference": "0d14a9f6d04d4ac38a8cea1171f4554e325dae92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/eca495f2ee845130855ddf1cf18460c38966c8b6",
-                "reference": "eca495f2ee845130855ddf1cf18460c38966c8b6",
+                "url": "https://api.github.com/repos/symfony/console/zipball/0d14a9f6d04d4ac38a8cea1171f4554e325dae92",
+                "reference": "0d14a9f6d04d4ac38a8cea1171f4554e325dae92",
                 "shasum": ""
             },
             "require": {
@@ -3601,7 +3601,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v6.3.4"
+                "source": "https://github.com/symfony/console/tree/v6.3.8"
             },
             "funding": [
                 {
@@ -3617,7 +3617,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-16T10:10:12+00:00"
+            "time": "2023-10-31T08:09:35+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -3686,7 +3686,7 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.3.0",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
@@ -3733,7 +3733,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.3.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.4.0"
             },
             "funding": [
                 {
@@ -4213,16 +4213,16 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.3.0",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "40da9cc13ec349d9e4966ce18b5fbcd724ab10a4"
+                "reference": "b3313c2dbffaf71c8de2934e2ea56ed2291a3838"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/40da9cc13ec349d9e4966ce18b5fbcd724ab10a4",
-                "reference": "40da9cc13ec349d9e4966ce18b5fbcd724ab10a4",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/b3313c2dbffaf71c8de2934e2ea56ed2291a3838",
+                "reference": "b3313c2dbffaf71c8de2934e2ea56ed2291a3838",
                 "shasum": ""
             },
             "require": {
@@ -4275,7 +4275,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.3.0"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.4.0"
             },
             "funding": [
                 {
@@ -4291,20 +4291,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-23T14:45:45+00:00"
+            "time": "2023-07-30T20:28:31+00:00"
         },
         {
             "name": "symfony/string",
-            "version": "v6.3.5",
+            "version": "v6.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "13d76d0fb049051ed12a04bef4f9de8715bea339"
+                "reference": "13880a87790c76ef994c91e87efb96134522577a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/13d76d0fb049051ed12a04bef4f9de8715bea339",
-                "reference": "13d76d0fb049051ed12a04bef4f9de8715bea339",
+                "url": "https://api.github.com/repos/symfony/string/zipball/13880a87790c76ef994c91e87efb96134522577a",
+                "reference": "13880a87790c76ef994c91e87efb96134522577a",
                 "shasum": ""
             },
             "require": {
@@ -4361,7 +4361,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.3.5"
+                "source": "https://github.com/symfony/string/tree/v6.3.8"
             },
             "funding": [
                 {
@@ -4377,7 +4377,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-18T10:38:32+00:00"
+            "time": "2023-11-09T08:28:21+00:00"
         },
         {
             "name": "wohali/oauth2-discord-new",
