@@ -388,6 +388,8 @@ extends Console\Client {
 
 		////////
 
+		$Cert->Type = 'acmephp';
+
 		$Cert->Domain = $this->PromptForValue(
 			Required: TRUE,
 			Name: 'Primary Domain',
