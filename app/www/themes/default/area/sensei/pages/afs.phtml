@@ -127,7 +127,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<p>Run the SSL config tool to generate an <code>acmephp.yml</code> file.</p>
 
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ ssl.atl setup</code></div>
+					<div class="mb-2"><code class="cli">$ ssl.atl config</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-0">
@@ -138,22 +138,22 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				</blockquote>
 			</li>
 			<li class="mb-0">
-				<p>If this is the first time ever, re-run the web config tool saying yes to SSL this time.</p>
+				<p>If SSL was set No the first time, re-run the web config tool saying yes to SSL.</p>
 
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ dev.atl webconfig --update</code></div>
+					<div class="mb-2"><code class="cli">$ dev.atl web-config</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-0">
-				<p>Setup a cronjob to automatically renew the SSL. The following command will display the cron line that can be setup on the system.</p>
+				<p>To renew automatically the following command will generate a Crontab Line that can be setup in the system.</p>
 
 				<blockquote class="edged-left">
 					<div class="mb-2"><code class="cli">$ ssl.atl cron</code></div>
 				</blockquote>
 
 				<div class="edged-left">
-					<div><code class="cli">Crontab: 20 4 * * * env php /opt/web-atl/vendor/bin/ssl.atl renew</code></div>
-					<div><code class="cli">Runs At: 2023-10-23 23:20:00 CDT (in 5min 26sec)</code></div>
+					<div class="mb-4"><code class="cli">Crontab Line:<br />20 4 * * * env php /opt/web-atl/vendor/bin/ssl.atl renew</code></div>
+					<div><code class="cli">Runs At:<br />2023-10-23 23:20:00 CDT (in 5min 26sec)</code></div>
 				</div>
 			</li>
 		</ul>
