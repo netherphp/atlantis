@@ -17,37 +17,24 @@ use Nether\User;
 #[Console\Meta\Application('DevTool', '5.0.0-dev')]
 #[Common\Meta\Info('Handles configuration and setup for project development.')]
 class DevTool
-extends Console\Client {
-
-	protected Atlantis\Engine
-	$App;
+extends Atlantis\TerminalApp {
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	// OVERRIDES Console\Client ////////////////////////////////////
 
-	protected function
-	OnReady():
-	void {
-
-		$this->App = new Atlantis\Engine(
-			Atlantis\Util::GetBinProjectDirectory(__FILE__)
-		);
-
-		return;
-	}
-
+	#[Common\Meta\Date('2023-11-14')]
 	protected function
 	ApplyDefaultSort():
 	void {
 
 		$this->Commands = (
-			Common\Datastore::FromArray([
+			Common\Datastore::FromArray(array_flip([
 				'run',
 				'project-init', 'project-setup',
 				'web-config', 'web-setup', 'web-reload'
-			])
-			->MapKeys(fn(int $K, string $C)=> [ $C => $this->Commands->Get($C) ])
-			->Each(fn(object $C, string $K)=> $this->Commands->Remove($K))
+			]))
+			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
+			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
 			->MergeRight($this->Commands)
 		);
 

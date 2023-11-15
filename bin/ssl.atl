@@ -1,57 +1,39 @@
 <?php
 
-use Nether\Atlantis;
-use Nether\Common;
-use Nether\Console;
-
-use Nether\Atlantis\Struct\ProjectJSON;
-
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
 	return;
 })();
 
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
+use
+Nether\Atlantis,
+Nether\Atlantis\Struct\ProjectJSON,
+Nether\Common,
+Nether\Console;
 
-#[Console\Meta\Application('CertTool', '5.0.0-dev', Phar: 'ssl.phar')]
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('CertTool', '5.0.0-dev')]
 class CertTool
-extends Console\Client {
+extends Atlantis\TerminalApp {
 
 	use
 	Atlantis\Packages\DevTool\QuerySelectProjectConfig,
 	Atlantis\Packages\DevTool\QueryDomainLineList;
 
-	protected Atlantis\Engine
-	$App;
-
 	////////////////////////////////////////////////////////////////
 	// OVERRIDES Console\Client ////////////////////////////////////
 
-	protected function
-	OnReady():
-	void {
-
-		$Env = $this->GetOption('env');
-
-		if(is_string($Env) && strlen($Env))
-		$_ENV['ATLANTIS.ENV'] = $Env;
-
-		$this->App = new Atlantis\Engine(
-			Atlantis\Util::GetBinProjectDirectory(__FILE__)
-		);
-
-		return;
-	}
-
+	#[Common\Meta\Date('2023-11-14')]
 	protected function
 	ApplyDefaultSort():
 	void {
 
 		$this->Commands = (
-			Common\Datastore::FromArray([ 'config', 'renew', 'cron', 'lookup' ])
-			->MapKeys(fn(int $K, string $C)=> [ $C => $this->Commands->Get($C) ])
-			->Each(fn(object $C, string $K)=> $this->Commands->Remove($K))
+			Common\Datastore::FromArray(array_flip([ 'config', 'renew', 'cron', 'lookup' ]))
+			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
+			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
 			->MergeRight($this->Commands)
 		);
 
