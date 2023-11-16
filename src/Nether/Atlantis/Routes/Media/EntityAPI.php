@@ -246,6 +246,18 @@ extends Atlantis\Routes\UploadAPI {
 			=> $Link->TagID
 		);
 
+		$Existing = (
+			$Links
+			->Distill(
+				fn(Atlantis\Tag\EntityLink $Link)
+				=> $Link->Tag->Type !== 'site'
+			)
+			->Remap(
+				fn(Atlantis\Tag\EntityLink $Link)
+				=> $Link->TagID
+			)
+		);
+
 		$Add = $TagsToHave->Distill(
 			fn(int $TagID)
 			=> $TagID && !$Existing->HasValue($TagID)
