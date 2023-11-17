@@ -804,11 +804,16 @@ extends Atlantis\TerminalApp {
 			->Filter(fn(?string $P)=> !!$P)
 		);
 
-		$Extensions = [ 'php' ];
+		$OptNether = $this->GetOption('nether') ?? FALSE;
+		$OptExt = [ 'php' ];
 
 		////////
 
 		$this->PrintLn($this->FormatHeading('Paths:'));
+
+		if($OptNether)
+		$InputPaths->MergeRight($this->FetchNetherProjectSourceDirs());
+
 		$InputPaths->Each(
 			fn(string $D)=>
 			$this->PrintLn("{$this->Theme->GetCharBullet()} {$D}")
@@ -830,7 +835,7 @@ extends Atlantis\TerminalApp {
 			))
 			->Filter(
 				fn(SplFileInfo $F)
-				=> in_array(strtolower($F->GetExtension()), $Extensions)
+				=> in_array(strtolower($F->GetExtension()), $OptExt)
 			)
 		);
 
@@ -868,6 +873,32 @@ extends Atlantis\TerminalApp {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	FetchNetherProjectSourceDirs():
+	Common\Datastore {
+
+		$NetherRoot = Common\Filesystem\Util::Pathify(
+			'vendor', 'netherphp'
+		);
+
+		$Output = (
+			Common\Filesystem\Indexer::DatastoreFromPath(
+				$this->App->FromProjectRoot($NetherRoot)
+			)
+			->Map(
+				fn(string $D)
+				=> realpath(Common\Filesystem\Util::Pathify($D, 'src'))
+			)
+			->Filter(
+				fn(string $D)=>
+				!!$D
+			)
+			->Sort()
+		);
+
+		return $Output;
+	}
 
 	#[Common\Meta\Date('2023-11-11')]
 	public function

@@ -1,0 +1,474 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+use Nether\Storage;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('DevTool', '5.0.0-dev')]
+#[Common\Meta\Info('Handles configuration and setup for project development.')]
+class WebTool
+extends Atlantis\TerminalApp {
+
+	////////////////////////////////////////////////////////////////
+	// OVERRIDES Console\Client ////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-14')]
+	protected function
+	ApplyDefaultSort():
+	void {
+
+		$this->Commands = (
+			Common\Datastore::FromArray(array_flip([
+				'config', 'setup', 'reload'
+			]))
+			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
+			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
+			->MergeRight($this->Commands)
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('config')]
+	#[Console\Meta\Info('Prepare web server configuration files.')]
+	#[Console\Meta\Toggle('--dry', 'Show the resulting JSON instead of updating the file.')]
+	#[Console\Meta\Error(1, 'No atlantis.json selected.')]
+	#[Console\Meta\Error(2, 'Write error on project json: %s')]
+	#[Console\Meta\Error(3, 'Write error on server config: %s')]
+	public function
+	HandleWebConfig():
+	int {
+
+		$OptDry = $this->GetOption('dry') ?? FALSE;
+		$Project = NULL;
+		$Err = NULL;
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Web Server Config', $this->AppInfo->Name)
+		), 2);
+
+		////////
+
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $V, string $K)
+			=> $K === 'Env'
+		);
+
+		if(!$Project)
+		$this->Quit(1);
+
+		$Project->Web = $this->QueryWebServerConfig($Project);
+
+		////////
+
+		if($OptDry) {
+			$this->PrintLn($this->FormatHeaderPoint('Dry Run', Console\Theme::Muted), 2);
+			$this->PrintLn($Project->Web->ToJSON(), 2);
+			return 0;
+		}
+
+		////////
+
+		try { $this->WriteProjectConfig($Project); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
+
+			$this->Quit(2, $Err->GetMessage());
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+
+		////////
+
+		try { $this->WriteWebServerConfig($Project); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
+
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('setup')]
+	#[Console\Meta\Info('Push and confirm web server configuration setup.')]
+	#[Console\Meta\Error(1, 'No atlantis.json selected.')]
+	#[Console\Meta\Error(2, 'No Web configuration or incomplete.')]
+	#[Console\Meta\Error(3, 'Invalid/Unsupported web server type.')]
+	public function
+	HandleWebSetup():
+	int {
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Web Server Setup', $this->AppInfo->Name)
+		), 2);
+
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $V, string $K)
+			=> $K === 'Env'
+		);
+
+		if(!$Project)
+		$this->Quit(1);
+
+		if(!$Project->Web->IsConfigured())
+		$this->Quit(2);
+
+		if($Project->Web->Sudo && $this->Sudo())
+		$this->Quit(0);
+
+		////////
+
+		try { $this->SetupWebServer($Project); }
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		try { $this->RehashWebServer($Project); }
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('reload')]
+	#[Console\Meta\Info('Kick web server to reload configuration.')]
+	#[Console\Meta\Error(1, 'No Web config in atlantis.json')]
+	#[Console\Meta\Error(2, 'No valid server Type')]
+	#[Console\Meta\Error(3, 'server error: %s')]
+	public function
+	HandleWebReload():
+	int {
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Web Server Reload', $this->AppInfo->Name)
+		), 2);
+
+		$Project = $this->QuerySelectProjectConfig(
+			fn(Atlantis\Struct\ProjectJSON $V, string $K)
+			=> $K === 'Env'
+		);
+
+		if(!$Project)
+		$this->Quit(1);
+
+		if(!$Project->Web->IsConfigured())
+		$this->Quit(2);
+
+		if($Project->Web->Sudo && $this->Sudo())
+		$this->Quit(0);
+
+		////////
+
+		try { $this->RehashWebServer($Project); }
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		////////
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	RehashWebServer(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		match(TRUE) {
+			$Project->Web->IsType(($Project->Web)::TypeApacheCtl)
+			=> $this->RehashWebServerApache24($Project),
+
+			default
+			=> throw new Exception('Unknown Web Server Type')
+		};
+
+		return;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	RehashWebServerApache24(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$Result = $this->ExecuteCommandLine('apachectl graceful', TRUE);
+
+		if($Result->HasError()) {
+			$this->PrintLn($this->FormatHeaderPoint('ERROR', Console\Theme::Error), 2);
+			$this->PrintLn($this->Format(
+				$Result->GetOutputString(),
+				Console\Theme::Error
+			));
+
+			return;
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK - Web Server Rehashed',
+			Console\Theme::OK
+		), 2);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupWebServer(Atlantis\Struct\ProjectJSON $Project):
+	static {
+
+		return match(TRUE) {
+			$Project->Web->IsType(($Project->Web)::TypeApacheCtl)
+			=> $this->SetupWebServerApache24($Project),
+
+			default
+			=> throw new Exception('Unknown Web Server Type')
+		};
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupWebServerApache24(Atlantis\Struct\ProjectJSON $Project):
+	static {
+
+		$ApacheBaseDir = '/etc/apache2/sites-enabled';
+		$LocalConfigFile = 'apache24.conf';
+
+		$SourceFile = $this->App->FromConfEnv($LocalConfigFile);
+		$EnvType = $this->App->GetProjectEnvType();
+		$EnvName = $this->App->Config[Atlantis\Key::ConfProjectID];
+		$EnvNum = match($EnvType) {
+			'dev'   => 100,
+			'demo'  => 800,
+			'prod'  => 900,
+			default => 999
+		};
+
+		$Filename = sprintf('%s-%s-%s.conf', $EnvNum, $EnvName, $EnvType);
+		$LinkFile = Common\Filesystem\Util::Pathify($ApacheBaseDir, $Filename);
+
+		////////
+
+		$this->PrintLn($this->FormatBulletList([
+			'Source' => $SourceFile,
+			'Link'   => $LinkFile
+		]), 2);
+
+		if(file_exists($LinkFile)) {
+			if(is_link($LinkFile)) {
+				if(Common\Filesystem\Util::IsLinkTo($LinkFile, $SourceFile))
+				$this->PrintLn($this->FormatHeaderPoint(
+					'OK - Symlink exists and is correct.',
+					Console\Theme::OK
+				), 2);
+
+				else
+				$this->PrintLn($this->FormatHeaderPoint(
+					sprintf('ERROR - Symlink exists but points to %s', readlink($LinkFile)),
+					Console\Theme::Error
+				), 2);
+			}
+
+			else {
+				$this->PrintLn($this->FormatHeaderPoint(
+					"ERROR - File exists where we want to put the symlink: {$LinkFile}",
+					Console\Theme::Error
+				), 2);
+			}
+
+			return $this;
+		}
+
+		////////
+
+		symlink(realpath($SourceFile), $LinkFile);
+
+		if(file_exists($LinkFile))
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+		else
+		$this->PrintLn($this->FormatHeaderPoint('ERROR', Console\Theme::Error), 2);
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	use
+	Atlantis\Packages\DevTool\QuerySelectProjectConfig,
+	Atlantis\Packages\DevTool\QueryDomainLineList;
+
+	#[Common\Meta\Date('2023-11-11')]
+	#[Common\Meta\Info('Engage an interaction mode to extract web server configuration from the user.')]
+	public function
+	QueryWebServerConfig(Atlantis\Struct\ProjectJSON $Project):
+	Atlantis\Struct\ProjectJSON\WebJSON {
+
+		$Server = (
+			isset($Project->Web)
+			? $Project->Web
+			: new Atlantis\Struct\ProjectJSON\WebJSON
+		);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine('Web Server Types', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatBulletList(Atlantis\Struct\ProjectJSON\WebJSON::Types), 2);
+
+		$Server->Type = $this->PromptForValue(
+			Required: TRUE,
+			Name: 'Select Type',
+			Type: 'Number',
+			Default: (
+				$Server->Type
+				? ($Server::Type($Server->Type) + 1)
+				: NULL
+			),
+			Filter: function(?string $In) {
+				if(in_array($In, Atlantis\Struct\ProjectJSON\WebJSON::Types))
+				return $In;
+
+				if(!is_numeric($In))
+				return NULL;
+
+				return Atlantis\Struct\ProjectJSON\WebJSON::Type((int)$In - 1);
+			}
+		);
+
+		$this->PrintLn($this->FormatHeaderLine(
+			"Selected: {$Server->Type}", static::FmtMuted
+		), 2);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine('HTTPS/SSL', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatWrap(''
+			. 'First Time setup or Local Dev it is useful to say no here to get it running on basic HTTP. '
+			. 'Once the cert is acquired this tool may be ran again to update the required configuration files.'
+		), 2);
+
+		$Server->HTTPS = $this->PromptForValue(
+			Required: TRUE,
+			Name: 'Use HTTPS?',
+			Type: 'y/n',
+			Default: ($Server->HTTPS ? 'y' : 'n'),
+			Filter: Common\Filters\Numbers::BoolType(...)
+		);
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('Selected: %s', ($Server->HTTPS ? 'Yes' : 'No')),
+			static::FmtMuted
+		), 2);
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine('Domains', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatWrap(''
+			. 'The domain editor works with space delimited input. '
+			. 'First domain on that line is considered the primary domain. '
+			. 'Other domains on that same line point to the same web root and SSL cert. '
+			. 'In the SSL cert this would be your primary domain and alt domains.'
+		), 2);
+
+		$Server->Domains = $this->QueryDomainLineList(
+			$Server->Domains
+		);
+
+		return $Server;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	WriteProjectConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Project->Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		if(!$Project->Write())
+		throw new Common\Error\FileWriteError($Project->Filename);
+
+		return;
+	}
+
+	#[Common\Meta\Date('2023-11-10')]
+	public function
+	WriteWebServerConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$Filename = NULL;
+		$Contents = NULL;
+
+		if($Project->Web->Type === 'apachectl') {
+			$Filename = 'apache24.conf';
+			$Contents = $Project->Web->ToApache24($this->App);
+		}
+
+		////////
+
+		$Filename = $this->App->FromConfEnv($Filename);
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		////////
+
+		if(file_exists($Filename) && !is_writable($Filename))
+		throw new Common\Error\FileUnwritable($Filename);
+
+		elseif(!is_writable(dirname($Filename)))
+		throw new Common\Error\DirUnwritable($Filename);
+
+		////////
+
+		$Bytes = file_put_contents($Filename, $Contents);
+
+		if($Bytes === FALSE)
+		throw new Common\Error\FileWriteError($Filename);
+
+		return;
+	}
+
+}
+
+exit(WebTool::Realboot([]));
