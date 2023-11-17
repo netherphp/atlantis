@@ -511,7 +511,13 @@ extends Atlantis\TerminalApp {
 	DigestOptionExtensions():
 	Common\Datastore {
 
-		return Common\Datastore::FromArray([ 'php' ]);
+		$Input = Common\Datastore::FromArray(
+			explode(',', ($this->GetOption('ext') ?: 'php'))
+		);
+
+		$Input->Remap(fn(string $D)=> trim($D));
+
+		return $Input;
 	}
 
 	#[Common\Meta\Date('2023-11-17')]
