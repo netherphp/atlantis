@@ -9,7 +9,8 @@ use
 Nether\Atlantis,
 Nether\Atlantis\Struct\ProjectJSON,
 Nether\Common,
-Nether\Console;
+Nether\Console,
+Nether\User;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,14 +27,7 @@ extends Atlantis\TerminalApp {
 	ApplyDefaultSort():
 	void {
 
-		return;
-
-		$this->Commands = (
-			Common\Datastore::FromArray(array_flip([ 'config', 'renew', 'cron', 'lookup' ]))
-			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
-			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
-			->MergeRight($this->Commands)
-		);
+		$this->Commands->Sort();
 
 		return;
 	}
@@ -41,13 +35,199 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-16')]
 	#[Console\Meta\Command('passwd')]
+	#[Console\Meta\Info('Forcefully set a user password.')]
 	#[Console\Meta\Arg('id/alias/email')]
+	#[Console\Meta\Error(1, 'no user specified')]
+	#[Console\Meta\Error(2, 'user not found: %s')]
+	#[Console\Meta\Error(3, 'you suck at typing.')]
+	#[Console\Meta\Error(4, 'update error: %s')]
 	public function
 	HandlePassword():
 	int {
 
+		$this->PrintAppHeader('Update Password');
+
+		$InputWho = $this->GetInput(1);
+		$Err = NULL;
+		$User = NULL;
+		$PW1 = NULL;
+		$PW2 = NULL;
+
+		////////
+
+		if(!$InputWho)
+		$this->Quit(1);
+
+		if(!($User = $this->FetchUserFromInput($InputWho)))
+		$this->Quit(2, $InputWho);
+
+		////////
+
+		$this->PrintH2($User->ToString());
+
+		$PW1 = $this->PromptForValue('New Password', 'password', TRUE);
+		$PW2 = $this->PromptForValue('Confirm', 'same password', TRUE);
+
+		if($PW1 !== $PW2)
+		$this->Quit(3);
+
+		////////
+
+		$this->PrintH3('Updating password...');
+
+		try { $User->UpdatePassword($PW1); }
+		catch(Exception $Err) {
+			$this->Quit(4, $Err->GetMessage());
+		}
+
+		////////
+
+		$this->PrintOK('Password Updated.');
+
 		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-16')]
+	#[Console\Meta\Command('logout')]
+	#[Console\Meta\Info('Forcefully log a user out of all their sessions.')]
+	#[Console\Meta\Arg('id/alias/email')]
+	#[Console\Meta\Error(1, 'no user specified')]
+	#[Console\Meta\Error(2, 'user not found: %s')]
+	#[Console\Meta\Error(3, 'you did not seem to be very serious.')]
+	#[Console\Meta\Error(4, 'update error: %s')]
+	public function
+	HandleLogout():
+	int {
+
+		$this->PrintAppHeader('Force Logout');
+
+		$InputWho = $this->GetInput(1);
+		$Err = NULL;
+		$User = NULL;
+
+		////////
+
+		if(!$InputWho)
+		$this->Quit(1);
+
+		if(!($User = $this->FetchUserFromInput($InputWho)))
+		$this->Quit(2, $InputWho);
+
+		////////
+
+		$this->PrintH2($User->ToString());
+
+		$DoIt = Common\Filters\Numbers::BoolType(
+			$this->PromptForValue('Do It?', 'y/n', FALSE)
+		);
+
+		if(!$DoIt)
+		$this->Quit(3);
+
+		////////
+
+		try { $User->UpdateSandShift(); }
+		catch(Exception $E) {
+			$this->Quit(4, $E->GetMessage());
+		}
+
+		$this->PrintLn(sprintf(
+			'The sand beneath %s begins to shift.',
+			$User->ToString()
+		), 2);
+
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-16')]
+	#[Console\Meta\Command('admin')]
+	#[Console\Meta\Info('Check and set admin status for a user.')]
+	#[Console\Meta\Arg('id/alias/email')]
+	#[Console\Meta\Value('--set', 'Set the admin status/level. 0 to just short of infinity.')]
+	#[Console\Meta\Error(1, 'no user specified')]
+	#[Console\Meta\Error(2, 'user not found: %s')]
+	public function
+	HandleAdminSet():
+	int {
+
+		$this->PrintAppHeader('Admin Status');
+
+		$InputWho = $this->GetInput(1);
+		$OptSet = $this->GetOption('set');
+		$User = NULL;
+		$Summary = [];
+		$Err = NULL;
+
+		////////
+
+		if(!$InputWho)
+		$this->Quit(1);
+
+		if(!($User = $this->FetchUserFromInput($InputWho)))
+		$this->Quit(2, $InputWho);
+
+		////////
+
+		$this->PrintH2($User->ToString());
+
+		if($OptSet !== NULL) {
+			$OptSet = Common\Filters\Numbers::IntRange(
+				$OptSet, 0, PHP_INT_MAX
+			);
+
+			try { $User->Update([ 'Admin'=> $OptSet ]); }
+			catch(Exception $Err) {
+				$this->Quit(4, $Err->GetMessage());
+			}
+		}
+
+		////////
+
+		$Summary['Admin'] = ($User->IsAdmin() ? 'Aye' : 'Nope');
+
+		if($User->IsAdmin())
+		$Summary['Level'] = $User->Admin;
+
+		////////
+
+		$this->PrintBulletList($Summary);
+
+		if($OptSet !== NULL)
+		$this->PrintOK('Admin Status Updated');
+		else
+		$this->PrintStatusMuted('No Changes');
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-16')]
+	protected function
+	FetchUserFromInput(string $InputWho):
+	?User\EntitySession {
+
+		return match(TRUE) {
+			(is_numeric($InputWho))
+			=> User\EntitySession::GetByID((int)$InputWho),
+
+			(str_contains($InputWho, '@'))
+			=> User\EntitySession::GetByEmail($InputWho),
+
+			default
+			=> User\EntitySession::GetByAlias($InputWho)
+		};
 	}
 
 }
