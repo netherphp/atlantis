@@ -29,11 +29,11 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<li>Apache 2.4</li>
 				<li>AcmePHP at <code>/opt/ssl/acmephp.phar</code></li>
 			</ul>
-			<div class="edged-left opacity-75 mb-0">
+			<div class="edged-left mb-0">
 				<div class="fw-bold">Note:</div>
 				Commands provided by Atlantis (or any Composer based packages) will only work as shown if <code>./vendor/bin</code> is in the shell <code>$PATH</code>.
 				Otherwise commands may need to be manually prefixed with <code>vendor/bin</code> when calling them.
-				This includes <code>atlantis</code>, <code>dev.atl</code>, <code>ssl.atl</code>, etc.
+				This includes <code>atlantis</code>, <code>project.atl</code>, <code>ssl.atl</code>, etc.
 			</div>
 		</div>
 		<div class="col-12 col-lg-4">
@@ -73,7 +73,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<p>Install Atlantis.</p>
 				<blockquote class="edged-left">
 					<div class="mb-0"><code class="cli">$ composer require netherphp/atlantis</code></div>
-					<div class="mb-0"><code class="cli">$ dev.atl project-init</code></div>
+					<div class="mb-0"><code class="cli">$ project.atl init</code></div>
 					<div class="mb-0"><code class="cli">$ composer update</code></div>
 				</blockquote>
 			</li>
@@ -101,14 +101,14 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				</div>
 
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ dev.atl web-config</code></div>
+					<div class="mb-2"><code class="cli">$ web.atl config</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-4">
 				<p>Run the web setup tool to push the configuration into the web service and get it serving.</p>
 
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ dev.atl web-setup</code></div>
+					<div class="mb-2"><code class="cli">$ web.atl setup</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-0">
@@ -141,7 +141,7 @@ $Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
 				<p>If SSL was set No the first time, re-run the web config tool saying yes to SSL.</p>
 
 				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ dev.atl web-config</code></div>
+					<div class="mb-2"><code class="cli">$ web.atl config</code></div>
 				</blockquote>
 			</li>
 			<li class="mb-0">
