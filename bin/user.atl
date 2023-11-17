@@ -1,0 +1,55 @@
+<?php
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+use
+Nether\Atlantis,
+Nether\Atlantis\Struct\ProjectJSON,
+Nether\Common,
+Nether\Console;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('UserTool', '5.0.0-dev')]
+class UserTool
+extends Atlantis\TerminalApp {
+
+	////////////////////////////////////////////////////////////////
+	// OVERRIDES Console\Client ////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-14')]
+	protected function
+	ApplyDefaultSort():
+	void {
+
+		return;
+
+		$this->Commands = (
+			Common\Datastore::FromArray(array_flip([ 'config', 'renew', 'cron', 'lookup' ]))
+			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
+			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
+			->MergeRight($this->Commands)
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('passwd')]
+	#[Console\Meta\Arg('id/alias/email')]
+	public function
+	HandlePassword():
+	int {
+
+		return 0;
+	}
+
+}
+
+exit(UserTool::Realboot());
