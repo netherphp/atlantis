@@ -52,9 +52,11 @@
 		"bin/dev.atl",
 		"bin/gfx.atl",
 		"bin/nether.atl",
+		"bin/project.atl",
 		"bin/ssl.atl",
 		"bin/traffic.atl",
 		"bin/user.atl",
+		"bin/web.atl",
 
 		"bin/atlantis-ssl",
 		"bin/atlantis-cron"

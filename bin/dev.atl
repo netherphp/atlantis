@@ -791,6 +791,84 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('loc', TRUE)]
+	public function
+	HandleCountLinesOfCode():
+	int {
+
+		$this->PrintAppHeader('Count Lines of Code');
+
+		$InputPaths = (
+			($this->Args->Inputs->Copy())
+			->Map(fn(string $P)=> realpath($P))
+			->Filter(fn(?string $P)=> !!$P)
+		);
+
+		$Extensions = [ 'php' ];
+
+		////////
+
+		$this->PrintLn($this->FormatHeading('Paths:'));
+		$InputPaths->Each(
+			fn(string $D)=>
+			$this->PrintLn("{$this->Theme->GetCharBullet()} {$D}")
+		);
+
+		$this->PrintLn();
+
+		////////
+
+		$this->PrintStatusMuted('Seeking Files...');
+
+		$Files = (
+			($InputPaths)
+			->Accumulate((new Common\Datastore), (
+				fn(Common\Datastore $C, string $P)
+				=> $C->MergeRight(Common\Filesystem\Indexer::ArrayFromPath(
+					$P, TRUE, TRUE
+				))
+			))
+			->Filter(
+				fn(SplFileInfo $F)
+				=> in_array(strtolower($F->GetExtension()), $Extensions)
+			)
+		);
+
+		////////
+
+		$this->PrintStatusMuted('Counting Lines...');
+
+		$Count = $Files->Accumulate(0, (
+			fn(int $C, SplFileInfo $F)
+			=> $C + Common\Filesystem\Util::LineCount($F->GetRealPath())
+		));
+
+		$this->PrintLn(sprintf(
+			'%s lines across %s files.',
+			number_format($Count),
+			number_format($Files->Count())
+		), 2);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('ctimeline', TRUE)]
+	public function
+	HandleClassTimeline():
+	int {
+
+		// open a class look at the methods and properties and
+		// print out a list sorted by when they were added.
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Common\Meta\Date('2023-11-11')]
 	public function
 	RehashWebServer(Atlantis\Struct\ProjectJSON $Project):

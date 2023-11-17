@@ -140,6 +140,17 @@ extends Console\Client {
 	}
 
 	protected function
+	PrintStatus(string $Msg):
+	static {
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			$Msg, Console\Theme::Default
+		), 2);
+
+		return $this;
+	}
+
+	protected function
 	PrintStatusMuted(string $Msg):
 	static {
 
