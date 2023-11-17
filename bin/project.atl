@@ -1,2 +1,546 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+use Nether\Storage;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('ProjectTool', '5.0.0-dev')]
+#[Common\Meta\Info('Handles configuration and setup for project development.')]
+class ProjectTool
+extends Atlantis\TerminalApp {
+
+	////////////////////////////////////////////////////////////////
+	// OVERRIDES Console\Client ////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-14')]
+	protected function
+	ApplyDefaultSort():
+	void {
+
+		$this->Commands = (
+			Common\Datastore::FromArray(array_flip([
+				'init', 'setup'
+			]))
+			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
+			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
+			->MergeRight($this->Commands)
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('init')]
+	#[Console\Meta\Info('Begin setting up the project from scratch.')]
+	public function
+	HandleInit():
+	int {
+
+		// git clone git@github.com:netherphp/project .
+		// composer require netherphp/atlantis dev-master
+
+		// dev.atl init
+		// ssl.atl setup
+
+		// things best only done once.
+
+		$this->HandleProjectDist();
+		$this->HandleProjectGitIgnore();
+
+		// things that are safer to repeat technically.
+
+		$this->HandleSetup();
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('setup')]
+	#[Console\Meta\Info('Reconfigure anything that can be reconfigured easily.')]
+	#[Console\Meta\Toggle('--fix', 'Try to forcefully fix things considered errors.')]
+	public function
+	HandleSetup():
+	int {
+
+		$this->HandleProjectPaths();
+
+		return 0;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	#[Console\Meta\Command('paths', TRUE)]
+	#[Console\Meta\Toggle('--fix', 'Try to forcefully fix things considered errors.')]
+	public function
+	HandleProjectPaths():
+	int {
+
+		$OptFix = $this->GetOption('fix') ?? FALSE;
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Project Path Setup', $this->AppInfo->Name)
+		), 2);
+
+		////////
+
+		Atlantis\Struct\ProjectJSON::FromApp($this->App)
+		->Filter(
+			fn(Atlantis\Struct\ProjectJSON $Project)
+			=> !!$Project->Dirs->Count() && !!$Project->Symlinks->Count()
+		)
+		->Each(
+			function(Atlantis\Struct\ProjectJSON $Project, string $Key)
+			use($OptFix) {
+				$this->PrintLn($this->FormatHeaderPoint(
+					"{$Key} ({$Project->Filename})",
+					Console\Theme::Accent
+				), 2);
+				$this->SetupProjectDirs($Project, $OptFix);
+				$this->SetupProjectLinks($Project, $OptFix);
+				return;
+			}
+		);
+
+		////////
+
+		return 0;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	#[Console\Meta\Command('dist', TRUE)]
+	public function
+	HandleProjectDist():
+	int {
+
+		$AppRoot = $this->App->FromProjectRoot();
+		$DistRoot = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(
+			'vendor', 'netherphp', 'atlantis'
+		));
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			'Setup Atlantis Structure...',
+			Console\Theme::Accent
+		), 2);
+
+		Common\Datastore::FromArray([
+			Common\Filesystem\Util::Pathify($AppRoot, 'conf', 'env', 'dev'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'core', 'Local'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'data'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'logs'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'temp'),
+			Common\Filesystem\Util::Pathify($AppRoot, 'www')
+		])
+		->Each(function(string $Dir) {
+			$this->PrintLn(sprintf('[%s] %s',
+				$this->Format('DIR', static::FmtAccent),
+				$Dir
+			));
+
+			Common\Filesystem\Util::MkDir($Dir);
+			return;
+		});
+
+		$this->PrintLn();
+
+		////////
+
+		$Todo = Common\Datastore::FromArray([
+			Common\Filesystem\Util::Pathify('app', 'conf')
+			=> 'conf',
+
+			Common\Filesystem\Util::Pathify('app', 'routes')
+			=> 'routes',
+
+			Common\Filesystem\Util::Pathify('app', 'atlantis.json')
+			=> Common\Filesystem\Util::Pathify('atlantis.json'),
+
+			Common\Filesystem\Util::Pathify('app', 'composer.json')
+			=> Common\Filesystem\Util::Pathify('composer.json'),
+
+			Common\Filesystem\Util::Pathify('app', 'www', 'index.php')
+			=> Common\Filesystem\Util::Pathify('www', 'index.php')
+		]);
+
+		$Todo->Each(function(string $Dst, string $Src) use($DistRoot, $AppRoot) {
+
+			$Copy = Atlantis\Util::CopyWithConfirm(
+				Common\Filesystem\Util::Pathify($DistRoot, $Src),
+				Common\Filesystem\Util::Pathify($AppRoot, $Dst)
+			);
+
+			$Cur = NULL;
+
+			foreach($Copy as $Cur) {
+				if(is_string($Cur)) {
+					$Copy->Send(!$this->PromptTrue(
+						$this->Format("Overwrite {$Cur}?", Console\Theme::Accent),
+						'[N/y]'
+					));
+
+					continue;
+				}
+			}
+
+			return;
+		});
+
+		return 0;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	#[Console\Meta\Command('gitignore', TRUE)]
+	#[Console\Meta\Info('Add things this framework knows you need to .gitignore')]
+	#[Console\Meta\Error(1, 'file write error: %s')]
+	public function
+	HandleProjectGitIgnore():
+	int {
+
+		$this->PrintLn($this->FormatHeaderLine(
+			sprintf('%s: Git Ignore Config', $this->AppInfo->Name)
+		), 2);
+
+		$Things = Common\Datastore::FromArray([
+			'Local Dev Things' => Common\Datastore::FromArray([
+				'PHPUnit'                     => '/.phpunit.cache',
+				'Composer'                    => '/vendor',
+				'Local Environment Lock File' => '/env.lock',
+				'Local Backup Dir'            => '/backups',
+				'Local Log Dir'               => '/logs',
+				'Local Temporary Thrash Dir'  => '/temp'
+			]),
+
+			'Local Web Things' => Common\Datastore::FromArray([
+				'AcmePHP Server Validation'  => '/www/.well-known',
+				'Atlantis App Scripts'       => '/www/share/atlantis',
+				'Atlantis NUI Scripts'       => '/www/share/nui',
+				'Atlantis Default Theme'     => '/www/themes/default',
+				'Atlantis Coming Soon Theme' => '/www/themes/soon'
+			]),
+
+			'Framework Managed Things' => Common\Datastore::FromArray([
+				'Nether Blog Uploads'              => '/data/blog',
+				'Nether Blog Uploads (Symlink)'    => '/www/data/blog',
+				'Atlantis QR Codes'                => '/data/qr',
+				'Atlantis QR Codes (Symlink)'      => '/www/data/qr',
+				'Atlantis File Uploads'            => '/data/upl',
+				'Atlantis File Uploads (Symlink)'  => '/www/data/upl',
+				'Atlantis VideoTP Cache'           => '/data/vid',
+				'Atlantis VideoTP Cache (Symlink)' => '/www/data/vid'
+			])
+		]);
+
+		$File = $this->App->FromProjectRoot('.gitignore');
+		$Ignore = new Atlantis\Util\GitIgnoreTool($File);
+
+		$Things->Each(function(Common\Datastore $Group, string $Key) use($Ignore) {
+			$this->PrintLn($this->FormatHeaderPoint($Key, Console\Theme::Accent), 2);
+			$this->PrintLn($this->FormatBulletList($Group), 2);
+			$Ignore->Append($Group->Values(TRUE));
+			return;
+		});
+
+		try { $Ignore->Write(); }
+		catch(Exception $Err) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				"ERROR: {$Err->GetMessage()}",
+				Console\Theme::Error
+			), 2);
+
+			$this->Quit(1, $Err->GetMessage());
+		}
+
+		$this->PrintLn($this->FormatHeaderPoint('OK', Console\Theme::OK), 2);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupProjectDirs(Atlantis\Struct\ProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Report = new Common\Datastore;
+
+		$Printer = function(string $V, string $K) {
+			$Label = 'DIR';
+
+			if($V === 'OK' || $V === 'NEW' || $V === 'FIXED') {
+				$this->PrintLn(sprintf(
+					'[%s] %s (%s)',
+					$this->Format($Label, Console\Theme::OK),
+					$K, $V
+				));
+
+				return;
+			}
+
+			$this->PrintLn(sprintf(
+				'[%s] %s (%s)',
+				$this->Format($Label, Console\Theme::Error),
+				$K, $V
+			));
+
+			return;
+		};
+
+		$Tester = function(Common\Filesystem\Directory $Dir) use($Report) {
+
+			if(is_dir($Dir->Path)) {
+				$Report[$Dir->Path] = 'OK';
+				return;
+			}
+
+			if(is_file($Dir->Path)) {
+				$Report[$Dir->Path] = 'ERROR: Exists as File';
+				return;
+			}
+
+			Common\Filesystem\Util::MkDir($Dir->Path);
+
+			if(!is_dir($Dir->Path)) {
+				$Report[$Dir->Path] = "ERROR: Permission Denied";
+				return;
+			}
+
+			$Report[$Dir->Path] = 'NEW';
+
+			return;
+		};
+
+		$Fixer = function(Common\Filesystem\Directory $Dir) use($Report) {
+
+			if(is_file($Dir->Path)) {
+				unlink($Dir->Path);
+				Common\Filesystem\Util::MkDir($Dir->Path);
+
+				if(is_dir($Dir->Path)) {
+					$Report[$Dir->Path] = 'FIXED';
+				}
+
+				return;
+			}
+
+			return;
+		};
+
+		////////
+
+		$Project->Dirs->Each($Tester);
+		$Report->Each($Printer);
+		$this->PrintLn();
+
+		////////
+
+		$Retry = $Project->Dirs->Distill(
+			fn(Common\Filesystem\Directory $D)
+			=> str_starts_with($Report[$D->Path], 'ERROR:')
+		);
+
+		if($Retry->Count() === 0)
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK', Console\Theme::OK
+		), 2);
+
+		else
+		$this->PrintLn($this->FormatHeaderPoint(
+			"ERROR: Needs fixed: {$Retry->Count()}", Console\Theme::Error
+		), 2);
+
+		if($Retry->Count() && $OptFix) {
+			$Report->Clear();
+			$Retry->Each($Fixer);
+			$Report->Each($Printer);
+			$this->PrintLn();
+		}
+
+		////////
+
+		return $this;
+	}
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	SetupProjectLinks(Atlantis\Struct\ProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Report = new Common\Datastore;
+
+		$Printer = function(string $V, string $K) {
+			$Label = 'SYM';
+
+			if($V === 'OK' || $V === 'NEW' || $V === 'FIXED') {
+				$this->PrintLn(sprintf(
+					'[%s] %s (%s)',
+					$this->Format($Label, Console\Theme::OK),
+					$K, $V
+				));
+
+				return;
+			}
+
+			$this->PrintLn(sprintf(
+				'[%s] %s (%s)',
+				$this->Format($Label, Console\Theme::Error),
+				$K, $V
+			));
+
+			return;
+		};
+
+		$Tester = function(Common\Filesystem\Symlink $Dir) use($Report) {
+
+			if(is_file($Dir->Path)) {
+				if(is_link($Dir->Path)) {
+					if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+						$Report[$Dir->Path] = 'OK';
+						return;
+					}
+
+					$Report[$Dir->Path] = 'Error: Exists as a symlink pointing to wrong thing.';
+					return;
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Exists as File';
+				return;
+			}
+
+			if(is_dir($Dir->Path)) {
+				if(is_link($Dir->Path)) {
+					if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+						$Report[$Dir->Path] = 'OK';
+						return;
+					}
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Exists as Directory';
+				return;
+			}
+
+			if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+				$Report[$Dir->Path] = 'OK';
+				return;
+			}
+
+			symlink(realpath($Dir->Source), $Dir->Path);
+
+			if(!is_link($Dir->Path)) {
+				$Report[$Dir->Path] = "ERROR: Permission Denied";
+				return;
+			}
+
+			$Report[$Dir->Path] = 'NEW';
+			return;
+		};
+
+		$Fixer = function(Common\Filesystem\Symlink $Dir) use($Report) {
+
+			if(is_link($Dir->Path) || is_file($Dir->Path)) {
+				unlink($Dir->Path);
+				symlink(realpath($Dir->Source), $Dir->Path);
+
+				if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+					$Report[$Dir->Path] = 'FIXED';
+					return;
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Fixing failed.';
+				return;
+			}
+
+			if(is_dir($Dir->Path)) {
+				Common\Filesystem\Util::RmDir($Dir->Path);
+				symlink(realpath($Dir->Source), $Dir->Path);
+
+				if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
+					$Report[$Dir->Path] = 'FIXED';
+					return;
+				}
+
+				$Report[$Dir->Path] = 'ERROR: Fixing failed.';
+				return;
+			}
+
+			$Report[$Dir->Path] = 'ERROR: No fix available for whatever is wrong.';
+			return;
+		};
+
+		////////
+
+		$Project->Symlinks->Each($Tester);
+		$Report->Each($Printer);
+		$this->PrintLn();
+
+		////////
+
+		$Retry = $Project->Symlinks->Distill(
+			fn(Common\Filesystem\Symlink $D)=>
+			str_starts_with($Report[$D->Path], 'ERROR:')
+		);
+
+		if($Retry->Count() === 0)
+		$this->PrintLn($this->FormatHeaderPoint(
+			'OK', Console\Theme::OK
+		), 2);
+
+		else
+		$this->PrintLn($this->FormatHeaderPoint(
+			"ERROR: Needs fixed: {$Retry->Count()}", Console\Theme::Error
+		), 2);
+
+		if($Retry->Count() && $OptFix) {
+			$Report->Clear();
+			$Retry->Each($Fixer);
+			$Report->Each($Printer);
+			$this->PrintLn();
+		}
+
+		////////
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	use
+	Atlantis\Packages\DevTool\QuerySelectProjectConfig;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-11')]
+	public function
+	WriteProjectConfig(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			"Updating {$Project->Filename}...",
+			Console\Theme::Accent
+		), 2);
+
+		if(!$Project->Write())
+		throw new Common\Error\FileWriteError($Project->Filename);
+
+		return;
+	}
+
+}
+
+exit(ProjectTool::Realboot([]));
