@@ -406,6 +406,8 @@ extends Atlantis\TerminalApp {
 
 	#[Console\Meta\Command('loc')]
 	#[Console\Meta\Info('Count lines of code in the specified directories.')]
+	#[Console\Meta\Arg('directory')]
+	#[Console\Meta\Arg('...')]
 	#[Console\Meta\Toggle('--nether', 'Include installed NetherPHP libraries.')]
 	public function
 	HandleCountLinesOfCode():
@@ -420,25 +422,36 @@ extends Atlantis\TerminalApp {
 		);
 
 		$OptNether = $this->GetOption('nether') ?? FALSE;
+		$OptShowPaths = $this->GetOption('paths');
 		$OptExt = $this->DigestOptionExtensions();
+		$Timer = NULL;
 
 		////////
-
-		$this->PrintLn($this->FormatHeading('Paths:'));
 
 		if($OptNether)
 		$InputPaths->MergeRight($this->FetchNetherProjectSourceDirs());
 
-		$InputPaths->Each(
-			fn(string $D)=>
-			$this->PrintLn("{$this->Theme->GetCharBullet()} {$D}")
-		);
+		if($OptShowPaths) {
+			$this->PrintLn($this->FormatHeading('Paths:'));
 
-		$this->PrintLn();
+			$InputPaths->Each(
+				fn(string $D)=>
+				$this->PrintLn("{$this->Theme->GetCharBullet()} {$D}")
+			);
+
+			$this->PrintLn();
+		}
 
 		////////
 
-		$this->PrintStatusMuted('Seeking Files...');
+		$Timer = new Common\Timer;
+		$Timer->Start();
+
+		$this->PrintStatusMuted(sprintf(
+			'Seeking Files (Dir: %d, Ext: %s)...',
+			$InputPaths->Count(0),
+			$OptExt->Join(', ')
+		));
 
 		$Files = (
 			($InputPaths)
@@ -450,23 +463,27 @@ extends Atlantis\TerminalApp {
 			))
 			->Filter(
 				fn(SplFileInfo $F)
-				=> in_array(strtolower($F->GetExtension()), $OptExt)
+				=> $OptExt->HasValue($F->GetExtension())
 			)
 		);
 
-		////////
-
-		$this->PrintStatusMuted('Counting Lines...');
+		$this->PrintStatusMuted(sprintf(
+			'Counting Lines (Files: %d)...',
+			$Files->Count()
+		));
 
 		$Count = $Files->Accumulate(0, (
 			fn(int $C, SplFileInfo $F)
 			=> $C + Common\Filesystem\Util::LineCount($F->GetRealPath())
 		));
 
+		$Timer->Stop();
+
 		$this->PrintLn(sprintf(
-			'%s lines across %s files.',
+			'%s lines across %s files. (%.3f sec)',
 			number_format($Count),
-			number_format($Files->Count())
+			number_format($Files->Count()),
+			$Timer->Get()
 		), 2);
 
 		return 0;
@@ -492,9 +509,9 @@ extends Atlantis\TerminalApp {
 	#[Common\Meta\Date('2023-11-17')]
 	public function
 	DigestOptionExtensions():
-	array {
+	Common\Datastore {
 
-		return [ 'php' ];
+		return Common\Datastore::FromArray([ 'php' ]);
 	}
 
 	#[Common\Meta\Date('2023-11-17')]
