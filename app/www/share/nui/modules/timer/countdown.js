@@ -19,7 +19,10 @@ class CountdownTimer {
 
 		////////
 
-		if(this.auto) this.run();
+		if(this.auto) {
+			this.update();
+			this.run();
+		}
 
 		////////
 
