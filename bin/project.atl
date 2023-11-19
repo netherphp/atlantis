@@ -3,8 +3,8 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
-use Nether\Storage;
-use Nether\User;
+
+use Nether\Atlantis\Struct\ProjectJSON;
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
@@ -85,30 +85,34 @@ extends Atlantis\TerminalApp {
 	HandleProjectPaths():
 	int {
 
+		$this->PrintAppHeader('Setup Project Dirs');
+
+		$Confs = ProjectJSON::FromApp($this->App);
 		$OptFix = $this->GetOption('fix') ?? FALSE;
 
-		////////
+		// first set up all the directories so that mounting points exist
+		// for any symlinks later.
 
-		$this->PrintLn($this->FormatHeaderLine(
-			sprintf('%s: Project Path Setup', $this->AppInfo->Name)
-		), 2);
-
-		////////
-
-		Atlantis\Struct\ProjectJSON::FromApp($this->App)
-		->Filter(
-			fn(Atlantis\Struct\ProjectJSON $Project)
-			=> !!$Project->Dirs->Count() && !!$Project->Symlinks->Count()
-		)
-		->Each(
-			function(Atlantis\Struct\ProjectJSON $Project, string $Key)
+		($Confs)
+		->Distill(fn(ProjectJSON $P)=> $P->Dirs->Count())
+		->EachKeyValue(
+			function(string $K, ProjectJSON $P)
 			use($OptFix) {
-				$this->PrintLn($this->FormatHeaderPoint(
-					"{$Key} ({$Project->Filename})",
-					Console\Theme::Accent
-				), 2);
-				$this->SetupProjectDirs($Project, $OptFix);
-				$this->SetupProjectLinks($Project, $OptFix);
+				$this->PrintH2("Dirs: {$K} ({$P->Filename})");
+				$this->SetupProjectDirs($P, $OptFix);
+				return;
+			}
+		);
+
+		// then set up project symlinks.
+
+		($Confs)
+		->Distill(fn(ProjectJSON $P)=> $P->Symlinks->Count())
+		->EachKeyValue(
+			function(string $K, ProjectJSON $P)
+			use($OptFix) {
+				$this->PrintH2("{$K} Symlinks ({$P->Filename})");
+				$this->SetupProjectLinks($P, $OptFix);
 				return;
 			}
 		);
@@ -273,7 +277,7 @@ extends Atlantis\TerminalApp {
 
 	#[Common\Meta\Date('2023-11-11')]
 	public function
-	SetupProjectDirs(Atlantis\Struct\ProjectJSON $Project, bool $OptFix=FALSE):
+	SetupProjectDirs(ProjectJSON $Project, bool $OptFix=FALSE):
 	static {
 
 		$Report = new Common\Datastore;
@@ -354,14 +358,10 @@ extends Atlantis\TerminalApp {
 		);
 
 		if($Retry->Count() === 0)
-		$this->PrintLn($this->FormatHeaderPoint(
-			'OK', Console\Theme::OK
-		), 2);
+		$this->PrintOK();
 
 		else
-		$this->PrintLn($this->FormatHeaderPoint(
-			"ERROR: Needs fixed: {$Retry->Count()}", Console\Theme::Error
-		), 2);
+		$this->PrintError("ERROR: Needs fixed: {$Retry->Count()}");
 
 		if($Retry->Count() && $OptFix) {
 			$Report->Clear();
@@ -377,7 +377,7 @@ extends Atlantis\TerminalApp {
 
 	#[Common\Meta\Date('2023-11-11')]
 	public function
-	SetupProjectLinks(Atlantis\Struct\ProjectJSON $Project, bool $OptFix=FALSE):
+	SetupProjectLinks(ProjectJSON $Project, bool $OptFix=FALSE):
 	static {
 
 		$Report = new Common\Datastore;
@@ -495,14 +495,10 @@ extends Atlantis\TerminalApp {
 		);
 
 		if($Retry->Count() === 0)
-		$this->PrintLn($this->FormatHeaderPoint(
-			'OK', Console\Theme::OK
-		), 2);
+		$this->PrintOK();
 
 		else
-		$this->PrintLn($this->FormatHeaderPoint(
-			"ERROR: Needs fixed: {$Retry->Count()}", Console\Theme::Error
-		), 2);
+		$this->PrintError("ERROR: Needs fixed: {$Retry->Count()}");
 
 		if($Retry->Count() && $OptFix) {
 			$Report->Clear();
@@ -527,13 +523,10 @@ extends Atlantis\TerminalApp {
 
 	#[Common\Meta\Date('2023-11-11')]
 	public function
-	WriteProjectConfig(Atlantis\Struct\ProjectJSON $Project):
+	WriteProjectConfig(ProjectJSON $Project):
 	void {
 
-		$this->PrintLn($this->FormatHeaderPoint(
-			"Updating {$Project->Filename}...",
-			Console\Theme::Accent
-		), 2);
+		$this->PrintStatus("Updating {$Project->Filename}...");
 
 		if(!$Project->Write())
 		throw new Common\Error\FileWriteError($Project->Filename);
