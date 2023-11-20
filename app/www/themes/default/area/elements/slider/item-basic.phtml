@@ -6,11 +6,9 @@
  * @var Nether\Atlantis\Tag\Entity $Tag
  */
 
-$Thing = new Nether\Common\Datafilter($Item->Item);
-
-$Title ??= $Thing->Title;
-$URL ??= $Thing->URL;
-$ImageURL ??= $Thing->ImageURL;
+$Title ??= $Item->GetItemTitle();
+$URL ??= $Item->GetItemURL();
+$ImageURL ??= $Item->GetItemImageURL();
 
 ?>
 

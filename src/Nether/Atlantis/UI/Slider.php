@@ -166,7 +166,7 @@ extends Surface\Element {
 
 	#[Common\Meta\Info('Ready an element to display a specified dataset.')]
 	static public function
-	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $ItemArea=NULL):
+	FromSurfaceWithDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $ItemArea='~/item-basic'):
 	static {
 
 		$Output = new static($Surface);
@@ -178,6 +178,14 @@ extends Surface\Element {
 		$Output->SetItemArea($ItemArea);
 
 		return $Output;
+	}
+
+	#[Common\Meta\Deprecated('2023-11-20')]
+	static public function
+	FromDataset(Surface\Engine $Surface, iterable $Items=NULL, ?string $ItemArea='~/item-basic'):
+	static {
+
+		return static::FromSurfaceWithDataset($Surface, $Items, $ItemArea);
 	}
 
 }
