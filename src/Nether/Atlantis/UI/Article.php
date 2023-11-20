@@ -20,6 +20,9 @@ extends Surface\Element {
 	$TitleClass = NULL;
 
 	public ?string
+	$TitleURL = NULL;
+
+	public ?string
 	$Date = NULL;
 
 	public ?string
@@ -39,6 +42,9 @@ extends Surface\Element {
 
 	public ?string
 	$SectionClass = NULL;
+
+	public ?string
+	$SectionURL = NULL;
 
 	public ?string
 	$Content = NULL;

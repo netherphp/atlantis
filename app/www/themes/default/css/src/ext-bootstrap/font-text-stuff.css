@@ -1,0 +1,149 @@
+/*******************************************************************************
+** font family ****************************************************************/
+
+.ff-mono {
+	font-family: monospace;
+}
+
+.ff-normal {
+	font-family: 'Segoe UI', 'Helvetica', sans-serif;
+}
+
+/*******************************************************************************
+** font sizing ****************************************************************/
+
+.fs-reset         { font-size: 1.0rem; }
+.fs-mostest-small { font-size: 0.44em; }
+.fs-most-small    { font-size: 0.52em; }
+.fs-smallerest    { font-size: 0.60em; }
+.fs-smallerer     { font-size: 0.68em; }
+.fs-smallest      { font-size: 0.76em; }
+.fs-smaller       { font-size: 0.84em; }
+.fs-small         { font-size: 0.92em; }
+.fs-normal        { font-size: 1.00em; }
+.fs-large         { font-size: 1.20em; }
+.fs-larger        { font-size: 1.40em; }
+.fs-largest       { font-size: 1.60em; }
+.fs-largerer      { font-size: 1.80em; }
+.fs-largerest     { font-size: 2.00em; }
+.fs-most-large    { font-size: 2.40em; }
+.fs-mostest-large { font-size: 2.80em; }
+
+/*******************************************************************************
+** letter spacing  ************************************************************/
+
+.ls-reset             { letter-spacing:  0.0rem; }
+.ls-literally-space   { letter-spacing:  0.80em; }
+.ls-mostest-loose     { letter-spacing:  0.54em; }
+.ls-most-loose        { letter-spacing:  0.48em; }
+.ls-looserest         { letter-spacing:  0.40em; }
+.ls-looserer          { letter-spacing:  0.32em; }
+.ls-loosest           { letter-spacing:  0.24em; }
+.ls-looser            { letter-spacing:  0.16em; }
+.ls-loose             { letter-spacing:  0.08em; }
+.ls-reading           { letter-spacing:  0.03em; }
+.ls-normal            { letter-spacing:  0.00em; }
+.ls-tight             { letter-spacing: -0.04em; }
+.ls-tighter           { letter-spacing: -0.08em; }
+.ls-tightest          { letter-spacing: -0.12em; }
+.ls-tighterer         { letter-spacing: -0.16em; }
+.ls-tighterest        { letter-spacing: -0.20em; }
+.ls-most-tight        { letter-spacing: -0.24em; }
+.ls-mostest-tight     { letter-spacing: -0.28em; }
+.ls-literally-nothing { letter-spacing: -0.42em; }
+
+/*******************************************************************************
+** line heights ***************************************************************/
+
+.lh-none   { line-height: 0em; }
+.lh-normal { line-height: 1em; }
+
+/*******************************************************************************
+** text alignments ************************************************************/
+
+.ta-right  { text-align: right; }
+.ta-left   { text-align: left; }
+.ta-center { text-align: center; }
+
+/*******************************************************************************
+** text decorations ***********************************************************/
+
+.td-overline  { text-decoration: underline; }
+.td-strike    { text-decoration: line-through; }
+.td-underline { text-decoration: underline; }
+.td-none      { text-decoration: none !important; border-bottom: 0px !important; }
+
+/*******************************************************************************
+** text transforms ************************************************************/
+
+.tt-none  { text-transform: initial !important; }
+.tt-upper { text-transform: uppercase; }
+.tt-lower { text-transform: lowercase; }
+.tt-title { text-transform: capitalize; }
+
+/*******************************************************************************
+** text line wrapping *********************************************************/
+
+.tw-normal { white-space: initial !important; }
+.tw-none { white-space: nowrap; }
+.tw-pre { white-space: pre-line; }
+
+/*******************************************************************************
+** text selection *************************************************************/
+
+.ts-normal { user-select: all; }
+.ts-none { user-select: none; }
+.ts-contain { user-select: contain; }
+
+/*******************************************************************************
+** responsive reactions *******************************************************/
+
+@media (max-width: 991.9px) {
+	.fs-mostest-small { font-size: 0.44em; }
+	.fs-most-small    { font-size: 0.52em; }
+	.fs-smallerest    { font-size: 0.60em; }
+	.fs-smallerer     { font-size: 0.68em; }
+	.fs-smallest      { font-size: 0.76em; }
+	.fs-smaller       { font-size: 0.84em; }
+	.fs-small         { font-size: 0.92em; }
+	.fs-normal        { font-size: 1.00em; }
+	.fs-large         { font-size: 1.10em; }
+	.fs-larger        { font-size: 1.20em; }
+	.fs-largest       { font-size: 1.30em; }
+	.fs-largerer      { font-size: 1.40em; }
+	.fs-largerest     { font-size: 1.50em; }
+	.fs-most-large    { font-size: 1.60em; }
+	.fs-mostest-large { font-size: 1.70em; }
+
+	.ls-literally-space   { letter-spacing:  0.60em; }
+	.ls-mostest-loose     { letter-spacing:  0.42em; }
+	.ls-most-loose        { letter-spacing:  0.36em; }
+	.ls-looserest         { letter-spacing:  0.32em; }
+	.ls-looserer          { letter-spacing:  0.24em; }
+	.ls-loosest           { letter-spacing:  0.18em; }
+	.ls-looser            { letter-spacing:  0.12em; }
+	.ls-loose             { letter-spacing:  0.06em; }
+	.ls-normal            { letter-spacing:  0.00em; }
+	.ls-tight             { letter-spacing: -0.04em; }
+	.ls-tighter           { letter-spacing: -0.08em; }
+	.ls-tightest          { letter-spacing: -0.12em; }
+	.ls-tighterer         { letter-spacing: -0.16em; }
+	.ls-tighterest        { letter-spacing: -0.20em; }
+	.ls-most-tight        { letter-spacing: -0.24em; }
+	.ls-mostest-tight     { letter-spacing: -0.28em; }
+	.ls-literally-nothing { letter-spacing: -0.42em; }
+}
+
+/*******************************************************************************
+** misc potential depreciations or refactors **********************************/
+
+.text-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.text-muted {
+	opacity: 0.64;
+}
+

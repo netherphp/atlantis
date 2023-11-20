@@ -1,0 +1,53 @@
+<?php
+
+use Nether\Atlantis\UI;
+use Nether\Database;
+use Nether\Common;
+
+$Intro = (fn()=> Nether\Atlantis\UI\Article::FromSurfaceWith($Surface, [
+	'Title'   => 'Pagination Widget',
+	'Section' => 'Atlantis\\UI\\Pager',
+	'Content' => 'Provides Next/Prev navigation links for datasets.'
+]));
+
+$Tests = Common\Datastore::FromArray([
+	'Manually Created'
+	=> function() use($Surface, $Route) {
+		return UI\Pager::FromSurfaceWith($Surface, [
+			'Page'      => Common\Filters\Numbers::Page($Route->Data->Page),
+			'PageCount' => 2
+		]);
+	},
+
+	'From Result Set'
+	=> function() use($Surface, $Route) {
+
+		$Results = new Database\ResultSet;
+		$Results->Page = Common\Filters\Numbers::Page($Route->Data->Page);
+		$Results->PageCount = 4;
+
+		return UI\Pager::FromSurfaceWithResultSet($Surface, $Results);
+	}
+]);
+
+?>
+
+<div class="container pt-6 pb-0">
+	<div class="jumbotron rounded mb-4">
+		<div class="mb-4">
+			<?php echo $Intro() ?>
+		</div>
+	</div>
+</div>
+
+<div class="container pt-6 pb-6">
+	<div class="hr-hide-last">
+		<?php foreach($Tests as $Title => $Test): ?>
+		<div class="mb-6">
+			<h3 class="ta-center mb-4"><?php $Util->Print($Title) ?></h3>
+			<?php echo $Test() ?>
+		</div>
+		<hr class="o-10 mb-6" />
+		<?php endforeach; ?>
+	</div>
+</div>

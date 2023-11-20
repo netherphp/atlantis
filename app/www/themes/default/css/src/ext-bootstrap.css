@@ -2,9 +2,14 @@
 	--DropdownMaxHeight: 300px;
 }
 
+/* we are going to break this into smaller components to help manage and
+migrate with a few of the bs5 naming updates that im ok with. each component
+for the forseeable future should be put into ext-bootstrap and onescript will
+continue to handle the production builds. things left in here that could be
+grouped are to be considered depreciated. */
+
 [data-bs-theme="dark"] .on-dark-hide { display: none; }
 [data-bs-theme="dark"] .on-dark-invert { filter: invert(); }
-
 
 [data-bs-theme="light"] .on-light-hide { display: none; }
 [data-bs-theme="light"] .on-light-invert { filter: invert(); }

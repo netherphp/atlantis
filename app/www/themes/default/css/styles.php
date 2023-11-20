@@ -12,6 +12,7 @@ new Nether\Common\Library;
 ->AddFile('src/imports.css')
 ->AddFile('src/main.css')
 ->AddFile('src/ext-bootstrap.css')
+->AddDir('src/ext-bootstrap')
 ->AddFile('src/ext-materialdesignicons.css')
 ->AddFile('src/ext-simpleicons.css')
 ->AddFile('src/ext-litepicker.css')

@@ -1,0 +1,61 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Database;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ *
+ * @var Atlantis\UI\Pager $Element
+ */
+
+$BaseURL ??= '';
+
+$Page = min($Element->Page, $Element->PageCount);
+$PageCount = $Element->PageCount;
+
+?>
+
+<div class="atl-ui-pager">
+	<div class="row justify-content-center align-items-center">
+
+		<div class="col-auto">
+			<?php if($Page > 1): ?>
+			<a class="btn btn-primary" href="<?php $Util->Print($BaseURL) ?>?<?php $Util->Print($Route->QueryBlender([ 'page'=> ($Page-1) ])) ?>">
+				<i class="mdi mdi-chevron-left"></i>
+				Prev
+			</a>
+			<?php else: ?>
+			<span class="btn btn-dark disabled">
+				<i class="mdi mdi-chevron-left"></i>
+				Prev
+			</span>
+			<?php endif; ?>
+		</div>
+
+		<div class="col-auto">
+			Page <span class="atl-ui-pager-pagenum"><?php $Util->Print($Page) ?></span>
+			of <span class="atl-ui-pager-pagecount"><?php $Util->Print(max(1, $PageCount)) ?></span>
+		</div>
+
+		<div class="col-auto">
+			<?php if($Page < $PageCount): ?>
+			<a class="btn btn-primary" href="<?php $Util->Print($BaseURL) ?>?<?php $Util->Print($Route->QueryBlender([ 'page'=> ($Page+1) ])) ?>">
+				Next
+				<i class="mdi mdi-chevron-right"></i>
+			</a>
+			<?php else: ?>
+			<a class="btn btn-dark disabled">
+				Next
+				<i class="mdi mdi-chevron-right"></i>
+			</a>
+			<?php endif; ?>
+		</div>
+
+	</div>
+</div>

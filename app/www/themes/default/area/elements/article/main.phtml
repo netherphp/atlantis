@@ -12,9 +12,11 @@ $Class ??= $Element->Class ?: NULL;
 
 $Section ??= $Element->Section ?: NULL;
 $SectionClass ??= $Element->SectionClass ?: NULL;
+$SectionURL ??= $Element->SectionURL ?: NULL;
 
 $Title ??= $Element->Title ?: NULL;
 $TitleClass ??= $Element->TitleClass ?: NULL;
+$TitleURL ??= $Element->TitleURL ?: NULL;
 
 $Authour ??= $Element->Authour ?: NULL;
 $AuthourClass ??= $Element->AuthourClass ?: NULL;
@@ -31,29 +33,35 @@ $ContentClass ??= $Element->ContentClass ?: NULL;
 <article class="Article <?php $Util->Print($Class) ?>">
 
 	<?php if($Section): ?>
-	<div class="Section <?php $Util->Print($SectionClass) ?>"><?php $Util->Print($Section) ?></div>
+	<div class="Section <?php $Util->Print($SectionClass) ?>">
+		<?php if($SectionURL): ?><a href="<?php $Util->Print($SectionURL) ?>"><?php endif; ?>
+		<?php $Util->Print($Section) ?>
+		<?php if($SectionURL): ?></a><?php endif; ?>
+	</div>
 	<?php endif; ?>
 
 	<?php if($Title): ?>
-	<h1 class="Title <?php $Util->Print($TitleClass) ?>"><?php $Util->Print($Title) ?></h1>
+	<h1 class="Title <?php $Util->Print($TitleClass) ?>">
+		<?php if($TitleURL): ?><a href="<?php $Util->Print($TitleURL) ?>"><?php endif; ?>
+		<?php $Util->Print($Title) ?>
+		<?php if($TitleURL): ?></a><?php endif; ?>
+	</h1>
 	<?php endif; ?>
 
 	<div class="Subline1">
 		<?php if($Date): ?>
 		<div class="Date <?php $Util->Print($DateClass) ?>">
+			<i class="mdi mdi-square-medium"></i>
 			<?php $Util->Print($Date) ?>
 		</div>
 		<?php endif; ?>
 		<?php if($Authour): ?>
 		<div class="Authour <?php $Util->Print($AuthourClass) ?>">
+			<i class="mdi mdi-square-medium"></i>
 			By
-			<?php if($AuthourURL): ?>
-			<a href="<?php $Util->Print($AuthourURL) ?>">
-			<?php endif; ?>
+			<?php if($AuthourURL): ?><a href="<?php $Util->Print($AuthourURL) ?>"><?php endif; ?>
 			<?php $Util->Print($Authour) ?>
-			<?php if($AuthourURL): ?>
-			</a>
-			<?php endif; ?>
+			<?php if($AuthourURL): ?></a><?php endif; ?>
 		</div>
 		<?php endif; ?>
 	</div>

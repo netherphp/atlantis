@@ -6,73 +6,9 @@ use Nether\Common;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-$Now = new Common\Date;
-$NowFancyDateTime = $Now->Get(Common\Values::DateFormatFancyDateTime);
-$Sections = [
-	(object)[
-		'Title' => 'Article',
-		'Class' => 'Atlantis\\UI\\Article',
-		'Page'  => 'article',
-		'Func'  => (fn()=> Atlantis\UI\Article::FromSurfaceWith($Surface, [
-			'Section'    => 'UI Showcase',
-			'Title'      => 'USS Enterprise (NCC-1701-D)',
-			'Date'       => $NowFancyDateTime,
-			'Authour'    => 'Geordi La Forge',
-			'AuthourURL' => 'https://memory-alpha.fandom.com/wiki/Geordi_La_Forge',
-			'Content'    => <<< LOL
-				The USS Enterprise (NCC-1701-D) was a Federation Galaxy-class starship operated by Starfleet, and the fifth Federation vessel to bear the name.
-				The Enterprise served from 2363 to 2371 as the Federation flagship, under the command of Captain Jean-Luc Picard.
-				Following the ship's destruction at Veridian III, it was rebuilt as a museum ship, and was briefly brought back into service to counter a Borg threat in 2401.
-				This is mostly due to the fact that the writers of New Trek think that everyone already forgot the plot of Battlestar Galactica (2004).
-			LOL
-		]))
-	],
-	(object)[
-		'Title' => 'Slider',
-		'Class' => 'Atlantis\\UI\\Slider',
-		'Page'  => 'slider',
-		'Func'  => (fn()=> Atlantis\UI\Slider::FromSurfaceWith($Surface, [
-			'ItemArea' => '~/item-basic',
-			'Items'    => [
-				(object)[ 'Title' => 'One' ],
-				(object)[ 'Title' => 'Two' ],
-				(object)[ 'Title' => 'Three' ],
-				(object)[ 'Title' => 'Four' ],
-				(object)[ 'Title' => 'Five' ],
-				(object)[ 'Title' => 'Six' ]
-			]
-		]))
-	],
-	(object)[
-		'Title' => 'Promo with Video',
-		'Class' => 'Atlantis\\UI\\PromoVideo',
-		'Page'  => 'promo-video',
-		'Func'  => (fn()=> Atlantis\UI\PromoVideo::FromSurfaceWith($Surface, [
-			'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
-			'Overlay'  => 'grad-focus-dark',
-			'Title'    => 'Hello',
-			'Subline'  => 'This is a promo video.'
-		]))
-	],
-	(object)[
-		'Title' => 'More...',
-		'Class' => NULL,
-		'Page'  => NULL,
-		'Func'  => (fn()=> <<< EOL
-			<div class="row">
-				<div class="col">
-					Site Menu
-				</div>
-				<div class="col-auto">
-					<a href="/docs/ui/sitemenu">View Docs <i class="mdi mdi-chevron-right"></i></a>
-				</div>
-			</div>
-		EOL)
-	]
-];
-
 $Pages = [
 	'Article'     => '/docs/ui/article',
+	'Pager'       => '/docs/ui/pager',
 	'Promo Video' => '/docs/ui/promo-video',
 	'Slider'      => '/docs/ui/slider',
 	'Site Menu'   => '/docs/ui/sitemenu'
@@ -84,32 +20,6 @@ $Pages = [
 ?>
 
 <div class="container pt-6 pb-6">
-
-	<div class="d-none row">
-		<?php foreach($Sections as $Section): ?>
-		<div class="col-12 mb-8">
-			<div class="row align-items-center">
-				<div class="col">
-					<div class="font-size-larger fw-bold">
-						<?php $Util->Print($Section->Title) ?>
-					</div>
-				</div>
-				<?php if($Section->Page): ?>
-				<div class="col-auto">
-					<a class="fst-italic text-muted border-0" href="/docs/ui/<?php $Util->Print($Section->Page) ?>">
-						View Docs
-						<i class="mdi mdi-chevron-right"></i>
-					</a>
-				</div>
-				<?php endif; ?>
-			</div>
-			<hr class="mt-1 mb-2" />
-			<div class="jumbotron rounded">
-				<?php echo ($Section->Func)() ?>
-			</div>
-		</div>
-		<?php endforeach; ?>
-	</div>
 
 	<div class="jumbotron rounded">
 		<div>
