@@ -273,6 +273,10 @@ extends Atlantis\TerminalApp {
 		return 0;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-21')]
 	#[Console\Meta\Command('dirs')]
 	#[Console\Meta\Info('Lists and Edit the directories managed by the Project JSON.')]
 	#[Console\Meta\Value('--path', 'The path to manage.')]
@@ -285,6 +289,17 @@ extends Atlantis\TerminalApp {
 	int {
 
 		$this->PrintAppHeader('Manage Project Directories');
+
+		$this->PrintLn(sprintf(
+			'Run %s to check and enforce the configuration.',
+			$this->Format('setup', Console\Theme::Prime)
+		), 2);
+
+		$this->PrintLn(sprintf(
+			'%s = Exists, %s = Missing',
+			$this->Theme->GetCharCircleFilled(),
+			$this->Theme->GetCharCircleEmpty()
+		), 2);
 
 		$OptPath = $this->GetOption('path');
 		$OptConf = $this->GetOption('conf');
@@ -299,18 +314,16 @@ extends Atlantis\TerminalApp {
 		if(($OptAdd || $OptDel) && !$OptPath)
 		$this->Quit(1);
 
-		try {
-			if($OptPath) match(TRUE) {
-				$OptAdd
-				=> $this->HandleProjectDirsAdd($OptPath, $OptConf),
+		try { match(TRUE) {
+			$OptAdd
+			=> $this->HandleProjectDirsAdd($OptPath, $OptConf),
 
-				$OptDel
-				=> $this->HandleProjectDirsDel($OptPath, $OptConf),
+			$OptDel
+			=> $this->HandleProjectDirsDel($OptPath),
 
-				default
-				=> NULL
-			};
-		}
+			default
+			=> NULL
+		}; }
 
 		catch(Exception $Err) {
 			$this->Quit(2, $Err->GetMessage());
@@ -377,7 +390,7 @@ extends Atlantis\TerminalApp {
 	}
 
 	protected function
-	HandleProjectDirsDel(string $Path, ?string $Conf=NULL):
+	HandleProjectDirsDel(string $Path):
 	void {
 
 		$Confs = ProjectJSON::FromApp($this->App);
@@ -413,6 +426,182 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-21')]
+	#[Console\Meta\Command('symlinks')]
+	#[Console\Meta\Info('Lists and Edit the Symlinks managed by the Project JSON.')]
+	#[Console\Meta\Value('--path', 'The path to manage.')]
+	#[Console\Meta\Value('--source', 'The source to point at.')]
+	#[Console\Meta\Toggle('--add', 'Add the specified --path.')]
+	#[Console\Meta\Toggle('--del', 'Delete the specified --path.')]
+	#[Console\Meta\Error(1, 'no --path specified')]
+	#[Console\Meta\Error(2, 'no --source specified')]
+	#[Console\Meta\Error(3, 'update error: %s')]
+	public function
+	HandleProjectSymlinks():
+	int {
+
+		$this->PrintAppHeader('Manage Project Symlinks');
+
+		$this->PrintLn(sprintf(
+			'Run %s to check and enforce the configuration.',
+			$this->Format('setup', Console\Theme::Prime)
+		), 2);
+
+		$this->PrintLn(sprintf(
+			'%s = Exists, %s = Missing',
+			$this->Theme->GetCharCircleFilled(),
+			$this->Theme->GetCharCircleEmpty()
+		), 2);
+
+		$OptPath = $this->GetOption('path');
+		$OptSource = $this->GetOption('source');
+		$OptConf = $this->GetOption('conf');
+		$OptAdd = $this->GetOption('add') ?: FALSE;
+		$OptDel = $this->GetOption('del') ?: FALSE;
+
+		$Confs = NULL;
+		$Err = NULL;
+
+		////////
+
+		if($OptAdd) {
+			if(!$OptPath)
+			$this->Quit(1);
+
+			if(!$OptSource)
+			$this->Quit(2);
+		}
+
+		if($OptDel) {
+			if(!$OptPath)
+			$this->Quit(1);
+		}
+
+		try { match(TRUE) {
+			$OptAdd
+			=> $this->HandleProjectSymlinksAdd($OptPath, $OptSource, $OptConf),
+
+			$OptDel
+			=> $this->HandleProjectSymlinksDel($OptPath),
+
+			default
+			=> NULL
+		}; }
+
+		catch(Exception $Err) {
+			$this->Quit(3, $Err->GetMessage());
+		}
+
+		////////
+
+		$Confs = Atlantis\Struct\ProjectJSON::FromApp($this->App);
+
+		$Confs
+		->Filter(fn(Atlantis\Struct\ProjectJSON $P)=> $P->Symlinks->Count())
+		->Each(function(Atlantis\Struct\ProjectJSON $P, string $K) {
+			$this->PrintH3("From {$K} ({$P->Filename})");
+
+			$P->Symlinks->Each(function(Common\Filesystem\Symlink $D) {
+
+				$Exists = $D->Exists();
+				$Valid = $D->Valid();
+
+				$Bullet1 = match($Exists) {
+					TRUE
+					=> $this->Theme->GetCharCircleFilled(),
+
+					default
+					=> $this->Theme->GetCharCircleEmpty()
+				};
+
+				$Bullet2 = match($Valid) {
+					TRUE
+					=> $this->Theme->GetCharCircleFilled(),
+
+					default
+					=> $this->Theme->GetCharCircleEmpty()
+				};
+
+				$this->PrintLn("{$Bullet1} {$D->Path}");
+				$this->PrintLn($this->Format(
+					"{$Bullet2} {$D->Source}",
+					Console\Theme::Muted
+				), 2);
+
+				return;
+			});
+
+			return;
+		});
+
+		////////
+
+		return 0;
+	}
+
+	protected function
+	HandleProjectSymlinksAdd(string $Path, string $Source, ?string $Conf=NULL):
+	void {
+
+		$Project = $this->QuerySelectProjectConfig(
+			fn(ProjectJSON $P, string $K)
+			=> $Conf !== NULL ? $Conf === $K : TRUE
+		);
+
+		if(!$Project)
+		throw new Common\Error\RequiredDataMissing('Project', 'ProjectJSON');
+
+		////////
+
+		$Link = Filesystem\Symlink::FromPathSource($Path, $Source);
+
+		($Project->Symlinks)
+		->Filter($Link->IsNot(...))
+		->Push($Link)
+		->Sort(Filesystem\Symlink::ForSortingByPath(...));
+
+		$this->WriteProjectConfig($Project);
+
+		return;
+	}
+
+	protected function
+	HandleProjectSymlinksDel(string $Path):
+	void {
+
+		$Confs = ProjectJSON::FromApp($this->App);
+		$Counts = $Confs->Map(fn(ProjectJSON $P)=> $P->Symlinks->Count());
+
+		////////
+
+		$Confs
+		->Each(function(ProjectJSON $P) use($Path) {
+
+			// strip it out if it exists.
+
+			$P->Symlinks->Filter(
+				fn(Filesystem\Symlink $D)
+				=> $D->IsNot($Path)
+			);
+
+			return;
+		})
+		->Each(function(ProjectJSON $P, string $K) use($Counts) {
+
+			// rewrite the config file if it changed.
+
+			if($Counts[$K] !== $P->Symlinks->Count())
+			$this->WriteProjectConfig($P);
+
+			return;
+		});
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Common\Meta\Date('2023-11-11')]
 	public function
 	SetupProjectDirs(ProjectJSON $Project, bool $OptFix=FALSE):
@@ -425,7 +614,7 @@ extends Atlantis\TerminalApp {
 
 			if($V === 'OK' || $V === 'NEW' || $V === 'FIXED') {
 				$this->PrintLn(sprintf(
-					'[%s] %s (%s)',
+					'[%s] %s',
 					$this->Format($Label, Console\Theme::OK),
 					$K, $V
 				));
@@ -523,11 +712,11 @@ extends Atlantis\TerminalApp {
 		$Printer = function(string $V, string $K) {
 			$Label = 'SYM';
 
-			if($V === 'OK' || $V === 'NEW' || $V === 'FIXED') {
+			if(!str_starts_with($V, 'ERR')) {
 				$this->PrintLn(sprintf(
-					'[%s] %s (%s)',
+					'[%s] %s %s',
 					$this->Format($Label, Console\Theme::OK),
-					$K, $V
+					$K, $this->Format("({$V})", Console\Theme::Muted)
 				));
 
 				return;
@@ -547,11 +736,11 @@ extends Atlantis\TerminalApp {
 			if(is_file($Dir->Path)) {
 				if(is_link($Dir->Path)) {
 					if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
-						$Report[$Dir->Path] = 'OK';
+						$Report[$Dir->Path] = $Dir->Source;
 						return;
 					}
 
-					$Report[$Dir->Path] = 'Error: Exists as a symlink pointing to wrong thing.';
+					$Report[$Dir->Path] = 'ERROR: Exists as a symlink pointing to wrong thing.';
 					return;
 				}
 
@@ -562,7 +751,7 @@ extends Atlantis\TerminalApp {
 			if(is_dir($Dir->Path)) {
 				if(is_link($Dir->Path)) {
 					if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
-						$Report[$Dir->Path] = 'OK';
+						$Report[$Dir->Path] = $Dir->Source;
 						return;
 					}
 				}
@@ -572,7 +761,7 @@ extends Atlantis\TerminalApp {
 			}
 
 			if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
-				$Report[$Dir->Path] = 'OK';
+				$Report[$Dir->Path] = $Dir->Source;
 				return;
 			}
 
@@ -583,7 +772,7 @@ extends Atlantis\TerminalApp {
 				return;
 			}
 
-			$Report[$Dir->Path] = 'NEW';
+			$Report[$Dir->Path] = $Dir->Source;
 			return;
 		};
 
