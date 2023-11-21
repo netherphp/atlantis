@@ -28,7 +28,7 @@
 			"Mode": "0o777"
 		}
 	],
-	"Links": [
+	"Symlinks": [
 		{
 			"Path": "www\/data\/vid",
 			"Source": "data\/vid",
