@@ -1,0 +1,8 @@
+
+.atl-ui-pager .btn.disabled {
+	opacity: 0.15;
+}
+
+.atl-ui-pager .pager-status {
+	font-weight: bold;
+}

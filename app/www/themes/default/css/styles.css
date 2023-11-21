@@ -1,9 +1,11 @@
 /*//
-@date 2023-10-24 21:09:11 UTC
-@files 21 [
+@date 2023-11-21 01:13:57 UTC
+@files 24 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
+    "src\/ext-bootstrap\/font-text-stuff.css",
+    "src\/ext-bootstrap\/opacity.css",
     "src\/ext-materialdesignicons.css",
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
@@ -18,6 +20,7 @@
     "src\/elements\/gallery.css",
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
+    "src\/elements\/pager.css",
     "src\/elements\/pretty-modern-box.css",
     "src\/elements\/pretty-modern-navbar.css",
     "src\/elements\/sitemenu.css",
@@ -134,6 +137,10 @@
 	--bs-secondary-bg-rgb: 10, 10, 10;
 	--bs-tertiary-bg: #101010;
 	--bs-tertiary-bg-rgb: 16, 16, 16;
+
+	--bs-border-radius: 10px;
+	--bs-btn-disabled-opacity: 0.25;
+
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -177,6 +184,7 @@
 	--bs-tertiary-bg-rgb: 248, 248, 248;
 
 	--bs-border-radius: 10px;
+	--bs-btn-disabled-opacity: 0.25;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -435,9 +443,14 @@ strong {
 	--DropdownMaxHeight: 300px;
 }
 
+/* we are going to break this into smaller components to help manage and
+migrate with a few of the bs5 naming updates that im ok with. each component
+for the forseeable future should be put into ext-bootstrap and onescript will
+continue to handle the production builds. things left in here that could be
+grouped are to be considered depreciated. */
+
 [data-bs-theme="dark"] .on-dark-hide { display: none; }
 [data-bs-theme="dark"] .on-dark-invert { filter: invert(); }
-
 
 [data-bs-theme="light"] .on-light-hide { display: none; }
 [data-bs-theme="light"] .on-light-invert { filter: invert(); }
@@ -1004,7 +1017,7 @@ strong {
 	z-index: 9101;
 	scrollbar-gutter: auto;
 
-	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast);
+	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast), opacity var(--theme-anim-ease-fast), filter var(--theme-anim-ease-fast);
 }
 
 .offcanvas.offcanvas-glass {
@@ -1034,6 +1047,189 @@ strong {
 
 	opacity: 1.0;
 }
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/font-text-stuff.css ///////////////////////////////////*/
+
+/*******************************************************************************
+** font family ****************************************************************/
+
+.ff-mono {
+	font-family: monospace;
+}
+
+.ff-normal {
+	font-family: 'Segoe UI', 'Helvetica', sans-serif;
+}
+
+/*******************************************************************************
+** font sizing ****************************************************************/
+
+.fs-reset         { font-size: 1.0rem; }
+.fs-mostest-small { font-size: 0.44em; }
+.fs-most-small    { font-size: 0.52em; }
+.fs-smallerest    { font-size: 0.60em; }
+.fs-smallerer     { font-size: 0.68em; }
+.fs-smallest      { font-size: 0.76em; }
+.fs-smaller       { font-size: 0.84em; }
+.fs-small         { font-size: 0.92em; }
+.fs-normal        { font-size: 1.00em; }
+.fs-large         { font-size: 1.20em; }
+.fs-larger        { font-size: 1.40em; }
+.fs-largest       { font-size: 1.60em; }
+.fs-largerer      { font-size: 1.80em; }
+.fs-largerest     { font-size: 2.00em; }
+.fs-most-large    { font-size: 2.40em; }
+.fs-mostest-large { font-size: 2.80em; }
+
+/*******************************************************************************
+** letter spacing  ************************************************************/
+
+.ls-reset             { letter-spacing:  0.0rem; }
+.ls-literally-space   { letter-spacing:  0.80em; }
+.ls-mostest-loose     { letter-spacing:  0.54em; }
+.ls-most-loose        { letter-spacing:  0.48em; }
+.ls-looserest         { letter-spacing:  0.40em; }
+.ls-looserer          { letter-spacing:  0.32em; }
+.ls-loosest           { letter-spacing:  0.24em; }
+.ls-looser            { letter-spacing:  0.16em; }
+.ls-loose             { letter-spacing:  0.08em; }
+.ls-reading           { letter-spacing:  0.03em; }
+.ls-normal            { letter-spacing:  0.00em; }
+.ls-tight             { letter-spacing: -0.04em; }
+.ls-tighter           { letter-spacing: -0.08em; }
+.ls-tightest          { letter-spacing: -0.12em; }
+.ls-tighterer         { letter-spacing: -0.16em; }
+.ls-tighterest        { letter-spacing: -0.20em; }
+.ls-most-tight        { letter-spacing: -0.24em; }
+.ls-mostest-tight     { letter-spacing: -0.28em; }
+.ls-literally-nothing { letter-spacing: -0.42em; }
+
+/*******************************************************************************
+** line heights ***************************************************************/
+
+.lh-none   { line-height: 0em; }
+.lh-normal { line-height: 1em; }
+
+/*******************************************************************************
+** text alignments ************************************************************/
+
+.ta-right  { text-align: right; }
+.ta-left   { text-align: left; }
+.ta-center { text-align: center; }
+
+/*******************************************************************************
+** text decorations ***********************************************************/
+
+.td-overline  { text-decoration: underline; }
+.td-strike    { text-decoration: line-through; }
+.td-underline { text-decoration: underline; }
+.td-none      { text-decoration: none !important; border-bottom: 0px !important; }
+
+/*******************************************************************************
+** text transforms ************************************************************/
+
+.tt-none  { text-transform: initial !important; }
+.tt-upper { text-transform: uppercase; }
+.tt-lower { text-transform: lowercase; }
+.tt-title { text-transform: capitalize; }
+
+/*******************************************************************************
+** text line wrapping *********************************************************/
+
+.tw-normal { white-space: initial !important; }
+.tw-none { white-space: nowrap; }
+.tw-pre { white-space: pre-line; }
+
+/*******************************************************************************
+** text selection *************************************************************/
+
+.ts-normal { user-select: all; }
+.ts-none { user-select: none; }
+.ts-contain { user-select: contain; }
+
+/*******************************************************************************
+** responsive reactions *******************************************************/
+
+@media (max-width: 991.9px) {
+	.fs-mostest-small { font-size: 0.44em; }
+	.fs-most-small    { font-size: 0.52em; }
+	.fs-smallerest    { font-size: 0.60em; }
+	.fs-smallerer     { font-size: 0.68em; }
+	.fs-smallest      { font-size: 0.76em; }
+	.fs-smaller       { font-size: 0.84em; }
+	.fs-small         { font-size: 0.92em; }
+	.fs-normal        { font-size: 1.00em; }
+	.fs-large         { font-size: 1.10em; }
+	.fs-larger        { font-size: 1.20em; }
+	.fs-largest       { font-size: 1.30em; }
+	.fs-largerer      { font-size: 1.40em; }
+	.fs-largerest     { font-size: 1.50em; }
+	.fs-most-large    { font-size: 1.60em; }
+	.fs-mostest-large { font-size: 1.70em; }
+
+	.ls-literally-space   { letter-spacing:  0.60em; }
+	.ls-mostest-loose     { letter-spacing:  0.42em; }
+	.ls-most-loose        { letter-spacing:  0.36em; }
+	.ls-looserest         { letter-spacing:  0.32em; }
+	.ls-looserer          { letter-spacing:  0.24em; }
+	.ls-loosest           { letter-spacing:  0.18em; }
+	.ls-looser            { letter-spacing:  0.12em; }
+	.ls-loose             { letter-spacing:  0.06em; }
+	.ls-normal            { letter-spacing:  0.00em; }
+	.ls-tight             { letter-spacing: -0.04em; }
+	.ls-tighter           { letter-spacing: -0.08em; }
+	.ls-tightest          { letter-spacing: -0.12em; }
+	.ls-tighterer         { letter-spacing: -0.16em; }
+	.ls-tighterest        { letter-spacing: -0.20em; }
+	.ls-most-tight        { letter-spacing: -0.24em; }
+	.ls-mostest-tight     { letter-spacing: -0.28em; }
+	.ls-literally-nothing { letter-spacing: -0.42em; }
+}
+
+/*******************************************************************************
+** misc potential depreciations or refactors **********************************/
+
+.text-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.text-muted {
+	opacity: 0.64;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/opacity.css ///////////////////////////////////////////*/
+
+.o-0   { opacity: 0.0; }
+.o-10  { opacity: 0.10; }
+.o-25  { opacity: 0.25; }
+.o-20  { opacity: 0.20; }
+.o-30  { opacity: 0.30; }
+.o-40  { opacity: 0.40; }
+.o-50  { opacity: 0.50; }
+.o-60  { opacity: 0.60; }
+.o-70  { opacity: 0.70; }
+.o-75  { opacity: 0.75; }
+.o-80  { opacity: 0.80; }
+.o-90  { opacity: 0.90; }
+.o-100 { opacity: 1.0; }
+
+.o-hover-0:hover   { opacity: 0.0; }
+.o-hover-10:hover  { opacity: 0.10; }
+.o-hover-25:hover  { opacity: 0.25; }
+.o-hover-20:hover  { opacity: 0.20; }
+.o-hover-30:hover  { opacity: 0.30; }
+.o-hover-40:hover  { opacity: 0.40; }
+.o-hover-50:hover  { opacity: 0.50; }
+.o-hover-60:hover  { opacity: 0.60; }
+.o-hover-70:hover  { opacity: 0.70; }
+.o-hover-75:hover  { opacity: 0.75; }
+.o-hover-80:hover  { opacity: 0.80; }
+.o-hover-90:hover  { opacity: 0.90; }
+.o-hover-100:hover { opacity: 1.0; }
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-materialdesignicons.css /////////////////////////////////////////*/
@@ -1673,6 +1869,17 @@ strong {
 .Block.Access { background-color: var(--SenseiAccess); }
 .Block.Abstract { background-color: var(--SenseiAbstract); }
 .Block.Attribute { background-color: var(--SenseiAttribute); }
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/pager.css //////////////////////////////////////////////////*/
+
+.atl-ui-pager .btn.disabled {
+	opacity: 0.15;
+}
+
+.atl-ui-pager .pager-status {
+	font-weight: bold;
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/pretty-modern-box.css //////////////////////////////////////*/

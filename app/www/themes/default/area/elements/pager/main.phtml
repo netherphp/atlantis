@@ -1,32 +1,41 @@
 <?php
 
 use Nether\Atlantis;
-use Nether\Avenue;
-use Nether\Database;
 use Nether\Surface;
 
 /**
- * @var Atlantis\Engine $App
  * @var Atlantis\Struct\TemplateHelper $Util
- * @var Avenue\Router $Router
- * @var Surface\Engine $Surface
- *
- * @var Atlantis\UI\Pager $Element
+ * @var Surface\Engine                 $Surface
+ * @var Atlantis\UI\Pager              $Element
  */
 
 $BaseURL ??= '';
+$BaseJoin = !str_contains($BaseURL, '?') ? '?' : '&';
 
-$Page = min($Element->Page, $Element->PageCount);
-$PageCount = $Element->PageCount;
+$ElementID ??= $Element->GetID();
+$Page ??= min($Element->Page, $Element->PageCount);
+$PageCount ??= $Element->PageCount;
+
+$PrevURL = sprintf(
+	'%s%s%s',
+	$BaseURL, $BaseJoin,
+	$Route->QueryBlender([ 'page'=> ($Page - 1) ])
+);
+
+$NextURL = sprintf(
+	'%s%s%s',
+	$BaseURL, $BaseJoin,
+	$Route->QueryBlender([ 'page'=> ($Page + 1) ])
+);
 
 ?>
 
-<div class="atl-ui-pager">
+<div id="<?php $Util->Print($ElementID) ?>" class="atl-ui-pager">
 	<div class="row justify-content-center align-items-center">
 
 		<div class="col-auto">
 			<?php if($Page > 1): ?>
-			<a class="btn btn-primary" href="<?php $Util->Print($BaseURL) ?>?<?php $Util->Print($Route->QueryBlender([ 'page'=> ($Page-1) ])) ?>">
+			<a class="btn btn-primary" href="<?php $Util->Print($PrevURL) ?>">
 				<i class="mdi mdi-chevron-left"></i>
 				Prev
 			</a>
@@ -39,21 +48,23 @@ $PageCount = $Element->PageCount;
 		</div>
 
 		<div class="col-auto">
-			Page <span class="atl-ui-pager-pagenum"><?php $Util->Print($Page) ?></span>
-			of <span class="atl-ui-pager-pagecount"><?php $Util->Print(max(1, $PageCount)) ?></span>
+			<div class="atl-ui-pager pager-status">
+				Page <span class="pager-pagenum"><?php $Util->Print(number_format($Page)) ?></span>
+				of <span class="pager-pagecount"><?php $Util->Print(number_format(max(1, $PageCount))) ?></span>
+			</div>
 		</div>
 
 		<div class="col-auto">
 			<?php if($Page < $PageCount): ?>
-			<a class="btn btn-primary" href="<?php $Util->Print($BaseURL) ?>?<?php $Util->Print($Route->QueryBlender([ 'page'=> ($Page+1) ])) ?>">
+			<a class="btn btn-primary" href="<?php $Util->Print($NextURL) ?>">
 				Next
 				<i class="mdi mdi-chevron-right"></i>
 			</a>
 			<?php else: ?>
-			<a class="btn btn-dark disabled">
+			<span class="btn btn-dark disabled">
 				Next
 				<i class="mdi mdi-chevron-right"></i>
-			</a>
+			</span>
 			<?php endif; ?>
 		</div>
 

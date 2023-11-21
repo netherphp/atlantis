@@ -99,6 +99,10 @@
 	--bs-secondary-bg-rgb: 10, 10, 10;
 	--bs-tertiary-bg: #101010;
 	--bs-tertiary-bg-rgb: 16, 16, 16;
+
+	--bs-border-radius: 10px;
+	--bs-btn-disabled-opacity: 0.25;
+
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -142,6 +146,7 @@
 	--bs-tertiary-bg-rgb: 248, 248, 248;
 
 	--bs-border-radius: 10px;
+	--bs-btn-disabled-opacity: 0.25;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
