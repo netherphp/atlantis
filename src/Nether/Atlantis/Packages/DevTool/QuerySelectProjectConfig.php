@@ -20,13 +20,14 @@ trait QuerySelectProjectConfig {
 		if(is_callable($Filter))
 		$Confs->Filter($Filter);
 
+		if($Confs->Count() === 0) {
+			$this->PrintStatusMuted("No configs found.");
+			return NULL;
+		}
+
 		if($Confs->Count() === 1) {
 			$Output = $Confs->Revalue()[0];
-
-			$this->PrintLn($this->FormatHeaderPoint(
-				"Selected: {$Output->Filename}",
-				Console\Theme::Muted
-			), 2);
+			$this->PrintStatusMuted("Selected: {$Output->Filename}");
 
 			return $Output;
 		}
@@ -62,10 +63,10 @@ trait QuerySelectProjectConfig {
 
 		$Output = $Confs->Values()->Get($Key - 1);
 
-		$this->PrintLn($this->FormatHeaderPoint(
-			"Selected: {$Output->Filename}",
-			Console\Theme::Muted
-		), 2);
+		if($Output)
+		$this->PrintStatus("Selected: {$Output->Filename}");
+		else
+		$this->PrintStatus("No Config Selected");
 
 		return $Output;
 	}

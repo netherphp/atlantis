@@ -5,6 +5,7 @@ use Nether\Common;
 use Nether\Console;
 
 use Nether\Atlantis\Struct\ProjectJSON;
+use Nether\Common\Filesystem;
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
@@ -272,6 +273,143 @@ extends Atlantis\TerminalApp {
 		return 0;
 	}
 
+	#[Console\Meta\Command('dirs')]
+	#[Console\Meta\Info('Lists and Edit the directories managed by the Project JSON.')]
+	#[Console\Meta\Value('--path', 'The path to manage.')]
+	#[Console\Meta\Toggle('--add', 'Add the specified --path.')]
+	#[Console\Meta\Toggle('--del', 'Delete the specified --path.')]
+	#[Console\Meta\Error(1, 'no --path specified')]
+	#[Console\Meta\Error(2, 'update error: %s')]
+	public function
+	HandleProjectDirs():
+	int {
+
+		$this->PrintAppHeader('Manage Project Directories');
+
+		$OptPath = $this->GetOption('path');
+		$OptConf = $this->GetOption('conf');
+		$OptAdd = $this->GetOption('add') ?: FALSE;
+		$OptDel = $this->GetOption('del') ?: FALSE;
+
+		$Confs = NULL;
+		$Err = NULL;
+
+		////////
+
+		if(($OptAdd || $OptDel) && !$OptPath)
+		$this->Quit(1);
+
+		try {
+			if($OptPath) match(TRUE) {
+				$OptAdd
+				=> $this->HandleProjectDirsAdd($OptPath, $OptConf),
+
+				$OptDel
+				=> $this->HandleProjectDirsDel($OptPath, $OptConf),
+
+				default
+				=> NULL
+			};
+		}
+
+		catch(Exception $Err) {
+			$this->Quit(2, $Err->GetMessage());
+		}
+
+		////////
+
+		$Confs = Atlantis\Struct\ProjectJSON::FromApp($this->App);
+
+		$Confs
+		->Filter(fn(Atlantis\Struct\ProjectJSON $P)=> $P->Dirs->Count())
+		->Each(function(Atlantis\Struct\ProjectJSON $P, string $K) {
+			$this->PrintH3("From {$K} ({$P->Filename})");
+
+			$P->Dirs->Each(function(Common\Filesystem\Directory $D) {
+
+				$Exists = $D->Exists();
+				$Bullet = match($Exists) {
+					TRUE
+					=> $this->Theme->GetCharCircleFilled(),
+
+					default
+					=> $this->Theme->GetCharCircleEmpty()
+				};
+
+				$this->PrintLn("{$Bullet} {$D->Path}");
+
+				return;
+			});
+
+			$this->PrintLn();
+			return;
+		});
+
+		////////
+
+		return 0;
+	}
+
+	protected function
+	HandleProjectDirsAdd(string $Path, ?string $Conf=NULL):
+	void {
+
+		$Project = $this->QuerySelectProjectConfig(
+			fn(ProjectJSON $P, string $K)
+			=> $Conf !== NULL ? $Conf === $K : TRUE
+		);
+
+		if(!$Project)
+		throw new Common\Error\RequiredDataMissing('Project', 'ProjectJSON');
+
+		////////
+
+		$Directory = Filesystem\Directory::FromPath($Path);
+
+		($Project->Dirs)
+		->Filter($Directory->IsNot(...))
+		->Push($Directory)
+		->Sort(Filesystem\Directory::ForSortingByPath(...));
+
+		$this->WriteProjectConfig($Project);
+
+		return;
+	}
+
+	protected function
+	HandleProjectDirsDel(string $Path, ?string $Conf=NULL):
+	void {
+
+		$Confs = ProjectJSON::FromApp($this->App);
+		$Counts = $Confs->Map(fn(ProjectJSON $P)=> $P->Dirs->Count());
+
+		////////
+
+		$Confs
+		->Each(function(ProjectJSON $P) use($Path) {
+
+			// strip it out if it exists.
+
+			$P->Dirs->Filter(
+				fn(Filesystem\Directory $D)
+				=> $D->IsNot($Path)
+			);
+
+			return;
+		})
+		->Each(function(ProjectJSON $P, string $K) use($Counts) {
+
+			// rewrite the config file if it changed.
+
+			if($Counts[$K] !== $P->Dirs->Count())
+			$this->WriteProjectConfig($P);
+
+			return;
+		});
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -526,7 +664,7 @@ extends Atlantis\TerminalApp {
 	WriteProjectConfig(ProjectJSON $Project):
 	void {
 
-		$this->PrintStatus("Updating {$Project->Filename}...");
+		$this->PrintStatusMuted("Updating {$Project->Filename}...");
 
 		if(!$Project->Write())
 		throw new Common\Error\FileWriteError($Project->Filename);
