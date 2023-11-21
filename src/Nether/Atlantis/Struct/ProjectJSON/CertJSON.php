@@ -66,15 +66,10 @@ implements
 	$Sudo = TRUE;
 
 	#[Common\Meta\PropertyListable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
-	public ?string
-	$Domain = NULL;
-
-	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Lists::class, 'ArrayOf' ])]
-	#[Common\Meta\PropertyFactory('FromArray', 'AltDomains')]
+	#[Common\Meta\PropertyFactory('FromArray')]
 	public array|Common\Datastore
-	$AltDomains = [];
+	$Domains = [ ];
 
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
@@ -106,8 +101,7 @@ implements
 		return [
 			'Type'       => $this->Type,
 			'Sudo'       => $this->Sudo,
-			'Domain'     => $this->Domain,
-			'AltDomains' => $this->AltDomains->GetData(),
+			'Domains'    => $this->Domains->GetData(),
 			'OrgName'    => $this->OrgName,
 			'OrgCountry' => $this->OrgCountry,
 			'OrgCity'    => $this->OrgCity,
@@ -122,14 +116,47 @@ implements
 	ToAcmeYaml(Atlantis\Engine $App, string $CertRoot='/opt/ssl'):
 	string {
 
+		// the Domains option is meant to provide the same support as the
+		// web.atl version where each line is a different ssl cert.
+
+		// however this current implementation only supports generating
+		// one acmephp file where the first domain it encounters in the
+		// config becomes the primary and then every other are alt domains.
+
+		// idealy each line would be able to generate its own .yml file.
+
 		$WebRoot = $App->GetWebRoot();
 
 		// generate a merged list of values.
 
 		$Values = Common\Datastore::FromStackMerged($this->ToArray(), [
-			'WebRoot'  => $WebRoot,
-			'CertRoot' => $CertRoot
+			'WebRoot'    => $WebRoot,
+			'CertRoot'   => $CertRoot,
+			'AltDomains' => []
 		]);
+
+		////////
+
+		if(!count($Values['Domains']))
+		throw new Common\Error\RequiredDataMissing('Domains', 'at least one DomainLine');
+
+		Common\Datastore::FromArray($Values['Domains'])
+		->Each(function(string $Line) use($Values) {
+
+			$Domain = new Atlantis\Struct\DomainLine($Line);
+
+			if(!$Values['Domain'])
+			$Values['Domain'] = $Domain->Primary;
+
+			$Values['AltDomains'] = array_merge(
+				$Values['AltDomains'],
+				$Domain->ToList()
+			);
+
+			return;
+		});
+
+		////////
 
 		// try to load the template file.
 
@@ -143,27 +170,22 @@ implements
 
 		// bake the values as needed before shipping them out.
 
-		$Values->RemapKeys(function(string $K, mixed $V, Common\Datastore $D) {
-			switch($K) {
-				case 'AltDomains': {
-					$V = trim(
-						Common\Datastore::FromArray($V)
-						->Unshift($D['Domain'])
-						->Accumulate('', fn(string $P, string $N)=> sprintf(
-							'%s      - \'%s\'%s',
-							$P,
-							Common\Filters\Text::YamlEscapeSingleQuote($N),
-							PHP_EOL
-						))
-					);
-					break;
-				}
+		$Values->RemapKeys(function(string $K, mixed $V) {
 
-				default: {
-					$V = trim(Common\Filters\Text::YamlEscapeSingleQuote($V));
-					break;
-				}
-			}
+			if(!is_object($V) && !is_array($V))
+			$V = trim(Common\Filters\Text::YamlEscapeSingleQuote($V));
+
+			else
+			$V = trim(
+				Common\Datastore::FromArray($V)
+				->Filter(function(string $V) { return !!$V; })
+				->Accumulate('', fn(string $P, string $N)=> sprintf(
+					'%s      - \'%s\'%s',
+					$P,
+					Common\Filters\Text::YamlEscapeSingleQuote($N),
+					PHP_EOL
+				))
+			);
 
 			return [ $K=> $V ];
 		});
@@ -178,7 +200,8 @@ implements
 	HasAnything():
 	bool {
 
-		if(isset($this->Type) && isset($this->Domain))
+		if(isset($this->Type))
+		if(isset($this->Domains) && $this->Domains->Count())
 		return TRUE;
 
 		return FALSE;

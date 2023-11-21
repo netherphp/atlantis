@@ -47,6 +47,21 @@ implements
 	}
 
 	public function
+	ToList():
+	array {
+
+		$Output = [ $this->Primary ];
+
+		if($this->Secondary)
+		$Output = array_merge(
+			$Output,
+			explode(' ', $this->Secondary)
+		);
+
+		return $Output;
+	}
+
+	public function
 	ToArray():
 	array {
 

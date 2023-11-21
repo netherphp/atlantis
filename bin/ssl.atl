@@ -372,33 +372,9 @@ extends Atlantis\TerminalApp {
 
 		$Cert->Type = 'acmephp';
 
-		$Cert->Domain = $this->PromptForValue(
-			Required: TRUE,
-			Name: 'Primary Domain',
-			Type: 'domain.tld',
-			Default: $Cert->Domain
+		$Cert->Domains = $this->QueryDomainLineList(
+			$Cert->Domains
 		);
-
-		////////
-
-		($Cert->AltDomains)
-		->SetData($this->PromptForValue(
-			'Alt Domains',
-			'domain.tld csv, "none" to unset', FALSE,
-			Filter: function(?string $In) {
-				if(!$In)
-				return [ ];
-
-				if(!str_contains($In, ','))
-				return [ $In ];
-
-				return explode(',', $In);
-			},
-			Default: $Project->Cert->AltDomains->Join(', ')
-		))
-		->Remap(fn(string $D)=> trim($D))
-		->Filter(fn(string $D)=> !!$D)
-		->Filter(fn(string $D)=> $D !== 'none' && $D !== 'null');
 
 		////////
 
