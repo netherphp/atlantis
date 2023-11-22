@@ -15,6 +15,9 @@
 	logo and/or desired look. these should typically be somewhat bold colours
 	to be used on primary attention getting elements. */
 
+	--theme-black: #141414;
+	--theme-white: #FDFDFD;
+
 	--theme-primary:       #467adb;
 	--theme-primary-alt:   #84a6e6;
 	--theme-secondary:     #9834c7;

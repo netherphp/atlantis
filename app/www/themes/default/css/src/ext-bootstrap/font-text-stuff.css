@@ -68,32 +68,33 @@
 /*******************************************************************************
 ** text decorations ***********************************************************/
 
-.td-overline  { text-decoration: underline; }
-.td-strike    { text-decoration: line-through; }
-.td-underline { text-decoration: underline; }
+.td-overline  { text-decoration: underline !important; }
+.td-strike    { text-decoration: line-through !important; }
+.td-underline { text-decoration: underline !important; }
 .td-none      { text-decoration: none !important; border-bottom: 0px !important; }
 
 /*******************************************************************************
 ** text transforms ************************************************************/
 
 .tt-none  { text-transform: initial !important; }
-.tt-upper { text-transform: uppercase; }
-.tt-lower { text-transform: lowercase; }
-.tt-title { text-transform: capitalize; }
+.tt-upper { text-transform: uppercase !important; }
+.tt-lower { text-transform: lowercase !important; }
+.tt-title { text-transform: capitalize !important; }
 
 /*******************************************************************************
 ** text line wrapping *********************************************************/
 
 .tw-normal { white-space: initial !important; }
-.tw-none { white-space: nowrap; }
-.tw-pre { white-space: pre-line; }
+.tw-none { white-space: nowrap !important; }
+.tw-preline { white-space: pre-line !important; }
+.tw-pre { white-space: pre !important; }
 
 /*******************************************************************************
 ** text selection *************************************************************/
 
-.ts-normal { user-select: all; }
-.ts-none { user-select: none; }
-.ts-contain { user-select: contain; }
+.ts-normal { user-select: all !important; }
+.ts-none { user-select: none !important; }
+.ts-contain { user-select: contain !important; }
 
 /*******************************************************************************
 ** responsive reactions *******************************************************/

@@ -1,0 +1,22 @@
+.atl-ui-pillbox-item a:link,
+.atl-ui-pillbox-item a:visited {
+	background-color: var(--theme-light-bg);
+	color: var(--theme-black);
+
+	border-bottom: 0px;
+	display: block;
+	font-weight: bold;
+	padding: 5px 10px 4px 10px;
+	border-radius: 4px;
+}
+
+.atl-ui-pillbox-item a:hover {
+	background-color: var(--theme-primary);
+	color: var(--theme-white);
+}
+
+.atl-ui-pillbox-item.on a:link,
+.atl-ui-pillbox-item.on a:visited {
+	background-color: var(--theme-black);
+	color: var(--theme-white);
+}

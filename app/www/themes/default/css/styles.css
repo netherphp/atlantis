@@ -1,6 +1,6 @@
 /*//
-@date 2023-11-22 00:50:19 UTC
-@files 25 [
+@date 2023-11-22 22:38:05 UTC
+@files 26 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -22,6 +22,7 @@
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
     "src\/elements\/pager.css",
+    "src\/elements\/pillbox.css",
     "src\/elements\/pretty-modern-box.css",
     "src\/elements\/pretty-modern-navbar.css",
     "src\/elements\/sitemenu.css",
@@ -53,6 +54,9 @@
 	/* these colours should be used to brand the theme to fit in with the
 	logo and/or desired look. these should typically be somewhat bold colours
 	to be used on primary attention getting elements. */
+
+	--theme-black: #141414;
+	--theme-white: #FDFDFD;
 
 	--theme-primary:       #467adb;
 	--theme-primary-alt:   #84a6e6;
@@ -1122,32 +1126,33 @@ grouped are to be considered depreciated. */
 /*******************************************************************************
 ** text decorations ***********************************************************/
 
-.td-overline  { text-decoration: underline; }
-.td-strike    { text-decoration: line-through; }
-.td-underline { text-decoration: underline; }
+.td-overline  { text-decoration: underline !important; }
+.td-strike    { text-decoration: line-through !important; }
+.td-underline { text-decoration: underline !important; }
 .td-none      { text-decoration: none !important; border-bottom: 0px !important; }
 
 /*******************************************************************************
 ** text transforms ************************************************************/
 
 .tt-none  { text-transform: initial !important; }
-.tt-upper { text-transform: uppercase; }
-.tt-lower { text-transform: lowercase; }
-.tt-title { text-transform: capitalize; }
+.tt-upper { text-transform: uppercase !important; }
+.tt-lower { text-transform: lowercase !important; }
+.tt-title { text-transform: capitalize !important; }
 
 /*******************************************************************************
 ** text line wrapping *********************************************************/
 
 .tw-normal { white-space: initial !important; }
-.tw-none { white-space: nowrap; }
-.tw-pre { white-space: pre-line; }
+.tw-none { white-space: nowrap !important; }
+.tw-preline { white-space: pre-line !important; }
+.tw-pre { white-space: pre !important; }
 
 /*******************************************************************************
 ** text selection *************************************************************/
 
-.ts-normal { user-select: all; }
-.ts-none { user-select: none; }
-.ts-contain { user-select: contain; }
+.ts-normal { user-select: all !important; }
+.ts-none { user-select: none !important; }
+.ts-contain { user-select: contain !important; }
 
 /*******************************************************************************
 ** responsive reactions *******************************************************/
@@ -1901,6 +1906,32 @@ grouped are to be considered depreciated. */
 
 .atl-ui-pager .pager-status {
 	font-weight: bold;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/pillbox.css ////////////////////////////////////////////////*/
+
+.atl-ui-pillbox-item a:link,
+.atl-ui-pillbox-item a:visited {
+	background-color: var(--theme-light-bg);
+	color: var(--theme-black);
+
+	border-bottom: 0px;
+	display: block;
+	font-weight: bold;
+	padding: 5px 10px 4px 10px;
+	border-radius: 4px;
+}
+
+.atl-ui-pillbox-item a:hover {
+	background-color: var(--theme-primary);
+	color: var(--theme-white);
+}
+
+.atl-ui-pillbox-item.on a:link,
+.atl-ui-pillbox-item.on a:visited {
+	background-color: var(--theme-black);
+	color: var(--theme-white);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
