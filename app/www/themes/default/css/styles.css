@@ -1,11 +1,12 @@
 /*//
-@date 2023-11-21 01:13:57 UTC
-@files 24 [
+@date 2023-11-22 00:50:19 UTC
+@files 25 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
     "src\/ext-bootstrap\/opacity.css",
+    "src\/ext-bootstrap\/position.css",
     "src\/ext-materialdesignicons.css",
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
@@ -1230,6 +1231,27 @@ grouped are to be considered depreciated. */
 .o-hover-80:hover  { opacity: 0.80; }
 .o-hover-90:hover  { opacity: 0.90; }
 .o-hover-100:hover { opacity: 1.0; }
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/position.css //////////////////////////////////////////*/
+
+.pos-absolute { position: absolute; }
+.pos-absolutely { position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; }
+.pos-relative { position: relative; }
+.pos-sticky { position: sticky; }
+
+.pos-top-left { top: 0px; left: 0px; }
+.pos-top-right { top: 0px; right: 0px; }
+.pos-bottom-left { bottom: 0px; left: 0px; }
+.pos-bottom-right { bottom: 0px; right: 0px; }
+.pos-bottom { bottom: 0px; }
+.pos-top { top: 0px; }
+.pos-left { left: 0px; }
+.pos-right { right: 0px; }
+
+.pos-h-center { left: 50%; transform: translateX(-50%); }
+.pos-v-center { top: 50%; transform: translateY(-50%); }
+.pos-h-center.pos-v-center { transform: translateX(-50%) translateY(-50%); }
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-materialdesignicons.css /////////////////////////////////////////*/
