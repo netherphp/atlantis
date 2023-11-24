@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ */
+
+$Areas = $Surface->Get($Surface::ThemePageScriptReadyFrags);
+
+if(!($Areas instanceof Nether\Common\Datastore))
+return;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$Imports = new Nether\Common\Datastore;
+$Codes = new Nether\Common\Datastore;
+
+$Areas->Each(function(string $Area) use($Surface, $Imports, $Codes) {
+
+	$Lines = explode("\n", trim($Surface->GetArea($Area)));
+
+	if(!count($Lines))
+	return;
+
+	$Codes->Push(sprintf('// FROM: %s', $Area))->Push('');
+	$Nom = TRUE;
+
+	Nether\Common\Datastore::FromArray($Lines)
+	->Each(function(string $Line) use($Imports, $Codes, &$Nom) {
+
+		$Line = rtrim($Line);
+
+		// imports get pulled out and reseated at the top of the doc ready
+		// block we are building because javascript demands.
+
+		if(str_starts_with($Line, 'import ')) {
+			$Imports->Push(rtrim($Line));
+			return;
+		}
+
+		// consume blank lines at the beginning of the outputs to mostly
+		// clean up after we yoink the import lines out.
+
+		if(!$Line && $Nom)
+		return;
+
+		// push the real code in and make note that this file has begun
+		// having real content.
+
+		$Codes->Push($Line);
+		$Nom = FALSE;
+
+		return;
+	});
+
+	return;
+});
+
+?>
+
+<script type="module">
+<?php if($Imports->Count()) echo $Imports->Join(PHP_EOL), PHP_EOL ?>
+jQuery(function(){
+
+<?php echo Nether\Common\Text::IndentWithTab($Codes->Join(PHP_EOL)), PHP_EOL ?>
+
+	return;
+});
+</script>

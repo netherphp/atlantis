@@ -1,0 +1,18 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+
+$Route->Data->Page(Common\Filters\Numbers::Page(...));
+
+$Results = Database\ResultSet::FromManualData(
+	[ 'one', 'two', 'three', 'four' ],
+	$Route->Data->Page, 1
+);
+
+// pretend we asked the database a question about a specific page
+// where there is a limit of one item a page. prototype based queries
+// all return back ResultSet objects.
+
+echo Atlantis\UI\Pager::FromSurfaceWithResultSet($Surface, $Results);

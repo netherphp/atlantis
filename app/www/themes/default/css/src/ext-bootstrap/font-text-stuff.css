@@ -2,7 +2,7 @@
 ** font family ****************************************************************/
 
 .ff-mono {
-	font-family: monospace;
+	font-family: var(--theme-font-mono-family);
 }
 
 .ff-normal {

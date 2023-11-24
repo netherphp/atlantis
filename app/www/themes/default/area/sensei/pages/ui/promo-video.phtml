@@ -1,42 +1,22 @@
 <?php
 
-use Nether\Atlantis;
+use Nether\Atlantis\UI;
+use Nether\Common;
 
-$Intro = (fn()=> Atlantis\UI\Article::FromSurfaceWith($Surface, [
-	'Title'   => 'Promo Video',
+$Surface->Area('sensei/pages/ui/__intro', [
+	'Title'   => 'Promo Video Heading',
 	'Section' => 'Atlantis\\UI\\PromoVideo',
-	'Content' => 'Mainly designed for use as page headers as an artsy way to add motion to the background of an element.'
-]));
+	'Content' => <<< LOL
+		Mainly designed for use as page intros as an artsy way to add motion to the background of an element.
+	LOL
+]);
 
-$Sections = [
-	(fn()=> Atlantis\UI\PromoVideo::FromSurfaceWith($Surface, [
-		'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
-		'Overlay'  => 'grad-focus-dark',
-		'Title'   => 'Video BG',
-		'Subline' => 'With Static Text'
-	])),
-	(fn()=> Atlantis\UI\PromoVideo::FromSurfaceWith($Surface, [
-		'VideoURL' => '/themes/default/gfx/splishsplash.mp4',
-		'Overlay'  => 'grad-focus-dark',
-		'Title'   => 'Video BG',
-		'Subline' => 'With Typed Text',
-		'Typeify' => TRUE
-	]))
-];
+$Surface->Area('sensei/pages/ui/__demo-via-area', [
+	'Areas' => [
+		'With Static Text'
+		=> 'sensei/pages/ui/promo-video/static',
 
-?>
-
-<div class="container pt-6 pb-6">
-
-	<div class="mb-6">
-		<?php echo $Intro() ?>
-	</div>
-
-	<div class="row">
-		<?php foreach($Sections as $Section): ?>
-		<div class="col-12 mb-4">
-			<div class="jumbotron rounded"><?php echo $Section() ?></div>
-		</div>
-		<?php endforeach; ?>
-	</div>
-</div>
+		'With Typeified Text'
+		=> 'sensei/pages/ui/promo-video/typeify'
+	]
+]);

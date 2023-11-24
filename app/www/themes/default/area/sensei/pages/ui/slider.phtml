@@ -2,68 +2,21 @@
 
 use Nether\Atlantis\UI;
 use Nether\Common;
-use Nether\Database;
 
-$Now = new Common\Date;
-
-$Intro = (fn()=> UI\Article::FromSurfaceWith($Surface, [
-	'Title'   => 'Item Slider',
+$Surface->Area('sensei/pages/ui/__intro', [
+	'Title'   => 'Item Slider Widget',
 	'Section' => 'Atlantis\\UI\\Slider',
 	'Content' => <<< LOL
 		Does the sideways media browser style finger flicking slider things.
 	LOL
-]));
+]);
 
-$Tests = [
-	'Manual Construction'
-	=> function() use($Surface, $Now) {
-		return UI\Slider::FromSurfaceWith($Surface, [
-			'ItemArea' => '~/item-basic',
-			'Items'    => [
-				[ 'Title'=> 'One' ],
-				[ 'Title'=> 'Two' ],
-				[ 'Title'=> 'Three' ],
-				[ 'Title'=> 'Four' ],
-				[ 'Title'=> 'Five' ],
-				[ 'Title'=> 'Six' ]
-			]
-		]);
-	},
+$Surface->Area('sensei/pages/ui/__demo-via-area', [
+	'Areas' => [
+		'Manual Setup'
+		=> 'sensei/pages/ui/slider/basic',
 
-	'From Result Set'
-	=> function() use($Surface) {
-
-		$Result = new Database\ResultSet([
-			[ 'Title'=> 'One' ],
-			[ 'Title'=> 'Two' ],
-			[ 'Title'=> 'Three' ],
-			[ 'Title'=> 'Four' ],
-			[ 'Title'=> 'Five' ],
-			[ 'Title'=> 'Six' ]
-		]);
-
-		return UI\Slider::FromSurfaceWithDataset($Surface, $Result);
-	}
-];
-
-?>
-
-<div class="container pt-6 pb-0">
-	<div class="jumbotron rounded mb-4">
-		<div class="mb-0">
-			<?php echo $Intro() ?>
-		</div>
-	</div>
-</div>
-
-<div class="container pt-6 pb-6">
-	<div class="hr-hide-last">
-		<?php foreach($Tests as $Title => $Test): ?>
-		<div class="mb-6">
-			<h3 class="ta-center mb-4"><?php $Util->Print($Title) ?></h3>
-			<?php echo $Test() ?>
-		</div>
-		<hr class="o-10 mb-6" />
-		<?php endforeach; ?>
-	</div>
-</div>
+		'With Typeified Text'
+		=> 'sensei/pages/ui/slider/from-resultset1'
+	]
+]);

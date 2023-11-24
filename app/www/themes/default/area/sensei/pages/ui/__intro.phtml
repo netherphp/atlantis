@@ -1,0 +1,25 @@
+<?php
+
+$Title ??= 'Untitled Introduction';
+$Section ??= 'Could Be Anywhere';
+$Content ??= 'The actual introduction content would then be here.';
+
+?>
+
+<div class="container pt-6 pb-0">
+
+	<div class="mb-2">
+		<a href="/docs">Docs</a>
+		<a href="/docs/ui">UI Elements</a>
+	</div>
+
+	<div class="jumbotron rounded mb-0">
+		<div class="mb-0">
+			<?php echo Nether\Atlantis\UI\Article::FromSurfaceWith($Surface, [
+				'Title'   => $Title,
+				'Section' => $Section,
+				'Content' => $Content
+			]) ?>
+		</div>
+	</div>
+</div>

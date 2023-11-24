@@ -1,0 +1,70 @@
+<?php
+
+use Nether\Atlantis;
+
+echo Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
+	'UUID'    => 'ExampleMenu1',
+	'DataKey' => 'examplemenu',
+	'Title'   => 'Example Menu',
+	'Pages'   => [
+		Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'ExamplePage1',
+			'Title'   => 'Example Page 1',
+			'Content' => <<< EOL
+				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2">
+					Go Deeper <i class="mdi mdi-chevron-right"></i>
+				</button>
+			EOL
+		]),
+		Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'ExamplePage2',
+			'Title'   => 'Example Page 2',
+			'Content' => <<< EOL
+				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3">
+					Go Deeper <i class="mdi mdi-chevron-right"></i>
+				</button>
+			EOL
+		]),
+		Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'ExamplePage3',
+			'Title'   => 'Example Page 3',
+			'Content' => <<< EOL
+				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
+					Go Deeper <i class="mdi mdi-chevron-right"></i>
+				</button>
+			EOL
+		]),
+		Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'ExamplePage4',
+			'Title'   => 'Example Page 4',
+			'Content' => <<< EOL
+				So Deep.
+			EOL
+		])
+	]
+]);
+
+?>
+
+<div class="row tight">
+	<div class="col-12 col-md-6 mb-2">
+		<button class="btn btn-block btn-dark" data-examplemenu="ExamplePage1">
+			Open ExampleMenu1
+		</button>
+	</div>
+	<div class="col-12 col-md-6 mb-2">
+		<button class="btn btn-block btn-dark" data-examplemenu="ExamplePage1/ExamplePage2">
+			Open ExampleMenu1 to Level 2
+		</button>
+	</div>
+	<div class="col-12 col-md-6 mb-0">
+		<button class="btn btn-block btn-dark" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
+			Open ExampleMenu1 to Level 4
+		</button>
+	</div>
+	<div class="col-12 col-md-6 mb-0">
+		<button class="btn btn-block btn-dark" data-examplemenu="ExamplePage4">
+			Open only Level 4 from ExampleMenu1
+		</button>
+	</div>
+</div>

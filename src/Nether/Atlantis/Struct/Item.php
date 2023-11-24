@@ -185,4 +185,21 @@ extends Common\Prototype {
 		return $Output->Join(' ');
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	New(?string $ID=NULL, ?string $UUID=NULL, ?string $Title=NULL, ?string $URL=NULL):
+	static {
+
+		$Output = new static([
+			'ID'    => $ID,
+			'UUID'  => $UUID,
+			'Title' => $Title,
+			'URL'   => $URL
+		]);
+
+		return $Output;
+	}
+
 }

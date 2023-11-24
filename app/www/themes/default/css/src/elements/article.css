@@ -3,7 +3,7 @@
 	font-size: 0.8em;
 	font-weight: bold;
 	line-height: 1rem;
-	text-transform: uppercase;
+	font-variant: small-caps;
 }
 
 .Article > .Title {

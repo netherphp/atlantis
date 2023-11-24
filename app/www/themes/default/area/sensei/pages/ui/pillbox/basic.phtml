@@ -1,0 +1,23 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+
+$Route->Data->Nav(
+	Common\Filters\Misc::OneOfTheseFirst(...),
+	[ 'one', 'two', 'three', 'four', 'five' ]
+);
+
+// navigation items need at least have a Title, URL, and UUID for the element
+// to be able to do any useful work.
+
+echo Atlantis\UI\Pillbox::FromSurfaceWith($Surface, [
+	'Section' => $Route->Data->Nav,
+	'Items'   => [
+		Atlantis\Struct\Item::New(Title: 'Item One', URL: '?nav=one', UUID: 'one'),
+		Atlantis\Struct\Item::New(Title: 'Item Two', URL: '?nav=two', UUID: 'two'),
+		Atlantis\Struct\Item::New(Title: 'Item Three', URL: '?nav=three', UUID: 'three'),
+		Atlantis\Struct\Item::New(Title: 'Item Four', URL: '?nav=four', UUID: 'four'),
+		Atlantis\Struct\Item::New(Title: 'Item Five', URL: '?nav=five', UUID: 'five')
+	]
+]);

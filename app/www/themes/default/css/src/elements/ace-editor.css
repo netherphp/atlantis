@@ -1,0 +1,58 @@
+/* this is a theme that force overwrites how ace is at all times. this is not
+the correct way to do it. the correct way involves telling ace a custom theme
+is being used and then prefixing all these with that theme name, if i recall. */
+
+.ace_class, .ace_constant, .ace_function, .ace_identifier, .ace_keyword,
+.ace_lparen, .ace_numeric, .ace_operator, .ace_paren, .ace_punctuation,
+.ace_rparen, .ace_string, .ace_support, .ace_variable {
+	color: var(--theme-body-fg) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--theme-body-fg) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.ace_editor {
+	background-color: var(--theme-body-bg) !important;
+	font-family: 'FiraCode', 'Consolas', monospace !important;
+}
+
+.ace_identifier {
+	color: var(--SyntaxNamespace) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxNamespace) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+.ace_class {
+	color: var(--SyntaxClass) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxClass) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+.ace_variable {
+	color: var(--SyntaxVariable) !important;
+	font-weight: bold !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxVariable) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+.ace_string {
+	color: var(--SyntaxString) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxString) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/** targets the most leafy of tokens that look like namespace chains. */
+.ace_identifier ~ .ace_identifier:has(+ .ace_punctuation) {
+	color: var(--SyntaxClass) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxClass) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/** targets the most leafy of method calls on a chain.. */
+.ace_identifier ~ .ace_identifier:has(+ .ace_paren) {
+	color: var(--SyntaxMethod) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxMethod) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/** targets the most leafy object property chains. */
+.ace_variable ~ .ace_identifier,
+.ace_variable ~ .ace_identifier ~ .ace_identifier {
+	color: var(--SyntaxProperty) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxProperty) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}

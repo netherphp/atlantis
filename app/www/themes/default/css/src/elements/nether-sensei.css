@@ -24,6 +24,17 @@
 	--SenseiTextDark: #222222;
 	--SenseiColourDark: #222222;
 	--SenseiColourLight: #eeeeee;
+
+	--SyntaxGlowSize: 0.75rem;
+	--SyntaxGlowMix: #0000;
+	--SyntaxGlowShift: 30%;
+
+	--SyntaxNamespace: #90a8eaFF;
+	--SyntaxClass: #8fc5f5FF;
+	--SyntaxMethod: #c7a6d4FF;
+	--SyntaxVariable: #f0834dFF;
+	--SyntaxProperty: #eaa785FF;
+	--SyntaxString: #f2bfbfFF;
 }
 
 .border-colour-namespace { border-color: var(--SenseiNamespace) !important; }

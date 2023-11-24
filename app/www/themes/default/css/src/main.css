@@ -4,6 +4,9 @@
 :root {
 	--theme-anim-ease-fast: 150ms ease-in-out;
 	--theme-anim-ease-slow: 300ms ease-in-out;
+
+	--theme-black: #141414;
+	--theme-white: #FDFDFD;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -15,13 +18,10 @@
 	logo and/or desired look. these should typically be somewhat bold colours
 	to be used on primary attention getting elements. */
 
-	--theme-black: #141414;
-	--theme-white: #FDFDFD;
-
-	--theme-primary:       #467adb;
+	--theme-primary:       #4e81e0;
 	--theme-primary-alt:   #84a6e6;
-	--theme-secondary:     #9834c7;
-	--theme-secondary-alt: #c08bd8;
+	--theme-secondary:     #be78df;
+	--theme-secondary-alt: #c39ad7 ;
 
 	/* font settings for the theme. generally these should be the most
 	readable fonts that you think look good, not any fancy things used for
@@ -31,7 +31,7 @@
 	--theme-font-normal-weight: 400;
 	--theme-font-normal-letter-spacing: 0.03rem;
 
-	--theme-font-mono-family: 'Consolas', 'Menlo', monospace;
+	--theme-font-mono-family: 'FiraCode', 'Consolas', 'Menlo', monospace;
 	--theme-font-mono-weight: 400;
 	--theme-font-mono-letter-spacing: 0.02em;
 

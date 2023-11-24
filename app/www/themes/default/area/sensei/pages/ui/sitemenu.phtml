@@ -1,82 +1,15 @@
 <?php
 
-$Intro = (fn()=> Nether\Atlantis\UI\Article::FromSurfaceWith($Surface, [
-	'Title'   => 'Site Menu',
+$Surface->Area('sensei/pages/ui/__intro', [
+	'Title'   => 'Site Menu ',
 	'Section' => 'Atlantis\\UI\\SiteMenu',
-	'Content' => 'Provides a stack of off-screen sidebars in the style of mobile app menus using the offcanvas element in Bootstrap.'
-]));
-
-$Menu = Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
-	'UUID'    => 'ExampleMenu1',
-	'DataKey' => 'examplemenu',
-	'Title'   => 'Example Menu',
-	'Pages'   => [
-		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
-			'UUID'    => 'ExamplePage1',
-			'Title'   => 'Example Page 1',
-			'Content' => <<< EOL
-				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2">
-					Go Deeper <i class="mdi mdi-chevron-right"></i>
-				</button>
-			EOL
-		]),
-		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
-			'UUID'    => 'ExamplePage2',
-			'Title'   => 'Example Page 2',
-			'Content' => <<< EOL
-				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3">
-					Go Deeper <i class="mdi mdi-chevron-right"></i>
-				</button>
-			EOL
-		]),
-		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
-			'UUID'    => 'ExamplePage3',
-			'Title'   => 'Example Page 3',
-			'Content' => <<< EOL
-				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
-					Go Deeper <i class="mdi mdi-chevron-right"></i>
-				</button>
-			EOL
-		]),
-		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
-			'UUID'    => 'ExamplePage4',
-			'Title'   => 'Example Page 4',
-			'Content' => <<< EOL
-				So Deep.
-			EOL
-		])
-	]
+	'Content' => <<< LOL
+		Provides a stack of off-screen sidebars in the style of mobile app menus using the offcanvas element in Bootstrap.
+	LOL
 ]);
 
-?>
-
-<div class="container pt-6 pb-6">
-
-	<div class="jumbotron rounded mb-4">
-		<div class="mb-4">
-			<?php echo $Intro() ?>
-		</div>
-
-		<div class="row">
-			<div class="col-12 mb-2">
-				<button class="btn btn-primary" data-examplemenu="ExamplePage1">
-					Open ExampleMenu1
-				</button>
-			</div>
-			<div class="col-12 mb-2">
-				<button class="btn btn-primary" data-examplemenu="ExamplePage1/ExamplePage2/ExamplePage3/ExamplePage4">
-					Open ExampleMenu1 to Level 4
-				</button>
-			</div>
-			<div class="col-12 mb-2">
-				<button class="btn btn-primary" data-examplemenu="ExamplePage4">
-					Open only Level 4 from ExampleMenu1
-				</button>
-			</div>
-		</div>
-
-	</div>
-
-	<?php echo $Menu ?>
-
-</div>
+$Surface->Area('sensei/pages/ui/__demo-via-area', [
+	'Areas' => [
+		'Example' => 'sensei/pages/ui/sitemenu/example'
+	]
+]);

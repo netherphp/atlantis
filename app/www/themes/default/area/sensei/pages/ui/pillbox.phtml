@@ -1,0 +1,24 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Surface\Engine $Surface
+ * ...
+ */
+
+$Surface->Area('sensei/pages/ui/__intro', [
+	'Title'   => 'Pillbox Navigation',
+	'Section' => 'Atlantis\\UI\\Pillbox',
+	'Content' => 'Provides a Pill styled list of links meant for subsection navigation.'
+]);
+
+$Surface->Area('sensei/pages/ui/__demo-via-area', [
+	'Areas' => [
+		'Basic' => 'sensei/pages/ui/pillbox/basic'
+	]
+]);

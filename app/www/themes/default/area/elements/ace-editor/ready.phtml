@@ -1,0 +1,33 @@
+(function(){
+
+	jQuery('.atl-code-viewer')
+	.each(function(){
+
+		let that = jQuery(this);
+		let lang = that.attr('data-code-lang');
+		let theme = that.attr('data-code-theme');
+		let viewer = null;
+
+		if(!lang)
+		lang = 'text';
+
+		if(!theme)
+		theme = 'monokai';
+
+		////////
+
+		viewer = ace.edit(this, {
+			mode: `ace/mode/${lang}`,
+			theme: `ace/theme/${theme}`,
+			maxLines: 1234,
+			readOnly: true,
+			highlightActiveLine: false,
+			printMarginColumn: false,
+			cursorStyle: 'smooth'
+		});
+
+		return;
+	});
+
+	return;
+})();

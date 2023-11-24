@@ -1,0 +1,32 @@
+<?php
+
+$ReadTestFile = function(string $Area) use($Surface) {
+	$Filename = Nether\Common\Filesystem\Util::Pathify(
+		$Surface->ThemeRoot, 'default', 'area',
+		...explode('/', "{$Area}.phtml")
+	);
+
+	if(!file_exists($Filename))
+	return sprintf('File does not exist: %s', basename($Filename));
+
+	return file_get_contents($Filename);
+};
+
+?>
+
+<div class="container pt-8 pb-8">
+	<div class="hr-hide-last">
+		<?php foreach($Areas as $Title => $Area): ?>
+		<h3><?php $Util->Print($Title) ?></h3>
+		<div class="o-50 fw-bold tt-upper fs-smaller">Demo[<span class="ff-mono fw-normal tt-none"><span class="o-50">area://</span><?php $Util->Print($Area) ?></span>]</div>
+		<div class="jumbotron rounded mb-4">
+			<?php $Surface->Area($Area) ?>
+		</div>
+		<div class="o-50 fw-bold tt-upper fs-smaller">Code[<span class="ff-mono fw-normal tt-none"><span class="o-50">area://</span><?php $Util->Print($Area) ?></span>]</div>
+		<div class="jumbotron rounded mb-4">
+			<?php echo Nether\Atlantis\UI\AceEditor::FromSurfaceWithContent($Surface, $ReadTestFile($Area)); ?>
+		</div>
+		<hr class="mt-8 mb-8" />
+		<?php endforeach; ?>
+	</div>
+</div>

@@ -1,52 +1,16 @@
 <?php
 
-use Nether\Atlantis\UI;
-use Nether\Common;
-
-$Now = new Common\Date;
-
-$Intro = (fn()=> UI\Article::FromSurfaceWith($Surface, [
+$Surface->Area('sensei/pages/ui/__intro', [
 	'Title'   => 'Article Widget',
 	'Section' => 'Atlantis\\UI\\Article',
 	'Content' => <<< LOL
 		Display an article with its misc information typically associated with one.
 		This here is actually one being used as like an introductory widget placed within a jumbotron for effect.
 	LOL
-]));
+]);
 
-$Tests = [
-	function() use($Surface, $Now) {
-		return UI\Article::FromSurfaceWith($Surface, [
-			'Section'  => 'Oh Snap Department',
-			'Title'    => 'Crazy Thing Happens To Strange Person',
-			'Authour'  => 'Bob Magic',
-			'Date'     => $Now->Get(Common\Values::DateFormatFancyDate),
-			'Content'  => <<< LOL
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend. Neque volutpat ac tincidunt vitae semper quis. Diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Elit eget gravida cum sociis. Sit amet consectetur adipiscing elit duis tristique sollicitudin nibh sit. Dui id ornare arcu odio ut sem nulla pharetra diam. Lacinia quis vel eros donec ac. Ut consequat semper viverra nam libero. Massa tincidunt nunc pulvinar sapien et. Sagittis purus sit amet volutpat. Lacus vestibulum sed arcu non. Sed id semper risus in hendrerit gravida. Posuere urna nec tincidunt praesent semper feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames. Non pulvinar neque laoreet suspendisse.</p>
-				<p>Turpis cursus in hac habitasse platea dictumst quisque sagittis purus. Arcu ac tortor dignissim convallis aenean et tortor. Morbi quis commodo odio aenean sed adipiscing diam donec. Vitae purus faucibus ornare suspendisse sed nisi lacus sed viverra. Lacus sed viverra tellus in hac. Elit eget gravida cum sociis natoque. Suspendisse sed nisi lacus sed viverra. Odio ut sem nulla pharetra diam. Cras pulvinar mattis nunc sed blandit libero volutpat sed. Ac auctor augue mauris augue neque gravida.</p>
-				<p>Felis eget nunc lobortis mattis aliquam. Malesuada nunc vel risus commodo viverra maecenas accumsan lacus. Quis risus sed vulputate odio ut enim blandit volutpat. Nibh cras pulvinar mattis nunc sed blandit libero volutpat sed. Neque egestas congue quisque egestas. Nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi. Libero volutpat sed cras ornare arcu dui vivamus. Habitant morbi tristique senectus et netus et malesuada fames ac. Massa tincidunt dui ut ornare lectus sit amet est placerat. Amet massa vitae tortor condimentum lacinia quis vel eros. Ornare lectus sit amet est. Ipsum suspendisse ultrices gravida dictum fusce ut. Fermentum odio eu feugiat pretium nibh ipsum. Ac turpis egestas sed tempus urna et pharetra pharetra massa.</p>
-			LOL
-		]);
-	}
-];
-
-?>
-
-<div class="container pt-6 pb-0">
-	<div class="jumbotron rounded mb-4">
-		<div class="mb-0">
-			<?php echo $Intro() ?>
-		</div>
-	</div>
-</div>
-
-<div class="container pt-6 pb-6">
-	<div class="hr-hide-last">
-		<?php foreach($Tests as $Title => $Test): ?>
-		<div class="mb-6">
-			<?php echo $Test() ?>
-		</div>
-		<hr class="o-10 mb-6" />
-		<?php endforeach; ?>
-	</div>
-</div>
+$Surface->Area('sensei/pages/ui/__demo-via-area', [
+	'Areas' => [
+		'Basic Article View' => 'sensei/pages/ui/article/basic'
+	]
+]);

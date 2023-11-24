@@ -1,0 +1,11 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+
+$Route->Data->Page(Common\Filters\Numbers::Page(...));
+
+echo Atlantis\UI\Pager::FromSurfaceWith($Surface, [
+	'Page'      => $Route->Data->Page,
+	'PageCount' => 2
+]);

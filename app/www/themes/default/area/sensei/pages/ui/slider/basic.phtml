@@ -1,0 +1,15 @@
+<?php
+
+use Nether\Atlantis;
+
+echo Atlantis\UI\Slider::FromSurfaceWith($Surface, [
+	'ItemArea' => '~/item-basic',
+	'Items'    => [
+		Atlantis\Struct\Item::New(Title: 'One'),
+		Atlantis\Struct\Item::New(Title: 'Two'),
+		Atlantis\Struct\Item::New(Title: 'Three'),
+		Atlantis\Struct\Item::New(Title: 'Four'),
+		Atlantis\Struct\Item::New(Title: 'Five'),
+		Atlantis\Struct\Item::New(Title: 'Six')
+	]
+]);

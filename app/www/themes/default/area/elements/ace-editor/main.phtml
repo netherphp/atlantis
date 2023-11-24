@@ -1,0 +1,10 @@
+<?php
+
+$Surface
+->AddStyleURL('/share/atlantis/lib/ace/ace.css')
+->AddScriptURL('/share/atlantis/lib/ace/ace.js')
+->AddScriptReadyFrag('elements/ace-editor/ready');
+
+?>
+
+<div class="atl-code-viewer" data-code-lang="php" data-code-theme="clouds_midnight"><?php $Util->Print($Element->Content) ?></div>

@@ -1,0 +1,15 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Database;
+
+$Result = new Database\ResultSet([
+	[ 'Title'=> 'One' ],
+	[ 'Title'=> 'Two' ],
+	[ 'Title'=> 'Three' ],
+	[ 'Title'=> 'Four' ],
+	[ 'Title'=> 'Five' ],
+	[ 'Title'=> 'Six' ]
+]);
+
+echo Atlantis\UI\Slider::FromSurfaceWithDataset($Surface, $Result);
