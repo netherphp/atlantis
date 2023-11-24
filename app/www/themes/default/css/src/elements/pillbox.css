@@ -1,7 +1,7 @@
 .atl-ui-pillbox-item a:link,
 .atl-ui-pillbox-item a:visited {
-	background-color: var(--theme-light-bg);
-	color: var(--theme-black);
+	background: var(--theme-body-bg) !important;
+	color: var(--theme-body-fg) !important;
 
 	border-bottom: 0px;
 	display: block;
@@ -17,6 +17,6 @@
 
 .atl-ui-pillbox-item.on a:link,
 .atl-ui-pillbox-item.on a:visited {
-	background-color: var(--theme-black);
-	color: var(--theme-white);
+	background: var(--theme-body-fg) !important;
+	color: var(--theme-body-bg) !important;
 }

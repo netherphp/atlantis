@@ -1,0 +1,42 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Surface;
+
+/**
+ * @var Surface\Engine $Surface
+ * @var Atlantis\UI\Pathbar $Element
+ * @var Atlantis\Struct\TemplateHelper $Util
+ */
+
+?>
+
+<div class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-pathbar')) ?>">
+
+	<?php foreach($Element->Items as $Key => $Item): /** @var Atlantis\Struct\Item $Item */ ?>
+	<div class="<?php $Util->Print($Item->GetClassesForHTML('atl-ui-pathbar-item')) ?>">
+		<?php
+
+		if($Item->HasURL())
+		printf('<a href="%s">', $Util->Encode($Item->GetURL()));
+
+		if($Item->HasIcon())
+		echo $Item->GetIconAsHTML();
+
+		if($Item->HasTitle())
+		echo $Item->GetTitle();
+
+		if($Item->HasURL())
+		printf('</a>');
+
+		?>
+	</div>
+	<?php if(!$Element->Items->IsLastKey($Key)): ?>
+	<div class="atl-ui-pathbar-sep">
+		<?php echo $Element->GetSeparatorAsHTML(); ?>
+	</div>
+	<?php endif; ?>
+	<?php endforeach; unset($Key, $Item); ?>
+
+</div>

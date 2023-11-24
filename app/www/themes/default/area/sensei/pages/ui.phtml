@@ -10,6 +10,7 @@ $Pages = [
 	'AceEditor'   => '/docs/ui/ace-editor',
 	'Article'     => '/docs/ui/article',
 	'Pager'       => '/docs/ui/pager',
+	'Pathbar'     => '/docs/ui/pathbar',
 	'Pillbox'     => '/docs/ui/pillbox',
 	'Promo Video' => '/docs/ui/promo-video',
 	'Slider'      => '/docs/ui/slider',
@@ -19,16 +20,16 @@ $Pages = [
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+$Surface->Area('sensei/pages/ui/__intro', [
+	'Title'   => 'UI Elements'
+]);
+
 ?>
 
-<div class="container pt-6 pb-6">
+<div class="container pt-2 pb-6">
 
-	<div class="jumbotron rounded">
-		<div>
-			<h3>UI Elements</h3>
-		</div>
+	<div class="jumbotron rounded hr-hide-last">
 		<?php foreach($Pages as $Title => $URL): ?>
-		<hr class="opacity-20" />
 		<div class="row align-items-center">
 			<div class="col">
 				<a href="<?php $Util->Print($URL) ?>"><?php $Util->Print($Title) ?></a>
@@ -40,6 +41,7 @@ $Pages = [
 				</a>
 			</div>
 		</div>
+		<hr class="opacity-20" />
 		<?php endforeach; unset($Title, $URL); ?>
 	</div>
 

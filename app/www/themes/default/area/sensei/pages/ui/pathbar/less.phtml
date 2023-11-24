@@ -1,0 +1,28 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+
+// pretending these came from a route or another template that wraps this
+// element up to be clean for our uses.
+
+$More = Common\Datastore::FromArray([
+	Atlantis\Struct\Item::New(Title: 'Final Thing')
+]);
+
+////////
+
+$Items = Common\Datastore::FromArray([
+	Atlantis\Struct\Item::New(Title: 'Docs', URL: '/docs'),
+	Atlantis\Struct\Item::New(Title: 'UI Elements', URL: '/docs/ui')
+]);
+
+if(isset($More) && is_iterable($More))
+$Items->MergeRight($More);
+
+////////
+
+echo Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
+	'Separator' => NULL,
+	'Items'     => $Items
+]);

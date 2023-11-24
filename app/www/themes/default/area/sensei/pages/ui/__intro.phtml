@@ -1,16 +1,27 @@
 <?php
 
-$Title ??= 'Untitled Introduction';
-$Section ??= 'Could Be Anywhere';
-$Content ??= 'The actual introduction content would then be here.';
+$Title ??= NULL;
+$Section ??= NULL;
+$Content ??= NULL;
+$Nav ??= NULL;
+
+$Items = Nether\Common\Datastore::FromArray([
+	Nether\Atlantis\Struct\Item::New(Title: 'Docs', URL: '/docs', Classes: [ 'tag' ]),
+	Nether\Atlantis\Struct\Item::New(Title: 'UI Elements', URL: '/docs/ui')
+]);
+
+if(is_iterable($Nav))
+$Items->MergeRight($Nav);
 
 ?>
 
 <div class="container pt-6 pb-0">
 
 	<div class="mb-2">
-		<a href="/docs">Docs</a>
-		<a href="/docs/ui">UI Elements</a>
+		<?php echo Nether\Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
+			'Classes' => [ 'fs-smaller' ],
+			'Items' => $Items
+		]); ?>
 	</div>
 
 	<div class="jumbotron rounded mb-0">
@@ -19,7 +30,7 @@ $Content ??= 'The actual introduction content would then be here.';
 				'Title'   => $Title,
 				'Section' => $Section,
 				'Content' => $Content
-			]) ?>
+			]); ?>
 		</div>
 	</div>
 </div>

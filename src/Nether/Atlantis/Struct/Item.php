@@ -10,9 +10,17 @@ use Nether\Common;
 class Item
 extends Common\Prototype {
 
+	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public mixed
 	$ID = NULL;
+
+	public function
+	HasID():
+	bool {
+
+		return ($this->ID !== NULL);
+	}
 
 	public function
 	GetID():
@@ -39,9 +47,17 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$UUID = NULL;
+
+	public function
+	HasUUID():
+	bool {
+
+		return ($this->UUID !== NULL);
+	}
 
 	public function
 	GetUUID():
@@ -68,9 +84,17 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$Title = NULL;
+
+	public function
+	HasTitle():
+	bool {
+
+		return ($this->Title !== NULL);
+	}
 
 	public function
 	GetTitle():
@@ -90,9 +114,17 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$URL = NULL;
+
+	public function
+	HasURL():
+	bool {
+
+		return ($this->URL !== NULL);
+	}
 
 	public function
 	GetURL():
@@ -112,9 +144,17 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$ImageURL = NULL;
+
+	public function
+	HasImageURL():
+	bool {
+
+		return ($this->ImageURL !== NULL);
+	}
 
 	public function
 	GetImageURL():
@@ -134,9 +174,17 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public ?string
 	$OnClick = NULL;
+
+	public function
+	HasOnClick():
+	bool {
+
+		return ($this->OnClick !== NULL);
+	}
 
 	public function
 	GetOnClick():
@@ -150,8 +198,88 @@ extends Common\Prototype {
 	static {
 
 		$this->OnClick = $OnClick;
+
 		return $this;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-24')]
+	#[Common\Meta\PropertyListable]
+	public ?string
+	$Icon = NULL;
+
+	public function
+	HasIcon():
+	bool {
+
+		return ($this->Icon !== NULL);
+	}
+
+	public function
+	GetIcon():
+	?string {
+
+		return $this->Icon;
+	}
+
+	public function
+	GetIconAsHTML():
+	string {
+
+		$Output = static::IconToHTML(
+			$this->Icon,
+			($this->Info ?? $this->Title)
+		);
+
+		return $Output;
+	}
+
+	public function
+	SetIcon(?string $Icon):
+	static {
+
+		$this->Icon = $Icon;
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-24')]
+	#[Common\Meta\PropertyListable]
+	public ?string
+	$Info = NULL;
+
+	public function
+	HasInfo():
+	bool {
+
+		return ($this->Info !== NULL);
+	}
+
+	public function
+	GetInfo():
+	?string {
+
+		return $this->Info;
+	}
+
+	public function
+	SetInfo(?string $Info):
+	static {
+
+		$this->Info = $Info;
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	use
+	Common\Package\ClassListPackage;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -189,15 +317,54 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $ID=NULL, ?string $UUID=NULL, ?string $Title=NULL, ?string $URL=NULL):
+	New(?string $ID=NULL, ?string $UUID=NULL, ?string $Title=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $Info=NULL, ?array $Classes=NULL):
 	static {
 
 		$Output = new static([
-			'ID'    => $ID,
-			'UUID'  => $UUID,
-			'Title' => $Title,
-			'URL'   => $URL
+			'ID'      => $ID,
+			'UUID'    => $UUID,
+			'Title'   => $Title,
+			'URL'     => $URL,
+			'Icon'    => $Icon,
+			'Info'    => $Info,
+			'Classes' => $Classes ?? []
 		]);
+
+		return $Output;
+	}
+
+	static public function
+	IconToHTML(string $Icon, ?string $AltText=NULL):
+	string {
+
+		$Icon ??= '';
+		$AltText ??= '';
+
+		$Output = match(TRUE) {
+			str_starts_with($Icon, 'mdi-')
+			=> sprintf(
+				'<i class="mdi %s" title="%s"></i>',
+				$Icon,
+				$AltText
+			),
+
+			str_starts_with($Icon, 'si-')
+			=> sprintf(
+				'<i class="si %s" title="%s"></i>',
+				$Icon,
+				$AltText
+			),
+
+			str_starts_with($Icon, 'img=')
+			=> sprintf(
+				'<img src="%s" title="%s" />',
+				preg_replace('#^img=#', '', $Icon),
+				$AltText
+			),
+
+			default
+			=> $Icon
+		};
 
 		return $Output;
 	}

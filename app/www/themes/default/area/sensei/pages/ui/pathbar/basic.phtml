@@ -1,0 +1,10 @@
+<?php
+
+use Nether\Atlantis;
+
+echo Atlantis\UI\Pathbar::FromSurfaceWithItems($Surface, [
+	Atlantis\Struct\Item::New(Icon: 'mdi-home', URL: '?section=home', Info: 'Home'),
+	Atlantis\Struct\Item::New(Title: 'One', URL: '?section=one'),
+	Atlantis\Struct\Item::New(Title: 'Two', URL: '?section=two'),
+	Atlantis\Struct\Item::New(Title: 'Three', URL: '?section=three')
+]);

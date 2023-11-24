@@ -1,0 +1,15 @@
+.tag a:link,
+.tag a:visited,
+.tag span {
+	background: var(--theme-body-fg) !important;
+	color: var(--theme-body-bg) !important;
+
+	display: inline-block;
+	border-radius: 0.2em;
+	padding: 0.04em 0.4em;
+}
+
+.tag-primary {
+	background: var(--theme-primary);
+	color: var(--theme-body-fg);
+}

@@ -1,0 +1,8 @@
+.atl-ui-pathbar {
+	display: flex;
+	gap: 0.5em;
+}
+
+.atl-ui-pathbar-sep {
+	opacity: 0.25;
+}

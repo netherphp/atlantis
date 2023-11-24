@@ -1,0 +1,31 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Surface\Engine $Surface
+ * ...
+ */
+
+$Surface->Area('sensei/pages/ui/__intro', [
+	'Title'   => 'Pathbar Navigation',
+	'Section' => 'Atlantis\\UI\\Pathbar',
+	'Content' => 'Provides a pathbar style of navigation where each link is a level deeper.'
+]);
+
+$Surface->Area('sensei/pages/ui/__demo-via-area', [
+	'Areas' => [
+		'Basic'
+		=> 'sensei/pages/ui/pathbar/basic',
+
+		'More Fancy'
+		=> 'sensei/pages/ui/pathbar/more',
+
+		'Less Fancy'
+		=> 'sensei/pages/ui/pathbar/less'
+	]
+]);
