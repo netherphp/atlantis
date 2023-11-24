@@ -17,6 +17,13 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	font-family: 'FiraCode', 'Consolas', monospace !important;
 }
 
+.ace_line {
+	margin-left: 4px;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
 .ace_identifier {
 	color: var(--SyntaxNamespace) !important;
 	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxNamespace) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
