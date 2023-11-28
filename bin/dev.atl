@@ -301,6 +301,42 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('cachebust')]
+	#[Console\Meta\Info('Update the cache.bust file to cause a chain reaction.')]
+	#[Console\Meta\Error(1, 'unable to write to directory: %s')]
+	#[Console\Meta\Error(1, 'unable to overwrite: %s')]
+	public function
+	HandleUpdateCacheBuster():
+	int {
+
+		$this->PrintAppHeader('Update CacheBuster File');
+
+		$Basename = 'data/cache.bust';
+		$Filename = $this->App->FromProjectRoot($Basename);
+		$Update = Common\UUID::V7();
+
+		if(!file_exists($Filename)) {
+			if(!is_writable(dirname($Filename)))
+			$this->Quit(1, $Filename);
+		}
+
+		else {
+			if(!is_writable($Filename))
+			$this->Quit(2, $Filename);
+		}
+
+		$this->PrintStatusMuted("Updating {$Filename}...");
+
+		file_put_contents($Filename, $Update);
+
+		$this->PrintOK($Update);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Console\Meta\Command('jsondbg')]
 	#[Console\Meta\Info('Debug tool for atlantis.json')]
 	#[Console\Meta\Error(1, 'no project json selected')]

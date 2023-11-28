@@ -58,7 +58,12 @@ class Slider {
 
 		////////
 
+		if(config instanceof SliderConfig)
+		this.setup = config;
+		else
 		this.setup = new SliderConfig(config);
+
+		////////
 
 		(this.setup)
 		.setAfterInitFunc(this.onAfterInit.bind(this))
@@ -69,7 +74,7 @@ class Slider {
 
 	prepareElement(selector) {
 
-		this.element = jQuery(selector);
+		this.element = jQuery(selector).find('.swiper');
 
 		// make sure we have markup for nav if enabled.
 
@@ -137,7 +142,7 @@ class Slider {
 
 	static FromElement(selector, config) {
 
-		let setup = new SliderConfig(config);
+		let setup = SliderConfig.FromElement(selector);
 		let out = new Slider(selector, setup);
 
 		return out;
@@ -265,6 +270,28 @@ class SliderConfig {
 		this.pagination.setBulletFunc(func);
 
 		return this;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static FromElement(input) {
+
+		let el = jQuery(input);
+		let output = new SliderConfig;
+
+		////////
+
+		let slideCount = parseInt(el.attr('data-slide-count'));
+
+		////////
+
+		if(slideCount > 0)
+		output.setSlideCount(slideCount);
+
+		////////
+
+		return output;
 	};
 
 };

@@ -20,7 +20,20 @@ class TemplateHelper {
 	__Construct(Atlantis\Engine $App) {
 
 		$this->App = $App;
-		$this->CacheBuster = md5(microtime(TRUE));
+
+		$this->CacheBuster = match(TRUE) {
+
+			($App->IsDev())
+			=> sprintf('%s-%s', $App->GetProjectEnv(), Common\UUID::V7()),
+
+			(file_exists($App->FromProjectRoot('data/cache.bust')))
+			=> htmlentities(strip_tags(
+				file_get_contents($App->FromProjectRoot('data/cache.bust'))
+			)),
+
+			default
+			=> 'static'
+		};
 
 		return;
 	}

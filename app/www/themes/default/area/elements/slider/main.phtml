@@ -14,12 +14,16 @@ $ElementID = $Element->GetID();
 $ScriptURL = "/share/nui/modules/itemslider/itemslider.js?v={$CacheBust}";
 $ScriptSelector = $Element->GetSelectorID();
 
+$Surface->AddScriptReadyFrag('elements/slider/ready');
+
 ?>
 
-<div class="swiper-supercontainer">
-	<div id="<?php $Util->Print($ElementID) ?>" class="swiper swiper-coldboot">
-		<div class="swiper-wrapper">
-			<?php $Element->PrintItems() ?>
+<div class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-slider o-0')) ?>" data-slide-count="4">
+	<div class="swiper-supercontainer">
+		<div id="<?php $Util->Print($ElementID) ?>" class="swiper swiper-coldboot">
+			<div class="swiper-wrapper">
+				<?php $Element->PrintItems() ?>
+			</div>
 		</div>
 	</div>
 </div>
@@ -30,12 +34,6 @@ import ItemSlide from "<?php echo $ScriptURL ?>";
 jQuery(document)
 .ready(function(){
 
-	let select = <?php $Util->PrintJSON($ScriptSelector) ?>;
-
-	let config = new ItemSlide.Config;
-	config.setSlideCount(4);
-
-	let slider = ItemSlide.FromElement(select, config);
 
 	return;
 });

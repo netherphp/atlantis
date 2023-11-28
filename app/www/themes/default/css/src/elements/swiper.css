@@ -4,7 +4,6 @@
 Element: Nether\Atlantis\UI\Slider
 Area:    elements/slider
 
-
 * .swiper-supercontainer
 wraps the swiper and after it is rigged up reparents the button and pager docks
 into this for easier styling where the elements do not cover things up.
@@ -59,6 +58,10 @@ makes the pager bullets be square instead of circle.
 
 	--theme-swiper-pager-bg-this: #AAAAAA;
 	--theme-swiper-pager-bg-nope: #222222;
+}
+
+.atl-ui-slider {
+
 }
 
 .swiper-supercontainer {

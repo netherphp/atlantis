@@ -1,0 +1,25 @@
+import ItemSlide from '/share/nui/modules/itemslider/itemslider.js?v=<?php $Util->Print($Util->GetCachebuster()) ?>';
+
+(function(){
+
+	let delayStack = 0;
+	let delayBump = 100;
+
+	let initSlider = function() {
+
+		let that = jQuery(this);
+		let slider = ItemSlide.FromElement(this);
+
+		setTimeout(
+			(()=> that.removeClass('o-0')),
+			(delayStack += delayBump)
+		);
+
+		return;
+	};
+
+	jQuery('.atl-ui-slider')
+	.each(initSlider);
+
+	return;
+})();
