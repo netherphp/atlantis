@@ -1,0 +1,30 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Routes\Docs $Route
+ * @var Surface\Engine $Surface
+ */
+
+$Title ??= NULL;
+$Section ??= NULL;
+$Info ??= NULL;
+
+$Intro = Atlantis\UI\Article::FromSurfaceWith($Surface, [
+	'Title'   => $Title,
+	'Section' => $Section,
+	'Content' => $Info
+]);
+
+?>
+
+<div class="container pt-6 pb-6">
+
+	<div class="jumbotron rounded">
+		<?php echo $Intro ?>
+	</div>
+
+</div>

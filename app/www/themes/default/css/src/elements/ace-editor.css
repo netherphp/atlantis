@@ -1,3 +1,11 @@
+.atl-code-viewer section {
+	border-radius: 4px;
+
+	background-color: var(--theme-body-bg) !important;
+	font-family: 'FiraCode', 'Consolas', monospace !important;
+	white-space: pre;
+}
+
 /* this is a theme that force overwrites how ace is at all times. this is not
 the correct way to do it. the correct way involves telling ace a custom theme
 is being used and then prefixing all these with that theme name, if i recall. */
@@ -12,7 +20,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	text-decoration: none;
 }
 
-.ace_editor {
+.aace_editor {
 	background-color: var(--theme-body-bg) !important;
 	font-family: 'FiraCode', 'Consolas', monospace !important;
 }

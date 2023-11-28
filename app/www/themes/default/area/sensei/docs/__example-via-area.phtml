@@ -14,7 +14,7 @@ $ReadTestFile = function(string $Area) use($Surface) {
 
 ?>
 
-<div class="container pt-8 pb-8">
+<div class="container pt-0 pb-8">
 	<div class="hr-hide-last">
 		<?php foreach($Areas as $Title => $Area): ?>
 		<h3><?php $Util->Print($Title) ?></h3>
@@ -26,7 +26,7 @@ $ReadTestFile = function(string $Area) use($Surface) {
 		<div class="jumbotron rounded mb-4">
 			<?php echo Nether\Atlantis\UI\AceEditor::FromSurfaceWithContent($Surface, $ReadTestFile($Area)); ?>
 		</div>
-		<hr class="mt-8 mb-8" />
+		<hr class="mt-6 mb-6" />
 		<?php endforeach; ?>
 	</div>
 </div>

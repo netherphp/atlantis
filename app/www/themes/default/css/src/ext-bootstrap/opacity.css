@@ -26,3 +26,5 @@
 .o-hover-80:hover  { opacity: 0.80; }
 .o-hover-90:hover  { opacity: 0.90; }
 .o-hover-100:hover { opacity: 1.0; }
+
+.o-anim-fast { transition: opacity 200ms; }

@@ -1,36 +1,34 @@
-.Article > .Section {
+.atl-ui-article-section {
 	color: var(--theme-primary);
+	font-weight: bold;
+	margin-bottom: 1.0em;
+}
+
+.atl-ui-article-pathbar {
 	font-size: 0.8em;
 	font-weight: bold;
-	line-height: 1rem;
-	font-variant: small-caps;
+	margin-bottom: 1.0em;
 }
 
-.Article > .Title {
-	font-weight: bold;
-	margin-bottom: 0px;
+.atl-ui-article-section {
+	margin-bottom: 0.0em;
+	font-size: 0.8em;
 }
 
-.Article > .Content {
-	padding-top: 1.0rem;
+.atl-ui-article-title {
+	margin-bottom: 0.0em;
+	line-height: 1.0em;
 }
 
-.Article > .Subline1 {
+.atl-ui-article-subline {
 	display: flex;
+	gap: 2.0em;
+	font-size: 0.8rem;
+	opacity: 0.42;
+	padding-top: 0.5rem;
 }
 
-.Article > .Subline1 > div {
-	margin-right: 1.5rem;
+.atl-ui-article-content {
+	padding-top: 1.5em;
 }
 
-.Article > .Subline1 > .Date {
-	font-style: italic;
-	font-size: 0.8em;
-	opacity: 0.65;
-}
-
-.Article > .Subline1 > .Authour {
-	font-style: italic;
-	font-size: 0.8em;
-	opacity: 0.65;
-}

@@ -1,12 +1,16 @@
 (function(){
 
-	jQuery('.atl-code-viewer')
-	.each(function(){
+	let delayStack = 0;
+	let delayBump = 100;
+
+	let initViewer = function() {
 
 		let that = jQuery(this);
 		let lang = that.attr('data-code-lang');
 		let theme = that.attr('data-code-theme');
 		let viewer = null;
+
+		////////
 
 		if(!lang)
 		lang = 'text';
@@ -16,7 +20,7 @@
 
 		////////
 
-		viewer = ace.edit(this, {
+		viewer = ace.edit(this.querySelector(':scope > section'), {
 			mode: `ace/mode/${lang}`,
 			theme: `ace/theme/${theme}`,
 			maxLines: 1234,
@@ -26,8 +30,24 @@
 			cursorStyle: 'smooth'
 		});
 
+		////////
+
+		// all of them get ready fast, but the reveals are waterfalled
+		// because i think that looks neat. also the ace devs swear its
+		// super not async so this is why its not an on load type of
+		// thing on that. future me is going to think this is stupid
+		// if they aint reminded.
+
+		setTimeout(
+			(()=> that.removeClass('o-0')),
+			(delayStack += delayBump)
+		);
+
 		return;
-	});
+	};
+
+	jQuery('.atl-code-viewer')
+	.each(initViewer);
 
 	return;
 })();

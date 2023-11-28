@@ -1,0 +1,28 @@
+<?php
+
+use Nether\Atlantis;
+
+/**
+ * @var Routes\Docs $Route
+ */
+
+$Route->Title = 'Pathbar Navigation';
+$Route->Info = 'Provides a pathbar style of navigation where each link is a level deeper.';
+
+$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
+	Title: 'Pathbar',
+	URL: '/docs/ui/pathbar'
+));
+
+$Surface->Area('sensei/docs/__example-via-area', [
+	'Areas' => [
+		'Basic'
+		=> 'sensei/docs/ui/pathbar/example-basic',
+
+		'More Fancy'
+		=> 'sensei/docs/ui/pathbar/example-more',
+
+		'Less Fancy'
+		=> 'sensei/docs/ui/pathbar/example-less'
+	]
+]);

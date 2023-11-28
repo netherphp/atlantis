@@ -1,0 +1,25 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Routes\Docs $Route
+ * @var Surface\Engine $Surface
+ */
+
+$Surface->Area('sensei/docs/__header', [
+	'Title'   => $Route->Title,
+	'Section' => $Route->Pathbar
+]);
+
+?>
+
+<div class="container pb-6">
+	<div class="jumbotron rounded">
+		<ul class="mb-0">
+			<li><a href="/docs/ui">UI Element Reference</a></li>
+		</ul>
+	</div>
+</div>

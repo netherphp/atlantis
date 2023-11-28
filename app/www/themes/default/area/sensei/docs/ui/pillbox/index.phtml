@@ -1,0 +1,21 @@
+<?php
+
+use Nether\Atlantis;
+
+/**
+ * @var Routes\Docs $Route
+ */
+
+$Route->Title = 'Pillbox Navigation';
+$Route->Info = 'Provides a Pill styled list of links meant for subsection navigation.';
+
+$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
+	Title: 'Pillbox',
+	URL: '/docs/ui/pillbox'
+));
+
+$Surface->Area('sensei/docs/__example-via-area', [
+	'Areas' => [
+		'Basic' => 'sensei/docs/ui/pillbox/example-basic'
+	]
+]);
