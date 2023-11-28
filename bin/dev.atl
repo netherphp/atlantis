@@ -23,26 +23,6 @@ extends Atlantis\TerminalApp {
 	Atlantis\Packages\DevTool\QuerySelectProjectConfig;
 
 	////////////////////////////////////////////////////////////////
-	// OVERRIDES Console\Client ////////////////////////////////////
-
-	#[Common\Meta\Date('2023-11-14')]
-	protected function
-	ApplyDefaultSort():
-	void {
-
-		$this->Commands = (
-			Common\Datastore::FromArray(array_flip([
-				'run', 'jsondbg'
-			]))
-			->RemapKeyValue(fn(string $K)=> $this->Commands->Get($K))
-			->EachKeyValue(fn(string $K)=> $this->Commands->Remove($K))
-			->MergeRight($this->Commands)
-		);
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
 	#[Common\Meta\Date('2023-11-08')]
@@ -302,34 +282,75 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('cachebust')]
-	#[Console\Meta\Info('Update the cache.bust file to cause a chain reaction.')]
+	#[Console\Meta\Info('Manage the cache.bust file the theme engine uses.')]
+	#[Console\Meta\Toggle('--delete', 'Delete the cache.bust file.')]
+	#[Console\Meta\Toggle('--update', 'Update the cache.bust file.')]
 	#[Console\Meta\Error(1, 'unable to write to directory: %s')]
-	#[Console\Meta\Error(1, 'unable to overwrite: %s')]
+	#[Console\Meta\Error(2, 'unable to overwrite file: %s')]
+	#[Console\Meta\Error(3, 'failed to remove file: %s')]
 	public function
 	HandleUpdateCacheBuster():
 	int {
 
 		$this->PrintAppHeader('Update CacheBuster File');
 
+		$OptDelete = $this->GetOption('delete') ?: FALSE;
+		$OptUpdate = $this->GetOption('update') ?: FALSE;
+
 		$Basename = 'data/cache.bust';
 		$Filename = $this->App->FromProjectRoot($Basename);
-		$Update = Common\UUID::V7();
+		$Contents = file_exists($Filename) ? file_get_contents($Filename) : NULL;
+		$DataBust = Common\UUID::V7();
 
-		if(!file_exists($Filename)) {
-			if(!is_writable(dirname($Filename)))
-			$this->Quit(1, $Filename);
+		if($Contents === NULL) {
+			if($this->App->IsDev())
+			$Contents = '[Dev Mode: Random Every Load]';
+
+			else
+			$Contents = '[Empty]';
 		}
 
-		else {
-			if(!is_writable($Filename))
-			$this->Quit(2, $Filename);
+		////////
+
+		$this->PrintBulletList([
+			'File'  => $Basename,
+			'Value' => $Contents
+		]);
+
+		if($OptDelete) {
+			$this->PrintStatusMuted("Deleting {$Filename}...");
+
+			if(file_exists($Filename))
+			unlink($Filename);
+
+			if(file_exists($Filename))
+			$this->Quit(3, $Filename);
+
+			$this->PrintOK();
 		}
 
-		$this->PrintStatusMuted("Updating {$Filename}...");
+		if($OptUpdate) {
+			if(!file_exists($Filename)) {
+				if(!is_writable(dirname($Filename)))
+				$this->Quit(1, $Filename);
+			}
 
-		file_put_contents($Filename, $Update);
+			else {
+				if(!is_writable($Filename))
+				$this->Quit(2, $Filename);
+			}
 
-		$this->PrintOK($Update);
+			$this->PrintStatusMuted("Updating {$Filename}...");
+
+			file_put_contents($Filename, $DataBust);
+			touch($Filename);
+
+			$this->PrintOK($DataBust);
+		}
+
+		////////
+
+
 
 		return 0;
 	}
@@ -445,6 +466,7 @@ extends Atlantis\TerminalApp {
 	#[Console\Meta\Arg('directory')]
 	#[Console\Meta\Arg('...')]
 	#[Console\Meta\Toggle('--nether', 'Include installed NetherPHP libraries.')]
+	#[Console\Meta\Value('--ext', 'Comma delimited list of file extensions to include.')]
 	public function
 	HandleCountLinesOfCode():
 	int {
