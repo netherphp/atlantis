@@ -76,10 +76,10 @@
 /*******************************************************************************
 ** text transforms ************************************************************/
 
-.tt-none  { text-transform: initial !important; }
-.tt-upper { text-transform: uppercase !important; }
-.tt-lower { text-transform: lowercase !important; }
-.tt-title { text-transform: capitalize !important; }
+.tt-none, .tt-normal  { text-transform: initial !important; }
+.tt-upper, .tt-uppercase { text-transform: uppercase !important; }
+.tt-lower, .tt-lowercase { text-transform: lowercase !important; }
+.tt-title, .tt-titlecase { text-transform: capitalize !important; }
 
 /*******************************************************************************
 ** text line wrapping *********************************************************/

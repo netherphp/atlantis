@@ -1,21 +1,14 @@
 <?php
 
-$Surface->Set('Page.Title', 'Atlantis From Scratch - Docs');
+$Surface->Area('sensei/docs/__header', [
+	'Title'   => $Route->Title,
+	'Section' => $Route->Pathbar
+]);
 
 ?>
 
-<div class="container pt-6 pb-6">
+<div class="container pb-6">
 
-	<?php
-	$Surface->Area('sensei/breadcrumbs', [
-		'Items'=> [
-			'Guides'                => NULL,
-			'Atlantis From Scratch' => NULL
-		]
-	])
-	?>
-
-	<h1 class="mb-0">Atlantis From Scratch.</h1>
 	<div class="row">
 		<div class="col-12 col-lg">
 			<p class="mb-4">

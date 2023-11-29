@@ -66,5 +66,5 @@
 }
 
 .PrettyModernBox .line-clamp-terminator {
-	background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
+	-background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
 }

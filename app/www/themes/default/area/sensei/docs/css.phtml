@@ -32,17 +32,17 @@ $Ratioboxes = [
 <div class="wallpapered bg-black box-shadow-inset" style="background-image: url(/themes/default/gfx/space.jpg);">
 	<div class="container pt-6 pb-6">
 		<?php
-		$Surface->Area('sensei/breadcrumbs', [
-			'Items'=> [
-				'Guides'        => NULL,
-				'CSS Reference' => NULL
-			]
-		])
+		$Surface->Area('sensei/docs/__header', [
+			'Title'     => $Route->Title,
+			'Section'   => $Route->Pathbar,
+			'Classes'   => [ 'mb-4' ],
+			'Container' => FALSE,
+			'Boxify'    => FALSE
+		]);
 		?>
 
-		<h1 class="mb-0">nether-bootstrap-ext.css</h1>
 		<p class="mb-0">Adds more CSS utilities following Bootstrap's style of small additive classes.</p>
-		<p>Not trying to sell you, literally just testing my CSS.</p>
+		<p>Just testing my CSS.</p>
 	</div>
 </div>
 
@@ -53,8 +53,7 @@ $Ratioboxes = [
 		<div class="container pt-6 pb-6">
 			<div class="row">
 				<div class="col-12 col-lg-6 mb-4 mb-lg-0">
-					<h2 class="fs-largerer fw-bold tt-upper">Relative Font Sizes</h2>
-					<div class="fs-largerer fw-light mb-2">fs-<em>&lt;key&gt;</em></div>
+					<h2 class="fs-largerer fw-bold tt-upper">Relative Font Sizes <span class="tt-normal">(fs-)</span></h2>
 					<p class="mb-4">
 						These font size classes help adjust font sizes relative to their current size.
 						The larger end of the scale dampens itself in smaller viewports.
@@ -75,7 +74,7 @@ $Ratioboxes = [
 				<div class="col-12 col-lg-6 mb-0 mb-lg-0">
 					<div class="fs-reset ta-center">
 						<?php foreach($FontSizes as $FontSize): ?>
-						<div class="fs-<?php $Printer($FontSize) ?>"><?php $Printer($FontSize) ?></div>
+						<div class="fs-<?php $Printer($FontSize) ?>">fs-<?php $Printer($FontSize) ?></div>
 						<?php endforeach; unset($FontSize); ?>
 					</div>
 				</div>
@@ -88,8 +87,7 @@ $Ratioboxes = [
 		<div class="container pt-6 pb-6">
 			<div class="row">
 				<div class="col-12 col-lg-6 mb-4 mb-lg-0">
-					<h2 class="fs-largerer fw-bold tt-upper">Relative Letter Spacing</h2>
-					<div class="fs-largerer fw-light mb-2">ls-<em>&lt;key&gt;</em></div>
+					<h2 class="fs-largerer fw-bold tt-upper">Relative Letter Spacing <span class="tt-normal">(ls-)</span></h2>
 					<p class="mb-4">
 						A little letter space often makes large blobs of text easier to read.
 						Adding lots of space make it artistic or something.
@@ -99,7 +97,7 @@ $Ratioboxes = [
 				<div class="col-12 col-lg-6 mb-0 mb-lg-0">
 					<div class="ta-center">
 						<?php foreach(array_reverse($LetterSpaces) as $LetterSpace): ?>
-						<div class="ls-<?php $Printer($LetterSpace) ?>"><?php $Printer($LetterSpace) ?></div>
+						<div class="ls-<?php $Printer($LetterSpace) ?>">ls-<?php $Printer($LetterSpace) ?></div>
 						<?php endforeach; unset($LetterSpace); ?>
 					</div>
 				</div>
@@ -112,10 +110,10 @@ $Ratioboxes = [
 		<div class="container pt-6 pb-6">
 			<div class="row">
 				<div class="col-12 col-lg-6 mb-4 mb-lg-0">
-					<h2 class="fs-largerer fw-bold tt-upper">Opacity</h2>
-					<div class="fs-largerer fw-light mb-2">o-<em>&lt;key&gt;</em></div>
+					<h2 class="fs-largerer fw-bold tt-upper">Opacity <span class="tt-normal">(o-)</span></h2>
 					<p class="mb-4">
 						I like to use opacity as a way to mute things and I needed better opacity classes with values that made sense.
+						It is accepted these days but at one point I was the biggest idiot on the internet forcing your phone to work too hard since it would kick in GPU to layer things.
 					</p>
 				</div>
 				<div class="col-12 col-lg-6 mb-0 mb-lg-0">

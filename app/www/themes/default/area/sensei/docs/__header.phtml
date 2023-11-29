@@ -12,19 +12,27 @@ use Nether\Surface;
 $Title ??= NULL;
 $Section ??= NULL;
 $Info ??= NULL;
+$Classes ??= NULL;
+$Container ??= TRUE;
+$Boxify ??= TRUE;
 
 $Intro = Atlantis\UI\Article::FromSurfaceWith($Surface, [
 	'Title'   => $Title,
 	'Section' => $Section,
-	'Content' => $Info
+	'Content' => $Info,
+	'Classes' => $Classes ?? []
 ]);
 
 ?>
 
-<div class="container pt-6 pb-6">
+<?php if($Container): ?><div class="container pt-6 pb-6">
+<?php endif; ?>
 
-	<div class="jumbotron rounded">
+	<?php if($Boxify): ?><div class="jumbotron rounded">
+	<?php endif; ?>
 		<?php echo $Intro ?>
-	</div>
+	<?php if($Boxify): ?></div>
+	<?php endif; ?>
 
-</div>
+<?php if($Container): ?></div>
+<?php endif; ?>
