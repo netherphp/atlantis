@@ -1,0 +1,13 @@
+these are things that i need to do but often only think of them in those
+moments where you are falling asleep or are way too busy to deal with
+your own shit and then forget all about them by the time im bored and need
+something to do.
+
+* ogimage tools (gfx.atl ogimage path)
+
+* db backup tools
+	- back up databases to sql file
+	- archive project dir sans vendor
+
+* document Avenue\RouteHandler to explain :Path: ::Path:: and how to get custom
+  regex evaluated.

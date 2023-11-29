@@ -19,6 +19,12 @@ extends Surface\Element {
 	public int
 	$PageCount = 1;
 
+	public ?string
+	$PrevURL = NULL;
+
+	public ?string
+	$NextURL = NULL;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -36,6 +42,24 @@ extends Surface\Element {
 	static {
 
 		$this->PageCount = $Count;
+
+		return $this;
+	}
+
+	public function
+	SetPrevURL(?string $URL):
+	static {
+
+		$this->PrevURL = $URL;
+
+		return $this;
+	}
+
+	public function
+	SetNextURL(?string $URL):
+	static {
+
+		$this->NextURL = $URL;
 
 		return $this;
 	}

@@ -16,13 +16,13 @@ $ElementID ??= $Element->GetID();
 $Page ??= min($Element->Page, $Element->PageCount);
 $PageCount ??= $Element->PageCount;
 
-$PrevURL = sprintf(
+$PrevURL = $Element->PrevURL ?? sprintf(
 	'%s%s%s',
 	$BaseURL, $BaseJoin,
 	$Route->QueryBlender([ 'page'=> ($Page - 1) ])
 );
 
-$NextURL = sprintf(
+$NextURL = $Element->NextURL ?? sprintf(
 	'%s%s%s',
 	$BaseURL, $BaseJoin,
 	$Route->QueryBlender([ 'page'=> ($Page + 1) ])
