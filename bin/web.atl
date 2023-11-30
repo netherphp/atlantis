@@ -268,7 +268,7 @@ extends Atlantis\TerminalApp {
 		$LocalConfigFile = 'apache24.conf';
 
 		$SourceFile = $this->App->FromConfEnv($LocalConfigFile);
-		$EnvType = $this->App->GetProjectEnvType();
+		$EnvType = $this->App->GetProjectEnv();
 		$EnvName = $this->App->Config[Atlantis\Key::ConfProjectID];
 		$EnvNum = match($EnvType) {
 			'dev'   => 100,
