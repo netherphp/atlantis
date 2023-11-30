@@ -1,6 +1,23 @@
 <?php
 
-$Surface->Set('Page.Title', 'CSS Reference - Docs');
+use Nether\Atlantis;
+use Nether\Common;
+
+/**
+ * @var Routes\Docs $Route
+ * @var Common\Datastore $Pages
+ */
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$Route->Title = 'CSS Reference';
+
+($Route->Pathbar->Items)
+->Push(Atlantis\Struct\Item::New(
+	Title: $Route->Title,
+	URL: '/docs/afs'
+));
 
 $FontSizes = [
 	'mostest-small', 'most-small', 'smallerest', 'smallerer', 'smallest',

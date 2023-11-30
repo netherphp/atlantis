@@ -1,169 +1,166 @@
 <?php
 
 namespace Routes;
-use Nether;
 
-use Nether\Atlantis\PublicWeb;
-use Nether\Avenue\Meta\RouteHandler;
-use Nether\Avenue\Meta\ConfirmWillAnswerRequest;
-use Nether\Avenue\Response;
-use Nether\Sensei\Struct\CodebaseStats;
-use Nether\Sensei\Inspectors\NamespaceInspector;
-use Nether\Sensei\Inspectors\ClassInspector;
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
 
 class Docs
-extends PublicWeb {
+extends Atlantis\PublicWeb {
 
-	#[RouteHandler('/docs')]
+	public string
+	$Title = 'Documentation';
+
+	public string
+	$Info = '';
+
+	public Atlantis\UI\Pathbar
+	$Pathbar;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	OnReady(?Common\Datastore $ExtraData):
+	void {
+
+		parent::OnReady($ExtraData);
+
+		$this->Pathbar = Atlantis\UI\Pathbar::FromSurface(
+			$this->Surface
+		);
+
+		($this->Pathbar->Items)
+		->Push(Atlantis\Struct\Item::New(
+			Title: 'Docs', URL: '/docs',
+			Classes: [ 'tag' ]
+		));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Avenue\Meta\RouteHandler('/docs')]
 	public function
 	Index():
 	void {
 
-		$Filename = $this->GetDocsFile('index');
-		$Codebase = NULL;
-		$Stats = NULL;
+		($this->Surface)
+		->Set('Page.Title', $this->Title)
+		->Area('sensei/docs/index');
 
-		if(file_exists($Filename)) {
+		return;
+	}
 
-			$Codebase = unserialize(file_get_contents($Filename));
-			$Stats = new CodebaseStats($Codebase);
+	#[Avenue\Meta\RouteHandler('/docs/:Page:')]
+	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	public function
+	Section(string $Page, string $Area):
+	void {
 
-			$Codebase->Namespaces
-			->Filter(
-				fn(NamespaceInspector $NS)
-				=> $NS->Classes->Count()
-			)
-			->Each(
-				fn(NamespaceInspector $NS)
-				=> $NS->SortForPresentation()
-			);
-		}
+		$Content = $this->Surface->GetArea($Area);
 
-		($this->App->Surface)
-		->Set('Page.Title', 'Docs')
-		->Area('sensei/index', [
-			'Codebase'      => $Codebase,
-			'CodebaseStats' => $Stats
+		////////
+
+		($this->Surface)
+		->Set('Page.Title', sprintf(
+			'%s - Documentation',
+			$this->Title
+		));
+
+		echo $Content;
+
+		return;
+	}
+
+	protected function
+	SectionWillAnswerRequest(string $Page, Avenue\Struct\ExtraData $Data):
+	int {
+
+		$Area = sprintf(
+			'sensei/docs/%s',
+			Common\Filters\Text::SlottableKey($Page)
+		);
+
+		$File = Common\Filesystem\Util::Pathify(
+			$this->App->GetProjectRoot(),
+			'www', 'themes', 'default', 'area',
+			"{$Area}.phtml"
+		);
+
+		if(!file_exists($File))
+		return Avenue\Response::CodeNope;
+
+		////////
+
+		$Data['Area'] = $Area;
+
+		return Avenue\Response::CodeOK;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Avenue\Meta\RouteHandler('/docs/ui/:Page:')]
+	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	public function
+	SectionElementPage(string $Page, string $Area):
+	void {
+
+		($this->Pathbar->Items)
+		->Push(Atlantis\Struct\Item::New(
+			Title: 'Element UI',
+			URL: '/docs/ui'
+		));
+
+		$Content = $this->Surface->GetArea($Area);
+
+		////////
+
+		($this->Surface)
+		->Set('Page.Title', sprintf(
+			'%s - Element UI - Documentation',
+			$this->Title
+		))
+		->Area('sensei/docs/__header', [
+			'Title'   => $this->Title,
+			'Section' => $this->Pathbar,
+			'Info'    => $this->Info
 		]);
 
-		return;
-	}
-
-	#[RouteHandler('/docs/::Path::')]
-	#[ConfirmWillAnswerRequest]
-	public function
-	View(string $Path):
-	void {
-
-		$Filename = $this->GetDocsFile($Path);
-		$Codebase = unserialize(file_get_contents($Filename));
-		$Area = NULL;
-		$Scope = [];
-		$PageTitle = '';
-
-		////////
-
-		if($Codebase instanceof NamespaceInspector) {
-			$Area = 'sensei/namespace';
-			$Scope['Namespace'] = $Codebase;
-			$PageTitle = "Namespace: {$Codebase->Name}";
-		}
-
-		if($Codebase instanceof ClassInspector) {
-			$Area = 'sensei/class';
-			$Scope['Class'] = $Codebase;
-			$PageTitle = "Class: {$Codebase->Name}";
-		}
-
-		if(!isset($GLOBALS['SenseiBuiltinData']))
-		$GLOBALS['SenseiBuiltinData'] = unserialize(file_get_contents(sprintf(
-			'%s/sensei-builtin.phson',
-			ProjectRoot
-		)));
-
-		if($Area === NULL) {
-			($this->Response)
-			->SetCode(404);
-
-			($this->App->Surface)
-			->Area('error/not-found');
-
-			return;
-		}
-
-		////////
-
-		($this->App->Surface)
-		->Set('Page.Title', $PageTitle)
-		->Area($Area, $Scope);
+		echo $Content;
 
 		return;
-	}
-
-	public function
-	ViewWillAnswerRequest(string $Path):
-	int {
-
-		$Filename = $this->GetDocsFile($Path);
-
-		if(!file_exists($Filename))
-		return Response::CodeNope;
-
-		return Response::CodeOK;
-	}
-
-	#[RouteHandler('/docs/::Path::')]
-	#[ConfirmWillAnswerRequest]
-	public function
-	Page(string $Path):
-	void {
-
-		$Path = Nether\Avenue\Util::MakePathableKey($Path);
-
-		($this->App->Surface)
-		->Area("sensei/pages/{$Path}");
-
-		return;
-	}
-
-	public function
-	PageWillAnswerRequest(string $Path):
-	int {
-
-		$Path = Nether\Avenue\Util::MakePathableKey($Path);
-		$Filename = $this->GetPageFile($Path);
-
-		if(!file_exists($Filename))
-		return Response::CodeNope;
-
-		return Response::CodeOK;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	protected function
-	GetDocsFile(string $Path):
-	string {
-
-		//die($Path);
-
-		return sprintf(
-			'%s/docs/phson/%s.phson',
-			$this->App->GetProjectRoot(),
-			$Path
-		);
 	}
 
 	protected function
-	GetPageFile(string $Path):
-	string {
+	SectionElementPageWillAnswerRequest(string $Page, Avenue\Struct\ExtraData $Data):
+	int {
 
-		return sprintf(
-			'%s/www/themes/default/area/sensei/pages/%s.phtml',
-			$this->App->GetProjectRoot(),
-			$Path
+		$Area = sprintf(
+			'sensei/docs/ui/%s/index',
+			Common\Filters\Text::SlottableKey($Page)
 		);
+
+		$File = Common\Filesystem\Util::Pathify(
+			$this->App->GetProjectRoot(),
+			'www', 'themes', 'default', 'area',
+			"{$Area}.phtml"
+		);
+
+		////////
+
+		if(!file_exists($File))
+		return Avenue\Response::CodeNope;
+
+		////////
+
+		$Data['Area'] = $Area;
+
+		return Avenue\Response::CodeOK;
 	}
 
-}
+};

@@ -11,23 +11,20 @@ use Nether\Common;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-$Route->Title = 'UI Element Reference';
+$Route->Title = 'Command Line Utilities';
 
 ($Route->Pathbar->Items)
 ->Push(Atlantis\Struct\Item::New(
-	Title: 'Element UI',
-	URL: '/docs/ui'
+	Title: 'CLI',
+	URL: '/docs/cli'
 ));
 
 $Pages = Common\Datastore::FromArray([
-	'AceEditor'   => '/docs/ui/ace-editor',
-	'Article'     => '/docs/ui/article',
-	'Pager'       => '/docs/ui/pager',
-	'Pathbar'     => '/docs/ui/pathbar',
-	'Pillbox'     => '/docs/ui/pillbox',
-	'Promo Video' => '/docs/ui/promo-video',
-	'Site Menu'   => '/docs/ui/sitemenu',
-	'Slider'      => '/docs/ui/slider'
+	'dev.atl'     => '/docs/cli/dev',
+	'gfx.atl'     => '/docs/cli/gfx',
+	'ssl.atl'     => '/docs/cli/ssl',
+	'project.atl' => '/docs/cli/project',
+	'web.atl'     => '/docs/cli/web'
 ]);
 
 ////////////////////////////////////////////////////////////////////////////////

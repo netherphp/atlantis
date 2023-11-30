@@ -1,0 +1,27 @@
+
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+.btn-left {
+	display: block;
+	text-align: left;
+	width: 100%;
+}
+
+.btn-left > .mdi {
+	margin-right: 0.25rem;
+}
+
+.btn-spread {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.btn:active:focus,
+.btn:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}

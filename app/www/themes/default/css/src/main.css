@@ -237,6 +237,11 @@ strong {
 }
 
 .btn-outline-dark {
+	--bs-btn-border-color: var(--theme-light-bg);
+	--bs-btn-color: var(--theme-light-bg);
+}
+
+[data-bs-theme="light"] .btn-outline-dark {
 	--bs-btn-border-color: var(--theme-dark-bg);
 	--bs-btn-color: var(--theme-dark-bg);
 }
