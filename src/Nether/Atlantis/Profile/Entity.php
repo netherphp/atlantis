@@ -188,6 +188,8 @@ implements Atlantis\Packages\ExtraDataInterface {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
+		$Input['ProfileID'] ??= NULL;
+
 		$Input['Search'] ??= NULL;
 		$Input['UseSiteTags'] ??= TRUE;
 
@@ -206,6 +208,11 @@ implements Atlantis\Packages\ExtraDataInterface {
 		parent::FindExtendFilters($SQL, $Input);
 
 		////////
+
+		if($Input['ProfileID'] !== NULL) {
+			if(is_array($Input['ProfileID']))
+			$SQL->Where('Main.ID IN (:ProfileID)');
+		}
 
 		if($Input['Enabled'] !== NULL) {
 			if(is_int($Input['Enabled']))

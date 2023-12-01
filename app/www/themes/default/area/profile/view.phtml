@@ -59,7 +59,7 @@ if($Route->IsUserAdmin()) {
 	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
 }
 
-$FilterTags = fn(Atlantis\Tag\Entity $T)=> TRUE;
+$FilterTags = fn(Atlantis\Tag\Entity $T)=> $T->Type !== 'site';
 
 $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 

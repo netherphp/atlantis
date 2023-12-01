@@ -317,17 +317,18 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $ID=NULL, ?string $UUID=NULL, ?string $Title=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $Info=NULL, ?array $Classes=NULL):
+	New(?string $ID=NULL, ?string $UUID=NULL, ?string $Title=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $ImageURL=NULL, ?string $Info=NULL, ?array $Classes=NULL):
 	static {
 
 		$Output = new static([
-			'ID'      => $ID,
-			'UUID'    => $UUID,
-			'Title'   => $Title,
-			'URL'     => $URL,
-			'Icon'    => $Icon,
-			'Info'    => $Info,
-			'Classes' => $Classes ?? []
+			'ID'       => $ID,
+			'UUID'     => $UUID,
+			'Title'    => $Title,
+			'URL'      => $URL,
+			'Icon'     => $Icon,
+			'ImageURL' => $ImageURL,
+			'Info'     => $Info,
+			'Classes'  => $Classes ?? []
 		]);
 
 		return $Output;
