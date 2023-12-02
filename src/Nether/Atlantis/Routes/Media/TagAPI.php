@@ -47,6 +47,7 @@ extends Atlantis\Routes\UploadAPI {
 
 			$Tags[] = [
 				'ID'    => $Tag->ID,
+				'Type'  => $Tag->Type,
 				'Alias' => $Tag->Alias,
 				'Name'  => $Tag->Name
 			];

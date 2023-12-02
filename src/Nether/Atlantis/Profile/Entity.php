@@ -53,6 +53,41 @@ implements Atlantis\Packages\ExtraDataInterface {
 	public string
 	$Title;
 
+	#[Database\Meta\TypeVarChar(Size: 120)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$AddressStreet1;
+
+	#[Database\Meta\TypeVarChar(Size: 120)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$AddressStreet2;
+
+	#[Database\Meta\TypeVarChar(Size: 50)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$AddressCity;
+
+	#[Database\Meta\TypeVarChar(Size: 3)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$AddressState;
+
+	#[Database\Meta\TypeVarChar(Size: 24)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$AddressPostalCode;
+
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
@@ -133,6 +168,81 @@ implements Atlantis\Packages\ExtraDataInterface {
 	}
 
 	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// we might move the address fields to a trait.
+
+	#[Common\Meta\Date('2023-12-01')]
+	public function
+	IsAddressFull():
+	bool {
+
+		return (TRUE
+			&& $this->AddressStreet1 !== NULL
+			&& $this->AddressCity !== NULL
+			&& $this->AddressState !== NULL
+			&& $this->AddressPostalCode !== NULL
+		);
+	}
+
+	#[Common\Meta\Date('2023-12-01')]
+	public function
+	IsAddressMappable():
+	bool {
+
+		return (TRUE
+			&& $this->AddressCity
+			&& $this->AddressState
+		);
+	}
+
+	public function
+	GetAddresssLines():
+	Common\Datastore {
+
+		$Output = new Common\Datastore;
+
+		if($this->AddressStreet1)
+		$Output->Push($this->AddressStreet1);
+
+		if($this->AddressStreet2)
+		$Output->Push($this->AddressStreet2);
+
+		////////
+
+		if($this->AddressCity && $this->AddressState && $this->AddressPostalCode) {
+			$Output->Push(sprintf(
+				'%s, %s %s',
+				$this->AddressCity,
+				$this->AddressState,
+				$this->AddressPostalCode
+			));
+		}
+
+		elseif($this->AddressState && $this->AddressPostalCode) {
+			$Output->Push(sprintf(
+				'%s %s',
+				$this->AddressState,
+				$this->AddressPostalCode
+			));
+		}
+
+		return $Output;
+	}
+
+	public function
+	GetMapURL():
+	string {
+
+		$Output = sprintf(
+			'https://maps.google.com/?q=%s',
+			urlencode($this->GetAddresssLines()->Join(' '))
+		);
+
+		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Database\Prototype ///////////////////////////////
 
 	public function
@@ -189,14 +299,16 @@ implements Atlantis\Packages\ExtraDataInterface {
 	void {
 
 		$Input['ProfileID'] ??= NULL;
-
 		$Input['Search'] ??= NULL;
 		$Input['UseSiteTags'] ??= TRUE;
+		$Input['TagsAll'] ??= NULL;
+		$Input['TagsAny'] ??= NULL;
+		$Input['Enabled'] ??= 1;
+		$Input['Alias'] ??= NULL;
+
 
 		$Input['TagID'] ??= NULL;
 		$Input['SubtagID'] ??= NULL;
-		$Input['Enabled'] ??= 1;
-		$Input['Alias'] ??= NULL;
 
 		return;
 	}
@@ -233,8 +345,20 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		////////
 
+		// this is a porting of the tags and code from the blog post
+		// which should eventually replace TagID, SubtagID, and likely alter
+		// the api for use site tags a little.
+
 		if($Input['UseSiteTags'] === TRUE)
 		static::FindExtendFilters_ByEntityFields_UseSiteTags($SQL, $Input);
+
+		if($Input['TagsAll'] !== NULL)
+		static::FindExtendFilters_ByEntityFields_TagsAll($SQL, $Input);
+
+		if($Input['TagsAny'] !== NULL)
+		static::FindExtendFilters_ByEntityFields_TagsAny($SQL, $Input);
+
+		////////
 
 		if($Input['Search'] !== NULL) {
 			if(is_string($Input['Search'])) {
@@ -288,6 +412,101 @@ implements Atlantis\Packages\ExtraDataInterface {
 	}
 
 	static protected function
+	FindExtendFilters_ByEntityFields_TagsAll(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(!is_iterable($Input['TagsAll']))
+		return;
+
+		$TLink = EntityTagLink::GetTableInfo();
+
+		$GenTrainAnd = (function() use($SQL, $Input, $TLink) {
+
+			// this method generates a logical and restriction upon the
+			// main table by joining each tag over and over and honestly
+			// it is unclear if this is going to be a good idea or not.
+
+			$Key = 0;
+			$ID = NULL;
+			$TableQA = NULL;
+			$FieldQA = NULL;
+
+			foreach($Input['TagsAll'] as $ID) {
+				$Key += 1;
+
+				$TableQA = "TQA{$Key}";
+				$FieldQA = ":TagQA{$Key}";
+
+				$SQL->Join(sprintf(
+					'%s ON %s=%s',
+					$TLink->GetAliasedTable($TableQA),
+					$SQL::MkQuotedField('Main', 'UUID'),
+					$SQL::MkQuotedField($TableQA, 'EntityUUID')
+				));
+
+				$SQL->Where(sprintf(
+					'%s=%s',
+					$SQL::MkQuotedField($TableQA, 'TagID'),
+					$FieldQA
+				));
+
+				$Input[$FieldQA] = $ID;
+			}
+
+			return;
+		});
+
+		$GenTrainAnd();
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_ByEntityFields_TagsAny(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(!is_iterable($Input['TagsAny']))
+		return;
+
+		$TLink = EntityTagLink::GetTableInfo();
+
+		$GenBasicOr = (function() use($SQL, $Input, $TLink) {
+
+			// this result set ends up being that of a logical or and
+			// i have yet to find a way to make it very useful.
+
+			$TableQA = "TQOR";
+
+			$SQL->Join(sprintf(
+				'%s ON %s=%s',
+				$TLink->GetAliasedTable($TableQA),
+				$SQL::MkQuotedField('Main', 'UUID'),
+				$SQL::MkQuotedField($TableQA, 'EntityUUID')
+			));
+
+			$SQL->Where(sprintf(
+				'%s IN(:TagsAny)',
+				$SQL::MkQuotedField($TableQA, 'TagID')
+			));
+
+			$SQL->Group('Main.ID');
+
+			if($Input['TagID'] instanceof Common\Datastore)
+			$Input['TagID'] = $Input['TagID']->GetData();
+
+			return;
+		});
+
+		$GenBasicOr();
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Deprecated('2023-12-01')]
+	static protected function
 	FindExtendFilters_ByEntityFields_ByTagID(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
@@ -314,6 +533,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return;
 	}
 
+	#[Common\Meta\Deprecated('2023-12-01')]
 	static protected function
 	FindExtendFilters_ByEntityFields_ByTagID2(Database\Verse $SQL, Common\Datastore $Input):
 	void {
@@ -342,6 +562,9 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):

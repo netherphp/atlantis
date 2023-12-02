@@ -162,9 +162,14 @@ extends ModalDialog {
 			if(this.tagbin.find(`[data-tag-id=${tag.ID}]`).length > 0)
 			continue;
 
+			let styleclass = 'btn-primary';
+
+			if(tag.Type === 'site')
+			styleclass = 'btn-danger';
+
 			output.append(
 				jQuery('<button />')
-				.addClass('btn btn-primary text-transform-none mb-2 mr-2')
+				.addClass(`btn ${styleclass} text-transform-none mb-2 mr-2`)
 				.attr('data-tag-id', tag.ID)
 				.attr('data-tag-key', tag.Name.toLowerCase())
 				.attr('data-tag-name', tag.Name)

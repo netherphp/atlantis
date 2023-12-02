@@ -24,6 +24,7 @@ implements
 	#[Database\Meta\TypeChar(Size: 8, Default: 'tag', Nullable: FALSE)]
 	#[Database\Meta\FieldIndex]
 	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
 	public string
 	$Type;
 
@@ -105,7 +106,7 @@ implements
 	void {
 
 		$Input['Alias'] ??= NULL;
-		$Input['Type'] ??= 'tag';
+		$Input['Type'] ??= [ 'tag', 'site' ];
 
 		$Input['NameLike'] ??= NULL;
 
@@ -118,8 +119,13 @@ implements
 
 		parent::FindExtendFilters($SQL, $Input);
 
-		if($Input['Type'] !== NULL)
-		$SQL->Where('Main.Type=:Type');
+		if($Input['Type'] !== NULL) {
+			if(is_iterable($Input['Type']))
+			$SQL->Where('Main.Type IN(:Type)');
+			else
+			$SQL->Where('Main.Type=:Type');
+		}
+
 
 		if($Input['Alias'] !== NULL) {
 			if(is_array($Input['Alias']))

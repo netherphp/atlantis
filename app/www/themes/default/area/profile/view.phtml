@@ -21,6 +21,9 @@ use Nether\User;
  * @var Database\ResultSet $Videos
  */
 
+$Address = $Profile->GetAddresssLines();
+$MapURL = $Profile->GetMapURL();
+
 $AdminMenu = NULL;
 
 if($Route->IsUserAdmin()) {
@@ -42,6 +45,7 @@ if($Route->IsUserAdmin()) {
 	->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
 	->ItemNew('Edit Links', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE))
 	->ItemNew('Edit Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
+	->ItemNew('Edit Address', 'mdi-map-marker', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE))
 	->ItemNew('Enable Profile', 'mdi-eye', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE), If: !$Profile->Enabled)
 	->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
 	->ItemNew('-')
@@ -110,23 +114,28 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 				</div>
 				<hr class="mt-1 mb-3" />
 				<div class="mb-0">
-					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags->Filter($FilterTags), 'URL'=> $Route->GetTagURL() ]) ?>
+					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags, 'URL'=> $Route->GetTagURL() ]) ?>
 				</div>
 
+				<?php if($Address->Count()): ?>
+				<div class="font-size-large">
+					<span class="tt-upper fw-bold">Address:</span>
+					<a class="td-underline" href="<?php $Util->Print($Profile->GetMapURL()) ?>"><?php $Util->Print($Address->Join(' ')) ?></a>
+				</div>
+				<?php endif; ?>
+
 				<?php if($Profile->SocialData->HasAnyItems()): ?>
-				<div class="mb-4">
-					<div class="row font-size-large tight align-items-center">
-						<div class="col-auto">
-							<span class="fw-bold text-uppercase">Links:</span>
-						</div>
-						<?php foreach($Profile->SocialData->GetIterator() as $Key => $Val): ?>
-						<div class="col-auto">
-							<a href="<?php $Util->Print($Val) ?>" class="ml-2" target="_blank">
-								<i class="<?php $Util->Print($Profile->SocialData->GetIconStyleClass($Key)) ?>"></i>
-							</a>
-						</div>
-						<?php endforeach; unset($Key, $Val); ?>
+				<div class="row font-size-large tight align-items-center">
+					<div class="col-auto">
+						<span class="fw-bold text-uppercase">Links:</span>
 					</div>
+					<?php foreach($Profile->SocialData->GetIterator() as $Key => $Val): ?>
+					<div class="col-auto">
+						<a href="<?php $Util->Print($Val) ?>" class="ml-2" target="_blank">
+							<i class="<?php $Util->Print($Profile->SocialData->GetIconStyleClass($Key)) ?>"></i>
+						</a>
+					</div>
+					<?php endforeach; unset($Key, $Val); ?>
 				</div>
 				<?php endif; ?>
 

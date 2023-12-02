@@ -182,6 +182,43 @@ class Profile {
 		return false;
 	};
 
+	onEditAddress(ev) {
+
+		let self = this;
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Profile Address',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, self.id),
+				new DialogUtil.Field('text', 'AddressStreet1', 'Street Address 1'),
+				new DialogUtil.Field('text', 'AddressStreet2', 'Street Address 2'),
+				new DialogUtil.Field('text', 'AddressCity', 'City'),
+				new DialogUtil.Field('text', 'AddressState', 'State'),
+				new DialogUtil.Field('text', 'AddressPostalCode', 'Zip')
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', self.endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', self.endpoint,
+			{ ID: self.id },
+			true
+		);
+
+		return false;
+	};
+
 	onEditLinks(ev) {
 
 		let self = this;
@@ -315,6 +352,7 @@ class Profile {
 			disable:  new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 0), true),
 			enable:   new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 1), true),
 			delete:   new DocReadyFunc((i, u)=> Profile.WhenDelete(i, u), true),
+			address:  new DocReadyFunc((i, u)=> Profile.WhenEditAddress(i, u), true)
 		};
 
 		for(let key in map) {
@@ -371,6 +409,14 @@ class Profile {
 
 		let pro = new Profile(id, uuid);
 		pro.onEditTitle(null);
+
+		return;
+	};
+
+	static WhenEditAddress(id, uuid) {
+
+		let pro = new Profile(id, uuid);
+		pro.onEditAddress(null);
 
 		return;
 	};
