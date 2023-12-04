@@ -66,7 +66,7 @@ implements
 			// served blank pages, and arent even logged by analytics.
 
 			Key::ConfAccessIgnoreAgentHard => (''
-				. 'AhrefsBot|BLEXBot|Bytespider|Bytedance|DotBot|MJ12bot|SemrushBot|PetalBot|'
+				. 'AhrefsBot|Amazonbot|BLEXBot|Bytespider|Bytedance|DataForSeoBot|DotBot|MJ12bot|SemrushBot|serpstatbot|PetalBot|'
 				. 'paloaltonetworks|linkfluence|internet\\-measurement|naver\\.me'
 			),
 
