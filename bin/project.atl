@@ -754,6 +754,11 @@ extends Atlantis\TerminalApp {
 						$Report[$Dir->Path] = $Dir->Source;
 						return;
 					}
+
+					else {
+						$Report[$Dir->Path] = sprintf('ERROR: Exists link to %s', realpath($Dir->Source));
+						return;
+					}
 				}
 
 				$Report[$Dir->Path] = 'ERROR: Exists as Directory';
@@ -762,6 +767,11 @@ extends Atlantis\TerminalApp {
 
 			if(Common\Filesystem\Util::IsLinkTo($Dir->Path, realpath($Dir->Source))) {
 				$Report[$Dir->Path] = $Dir->Source;
+				return;
+			}
+
+			if(!file_exists($Dir->Source)) {
+				$Report[$Dir->Path] = "ERROR: Source Missing";
 				return;
 			}
 
