@@ -24,6 +24,11 @@ $URL ??= '/tag/:Alias:';
 
 $RewriteURL = function(Atlantis\Tag\Entity $T, string $Template) use($Util): string {
 
+	if($T->HasDefinedURL())
+	return $Util->RewriteURL($T->GetPageURL());
+
+	////////
+
 	if($T->Type === 'tag')
 	return str_replace(':Alias:', $T->Alias, $Template);
 

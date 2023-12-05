@@ -158,7 +158,8 @@ class Profile {
 			labelAccept: 'Save',
 			fields: [
 				new DialogUtil.Field('hidden', 'ID', null, self.id),
-				new DialogUtil.Field('text', 'Title', 'Title')
+				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('text', 'Alias', 'Alias'),
 			],
 			onAccept: function() {
 
@@ -166,7 +167,40 @@ class Profile {
 				let api = new API.Request('PATCH', self.endpoint, data);
 
 				(api.send())
-				.then(api.reload)
+				.then((result)=> location.href = result.payload.PageURL)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', self.endpoint,
+			{ ID: self.id },
+			true
+		);
+
+		return false;
+	};
+
+	onEditAlias(ev) {
+
+		let self = this;
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Profile Alias',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, self.id),
+				new DialogUtil.Field('text', 'Alias', 'URL Alias')
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', self.endpoint, data);
+
+				(api.send())
+				.then((result)=> location.href = result.payload.PageURL)
 				.catch(api.catch);
 
 				return;
@@ -343,6 +377,7 @@ class Profile {
 		let map = {
 			new:      new DocReadyFunc(()=> Profile.WhenNew(), false),
 			title:    new DocReadyFunc((i, u)=> Profile.WhenEditTitle(i, u), true),
+			alias:    new DocReadyFunc((i, u)=> Profile.WhenEditAlias(i, u), true),
 			links:    new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
 			details:  new DocReadyFunc((i, u)=> Profile.WhenEditDetails(i, u), true),
 			tags:     new DocReadyFunc((i, u)=> Profile.WhenEditTags(i, u), true),
@@ -409,6 +444,14 @@ class Profile {
 
 		let pro = new Profile(id, uuid);
 		pro.onEditTitle(null);
+
+		return;
+	};
+
+	static WhenEditAlias(id, uuid) {
+
+		let pro = new Profile(id, uuid);
+		pro.onEditAlias(null);
 
 		return;
 	};

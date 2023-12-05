@@ -291,7 +291,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 			}
 		}
 
-		return (string)(new Atlantis\WebURL($URL ?? ''));
+		return (string)(new Atlantis\WebURL($URL ?? '/share/atlantis/gfx/misc/no-image.png'));
 	}
 
 	static protected function

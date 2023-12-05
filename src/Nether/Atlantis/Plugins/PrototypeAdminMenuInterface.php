@@ -8,7 +8,7 @@ use Nether\Common;
 interface PrototypeAdminMenuInterface {
 
 	public function
-	GetItems(Atlantis\Prototype $Video):
+	GetItems(Atlantis\Prototype $Proto):
 	Common\Datastore;
 
 }

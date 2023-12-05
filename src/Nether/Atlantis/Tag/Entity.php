@@ -232,6 +232,13 @@ implements
 	}
 
 	public function
+	HasDefinedURL():
+	bool {
+
+		return $this->ExtraData->HasKey('URL');
+	}
+
+	public function
 	GetPageURL():
 	string {
 
