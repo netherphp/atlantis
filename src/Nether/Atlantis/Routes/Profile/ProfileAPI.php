@@ -78,6 +78,12 @@ extends Atlantis\ProtectedAPI {
 		if(count($Patchset))
 		$Ent->Update($Patchset);
 
+		////////
+
+		// PLUGINS ON EDIT BRUH
+
+		////////
+
 		$this->SetPayload($Ent->DescribeForPublicAPI());
 
 		return;
@@ -90,7 +96,17 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		$Ent = $this->DemandEntityByID($this->Data->ID);
-		$Ent->Drop();
+
+		if($Ent) {
+
+			////////
+
+			// PLUGINS ON DELETE BRUH
+
+			////////
+
+			$Ent->Drop();
+		}
 
 		return;
 	}
