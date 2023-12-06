@@ -32,7 +32,7 @@ if($Route->IsUserAdmin()) {
 	$Plugins = (
 		($App->Plugins)
 		->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
-		->Remap(fn(string $C)=> new $C)
+		->Remap(fn(string $C)=> new $C($App))
 		->Accumulate(new Common\Datastore, (
 			fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
 			=> $C->MergeRight($P->GetItems( $Profile ))
