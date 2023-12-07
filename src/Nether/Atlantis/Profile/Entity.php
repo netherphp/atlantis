@@ -306,6 +306,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 		$Input['Enabled'] ??= 1;
 		$Input['Alias'] ??= NULL;
 
+		$Input['AddressState'] ??= NULL;
 
 		$Input['TagID'] ??= NULL;
 		$Input['SubtagID'] ??= NULL;
@@ -368,6 +369,9 @@ implements Atlantis\Packages\ExtraDataInterface {
 		}
 
 		////////
+
+		if($Input['AddressState'] !== NULL)
+		$SQL->Where('Main.AddressState LIKE :AddressState');
 
 		return;
 	}
@@ -571,16 +575,31 @@ implements Atlantis\Packages\ExtraDataInterface {
 	void {
 
 		switch($Input['Sort']) {
+
+			case 'name-az':
 			case 'title-az':
 				$SQL->Sort('Main.Title', $SQL::SortAsc);
 			break;
+
+			case 'name-za':
 			case 'title-za':
 				$SQL->Sort('Main.Title', $SQL::SortDesc);
+			break;
+
+			case 'state-az':
+				$SQL->Sort('Main.AddressState', $SQL::SortAsc);
+			break;
+
+			case 'state-za':
+				$SQL->Sort('Main.AddressState', $SQL::SortDesc);
 			break;
 		}
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static public function
 	Insert(iterable $Input):

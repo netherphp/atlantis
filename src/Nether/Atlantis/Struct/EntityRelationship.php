@@ -219,11 +219,16 @@ extends Atlantis\Prototype {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
+		// parent profiles.
 		$Input['ParentType'] ??= NULL;
-		$Input['ChildType'] ??= NULL;
-
 		$Input['ParentUUID'] ??= NULL;
+
+		// child profiles.
+		$Input['ChildType'] ??= NULL;
 		$Input['ChildUUID'] ??= NULL;
+
+		// either parent or child.
+		$Input['EntityUUID'] ??= NULL;
 
 		return;
 	}
@@ -232,11 +237,23 @@ extends Atlantis\Prototype {
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
-		if($Input['ParentType'] !== NULL)
-		$SQL->Where('Main.ParentType=:ParentType');
+		if($Input['ParentType'] !== NULL) {
+			$Class = static::TypeClass($Input['ParentType']);
+
+			$Class::JoinMainTables($SQL, 'Main', 'ParentUUID', 'P');
+			$Class::JoinMainFields($SQL, 'P');
+
+			$Class::JoinExtendTables($SQL, 'P', 'P');
+			$Class::JoinExtendFields($SQL, 'P');
+
+			$SQL->Where('Main.ParentType LIKE :ParentType');
+			unset($Class);
+		}
 
 		if($Input['ParentUUID'] !== NULL)
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
+
+		////////
 
 		if($Input['ChildType'] !== NULL) {
 			$Class = static::TypeClass($Input['ChildType']);
@@ -248,10 +265,18 @@ extends Atlantis\Prototype {
 			$Class::JoinExtendFields($SQL, 'C');
 
 			$SQL->Where('Main.ChildType LIKE :ChildType');
+			unset($Class);
 		}
 
 		if($Input['ChildUUID'] !== NULL)
 		$SQL->Where('Main.ChildUUID=:ChildUUID');
+
+		////////
+
+		if($Input['EntityUUID'] !== NULL)
+		$SQL->Where('Main.ParentUUID=:EntityUUID OR Main.ChildUUID=:EntityUUID');
+
+		////////
 
 		if($Input['Group'] !== NULL) {
 			if($Input['Group'] === 'parent')
@@ -310,4 +335,28 @@ extends Atlantis\Prototype {
 		return parent::Insert($Input);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-12-06')]
+	static public function
+	KeepTheOtherOne(self $ERI, string $UUID):
+	static|string {
+
+		// if given a joined dataset we will have the full object and that
+		// is what will be kept. otherwise it will return what it has which
+		// is just the uuid.
+
+		if($ERI->ParentUUID === $UUID) {
+			if(isset($ERI->Child))
+			return $ERI->Child;
+
+			return $ERI->ChildUUID;
+		}
+
+		if(isset($ERI->Parent))
+		return $ERI->Parent;
+
+		return $ERI->ParentUUID;
+	}
 }

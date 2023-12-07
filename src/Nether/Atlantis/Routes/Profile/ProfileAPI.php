@@ -111,6 +111,32 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/profile/entity', Verb: 'SEARCH')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	EntitySearch():
+	void {
+
+		($this->Query)
+		->Q(Common\Filters\Text::TrimmedNullable(...));
+
+		$Search = $this->Query->Q;
+
+		////////
+
+		$Results = Atlantis\Profile\Entity::Find([
+			'Search'      => $Search,
+			'UseSiteTags' => FALSE,
+			'Page'        => 1,
+			'Limit'       => 20,
+			'Remappers'   => (fn(Atlantis\Profile\Entity $P)=> $P->DescribeForPublicAPI())
+		]);
+
+		$this->SetPayload($Results->GetData());
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

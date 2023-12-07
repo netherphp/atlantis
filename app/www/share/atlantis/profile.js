@@ -1,6 +1,7 @@
 import API          from '../nui/api/json.js';
 import DialogUtil   from '../nui/util/dialog.js';
 import TagDialog    from '../atlantis/tag-dialog.js';
+import EntDialog    from '../atlantis/eri-dialog.js';
 import UploadButton from '../nui/modules/uploader/uploader.js';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -144,6 +145,14 @@ class Profile {
 	onEditTags(ev) {
 
 		let diag = new TagDialog(this.uuid, this.tagType);
+		diag.show();
+
+		return false;
+	};
+
+	onEditRels(ev) {
+
+		let diag = new EntDialog(this.uuid);
 		diag.show();
 
 		return false;
@@ -381,6 +390,7 @@ class Profile {
 			links:    new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
 			details:  new DocReadyFunc((i, u)=> Profile.WhenEditDetails(i, u), true),
 			tags:     new DocReadyFunc((i, u)=> Profile.WhenEditTags(i, u), true),
+			erlink:   new DocReadyFunc((i, u)=> Profile.WhenEditRels(i, u), true),
 			photo:    new DocReadyFunc((i, u)=> Profile.WhenUploadPhoto(i, u), true),
 			videotp:  new DocReadyFunc((i, u)=> Profile.WhenAddVideo(i, u), true),
 			photoset: new DocReadyFunc((i, u, e)=> Profile.WhenSetPhoto(i, u, e), true),
@@ -476,6 +486,14 @@ class Profile {
 
 		let pro = new Profile(id, uuid);
 		pro.onEditTags(null);
+
+		return;
+	};
+
+	static WhenEditRels(id, uuid) {
+
+		let pro = new Profile(id, uuid);
+		pro.onEditRels(null);
 
 		return;
 	};

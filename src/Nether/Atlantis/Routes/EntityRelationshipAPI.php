@@ -23,6 +23,12 @@ extends Atlantis\ProtectedAPI {
 
 		$Key = ($this->Data->ID ? 'ID' : 'UUID');
 		$Val = ($this->Data->ID ? $this->Data->ID : $this->Data->UUID);
+
+		if(!$Val)
+		$this->Quit(2, 'no ID or UUID specified');
+
+		////////
+
 		$Ent = Atlantis\Struct\EntityRelationship::GetByField($Key, $Val);
 
 		if(!$Ent)
