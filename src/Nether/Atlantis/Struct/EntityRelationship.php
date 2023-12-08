@@ -229,6 +229,7 @@ extends Atlantis\Prototype {
 
 		// either parent or child.
 		$Input['EntityUUID'] ??= NULL;
+		$Input['EntityType'] ??= NULL;
 
 		return;
 	}
@@ -273,8 +274,13 @@ extends Atlantis\Prototype {
 
 		////////
 
-		if($Input['EntityUUID'] !== NULL)
-		$SQL->Where('Main.ParentUUID=:EntityUUID OR Main.ChildUUID=:EntityUUID');
+		if($Input['EntityUUID'] !== NULL && $Input['EntityType'] !== NULL) {
+			$SQL->Where('(Main.ParentType=:EntityType AND Main.ParentUUID=:EntityUUID) OR (Main.ChildType=:EntityType AND Main.ChildUUID=:EntityUUID)');
+		}
+
+		elseif($Input['EntityUUID'] !== NULL) {
+			$SQL->Where('Main.ParentUUID=:EntityUUID OR Main.ChildUUID=:EntityUUID');
+		}
 
 		////////
 

@@ -117,19 +117,47 @@ extends Atlantis\ProtectedAPI {
 	EntitySearch():
 	void {
 
-		($this->Query)
-		->Q(Common\Filters\Text::TrimmedNullable(...));
+		($this->Data)
+		->Q(Common\Filters\Text::TrimmedNullable(...))
+		->TagsAll(Common\Filters\Text::TrimmedNullable(...))
+		->Limit(
+			Common\Filters\Numbers::IntRange(...),
+			1, 20
+		)
+		->Sort(
+			Common\Filters\Misc::OneOfTheseFirst(...),
+			[ 'name-az', 'state-az' ]
+		);
 
-		$Search = $this->Query->Q;
+		////////
+
+		if($this->Data->TagsAll) {
+			$TagKeys = explode(',', $this->Data->TagsAll);
+			$Tags = Atlantis\Tag\Entity::Find([ 'Alias' => $TagKeys ]);
+			var_dump($Tags);
+		}
+
+		$Enabled = $this->IsUserAdmin() ? NULL : 1;
 
 		////////
 
 		$Results = Atlantis\Profile\Entity::Find([
-			'Search'      => $Search,
-			'UseSiteTags' => FALSE,
-			'Page'        => 1,
-			'Limit'       => 20,
-			'Remappers'   => (fn(Atlantis\Profile\Entity $P)=> $P->DescribeForPublicAPI())
+			'UseSiteTags'    => FALSE,
+			'TagsAll'        => $Tags->Map(fn($T)=> $T->ID)->GetData(),
+
+			'Search'         => $this->Data->Q,
+			'SearchTitle'    => TRUE,
+			'SearchLocation' => TRUE,
+
+			'Enabled'        => $Enabled,
+
+			'Page'           => 1,
+			'Limit'          => 10,
+			'Sort'           => $this->Data->Sort,
+			'Remappers'      => (
+				fn(Atlantis\Profile\Entity $P)
+				=> $P->DescribeForPublicAPI()
+			)
 		]);
 
 		$this->SetPayload($Results->GetData());

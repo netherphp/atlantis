@@ -298,11 +298,15 @@ implements Atlantis\Packages\ExtraDataInterface {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['ProfileID'] ??= NULL;
-		$Input['Search'] ??= NULL;
 		$Input['UseSiteTags'] ??= TRUE;
 		$Input['TagsAll'] ??= NULL;
 		$Input['TagsAny'] ??= NULL;
+
+		$Input['Search'] ??= NULL;
+		$Input['SearchTitle'] ??= TRUE;
+		$Input['SearchLocation'] ??= FALSE;
+
+		$Input['ProfileID'] ??= NULL;
 		$Input['Enabled'] ??= 1;
 		$Input['Alias'] ??= NULL;
 
@@ -363,8 +367,29 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		if($Input['Search'] !== NULL) {
 			if(is_string($Input['Search'])) {
-				$Input['SearchRegEx'] = join('|', explode(' ', $Input['Search']));
+
+				$RelChecks = Common\Datastore::FromArray(explode(' ', $Input['Search']));
+				$Input->Shove(':SearchRegEx', $RelChecks->Join('|'));
 				$SQL->Where('Main.Title REGEXP :SearchRegEx');
+
+				// cook each word as an input token.
+
+				$RelChecks->RemapKeys(
+					fn(int $K, string $V)
+					=> [ sprintf(':SearchRelCheck%d', ($K+1))=> "%{$V}%" ]
+				);
+
+				$Input->MergeRight($RelChecks);
+
+				// cook each word as math.
+
+				$RelChecks->RemapKeyValue(
+					fn(string $K)
+					=> sprintf('CASE WHEN Main.Title LIKE %s THEN 1 ELSE 0 END', $K)
+				);
+
+				$SQL->Fields(sprintf('(%s) AS RelVal', $RelChecks->Join('+')));
+				$SQL->Sort('RelVal', $SQL::SortDesc);
 			}
 		}
 
@@ -595,6 +620,11 @@ implements Atlantis\Packages\ExtraDataInterface {
 			break;
 		}
 
+		//file_put_contents('/opt/ss-dev/temp/ok.txt', (string)$SQL . PHP_EOL . json_encode($Input));
+
+		//echo $SQL;
+		//print_r($Input);
+
 		return;
 	}
 
@@ -734,6 +764,23 @@ implements Atlantis\Packages\ExtraDataInterface {
 		]);
 
 		return $Result;
+	}
+
+	public function
+	FetchRelatedProfiles():
+	Common\Datastore {
+
+		$Results = Atlantis\Struct\EntityRelationship::Find([
+			'EntityUUID' => $this->UUID,
+			'Remappers'  => fn($T)=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne($T, $this->UUID)
+		]);
+
+		$Profiles = static::Find([
+			'UseSiteTags' => FALSE,
+			'UUID'        => $Results->GetData()
+		]);
+
+		return $Profiles;
 	}
 
 }

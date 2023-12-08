@@ -21,6 +21,7 @@ extends Atlantis\PublicWeb {
 		$Photos = $Profile->FetchPhotos();
 		$Videos = $Profile->FetchVideos();
 		$Links = $Profile->FetchRelatedLinks();
+		$Related = $Profile->FetchRelatedProfiles();
 
 		////////
 
@@ -32,7 +33,8 @@ extends Atlantis\PublicWeb {
 			'Tags'    => $Tags,
 			'Photos'  => $Photos,
 			'Videos'  => $Videos,
-			'Links'   => $Links
+			'Links'   => $Links,
+			'Related' => $Related
 		]);
 
 		return;

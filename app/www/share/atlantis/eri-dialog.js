@@ -11,7 +11,7 @@ let DialogTemplate = `
 		<div class="TagsQuery"></div>
 	</div>
 	<div class="col-12">
-		<div class="fw-bold text-uppercase">Current Tags</div>
+		<div class="fw-bold text-uppercase">Currently Selected</div>
 		<div class="TagsCurrent">
 			<span class="btn btn-block btn-dark clickthru opacity-75 mb-2">
 				<i class="mdi mdi-fw mdi-loading mdi-spin mr-2"></i>
@@ -25,18 +25,38 @@ let DialogTemplate = `
 </div>
 `;
 
+let SearchResultTemplate = ``;
+
 class Dialog
 extends ModalDialog {
 
-	constructor(entityUUID, tagLinkType) {
+	constructor(entityUUID, tags) {
 		super(DialogTemplate);
 
-		this.setTitle('Profile Relationships');
+		this.uuid = entityUUID;
+		this.tags = tags;
+
+		this.parentType = 'Profile.Entity';
+		this.childType = 'Profile.Entity';
+
+		this.searchVerb = 'SEARCH';
+		this.searchURL = '/api/profile/entity';
+
+		this.listVerb = 'RELGET';
+		this.listURL = '/api/eri/entity';
+
+		this.saveVerb = 'POST';
+		this.saveURL = '/api/eri/entity';
+
+		////////
+
+		this.setTitle('Related Profiles');
 		this.addButton('Cancel', 'btn-dark', 'cancel');
 		this.addButton('Save', 'btn-primary', 'accept');
 
-		this.uuid = entityUUID;
-		this.type = tagLinkType;
+		////////
+
+		this.type = null;
 
 		this.query = this.element.find('input[name=Query]');
 		this.querybin = this.element.find('.TagsQuery');
@@ -47,15 +67,18 @@ extends ModalDialog {
 
 		this.query.on('keyup', this.onSearchKeyPress.bind(this));
 
-		let api = new API.Request('TAGSGET', '/api/media/entity');
+		////////
 
-		(api.send({ EntityUUID: this.uuid, Type: this.type }))
+		let api = new API.Request(this.listVerb, this.listURL);
+
+		(api.send({ UUID: this.uuid, Type: this.childType }))
 		.then(this.onTagFetch.bind(this))
 		.catch(api.catch);
 
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	onSearchKeyPress(ev) {
 
 		if(this.timerQuery)
@@ -69,30 +92,34 @@ extends ModalDialog {
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	onSearchTrigger() {
 
 		let val = jQuery.trim(this.query.val());
-		let api = new API.Request('SEARCH', '/api/media/tag');
+		let api = new API.Request(this.searchVerb, this.searchURL);
 
-		(api.send({ Query: val }))
+		(api.send({ Q: val, TagsAll: this.tags }))
 		.then(this.updateTagsQuery.bind(this))
 		.catch(api.catch);
 
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	onSearchTagClick(btn) {
 
-		let tid = btn.attr('data-tag-id');
+		let self = this;
+		let id = btn.attr('data-id');
+		let uuid = btn.attr('data-uuid');
 
-		btn
+		(btn)
 		.remove()
 		.removeClass('btn-primary')
-		.addClass('btn-secondary text-transform-none')
+		.addClass('btn-dark mb-1')
 		.off('click.tagdiag')
-		.on('click.tagdiag', ()=> this.onTagClick(btn));
+		.on('click.tagdiag', ()=> self.onTagClick(btn));
 
-		btn.find('.mdi-plus')
+		(btn.find('.mdi-plus'))
 		.removeClass('mdi-plus')
 		.addClass('mdi-minus');
 
@@ -102,7 +129,8 @@ extends ModalDialog {
 		this.query.val('');
 		this.querybin.empty();
 
-		console.log(`[onSearchTagClick] tag remove: ${tid}`);
+		console.log(`[onSearchTagClick] ${id} ${uuid}`);
+
 		return;
 	};
 
@@ -111,17 +139,17 @@ extends ModalDialog {
 		let output = jQuery('<div />');
 		let self = this;
 
-		if(!result.payload.Tags.length)
+		if(!result.payload.length)
 		return this.updateTagsNone();
 
-		for(let tag of result.payload.Tags) {
+		for(let tag of result.payload) {
 			output.append(
 				jQuery('<button />')
-				.addClass('btn btn-dark text-transform-none mb-2 mr-2')
-				.attr('data-tag-id', tag.ID)
-				.attr('data-tag-key', tag.Name.toLowerCase())
-				.attr('data-tag-name', tag.Name)
-				.html(`<i class="mdi mdi-fw mdi-minus"></i> ${tag.Name}`)
+				.addClass('btn btn-dark btn-block ta-left tt-none mb-1')
+				.attr('data-id', tag.ID)
+				.attr('data-uuid', tag.UUID)
+				.attr('data-title', tag.Title)
+				.html(`<i class="mdi mdi-minus"></i> ${tag.Title}`)
 				.on('click.tagdiag', function() {
 					self.onTagClick(jQuery(this));
 					return;
@@ -136,67 +164,69 @@ extends ModalDialog {
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	onTagClick(btn) {
 
-		let tid = btn.attr('data-tag-id');
+		let id = btn.attr('data-id');
+		let uuid = btn.attr('data-uuid');
 
 		btn.remove();
 
 		if(this.tagbin.find('.btn').length === 0)
 		this.updateTagsNone();
 
-		console.log(`[onTagClick] tag remove: ${tid}`);
+		console.log(`[onTagClick] ${id} ${uuid}`);
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	updateTagsQuery(result) {
 
 		let output = jQuery('<div />');
 		let self = this;
-		let query = jQuery.trim(this.query.val());
-		let querybin = jQuery('<div />');
 
 		////////
 
-		for(let tag of result.payload.Tags) {
-			if(this.tagbin.find(`[data-tag-id=${tag.ID}]`).length > 0)
-			continue;
+		for(let item of result.payload) {
+			let title = item.Title;
 
-			let styleclass = 'btn-primary';
+			if(item.AddressState && item.AddressCity)
+			title = `${title} (${item.AddressCity}, ${item.AddressState})`;
 
-			if(tag.Type === 'site')
-			styleclass = 'btn-danger';
+			else if(item.AddressState)
+			title = `${title} (${item.AddressState})`;
 
 			output.append(
-				jQuery('<button />')
-				.addClass(`btn ${styleclass} text-transform-none mb-2 mr-2`)
-				.attr('data-tag-id', tag.ID)
-				.attr('data-tag-key', tag.Name.toLowerCase())
-				.attr('data-tag-name', tag.Name)
-				.html(`<i class="mdi mdi-fw mdi-plus"></i> ${tag.Name}`)
-				.on('click.tagdiag', function() {
-					self.onSearchTagClick(jQuery(this));
-					return;
-				})
+				jQuery('<div />')
+				.addClass('row tight flex-nowrap mb-1')
+				.append(
+					jQuery('<div />')
+					.addClass('col')
+					.append(
+						jQuery('<button />')
+						.attr('data-id', item.ID)
+						.attr('data-uuid', item.UUID)
+						.addClass('btn btn-primary btn-block ta-left')
+						.html(`<div class="tt-none"><i class="mdi mdi-plus"></i> ${title}</div>`)
+						.on('click', function() {
+							self.onSearchTagClick( jQuery(this) );
+							return;
+						})
+					)
+				)
+				.append(
+					jQuery('<div />')
+					.addClass('col-auto')
+					.append(
+						jQuery('<a />')
+						.attr('href', item.PageURL)
+						.attr('target', '_blank')
+						.addClass('btn btn-secondary')
+						.html('<i class="mdi mdi-open-in-new"></i>')
+					)
+				)
 			);
 		}
-
-		console.log(query);
-
-		if(output.find(`[data-tag-key="${query.toLowerCase()}"]`).length === 0)
-		if(this.tagbin.find(`[data-tag-key="${query.toLowerCase()}"]`).length === 0)
-		output.append(
-			jQuery('<button />')
-			.addClass('btn btn-secondary text-transform-none mb-2 mr-2')
-			.attr('data-tag-id', 'null')
-			.attr('data-tag-key', query.toLowerCase())
-			.attr('data-tag-name', query)
-			.html(`<i class="mdi mdi-fw mdi-plus"></i> ${query}`)
-			.on('click.tagdiag', function() {
-				self.onSearchTagClick(jQuery(this));
-				return;
-			})
-		);
 
 		////////
 
@@ -207,47 +237,46 @@ extends ModalDialog {
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	updateTagsNone() {
 
 		(this.tagbin)
 		.empty()
 		.append(
 			jQuery('<span />')
-			.addClass('btn btn-dark btn-block opacity-75 clickthru mb-2')
-			.html('No tags found')
+			.addClass('btn btn-dark btn-block opacity-30 clickthru mb-2')
+			.html('No profiles found')
 		);
 
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	onAccept() {
 
-		let api = new API.Request('TAGSPATCH', '/api/media/entity');
+		let api = new API.Request(this.saveVerb, this.saveURL);
 
 		let output = {
-			EntityUUID: this.uuid,
-			EntityType: this.type
+			ParentType: this.parentType,
+			ParentUUID: this.uuid,
+			ChildType:  this.childType,
+			ChildUUID:  []
 		};
 
 		let itids = 0;
 		let inames = 0;
 
-		this.tagbin.find('button.btn')
+		(this.tagbin.find('button.btn'))
 		.each(function(it) {
 			console.log(it);
 
-			if(this.dataset.tagId !== 'null') {
-				output[`TagID[${itids}]`] = this.dataset.tagId;
-				itids += 1;
-				return;
-			}
+			output[`ChildUUID[${inames}]`] = this.dataset.uuid;
 
-			output[`TagName[${inames}]`] = this.dataset.tagName;
 			inames += 1;
 			return;
 		});
 
-		console.log(`tags for ${this.uuid} ${this.type}: ${output.length}`);
+		console.log(`profiles for ${this.uuid}: ${output.length}`);
 		console.log(output);
 
 		(api.send(output))
@@ -257,6 +286,7 @@ extends ModalDialog {
 		return;
 	};
 
+	//#[Common\Meta\Date('2023-12-07')]
 	onDone() {
 
 		location.reload();

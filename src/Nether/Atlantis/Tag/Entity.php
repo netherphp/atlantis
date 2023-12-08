@@ -128,8 +128,12 @@ implements
 
 
 		if($Input['Alias'] !== NULL) {
-			if(is_array($Input['Alias']))
-			$SQL->Where('Main.Alias IN(:Alias)');
+			if(is_array($Input['Alias'])) {
+				if(!count($Input['Alias']))
+				$Input['Alias'] = 'null-null-null-null-null';
+
+				$SQL->Where('Main.Alias IN(:Alias)');
+			}
 
 			else
 			$SQL->Where('Main.Alias=:Alias');

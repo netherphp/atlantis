@@ -134,11 +134,16 @@ implements Packages\DescribeForPublicInterface {
 		}
 
 		if(isset($Input['UUID'])) {
-			if(is_array($Input['UUID']))
-			$SQL->Where('Main.UUID IN(:UUID)');
+			if(is_array($Input['UUID'])) {
+				if(!count($Input['UUID']))
+				$Input['UUID'] = 'null-null-null-null-null';
 
-			else
-			$SQL->Where('Main.UUID=:UUID');
+				$SQL->Where('Main.UUID IN(:UUID)');
+			}
+
+			else {
+				$SQL->Where('Main.UUID=:UUID');
+			}
 		}
 
 		if(isset($Input['Untagged'])) {

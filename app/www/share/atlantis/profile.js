@@ -150,9 +150,9 @@ class Profile {
 		return false;
 	};
 
-	onEditRels(ev) {
+	onEditRels(ev, tags) {
 
-		let diag = new EntDialog(this.uuid);
+		let diag = new EntDialog(this.uuid, tags);
 		diag.show();
 
 		return false;
@@ -390,7 +390,7 @@ class Profile {
 			links:    new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
 			details:  new DocReadyFunc((i, u)=> Profile.WhenEditDetails(i, u), true),
 			tags:     new DocReadyFunc((i, u)=> Profile.WhenEditTags(i, u), true),
-			erlink:   new DocReadyFunc((i, u)=> Profile.WhenEditRels(i, u), true),
+			erlink:   new DocReadyFunc((i, u, b)=> Profile.WhenEditRels(i, u, b), true),
 			photo:    new DocReadyFunc((i, u)=> Profile.WhenUploadPhoto(i, u), true),
 			videotp:  new DocReadyFunc((i, u)=> Profile.WhenAddVideo(i, u), true),
 			photoset: new DocReadyFunc((i, u, e)=> Profile.WhenSetPhoto(i, u, e), true),
@@ -490,10 +490,10 @@ class Profile {
 		return;
 	};
 
-	static WhenEditRels(id, uuid) {
+	static WhenEditRels(id, uuid, btn) {
 
 		let pro = new Profile(id, uuid);
-		pro.onEditRels(null);
+		pro.onEditRels(null, btn.attr('data-profile-tags'));
 
 		return;
 	};

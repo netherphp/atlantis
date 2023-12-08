@@ -172,6 +172,57 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'RELGET')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	EntityRelationships():
+	void {
+
+		($this->Data)
+		->Type(Common\Filters\Text::TrimmedNullable(...))
+		->UUID(Common\Filters\Text::TrimmedNullable(...));
+
+		if(!$this->Data->UUID)
+		$this->Quit(1, 'no UUID specified');
+
+		////////
+
+		$Class = Atlantis\Struct\EntityRelationship::TypeClass($this->Data->Type);
+
+		if(!$Class)
+		$this->Quit(2, 'no ERI class found');
+
+		////////
+
+		$Filters = [
+			'EntityType' => $this->Data->Type,
+			'EntityUUID' => $this->Data->UUID,
+			'Page'       => 1,
+			'Limit'      => 0,
+			'Remappers'  => (
+				fn(Atlantis\Struct\EntityRelationship $Rel)
+				=> $Rel::KeepTheOtherOne($Rel, $this->Data->UUID)
+			)
+		];
+
+		$UUIDS = Atlantis\Struct\EntityRelationship::Find($Filters);
+
+		var_dump($UUIDS->GetData());
+
+		$Results = $Class::Find([
+			'UseSiteTags' => FALSE,
+			'UUID'        => $UUIDS->GetData(),
+			'Limit'       => 4,
+			'Debug'       => TRUE
+		]);
+
+		////////
+
+		$this->SetPayload($Results->GetData());
+
+		return;
+	}
+
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'LIST')]
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity/list', Verb: 'GET')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
