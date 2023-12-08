@@ -207,8 +207,6 @@ extends Atlantis\ProtectedAPI {
 
 		$UUIDS = Atlantis\Struct\EntityRelationship::Find($Filters);
 
-		var_dump($UUIDS->GetData());
-
 		$Results = $Class::Find([
 			'UseSiteTags' => FALSE,
 			'UUID'        => $UUIDS->GetData(),
