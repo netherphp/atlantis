@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Atlantis\UI\Pillbox $Element
+ */
+
+// the current idea is that the currently active label is actually all of the
+// labels stacked up so that whatever the longest one is will always push the
+// dropdown to its max width to emulate the way native form elements do that.
+// we then just change its opacity if its active lol.
+
+?>
+
+<div class="dropdown">
+	<button class="btn btn-block btn-primary btn-lg fs-large fw-bold ta-left tt-normal dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+		<div class="d-inline-block" style="line-height:0px;width:94%;">
+			<?php foreach($Element->Items as $Item): /** @var Nether\Atlantis\Struct\Item $Item */ ?>
+			<span class="<?php $Util->Print($Item->IsTheUUID($Element->Section) ? 'o-100' : 'o-0') ?>"><?php $Util->Print($Item->GetTitle()) ?></span><br />
+			<?php endforeach; unset($Item); ?>
+		</div>
+	</button>
+	<div class="dropdown-menu w-100">
+		<?php foreach($Element->Items as $Item): /** @var Nether\Atlantis\Struct\Item $Item */ ?>
+		<div class="<?php $Util->Print($Item->GetClassesForHTML('atl-ui-pillbox-item', ($Item->IsTheUUID($Element->Section) ? 'on' : 'off'))) ?>" <?php echo $Item->GetDataAttrAsHTML() ?>>
+			<a class="dropdown-item pt-2 pb-2" href="<?php $Util->Print($Item->GetURL()) ?>"><?php $Util->Print($Item->GetTitle()) ?></a>
+		</div>
+		<?php endforeach; unset($Item); ?>
+	</div>
+</div>
+
+
