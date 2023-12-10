@@ -12,6 +12,9 @@ class QrCode
 implements Stringable {
 
 	public string
+	$BaseDir;
+
+	public string
 	$URL;
 
 	public int
@@ -21,78 +24,86 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__Construct(string $URL, int $Size=1200) {
+	__Construct(string $URL, int $Size=1200, bool $AutoGen=TRUE) {
+
+		$this->BaseDir = ProjectRoot;
 		$this->URL = $URL;
 		$this->Size = $Size;
 
 		$FilePath = $this->GetFilePath();
 
-		if(!file_exists($FilePath)) {
-			if(!file_exists(dirname($FilePath)))
-			Common\Filesystem\Util::MkDir(dirname($FilePath));
+		////////
 
-			$QrData = $this->Generate();
-			file_put_contents($FilePath,$QrData);
-		}
+		if($AutoGen)
+		$this->Write($this->Generate());
+
+		////////
 
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2021-02-01')]
 	public function
 	__ToString():
 	string {
-	/*//
-	@date 2021-02-01
-	//*/
 
 		return $this->GetURL();
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2021-02-01')]
 	public function
 	GetURL():
 	string {
-	/*//
-	@date 2021-02-01
-	//*/
 
 		return new Atlantis\WebURL($this->GetFileURI());
 	}
 
+	#[Common\Meta\Date('2020-09-01')]
+	#[Common\Meta\Info('returns the site root relative uri.')]
 	public function
 	GetFileURI():
 	string {
-	/*//
-	returns the site root relative uri
-	@date 2020-09-01
-	//*/
 
 		return sprintf(
-			'/data/qr/url-%s.png',
-			md5($this->URL)
+			'/data/qr/qr-%s.png',
+			$this->GetContentHash()
 		);
 	}
 
+	#[Common\Meta\Date('2020-09-01')]
+	#[Common\Meta\Info('returns the local file path.')]
 	public function
 	GetFilePath():
 	string {
-	/*//
-	returns the site root relative uri
-	@date 2020-09-01
-	//*/
 
 		return sprintf(
-			'%s/data/qr/url-%s.png',
-			ProjectRoot,
-			md5($this->URL)
+			'%s/data/qr/qr-%s.png',
+			$this->BaseDir,
+			$this->GetContentHash()
 		);
 	}
 
+	#[Common\Meta\Date('2023-12-10')]
+	public function
+	GetContentHash():
+	string {
+
+		return base_convert(
+			hash('sha256', $this->URL),
+			16, 36
+		);
+	}
+
+	#[Common\Meta\Date('2020-09-01')]
 	public function
 	Generate():
 	string {
-	/*//
-	@date 2020-09-01
-	//*/
 
 		$QrRender = NULL;
 		$QrWriter = NULL;
@@ -109,6 +120,33 @@ implements Stringable {
 		$QrData = $QrWriter->writeString($this->URL);
 
 		return $QrData;
+	}
+
+	public function
+	Write(?string $Data=NULL):
+	static {
+
+		$Filepath = $this->GetFilePath();
+
+		if($Data === NULL)
+		$Data = $this->Generate();
+
+		////////
+
+		if(!file_exists(dirname($Filepath)))
+		Common\Filesystem\Util::MkDir(dirname($Filepath));
+
+		if(!is_writable(dirname($Filepath)))
+		throw new Common\Error\DirUnwritable($Filepath);
+
+		if(file_exists($Filepath) && !is_writable($Filepath))
+		throw new Common\Error\FileUnwritable($Filepath);
+
+		file_put_contents($Filepath, $Data);
+
+		////////
+
+		return $this;
 	}
 
 }

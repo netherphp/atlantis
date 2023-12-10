@@ -129,7 +129,7 @@ extends Console\Client {
 		////////
 
 		$this
-		->FormatLn(sprintf('[%s]', __METHOD__), Colour: $Colour1, Bold: TRUE)
+		->FormatLn(sprintf('[%s]', __METHOD__), C: $Colour1, Bd: TRUE)
 		->PrintLn("• Input File: {$Filename}")
 		->PrintLn("• Output File: {$Outname}")
 		->PrintLn("• Output Size: {$Width}x{$Height}")
@@ -233,6 +233,61 @@ extends Console\Client {
 		);
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('qr')]
+	#[Console\Meta\Arg('data', 'The content to put in the QR.')]
+	#[Console\Meta\Value('--size', 'Size of the QR in pixels. (Default: 1200)')]
+	#[Console\Meta\Value('--fresh', 'Overwrite with fresh copy if already exists.')]
+	#[Console\Meta\Error(1, 'No data specified.')]
+	public function
+	GenerateQrCode():
+	int {
+
+		$this->PrintAppHeader('Generate QR Code');
+
+		$Data = $this->GetInput(1);
+		$OptSize = $this->GetOption('size') ?? 1200;
+		$OptFresh = $this->GetOption('fresh') ?? FALSE;
+
+		$Filepath = NULL;
+		$QR = NULL;
+
+		////////
+
+		if(!$Data)
+		$this->Quit(1);
+
+		////////
+
+		$QR = new Atlantis\Media\QrCode($Data, $OptSize, AutoGen: FALSE);
+		$Filepath = $QR->GetFilePath();
+
+		if(!file_exists($Filepath) || $OptFresh) {
+			$this->PrintStatus('Generating QR Code...');
+			$QR->Write();
+		}
+
+		else {
+			$this->PrintStatus('QR Already Generated. Use --fresh to write a new copy.');
+		}
+
+		////////
+
+		$this->PrintBulletList([
+			'Size' => sprintf(
+				'%d px, %s',
+				$OptSize,
+				Common\Units\Bytes::FromInt(filesize($Filepath))
+			),
+			'File' => $Filepath,
+			'URL'  => $QR->GetURL()
+		]);
+
+		return 0;
 	}
 
 }
