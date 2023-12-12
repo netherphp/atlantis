@@ -26,6 +26,7 @@ use Nether\User;
 
 $UserCanWrite = $BlogUser && $BlogUser->CanWrite();
 $UserCanAdmin = $BlogUser && $BlogUser->CanAdmin();
+$PostListArea = $App->Config[Blog\Key::ConfBlogIndexArea] ?? 'blog/widgets/post-list';
 
 ?>
 
@@ -105,7 +106,7 @@ $UserCanAdmin = $BlogUser && $BlogUser->CanAdmin();
 			<!-- THE ZONE -->
 			<div class="col-12 col-md mb-6 mb-md-0">
 
-				<?php $Surface->Area('blog/widgets/post-list', [ 'BlogUser'=> $BlogUser, 'Posts'=> $Posts ]) ?>
+				<?php $Surface->Area($PostListArea, [ 'BlogUser'=> $BlogUser, 'Posts'=> $Posts ]) ?>
 
 				<?php if(!$Posts->Total): ?>
 				<div class="jumbotron text-center rounded p-4">
