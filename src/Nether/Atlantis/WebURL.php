@@ -162,6 +162,32 @@ implements Stringable {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	Rewrite(Engine $App, string $URL):
+	string {
+
+		$HTTPS = 'https://';
+
+		if($App->IsDev())
+		$HTTPS .= 'dev.';
+
+		////////
+
+		if(str_starts_with($URL, 'atl://www.'))
+		$URL = str_replace('atl://', $HTTPS, $URL);
+
+		elseif(str_starts_with($URL, 'atl://'))
+		$URL = str_replace('atl://', $HTTPS, $URL);
+
+		////////
+
+		if(!str_starts_with($URL, 'http'))
+		return (string)(new static($URL));
+
+		else
+		return $URL;
+	}
+
+	static public function
 	FromString(string $Input):
 	static {
 

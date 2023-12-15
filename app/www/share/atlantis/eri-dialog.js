@@ -30,7 +30,7 @@ let SearchResultTemplate = ``;
 class Dialog
 extends ModalDialog {
 
-	constructor(entityUUID, tags) {
+	constructor(entityUUID, tags, opt={}) {
 		super(DialogTemplate);
 
 		this.uuid = entityUUID;
@@ -48,15 +48,17 @@ extends ModalDialog {
 		this.saveVerb = 'POST';
 		this.saveURL = '/api/eri/entity';
 
+		this.bakeOptions(opt);
+
 		////////
 
-		this.setTitle('Related Profiles');
 		this.addButton('Cancel', 'btn-dark', 'cancel');
 		this.addButton('Save', 'btn-primary', 'accept');
 
 		////////
 
 		this.type = null;
+		this.sort = 'title-az';
 
 		this.query = this.element.find('input[name=Query]');
 		this.querybin = this.element.find('.TagsQuery');
@@ -74,6 +76,26 @@ extends ModalDialog {
 		(api.send({ UUID: this.uuid, Type: this.childType }))
 		.then(this.onTagFetch.bind(this))
 		.catch(api.catch);
+
+		return;
+	};
+
+	//#[Common\Meta\Date('2023-12-14')]
+	bakeOptions(opt) {
+
+		this.setTitle('Related Profiles');
+
+		if(typeof opt.title === 'string')
+		this.setTitle(opt.title);
+
+		if(typeof opt.childType === 'string')
+		this.childType = opt.childType;
+
+		if(typeof opt.searchVerb === 'string')
+		this.searchVerb = opt.searchVerb;
+
+		if(typeof opt.searchURL === 'string')
+		this.searchURL = opt.searchURL;
 
 		return;
 	};
@@ -98,7 +120,7 @@ extends ModalDialog {
 		let val = jQuery.trim(this.query.val());
 		let api = new API.Request(this.searchVerb, this.searchURL);
 
-		(api.send({ Q: val, TagsAll: this.tags }))
+		(api.send({ Q: val, TagsAll: this.tags, Sort: this.sort }))
 		.then(this.updateTagsQuery.bind(this))
 		.catch(api.catch);
 

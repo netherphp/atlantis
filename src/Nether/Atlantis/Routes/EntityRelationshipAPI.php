@@ -210,16 +210,40 @@ extends Atlantis\ProtectedAPI {
 		$Results = $Class::Find([
 			'UseSiteTags' => FALSE,
 			'UUID'        => $UUIDS->GetData(),
-			'Limit'       => 4,
+			//'Limit'       => 4,
 			'Debug'       => TRUE
 		]);
 
 		////////
 
-		$this->SetPayload($Results->GetData());
+		$Payload = $Results->Map(function(Atlantis\Prototype $Item) {
+
+			return $Item->DescribeForPublicAPI();
+		});
+
+		$this->SetPayload($Payload->GetData());
 
 		return;
 	}
+
+	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'RELSEARCH')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	EntityRelationshipSearch():
+	void {
+
+		($this->Data)
+		->Type(Common\Filters\Text::TrimmedNullable(...))
+		->Q(Common\Filters\Text::TrimmedNullable(...));
+
+		$Type = $this->Data->Type ?? 'Profile.Entity';
+		$Class = Atlantis\Struct\EntityRelationship::TypeClass($Type);
+
+		var_dump($Class);
+
+		return;
+	}
+
 
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'LIST')]
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity/list', Verb: 'GET')]
@@ -265,7 +289,7 @@ extends Atlantis\ProtectedAPI {
 		$Inst = $Class::GetByField('UUID', $UUID);
 
 		if(!$Inst)
-		throw new Exception("entity not found {$Type} {$UUID}");
+		throw new Exception("entity not found {$Class} {$Type} {$UUID}");
 
 		return $Inst;
 	}

@@ -116,6 +116,12 @@ implements Atlantis\Packages\ExtraDataInterface {
 	$SocialData;
 
 	////////////////////////////////////////////////////////////////
+	//// LOCAL FIELDS //////////////////////////////////////////////
+
+	protected Common\Datastore
+	$RelCache;
+
+	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Atlantis\Prototype ///////////////////////////////
 
 	#[Common\Meta\Date('2023-07-04')]
@@ -766,8 +772,9 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return $Result;
 	}
 
+	#[Common\Meta\Date('2023-12-15')]
 	public function
-	FetchRelatedProfiles():
+	FetchRelatedEntityIndex():
 	Common\Datastore {
 
 		$Results = Atlantis\Struct\EntityRelationship::Find([
@@ -775,9 +782,30 @@ implements Atlantis\Packages\ExtraDataInterface {
 			'Remappers'  => fn($T)=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne($T, $this->UUID)
 		]);
 
+		return Common\Datastore::FromArray($Results->GetData());
+	}
+
+	#[Common\Meta\Date('2023-12-15')]
+	public function
+	GetRelatedEntityIndex():
+	Common\Datastore {
+
+		if(!isset($this->RelCache))
+		$this->RelCache = $this->FetchRelatedEntityIndex();
+
+		return $this->RelCache;
+	}
+
+	#[Common\Meta\Date('2023-12-15')]
+	public function
+	FetchRelatedProfiles():
+	Common\Datastore {
+
+		$UUIDS = $this->GetRelatedEntityIndex();
+
 		$Profiles = static::Find([
 			'UseSiteTags' => FALSE,
-			'UUID'        => $Results->GetData()
+			'UUID'        => $UUIDS->GetData()
 		]);
 
 		return $Profiles;
