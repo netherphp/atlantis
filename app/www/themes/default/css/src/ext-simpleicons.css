@@ -1,9 +1,13 @@
 .si {
 	display: inline-block;
-	vertical-align: middle;
+	vertical-align: bottom;
 	width: 1.0em;
 }
 
 .btn > .si:first-child {
 	margin-right: 0.25em;
+}
+
+.si-twitter::before {
+	content: "\f4e4";
 }
