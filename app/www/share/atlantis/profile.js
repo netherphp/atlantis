@@ -150,9 +150,9 @@ class Profile {
 		return false;
 	};
 
-	onEditRels(ev, tags) {
+	onEditRels(ev, tags, opts) {
 
-		let diag = new EntDialog(this.uuid, tags);
+		let diag = new EntDialog(this.uuid, tags, opts);
 		diag.show();
 
 		return false;
@@ -276,8 +276,8 @@ class Profile {
 				new DialogUtil.Field('text', 'SocialDataInstagram', 'Instagram'),
 				new DialogUtil.Field('text', 'SocialDataTikTok', 'TikTok'),
 				new DialogUtil.Field('text', 'SocialDataThreads', 'Threads'),
-				new DialogUtil.Field('text', 'SocialDataTwitter', 'Twitter')
-
+				new DialogUtil.Field('text', 'SocialDataTwitter', 'Twitter/X'),
+				new DialogUtil.Field('text', 'SocialDataYouTube', 'YouTube')
 			],
 			onAccept: function() {
 
@@ -493,7 +493,44 @@ class Profile {
 	static WhenEditRels(id, uuid, btn) {
 
 		let pro = new Profile(id, uuid);
-		pro.onEditRels(null, btn.attr('data-profile-tags'));
+
+		let opt = {
+			title: null,
+
+			parentType: null,
+			childType: null,
+
+			searchVerb: null,
+			searchURL: null,
+
+			listVerb: null,
+			listURL: null,
+
+			saveVerb: null,
+			saveURL: null
+		};
+
+		let tags = btn.attr('data-profile-tags');
+
+		////////
+
+		if(btn.has('[data-er-title]'))
+		opt.title = btn.attr('data-er-title');
+
+		if(btn.has('[data-er-type]'))
+		opt.childType = btn.attr('data-er-type');
+
+		if(btn.has('[data-er-search-verb]'))
+		opt.searchVerb = btn.attr('data-er-search-verb');
+
+		if(btn.has('[data-er-search-url]'))
+		opt.searchURL = btn.attr('data-er-search-url');
+
+		console.log(opt);
+
+		////////
+
+		pro.onEditRels(null, tags, opt);
 
 		return;
 	};
