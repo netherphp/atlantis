@@ -44,10 +44,29 @@ extends Atlantis\ProtectedAPI {
 		$Ent = NULL;
 		$Tag = NULL;
 
+		$TagList = (
+			Common\Datastore::FromArray(explode(
+				',',
+				Common\Filters\Text::TrimmedNullable($this->Data->Tags)
+			))
+			->Remap(fn(string $S)=> trim($S))
+		);
+
+		$Tags = Atlantis\Tag\Entity::Find([
+			'Alias' => $TagList->GetData()
+		]);
+
 		try {
 			$Ent = Atlantis\Profile\Entity::Insert($Dataset);
 
 			foreach(Atlantis\Util::FetchSiteTags() as $Tag) {
+				Atlantis\Profile\EntityTagLink::InsertByPair(
+					$Tag->ID,
+					$Ent->UUID
+				);
+			}
+
+			foreach($Tags as $Tag) {
 				Atlantis\Profile\EntityTagLink::InsertByPair(
 					$Tag->ID,
 					$Ent->UUID

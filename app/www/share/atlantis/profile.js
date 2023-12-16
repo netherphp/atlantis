@@ -384,7 +384,7 @@ class Profile {
 	static WhenDocumentReady() {
 
 		let map = {
-			new:      new DocReadyFunc(()=> Profile.WhenNew(), false),
+			new:      new DocReadyFunc((i, u, b)=> Profile.WhenNew(i, u, b), false),
 			title:    new DocReadyFunc((i, u)=> Profile.WhenEditTitle(i, u), true),
 			alias:    new DocReadyFunc((i, u)=> Profile.WhenEditAlias(i, u), true),
 			links:    new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
@@ -535,10 +535,10 @@ class Profile {
 		return;
 	};
 
-	static WhenNew() {
+	static WhenNew(btn) {
 
 		let pro = new Profile(null, null);
-		console.log(pro);
+		let tags = btn.attr('data-profile-tags');
 
 		////////
 
@@ -548,6 +548,7 @@ class Profile {
 			labelAccept: 'Create',
 			fields: [
 				new DialogUtil.Field('text', 'Title'),
+				new DialogUtil.Field('hidden', 'Tags', null, tags)
 			],
 			onAccept: function() {
 

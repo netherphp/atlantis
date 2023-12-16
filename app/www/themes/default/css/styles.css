@@ -1,12 +1,14 @@
 /*//
-@date 2023-11-22 22:38:05 UTC
-@files 26 [
+@date 2023-12-16 01:05:18 UTC
+@files 30 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
+    "src\/ext-bootstrap\/buttons.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
     "src\/ext-bootstrap\/opacity.css",
     "src\/ext-bootstrap\/position.css",
+    "src\/ext-bootstrap\/tags.css",
     "src\/ext-materialdesignicons.css",
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
@@ -14,6 +16,7 @@
     "src\/fx-text.css",
     "src\/design\/footer.css",
     "src\/design\/header.css",
+    "src\/elements\/ace-editor.css",
     "src\/elements\/article.css",
     "src\/elements\/blog.css",
     "src\/elements\/collapser.css",
@@ -22,6 +25,7 @@
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
     "src\/elements\/pager.css",
+    "src\/elements\/pathbar.css",
     "src\/elements\/pillbox.css",
     "src\/elements\/pretty-modern-box.css",
     "src\/elements\/pretty-modern-navbar.css",
@@ -44,6 +48,9 @@
 :root {
 	--theme-anim-ease-fast: 150ms ease-in-out;
 	--theme-anim-ease-slow: 300ms ease-in-out;
+
+	--theme-black: #141414;
+	--theme-white: #FDFDFD;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -55,13 +62,10 @@
 	logo and/or desired look. these should typically be somewhat bold colours
 	to be used on primary attention getting elements. */
 
-	--theme-black: #141414;
-	--theme-white: #FDFDFD;
-
-	--theme-primary:       #467adb;
+	--theme-primary:       #4e81e0;
 	--theme-primary-alt:   #84a6e6;
-	--theme-secondary:     #9834c7;
-	--theme-secondary-alt: #c08bd8;
+	--theme-secondary:     #be78df;
+	--theme-secondary-alt: #c39ad7 ;
 
 	/* font settings for the theme. generally these should be the most
 	readable fonts that you think look good, not any fancy things used for
@@ -71,7 +75,7 @@
 	--theme-font-normal-weight: 400;
 	--theme-font-normal-letter-spacing: 0.03rem;
 
-	--theme-font-mono-family: 'Consolas', 'Menlo', monospace;
+	--theme-font-mono-family: 'FiraCode', 'Consolas', 'Menlo', monospace;
 	--theme-font-mono-weight: 400;
 	--theme-font-mono-letter-spacing: 0.02em;
 
@@ -277,6 +281,11 @@ strong {
 }
 
 .btn-outline-dark {
+	--bs-btn-border-color: var(--theme-light-bg);
+	--bs-btn-color: var(--theme-light-bg);
+}
+
+[data-bs-theme="light"] .btn-outline-dark {
 	--bs-btn-border-color: var(--theme-dark-bg);
 	--bs-btn-color: var(--theme-dark-bg);
 }
@@ -581,6 +590,9 @@ grouped are to be considered depreciated. */
 	position: relative;
 	line-height: var(--LocalLineHeight);
 	overflow: hidden;
+
+	-webkit-mask-image: linear-gradient(175deg, #000000FF 0%, #00000000);
+	text-overflow: ellipsis;
 }
 
 .line-clamp-terminator {
@@ -866,33 +878,6 @@ grouped are to be considered depreciated. */
 	background-color: var(--theme-primary) !important;
 }
 
-.btn-block {
-	display: block;
-	width: 100%;
-}
-
-.btn-left {
-	display: block;
-	text-align: left;
-	width: 100%;
-}
-
-.btn-left > .mdi {
-	margin-right: 0.25rem;
-}
-
-.btn-spread {
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-}
-
-.btn:active:focus,
-.btn:focus {
-	outline: none !important;
-	box-shadow: none !important;
-}
-
 .form-control:focus,
 .form-check-input:focus {
 	outline: none !important;
@@ -1054,13 +1039,43 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/buttons.css ///////////////////////////////////////////*/
+
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+.btn-left {
+	display: block;
+	text-align: left;
+	width: 100%;
+}
+
+.btn-left > .mdi {
+	margin-right: 0.25rem;
+}
+
+.btn-spread {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.btn:active:focus,
+.btn:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/font-text-stuff.css ///////////////////////////////////*/
 
 /*******************************************************************************
 ** font family ****************************************************************/
 
 .ff-mono {
-	font-family: monospace;
+	font-family: var(--theme-font-mono-family);
 }
 
 .ff-normal {
@@ -1134,10 +1149,10 @@ grouped are to be considered depreciated. */
 /*******************************************************************************
 ** text transforms ************************************************************/
 
-.tt-none  { text-transform: initial !important; }
-.tt-upper { text-transform: uppercase !important; }
-.tt-lower { text-transform: lowercase !important; }
-.tt-title { text-transform: capitalize !important; }
+.tt-none, .tt-normal  { text-transform: initial !important; }
+.tt-upper, .tt-uppercase { text-transform: uppercase !important; }
+.tt-lower, .tt-lowercase { text-transform: lowercase !important; }
+.tt-title, .tt-titlecase { text-transform: capitalize !important; }
 
 /*******************************************************************************
 ** text line wrapping *********************************************************/
@@ -1237,6 +1252,8 @@ grouped are to be considered depreciated. */
 .o-hover-90:hover  { opacity: 0.90; }
 .o-hover-100:hover { opacity: 1.0; }
 
+.o-anim-fast { transition: opacity 250ms; }
+
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/position.css //////////////////////////////////////////*/
 
@@ -1257,6 +1274,26 @@ grouped are to be considered depreciated. */
 .pos-h-center { left: 50%; transform: translateX(-50%); }
 .pos-v-center { top: 50%; transform: translateY(-50%); }
 .pos-h-center.pos-v-center { transform: translateX(-50%) translateY(-50%); }
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/tags.css //////////////////////////////////////////////*/
+
+.tag a:link,
+.tag a:visited,
+.tag span {
+	background: var(--theme-body-fg) !important;
+	color: var(--theme-body-bg) !important;
+
+	display: inline-block;
+	border-radius: 0.2em;
+	padding: 0.04em 0.4em;
+	text-shadow: none;
+}
+
+.tag-primary {
+	background: var(--theme-primary);
+	color: var(--theme-body-fg);
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-materialdesignicons.css /////////////////////////////////////////*/
@@ -1286,12 +1323,16 @@ grouped are to be considered depreciated. */
 
 .si {
 	display: inline-block;
-	vertical-align: middle;
+	vertical-align: bottom;
 	width: 1.0em;
 }
 
 .btn > .si:first-child {
 	margin-right: 0.25em;
+}
+
+.si-twitter::before {
+	content: "\f4e4";
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1468,43 +1509,117 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/ace-editor.css /////////////////////////////////////////////*/
+
+.atl-code-viewer section {
+	border-radius: 4px;
+
+	background-color: var(--theme-body-bg) !important;
+	font-family: 'FiraCode', 'Consolas', monospace !important;
+	white-space: pre;
+}
+
+/* this is a theme that force overwrites how ace is at all times. this is not
+the correct way to do it. the correct way involves telling ace a custom theme
+is being used and then prefixing all these with that theme name, if i recall. */
+
+.ace_class, .ace_constant, .ace_function, .ace_identifier, .ace_keyword,
+.ace_lparen, .ace_numeric, .ace_operator, .ace_paren, .ace_punctuation,
+.ace_rparen, .ace_string, .ace_support, .ace_variable {
+	color: var(--theme-body-fg) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--theme-body-fg) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.aace_editor {
+	background-color: var(--theme-body-bg) !important;
+	font-family: 'FiraCode', 'Consolas', monospace !important;
+}
+
+.ace_line {
+	margin-left: 4px;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.ace_identifier {
+	color: var(--SyntaxNamespace) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxNamespace) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+.ace_class {
+	color: var(--SyntaxClass) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxClass) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+.ace_variable {
+	color: var(--SyntaxVariable) !important;
+	font-weight: bold !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxVariable) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+.ace_string {
+	color: var(--SyntaxString) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxString) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/** targets the most leafy of tokens that look like namespace chains. */
+.ace_identifier ~ .ace_identifier:has(+ .ace_punctuation) {
+	color: var(--SyntaxClass) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxClass) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/** targets the most leafy of method calls on a chain.. */
+.ace_identifier ~ .ace_identifier:has(+ .ace_paren) {
+	color: var(--SyntaxMethod) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxMethod) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/** targets the most leafy object property chains. */
+.ace_variable ~ .ace_identifier,
+.ace_variable ~ .ace_identifier ~ .ace_identifier {
+	color: var(--SyntaxProperty) !important;
+	text-shadow: 0px 0px var(--SyntaxGlowSize) color-mix(in hsl shorter hue, var(--SyntaxProperty) var(--SyntaxGlowShift), var(--SyntaxGlowMix)) !important;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/article.css ////////////////////////////////////////////////*/
 
-.Article > .Section {
+.atl-ui-article-section {
 	color: var(--theme-primary);
+	font-weight: bold;
+	margin-bottom: 1.0em;
+}
+
+.atl-ui-article-pathbar {
 	font-size: 0.8em;
 	font-weight: bold;
-	line-height: 1rem;
-	text-transform: uppercase;
+	margin-bottom: 1.0em;
 }
 
-.Article > .Title {
-	font-weight: bold;
-	margin-bottom: 0px;
+.atl-ui-article-section {
+	margin-bottom: 0.0em;
+	font-size: 0.8em;
 }
 
-.Article > .Content {
-	padding-top: 1.0rem;
+.atl-ui-article-title {
+	margin-bottom: 0.0em;
+	line-height: 1.0em;
 }
 
-.Article > .Subline1 {
+.atl-ui-article-subline {
 	display: flex;
+	gap: 2.0em;
+	font-size: 0.8rem;
+	opacity: 0.42;
+	padding-top: 0.5rem;
 }
 
-.Article > .Subline1 > div {
-	margin-right: 1.5rem;
-}
-
-.Article > .Subline1 > .Date {
-	font-style: italic;
-	font-size: 0.8em;
-	opacity: 0.65;
-}
-
-.Article > .Subline1 > .Authour {
-	font-style: italic;
-	font-size: 0.8em;
-	opacity: 0.65;
+.atl-ui-article-content {
+	padding-top: 1.5em;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1818,6 +1933,17 @@ grouped are to be considered depreciated. */
 	--SenseiTextDark: #222222;
 	--SenseiColourDark: #222222;
 	--SenseiColourLight: #eeeeee;
+
+	--SyntaxGlowSize: 0.75rem;
+	--SyntaxGlowMix: #0000;
+	--SyntaxGlowShift: 30%;
+
+	--SyntaxNamespace: #90a8eaFF;
+	--SyntaxClass: #8fc5f5FF;
+	--SyntaxMethod: #c7a6d4FF;
+	--SyntaxVariable: #f0834dFF;
+	--SyntaxProperty: #eaa785FF;
+	--SyntaxString: #f2bfbfFF;
 }
 
 .border-colour-namespace { border-color: var(--SenseiNamespace) !important; }
@@ -1909,12 +2035,24 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/pathbar.css ////////////////////////////////////////////////*/
+
+.atl-ui-pathbar {
+	display: flex;
+	gap: 0.5em;
+}
+
+.atl-ui-pathbar-sep {
+	opacity: 0.25;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/pillbox.css ////////////////////////////////////////////////*/
 
 .atl-ui-pillbox-item a:link,
 .atl-ui-pillbox-item a:visited {
-	background-color: var(--theme-light-bg);
-	color: var(--theme-black);
+	background: var(--theme-body-bg) !important;
+	color: var(--theme-body-fg) !important;
 
 	border-bottom: 0px;
 	display: block;
@@ -1930,8 +2068,8 @@ grouped are to be considered depreciated. */
 
 .atl-ui-pillbox-item.on a:link,
 .atl-ui-pillbox-item.on a:visited {
-	background-color: var(--theme-black);
-	color: var(--theme-white);
+	background: var(--theme-body-fg) !important;
+	color: var(--theme-body-bg) !important;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -2004,7 +2142,7 @@ grouped are to be considered depreciated. */
 }
 
 .PrettyModernBox .line-clamp-terminator {
-	background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
+	-background: linear-gradient(90deg, #1A1A1A00 0%, #1A1A1AFF 100%);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -2044,7 +2182,6 @@ grouped are to be considered depreciated. */
 
 Element: Nether\Atlantis\UI\Slider
 Area:    elements/slider
-
 
 * .swiper-supercontainer
 wraps the swiper and after it is rigged up reparents the button and pager docks
@@ -2100,6 +2237,10 @@ makes the pager bullets be square instead of circle.
 
 	--theme-swiper-pager-bg-this: #AAAAAA;
 	--theme-swiper-pager-bg-nope: #222222;
+}
+
+.atl-ui-slider {
+
 }
 
 .swiper-supercontainer {
