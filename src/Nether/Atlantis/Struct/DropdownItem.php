@@ -58,19 +58,19 @@ extends Common\Prototype {
 
 	public function
 	GetIcon():
-	string {
+	?string {
 
 		$Output = match(TRUE) {
-			(str_starts_with($this->Icon, 'mdi-'))
+			(isset($this->Icon) && str_starts_with($this->Icon, 'mdi-'))
 			=> "mdi {$this->Icon}",
 
-			(str_starts_with($this->Icon, 'fa-'))
+			(isset($this->Icon) && str_starts_with($this->Icon, 'fa-'))
 			=> "fa fw {$this->Icon}",
 
-			(str_starts_with($this->Icon, 'fab-'))
+			(isset($this->Icon) && str_starts_with($this->Icon, 'fab-'))
 			=> "fab fw {$this->Icon}",
 
-			(str_starts_with($this->Icon, 'far-'))
+			(isset($this->Icon) && str_starts_with($this->Icon, 'far-'))
 			=> "far fw {$this->Icon}",
 
 			default
