@@ -43,6 +43,9 @@ extends Surface\Element {
 	public string
 	$Title = '';
 
+	public string
+	$Subtitle = '';
+
 	public mixed
 	$Content = '';
 

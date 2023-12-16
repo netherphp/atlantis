@@ -1,4 +1,7 @@
 
+.offcanvas-header {
+	align-items: start !important;
+}
 
 .sitemenu-body-lock {
 	position: fixed;

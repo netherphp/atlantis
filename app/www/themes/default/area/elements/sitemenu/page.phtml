@@ -42,11 +42,29 @@ $Content = match(TRUE) {
 
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
 	<div class="offcanvas-header">
-		<h5 class="offcanvas-title"><?php $Util->Print($Element->Title) ?></h5>
-		<button type="button" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent" class="btn-close">
-		</button>
+
+		<h5 class="offcanvas-title">
+			<?php $Util->Print($Element->Title) ?>
+
+			<?php if($Element->Subtitle): ?>
+			<div class="offcanvas-subtitle">
+				<i class="mdi mdi-chevron-right"></i> <?php $Util->Print($Element->Subtitle) ?>
+			</div>
+			<?php endif; ?>
+		</h5>
+
+		<button type="button" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent" class="btn-close"></button>
 	</div>
 	<div class="offcanvas-body">
+
+	<?php if($Element->GetID() !== 'SiteMenuRoot'): ?>
+	<div class="mb-4">
+		<a href="#" class="tt-uppercase" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent">
+			<i class="mdi mdi-chevron-double-left"></i>
+			Back
+		</a>
+	</div>
+	<?php endif; ?>
 
 <?php echo $Content ?>
 
