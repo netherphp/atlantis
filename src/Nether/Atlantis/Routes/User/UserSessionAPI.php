@@ -346,6 +346,10 @@ extends Atlantis\PublicAPI {
 		$RequireEmail = $this->Config[Atlantis\Key::ConfUserEmailActivate];
 		$RequireAlias = $this->Config[Atlantis\Key::ConfUserRequireAlias];
 		$RequireActivation = TRUE;
+		$AllowSignup = $this->Config[Atlantis\Key::ConfUserAllowSignup];
+
+		if(!$AllowSignup)
+		$this->Quit(10, 'Not right now');
 
 		$PasswordTester = new Atlantis\Util\PasswordTester;
 		$User = NULL;

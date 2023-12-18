@@ -1,5 +1,5 @@
 /*//
-@date 2023-12-16 01:05:18 UTC
+@date 2023-12-16 03:13:31 UTC
 @files 30 [
     "src\/imports.css",
     "src\/main.css",
@@ -2166,6 +2166,10 @@ is being used and then prefixing all these with that theme name, if i recall. */
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/sitemenu.css ///////////////////////////////////////////////*/
+
+.offcanvas-header {
+	align-items: start !important;
+}
 
 .sitemenu-body-lock {
 	position: fixed;
