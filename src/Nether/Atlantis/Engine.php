@@ -82,7 +82,7 @@ application instance.
 		$this->ProjectEnv = 'dev';
 		$this->Config = new Common\Datastore;
 		$this->Library = new Common\Datastore;
-		$this->Plugins = new Plugin\Manager;
+		$this->Plugins = new Plugin\Manager($this);
 
 		// load in configuration.
 

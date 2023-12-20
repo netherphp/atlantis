@@ -2,9 +2,13 @@
 
 namespace Nether\Atlantis\Plugin;
 
+use Nether\Atlantis;
 use Nether\Common;
 
 class Manager {
+
+	protected Atlantis\Engine
+	$App;
 
 	protected Common\Datastore
 	$Interfaces;
@@ -13,8 +17,9 @@ class Manager {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__Construct() {
+	__Construct(Atlantis\Engine $App) {
 
+		$this->App = $App;
 		$this->Interfaces = new Common\Datastore;
 
 		return;
