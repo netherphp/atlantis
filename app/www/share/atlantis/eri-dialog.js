@@ -88,6 +88,9 @@ extends ModalDialog {
 		if(typeof opt.title === 'string')
 		this.setTitle(opt.title);
 
+		if(typeof opt.parentType === 'string')
+		this.parentType = opt.parentType;
+
 		if(typeof opt.childType === 'string')
 		this.childType = opt.childType;
 

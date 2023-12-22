@@ -34,7 +34,8 @@ $GenerateBlogUserMenu = function(Atlantis\Engine $App, Blog\Post $Post) {
 
 	$PostItems = Common\Datastore::FromArray([
 		[ 'Title' => 'Edit Post', 'Icon' => 'mdi-pencil', 'URL' => $Post->GetEditURL() ],
-		[ 'Title' => 'Edit Tags', 'Icon' => 'mdi-tag-multiple', 'Attr' => $Post->GetDataAttr([ 'post-cmd'=> 'tags' ], TRUE) ]
+		[ 'Title' => 'Edit Tags', 'Icon' => 'mdi-tag-multiple', 'Attr' => $Post->GetDataAttr([ 'post-cmd'=> 'tags' ], TRUE) ],
+		[ 'Title' => 'Link Profiles...', 'Icon' => 'mdi-tag-multiple', 'Attr' => $Post->GetDataAttr([ 'profile-cmd'=> 'erlink', 'parent-type'=> 'Blog.Post' ], TRUE) ]
 	]);
 
 	$ActionItems = Common\Datastore::FromArray([
@@ -55,7 +56,7 @@ $GenerateBlogUserMenu = function(Atlantis\Engine $App, Blog\Post $Post) {
 	// those subgroups.
 
 	($App->Plugins->Get(Blog\Plugins\BlogPostWriterMenuInterface::class))
-	->Remap(fn(string $ClassName)=> new $ClassName)
+	->Remap(fn(string $ClassName)=> new $ClassName($App))
 	->Each(function(Blog\Plugins\BlogPostWriterMenuInterface $P) use($App, $Post, $ActionItems) {
 		$ActionItems->MergeRight($P->GetActionItems($App, $Post));
 		return;

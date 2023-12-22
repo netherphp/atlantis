@@ -81,4 +81,18 @@ class Manager {
 		return $this;
 	}
 
+	public function
+	RegisterMany(iterable $Map):
+	static {
+
+		$Key = NULL;
+		$Val = NULL;
+
+		foreach($Map as $Key => $Val) {
+
+		}
+
+		return $this;
+	}
+
 }

@@ -61,12 +61,13 @@ class TemplateHelper {
 		// this is some magic that will need to be documented or just not
 		// be here honestly.
 
-		if(str_starts_with($Input, 'atl://'))
+		if($Input && str_starts_with($Input, 'atl://'))
 		$Input = Atlantis\WebURL::Rewrite($this->App, $Input);
 
 		////////
 
 		Atlantis\Util::PrintHTML($Input ?? '');
+
 		return;
 	}
 
@@ -128,26 +129,7 @@ class TemplateHelper {
 	RewriteURL(string $URL):
 	string {
 
-		$HTTPS = 'https://';
-
-		if($this->App->IsDev())
-		$HTTPS .= 'dev.';
-
-		////////
-
-		if(str_starts_with($URL, 'atl://www.'))
-		$URL = str_replace('atl://', $HTTPS, $URL);
-
-		elseif(str_starts_with($URL, 'atl://'))
-		$URL = str_replace('atl://', $HTTPS, $URL);
-
-		////////
-
-		if(!str_starts_with($URL, 'http'))
-		return (string)(new Atlantis\WebURL($URL));
-
-		else
-		return $URL;
+		return Atlantis\WebURL::Rewrite($this->App, $URL);
 	}
 
 	public function

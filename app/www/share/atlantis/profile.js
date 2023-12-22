@@ -514,6 +514,12 @@ class Profile {
 
 		////////
 
+		if(btn.has('[data-parent-type]'))
+		opt.parentType = btn.attr('data-parent-type');
+
+		if(btn.has('[data-child-type]'))
+		opt.childType = btn.attr('data-child-type');
+
 		if(btn.has('[data-er-title]'))
 		opt.title = btn.attr('data-er-title');
 
