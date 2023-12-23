@@ -164,6 +164,18 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 		<?php endif; ?>
 	</div>
 
+	<?php if($News && $News->Count()): ?>
+	<!-- NEWS -->
+	<div class="mb-8">
+		<h2 class="text-uppercase mb-0">News</h2>
+		<hr class="mt-1 mb-3" />
+
+		<div class="hr-hide-last">
+			<?php $Surface->Area('blog/widgets/post-list-lite', [ 'Posts'=> $News ]) ?>
+		</div>
+	</div>
+	<?php endif; ?>
+
 	<?php $Surface->Area('profile/view-extend-pre', $__SCOPE) ?>
 
 	<?php if(isset($Photos) && $Photos->Total): ?>

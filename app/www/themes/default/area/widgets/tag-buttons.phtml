@@ -60,8 +60,28 @@ $Tags = $Tags->Distill(
 	<a href="<?php $Util->Print($Util->RewriteURL($RewriteURL($Tag, $URL))) ?>" class="text-transform-none btn <?php $Util->Print($Tag->Type) ?> <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
 	<?php endforeach; ?>
 
-	<?php if($Tags) foreach($Tags as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
-	<a href="<?php $Util->Print($Util->RewriteURL($RewriteURL($Tag, $URL))) ?>" class="text-transform-none btn <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
-	<?php endforeach; ?>
+	<?php
+
+	if($Tags) {
+		foreach($Tags as $Tag) {
+			if($Tag instanceof Atlantis\Tag\Entity)
+			printf(
+				'<a href="%s" class="text-transform-none btn %s p-1 pl-2 pr-2 mb-2">%s</a> ',
+				$Util->RewriteURL($RewriteURL($Tag, $URL)),
+				$TagClasses($Tag),
+				$Util->Encode($Tag->Name)
+			);
+
+			if($Tag instanceof Atlantis\Profile\Entity)
+			printf(
+				'<a href="%s" class="text-transform-none btn %s p-1 pl-2 pr-2 mb-2">%s</a> ',
+				$Util->RewriteURL($Tag->GetPageURL()),
+				'btn-outline-primary',
+				$Util->Encode($Tag->Title)
+			);
+		}
+	}
+
+	?>
 
 </div>

@@ -210,6 +210,13 @@ strong {
 	--bs-btn-hover-border-color: var(--theme-primary-alt);
 }
 
+.btn-outline-primary {
+	color: var(--theme-primary);
+	--bs-btn-hover-bg: var(--theme-primary-alt);
+	--bs-btn-border-color: var(--theme-primary);
+	--bs-btn-hover-border-color: var(--theme-primary-alt);
+}
+
 .btn-light {
 	--bs-btn-bg: var(--theme-light-bg);
 	--bs-btn-border-color: var(--theme-light-bg);

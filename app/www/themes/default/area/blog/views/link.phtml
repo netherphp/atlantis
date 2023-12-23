@@ -43,6 +43,9 @@ $OutboundURL = $Full ? $Link->URL : $Post->GetURL();
 $OutboundTab = $Full ? 'target="_blank"' : '';
 $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 
+if(!isset($Profiles))
+$Profiles = $Post->FetchRelatedProfiles();
+
 ?>
 
 <!-- POST HEADING -->
@@ -79,7 +82,7 @@ $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 
 	<?php if($ShowTags): ?>
 	<div class="mb-1">
-		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
+		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> Common\Datastore::FromArray(array_merge($Post->GetTags()->GetData(), $Profiles->GetData())) ]) ?>
 	</div>
 	<?php endif; ?>
 

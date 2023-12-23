@@ -4,9 +4,11 @@ namespace Nether\Atlantis\Routes\Profile;
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Blog;
 use Nether\Common;
 
 use Exception;
+use Nether\Atlantis\Struct\EntityRelationship;
 
 class ProfileWeb
 extends Atlantis\PublicWeb {
@@ -22,6 +24,25 @@ extends Atlantis\PublicWeb {
 		$Videos = $Profile->FetchVideos();
 		$Links = $Profile->FetchRelatedLinks();
 		$Related = $Profile->FetchRelatedProfiles();
+		$News = NULL;
+
+		////////
+
+		if(class_exists('Nether\\Blog\\Library')) {
+			$NewsItems = EntityRelationship::Find([
+				'EntityUUID' => $Profile->UUID,
+				'EntityType' => 'Blog.Post',
+				'Remappers'  => [
+					fn(EntityRelationship $I)
+					=> EntityRelationship::KeepTheOtherOne($I, $Profile->UUID)
+				]
+			]);
+
+			$News = Blog\Post::Find([
+				'UUID' => $NewsItems->GetData(),
+				'Sort' => 'newest'
+			]);
+		}
 
 		////////
 
@@ -34,7 +55,8 @@ extends Atlantis\PublicWeb {
 			'Photos'  => $Photos,
 			'Videos'  => $Videos,
 			'Links'   => $Links,
-			'Related' => $Related
+			'Related' => $Related,
+			'News'    => $News
 		]);
 
 		return;
