@@ -258,6 +258,9 @@ inside the dialog window.
 		if(this.type === 'date')
 		return this.buildDateField();
 
+		if(this.type === 'litepicker')
+		return this.buildLitepickerField();
+
 		if(this.type === 'hidden')
 		return this.buildHiddenField();
 
@@ -266,6 +269,9 @@ inside the dialog window.
 
 		if(this.type === 'select')
 		return this.buildSelectField();
+
+		if(this.type === 'number')
+		return this.buildNumberField();
 
 		return;
 	};
@@ -331,6 +337,33 @@ inside the dialog window.
 
 	buildDateField() {
 
+		let output = jQuery('<div />');
+		let field = null;
+
+		output.append(
+			jQuery('<div />')
+			.addClass('fw-bold')
+			.text(this.title)
+		);
+
+		output.append(
+			field = jQuery('<input />')
+			.addClass('form-control')
+			.attr('type', 'date')
+			.attr('name', this.name)
+			.attr('title', this.title)
+			.attr('data-fieldtype', this.type)
+			.attr('pattern', '\d{4}-\d{2}-\d{2}')
+		);
+
+		if(this.value)
+		field.val(this.value);
+
+		return output;
+	};
+
+	buildLitepickerField() {
+
 		let output = this.buildTextField();
 
 		let picker = new Litepicker({
@@ -342,6 +375,38 @@ inside the dialog window.
 		});
 
 		output.data('Litepicker', picker);
+
+		return output;
+	};
+
+	buildNumberField() {
+
+		let output = jQuery('<div />');
+		let field = null;
+
+		output.append(
+			jQuery('<div />')
+			.addClass('fw-bold')
+			.text(this.title)
+		);
+
+		if(this.list === null)
+		this.list = {};
+
+		output.append(
+			field = jQuery('<input />')
+			.addClass('form-control')
+			.attr('type', 'number')
+			.attr('name', this.name)
+			.attr('title', this.title)
+			.attr('data-fieldtype', this.type)
+			.attr('min', ( this.list.min ? this.list.min : 0 ))
+			.attr('max', ( this.list.max ? this.list.max : 99 ))
+			.attr('step', ( this.list.step ? this.list.step : 1 ))
+		);
+
+		if(this.value)
+		field.val(this.value);
 
 		return output;
 	};
