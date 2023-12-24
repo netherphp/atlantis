@@ -348,8 +348,6 @@ extends Atlantis\PublicAPI {
 		$RequireActivation = TRUE;
 		$AllowSignup = $this->Config[Atlantis\Key::ConfUserAllowSignup];
 
-		var_dump($this->Config);
-
 		if(!$AllowSignup)
 		$this->Quit(10, 'Not right now');
 
