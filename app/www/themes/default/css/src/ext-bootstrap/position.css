@@ -14,4 +14,5 @@
 
 .pos-h-center { left: 50%; transform: translateX(-50%); }
 .pos-v-center { top: 50%; transform: translateY(-50%); }
-.pos-h-center.pos-v-center { transform: translateX(-50%) translateY(-50%); }
+.pos-h-center.pos-v-center,
+.pos-middle { transform: translateX(-50%) translateY(-50%); }

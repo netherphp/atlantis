@@ -148,3 +148,11 @@
 	opacity: 0.64;
 }
 
+.text-crossed-fs {
+	background: linear-gradient(to bottom right, transparent 45.9%, currentColor 49.0%, currentColor 51.0%, transparent 52.1%);
+}
+
+.text-crossed-bs {
+	background: linear-gradient(to top right, transparent 45.9%, currentColor 49.0%, currentColor 51.0%, transparent 52.1%);
+}
+

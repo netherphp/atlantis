@@ -446,6 +446,7 @@ grouped are to be considered depreciated. */
 	border-left-color: var(--ColourPrimaryAccent);
 }
 
+.rounded-less { border-radius: 4px; }
 .rounded-extra { border-radius: 10px; }
 
 .th-shrink,

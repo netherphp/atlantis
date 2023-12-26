@@ -1,0 +1,5 @@
+
+.filter-desaturate,
+.filter-desaturate-0  { filter: saturate(0.00); }
+.filter-desaturate-50 { filter: saturate(0.50); }
+.filter-desaturate-25 { filter: saturate(0.25); }
