@@ -3,6 +3,7 @@
 namespace Nether\Atlantis\Routes\Media;
 
 use Nether\Atlantis;
+use Nether\Browser;
 use Nether\Common;
 use Nether\Storage;
 
@@ -71,6 +72,134 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		$this->ChunkPost();
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'POSTURL')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	public function
+	EntityPostURL():
+	void {
+
+		$MaxBytes = 50 * 1024 * 1024;
+
+		($this->Data)
+		->URL(Common\Filters\Text::TrimmedNullable(...))
+		->ParentUUID(Common\Filters\Lists::ArrayOfNullable(...), Common\Filters\Text::UUID(...))
+		->ParentType(Common\Filters\Text::TrimmedNullable(...));
+
+		////////
+
+		if(!$this->Data->URL)
+		$this->Quit(1, 'no URL supplied. (one per line)');
+
+		$URL = (
+			Common\Datastore::FromArray(explode("\n", $this->Data->URL))
+			->Remap(fn(string $U)=> trim($U))
+			->Filter(fn(string $U)=> !!$U)
+			->Flatten()
+			->Filter(fn(string $U)=> str_starts_with($U, 'http'))
+		);
+
+		if(!$URL->Count())
+		$this->Quit(2, 'no URL supplied. (one per line)');
+
+		////////
+
+		$URL->Each(function(string $U) use($MaxBytes) {
+
+			$UUID = Common\UUID::V7();
+			$Browser = Browser\Client::FromURL($U);
+			$Storage = $this->App->Storage->Location('Temp');
+			$Default = $this->App->Storage->Location('Default');
+			$UserID = $this->User->ID;
+
+			$Tmp = sprintf('upl/%s/fetch.file', $UUID);
+			$Fnl = NULL;
+
+			$Data = NULL;
+			$Size = NULL;
+			$File = NULL;
+			$ParentUUID = NULL;
+			$ChildType = NULL;
+
+			// download the file.
+
+			$Data = $Browser->Fetch();
+			$Storage->Put($Tmp, $Data);
+			$File = $Storage->GetFileObject($Tmp);
+			$Size = Common\Units\Bytes::FromInt($File->GetSize());
+			$Mime = $File->ReadMimeType();
+
+			// determine if ok.
+
+			if($Size->IsHeavierThan($MaxBytes)) {
+				$File->DeleteParentDirectory();
+				return;
+			}
+
+			if(!str_starts_with($Mime, 'image/')) {
+				$File->DeleteParentDirectory();
+				return;
+			}
+
+			// finalise the file.
+
+			$Fnl = sprintf(
+				'upl/%s/original.%s',
+				join('/', explode('-', $UUID, 2)),
+				Common\Filesystem\File::ExtensionForType($Mime)
+			);
+
+			$Default->Put($Fnl, $File->Read());
+			$Final = $Default->GetFileObject($Fnl);
+
+			// insert into db.
+
+			$Entity = Atlantis\Media\File::Insert([
+				'UUID'   => $UUID,
+				'UserID' => $UserID,
+				'Name'   => Common\Filesystem\Util::Basename($Fnl),
+				'Type'   => $Final->GetType(),
+				'Size'   => $Final->GetSize(),
+				'URL'    => $Final->GetStorageURL()
+			]);
+
+			$Entity->GenerateExtraFiles();
+
+			// establish relationships
+
+			$ChildType = match(TRUE) {
+				$Entity->Type === $Entity::TypeImg
+				=> 'Media.Image',
+
+				default
+				=> 'Media.File'
+			};
+
+			if(is_iterable($this->Data->ParentUUID) && $this->Data->ParentType)
+			foreach($this->Data->ParentUUID as $ParentUUID) {
+				Atlantis\Struct\EntityRelationship::Insert([
+					'ParentType'  => $this->Data->ParentType,
+					'ParentUUID'  => $ParentUUID,
+					'ChildType'   => $ChildType,
+					'ChildUUID'   => $Entity->UUID
+				]);
+			}
+
+			// clean up after.
+
+			$File->DeleteParentDirectory();
+
+			return;
+		});
+
+		////////
+
+		$this->SetPayload([
+			'URL' => $URL->GetData()
+		]);
 
 		return;
 	}

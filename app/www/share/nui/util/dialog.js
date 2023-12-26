@@ -2,6 +2,7 @@ import ModalDialog from '../modules/modal/modal.js';
 import Litepicker from '../../atlantis/lib/date/litepicker.js';
 import Editor from '../modules/editor/editor.js';
 import JsonAPI from '../api/json.js';
+import Uploader from '../modules/uploader/uploader.js';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -273,6 +274,9 @@ inside the dialog window.
 		if(this.type === 'number')
 		return this.buildNumberField();
 
+		if(this.type === 'file')
+		return this.buildFileButton();
+
 		return;
 	};
 
@@ -458,6 +462,32 @@ inside the dialog window.
 
 		if(this.value)
 		editor.setContent(this.value);
+
+		return output;
+	};
+
+	buildFileButton() {
+
+		let output = jQuery('<div />');
+		let field = null;
+
+		output.append(
+			jQuery('<div />')
+			.addClass('fw-bold')
+			.text(this.title)
+		);
+
+		output.append(
+			field = jQuery('<input />')
+			.addClass('form-control')
+			.attr('type', 'file')
+			.attr('name', this.name)
+			.attr('title', this.title)
+			.attr('data-fieldtype', this.type)
+		);
+
+		if(this.value)
+		field.val(this.value);
 
 		return output;
 	};

@@ -13,10 +13,14 @@ import API from '../../api/json.js';
 ////////////////////////////////////////////////////////////////////////////////
 
 let UploaderTemplate = `
-	<div class="row">
-		<div class="col-12">
+	<div class="row tight">
+		<div class="col atl-uploader-mode-upload">
 			<button class="btn btn-primary btn-block font-weight-bold text-uppercase">Click To Choose Files...</button>
 			<input type="file" class="d-none" multiple="multiple" />
+		</div>
+		<div class="col-12 atl-uploader-mode-url d-none">
+			<div class="fw-bold">URLs (per line)</div>
+			<textarea class="form-control atl-uploader-url-input" style="white-space: pre;" rows="4"></textarea>
 		</div>
 		<div class="col-12 mt-4 text-center d-none">
 			<div class="progress"><div class="progress-bar" style="width: 0%"></div></div>
@@ -24,6 +28,14 @@ let UploaderTemplate = `
 		</div>
 	</div>
 `;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+let UploadDef = {
+	uploadUrlVerb: 'POSTURL',
+	uploadUrlURL:  '/api/media/entity'
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +110,7 @@ extends ModalDialog {
 
 		this.setTitle('Upload Files...');
 
+		this.mode = 'upload';
 		this.action = 'default';
 		this.queue = new Array;
 		this.req = null;
@@ -107,6 +120,8 @@ extends ModalDialog {
 		this.bar = this.body.find('.progress:first');
 		this.fill = this.body.find('.progress-bar:first');
 		this.status = this.body.find('.status:first');
+		this.btnModeUrl = this.body.find('[data-mode=url]');
+		this.inputUrls = this.body.find('.atl-uploader-url-input');
 
 		this.runCount = 0;
 		this.runTotal = 0;
@@ -120,6 +135,34 @@ extends ModalDialog {
 
 		this.button.on('click', this.onSelectFile.bind(this));
 		this.input.on('change', this.onSelected.bind(this));
+		this.btnModeUrl.on('click', this.onModeUrl.bind(this));
+
+		(this)
+		.addButton(
+			'By URL...',
+			'btn-secondary atl-uploader-mode-upload',
+			'mode-url'
+		)
+		.addButton(
+			'By File...',
+			'btn-secondary atl-uploader-mode-url d-none',
+			'mode-upload'
+		)
+		.addButton(
+			'Upload',
+			'btn-primary atl-uploader-mode-url d-none',
+			'accept'
+		);
+
+		(this.element)
+		.on(
+			'click', '.modal-action-mode-url',
+			this.onModeUrl.bind(this)
+		)
+		.on(
+			'click', '.modal-action-mode-upload',
+			this.onModeUpload.bind(this)
+		);
 
 		this.show();
 		return;
@@ -127,6 +170,36 @@ extends ModalDialog {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	onModeUrl() {
+
+		this.mode = 'url';
+
+		(this.element)
+		.find('.atl-uploader-mode-upload')
+		.addClass('d-none');
+
+		(this.element)
+		.find('.atl-uploader-mode-url')
+		.removeClass('d-none');
+
+		return;
+	};
+
+	onModeUpload() {
+
+		this.mode = 'upload';
+
+		(this.element)
+		.find('.atl-uploader-mode-upload')
+		.removeClass('d-none');
+
+		(this.element)
+		.find('.atl-uploader-mode-url')
+		.addClass('d-none');
+
+		return;
+	};
 
 	onSelectFile() {
 
@@ -269,6 +342,29 @@ extends ModalDialog {
 		return;
 	};
 
+	onUploadUrls() {
+
+		this.footer.hide();
+
+		let api = new API.Request(UploadDef.uploadUrlVerb, UploadDef.uploadUrlURL);
+		let data = { ...this.dataset };
+
+		data.URL = jQuery.trim(this.inputUrls.val());
+
+		(api.send(data))
+		.then(api.reload)
+		.catch(api.catch);
+
+		return;
+	};
+
+	onAccept() {
+
+		if(this.mode === 'url')
+		this.onUploadUrls();
+
+		return;
+	};
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
