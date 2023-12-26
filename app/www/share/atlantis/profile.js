@@ -499,6 +499,7 @@ class Profile {
 
 			parentType: null,
 			childType: null,
+			parentChild: null,
 
 			searchVerb: null,
 			searchURL: null,
@@ -513,6 +514,9 @@ class Profile {
 		let tags = btn.attr('data-profile-tags');
 
 		////////
+
+		if(btn.has('[data-parent-child]'))
+		opt.parentChild = !!parseInt(btn.attr('data-parent-child'));
 
 		if(btn.has('[data-parent-type]'))
 		opt.parentType = btn.attr('data-parent-type');

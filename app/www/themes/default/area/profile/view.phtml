@@ -179,6 +179,35 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 	<?php $Surface->Area('profile/view-extend-pre', $__SCOPE) ?>
 
 	<?php if(isset($Photos) && $Photos->Total): ?>
+	<?php if(defined('AtlantisProfileBetaPhotos')): ?>
+	<!-- PHOTOS -->
+	<div class="mb-8">
+
+		<div class="row align-items-center">
+			<div class="col">
+				<h2 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h2>
+			</div>
+
+			<?php if($Route->IsUserAdmin()): ?>
+			<div class="col-auto">
+				<button class="btn btn-outline-dark" <?php echo $Profile->GetDataAttrForHTML([ 'profile-cmd'=> 'photo' ]) ?>>
+					<i class="mdi mdi-plus"></i>
+					Upload
+				</button>
+			</div>
+			<?php endif; ?>
+		</div>
+
+		<hr class="mt-1 mb-3" />
+
+		<?php echo Atlantis\UI\Gallery::FromSurfaceWith($Surface, [
+			'ItemArea' => '~/item-photo',
+			'Items'    => $Photos,
+			'Parent'   => $Profile
+		]); ?>
+
+	</div>
+	<?php else: ?>
 	<!-- PHOTOS -->
 	<div class="mb-8">
 		<h2 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h2>
@@ -199,6 +228,7 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 			<?php endforeach; unset($Photo); ?>
 		</div>
 	</div>
+	<?php endif; ?>
 	<?php endif; ?>
 
 	<?php if(isset($Videos) && $Videos->Total): ?>

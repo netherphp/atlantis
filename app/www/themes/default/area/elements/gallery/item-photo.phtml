@@ -4,26 +4,55 @@
  * @var Nether\Atlantis\Struct\TemplateHelper $Util
  * @var Nether\Surface\Engine $Surface
  * @var Nether\Atlantis\UI\Gallery $Element
+ * @var mixed $Key
  * @var Nether\Atlantis\UI\GalleryItem $Item
  */
 
 $Admin = $Route->IsUserAdmin();
 $ImageURL = $Item->Item->GetPublicURL();
 $ThumbnailURL = $Item->Item->GetPublicURL();
+$Selected ??= FALSE;
+$Parent ??= NULL;
 
 $Classes = 'ratiobox widescreen wallpapered contained rounded bg-dark cursor-pointer GalleryItem';
+
+$IsFirst = (TRUE
+	&& $Key !== NULL
+	&& $Element->Items->IsFirstKey($Key)
+);
 
 ?>
 
 <div class="col-6 col-md-3 mb-4">
-	<div class="<?php $Util->Print($Classes) ?>" style="background-image:url(<?php $Util->Print($ThumbnailURL) ?>);" data-url-lg="<?php $Util->Print($ImageURL) ?>">
-		<div class="position-absolute position-bottom position-right p-1">
-
-			<?php if($Admin): ?>
-			<button class="btn btn-danger font-size-large p-0 pl-1 pr-1" <?php echo $Item->Item->GetDataAttrForHTML([ 'photolib-cmd'=> 'delete' ]) ?>>
-				<i class="mdi mdi-trash-can mr-0"></i>
-			</button>
-			<?php endif; ?>
+	<div class="atl-ui-gallery-item position-relative">
+		<div class="rounded">
+			<img src="<?php $Util->Print($ImageURL) ?>" class="w-100" />
 		</div>
+		<a class="atl-ui-gallery-item-link position-absolutely td-none" href="<?php $Util->Print($ImageURL) ?>" data-url-lg="<?php $Util->Print($ImageURL) ?>"></a>
+
+		<?php if($Admin): ?>
+		<div class="atl-ui-gallery-item-tools position-absolute position-top position-left position-right">
+			<div class="row tight align-items-center">
+				<?php if($Parent && $Parent instanceof Nether\Atlantis\Profile\Entity): /** @var Nether\Atlantis\Profile\Entity $Parent */ ?>
+				<div class="col-auto">
+					<button data-bs-toggle="tooltip" title="Set Profile Photo" class="btn btn-dark font-size-large p-0 pl-2 pr-2" <?php echo $Parent->GetDataAttrForHTML([ 'profile-cmd'=> 'photoset', 'photo-id'=> $Item->Item->ID ]) ?>>
+						<span class="<?php $Util->Print($Parent->CoverImageID === $Item->Item->ID ? 'text-warning' : '') ?>"><i class="mdi mdi-account-star mr-0"></i></span>
+					</button>
+				</div>
+				<div class="col-auto">
+					<button data-bs-toggle="tooltip" title="Manage Linked Profiles" class="btn btn-dark font-size-large p-0 pl-2 pr-2" <?php echo $Item->Item->GetDataAttrForHTML([ 'profile-cmd'=> 'erlink', 'parent-type'=> 'Media.Image', 'parent-child'=> 1 ]) ?>>
+						<i class="mdi mdi-account-multiple-plus mr-0"></i>
+					</button>
+				</div>
+				<div class="col"></div>
+				<?php endif; ?>
+				<div class="col-auto">
+					<button data-bs-toggle="tooltip" title="Delete" class="btn btn-danger font-size-large p-0 pl-2 pr-2" <?php echo $Item->Item->GetDataAttrForHTML([ 'photolib-cmd'=> 'delete' ]) ?>>
+						<i class="mdi mdi-trash-can mr-0"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<?php endif; ?>
 	</div>
 </div>

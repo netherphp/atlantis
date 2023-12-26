@@ -43,6 +43,12 @@ extends Surface\Element {
 	////////////////////////////////////////////////////////////////
 	// LOCAL: Batch Item Interface /////////////////////////////////
 
+	public mixed
+	$Parent = NULL;
+
+	////////////////////////////////////////////////////////////////
+	// LOCAL: Batch Item Interface /////////////////////////////////
+
 	#[Common\Meta\PropertyObjectify]
 	public Common\Datastore
 	$Items;
@@ -114,7 +120,7 @@ extends Surface\Element {
 	// LOCAL: Rendering API ////////////////////////////////////////
 
 	public function
-	RenderItem(mixed $Item):
+	RenderItem(mixed $Item, mixed $Key=NULL):
 	string {
 
 		if($Item instanceof GalleryItem)
@@ -126,7 +132,9 @@ extends Surface\Element {
 
 		return $this->Surface->GetArea($Area, [
 			'Element' => $this,
-			'Item'    => $Item
+			'Key'     => $Key,
+			'Item'    => $Item,
+			'Parent'  => $this->Parent
 		]);
 	}
 
@@ -134,11 +142,12 @@ extends Surface\Element {
 	RenderItems():
 	string {
 
+		$Key = NULL;
 		$Item = NULL;
 		$Output = '';
 
-		foreach($this->GetItemsWrapped() as $Item)
-		$Output .= $this->RenderItem($Item);
+		foreach($this->GetItemsWrapped() as $Key => $Item)
+		$Output .= $this->RenderItem($Item, $Key);
 
 		return $Output;
 	}

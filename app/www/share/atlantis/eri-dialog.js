@@ -38,6 +38,7 @@ extends ModalDialog {
 
 		this.parentType = 'Profile.Entity';
 		this.childType = 'Profile.Entity';
+		this.parentChild = false;
 
 		this.searchVerb = 'SEARCH';
 		this.searchURL = '/api/profile/entity';
@@ -87,6 +88,9 @@ extends ModalDialog {
 
 		if(typeof opt.title === 'string')
 		this.setTitle(opt.title);
+
+		if(typeof opt.parentChild !== 'undefined')
+		this.parentChild = opt.parentChild;
 
 		if(typeof opt.parentType === 'string')
 		this.parentType = opt.parentType;
@@ -282,6 +286,7 @@ extends ModalDialog {
 		let api = new API.Request(this.saveVerb, this.saveURL);
 
 		let output = {
+			ParentChild: this.parentChild ? 1 : 0,
 			ParentType: this.parentType,
 			ParentUUID: this.uuid,
 			ChildType:  this.childType,

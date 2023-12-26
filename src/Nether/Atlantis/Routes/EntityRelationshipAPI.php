@@ -49,6 +49,7 @@ extends Atlantis\ProtectedAPI {
 
 		($this->Data)
 		->AppendOnly(Common\Filters\Numbers::BoolType(...))
+		->ParentChild(Common\Filters\Numbers::BoolType(...))
 		->ParentType(Common\Filters\Text::TrimmedNullable(...))
 		->ParentUUID(Common\Filters\Text::UUID(...))
 		->ChildType(Common\Filters\Text::TrimmedNullable(...))
@@ -79,9 +80,16 @@ extends Atlantis\ProtectedAPI {
 		// a way to determine what needs to be removed at the end of the
 		// process.
 
+		if(!$this->Data->ParentChild)
 		$Old = EntityRelationship::Find([
 			'ParentUUID' => $this->Data->ParentUUID,
 			'ChildType'  => $this->Data->ChildType
+		]);
+
+		else
+		$Old = EntityRelationship::Find([
+			'ChildUUID'  => $this->Data->ParentUUID,
+			'ParentType' => $this->Data->ChildType
 		]);
 
 		if(is_array($this->Data->ChildUUID))
@@ -101,17 +109,33 @@ extends Atlantis\ProtectedAPI {
 			// if we do not already have a relationship that looks like
 			// this then create one.
 
+			if(!$this->Data->ParentChild)
 			$Exists = $Old->Accumulate(FALSE, (
 				fn(bool $C, EntityRelationship $P)
 				=> $C || $P->ChildUUID === $ChildUUID
 			));
 
+			else
+			$Exists = $Old->Accumulate(FALSE, (
+				fn(bool $C, EntityRelationship $P)
+				=> $C || $P->ParentUUID === $ChildUUID
+			));
+
 			if(!$Exists) {
+				if(!$this->Data->ParentChild)
 				$Rel = Atlantis\Struct\EntityRelationship::Insert([
 					'ParentType' => $this->Data->ParentType,
 					'ParentUUID' => $this->Data->ParentUUID,
 					'ChildType'  => $this->Data->ChildType,
 					'ChildUUID'  => $ChildUUID
+				]);
+
+				else
+				$Rel = Atlantis\Struct\EntityRelationship::Insert([
+					'ChildType' => $this->Data->ParentType,
+					'ChildUUID' => $this->Data->ParentUUID,
+					'ParentType'  => $this->Data->ChildType,
+					'ParentUUID'  => $ChildUUID
 				]);
 
 				$Added->Push($Rel);
@@ -120,9 +144,16 @@ extends Atlantis\ProtectedAPI {
 			// remove this tag from the old index to confirm that we
 			// acknoleged this relationship.
 
+			if(!$this->Data->ParentChild)
 			$Old->Filter(
 				fn(EntityRelationship $P)
 				=> $P->ChildUUID !== $ChildUUID
+			);
+
+			else
+			$Old->Filter(
+				fn(EntityRelationship $P)
+				=> $P->ParentUUID !== $ChildUUID
 			);
 		}
 

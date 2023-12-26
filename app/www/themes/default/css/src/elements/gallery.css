@@ -9,3 +9,28 @@
 .GalleryItem:hover .GalleryHoverTools {
 	opacity: 1.0;
 }
+
+.atl-ui-gallery-item {
+	background: var(--theme-dark-glass);
+	padding: 0.65em;
+
+	border-radius: 0.75em;
+}
+
+.atl-ui-gallery-item img,
+.atl-ui-gallery-item .btn {
+	border-radius: 0.45em;
+}
+
+.atl-ui-gallery-item img {
+	border-radius: 0.45em;
+}
+
+.atl-ui-gallery-item .atl-ui-gallery-item-tools {
+	display: none;
+	padding: 0.325em;
+}
+
+.atl-ui-gallery-item:hover .atl-ui-gallery-item-tools {
+	display: block;
+}
