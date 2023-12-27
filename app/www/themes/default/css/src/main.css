@@ -206,8 +206,10 @@ strong {
 .btn-primary {
 	--bs-btn-bg: var(--theme-primary);
 	--bs-btn-hover-bg: var(--theme-primary-alt);
+	--bs-btn-active-bg: var(--theme-primary-alt);
 	--bs-btn-border-color: var(--theme-primary);
 	--bs-btn-hover-border-color: var(--theme-primary-alt);
+	--bs-btn-active-border-color: var(--theme-primary-alt);
 }
 
 .btn-outline-primary {

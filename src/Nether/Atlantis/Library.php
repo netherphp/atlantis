@@ -176,10 +176,14 @@ implements
 		if(!$App->User)
 		return;
 
-		if($App->User->IsAdmin())
-		$Elements
-		->Push(new Atlantis\Dashboard\AtlantisTagsElement($App))
-		->Push(new Atlantis\Dashboard\AtlantisTrafficElement($App));
+		if($App->User->IsAdmin()) {
+
+			if(!$App->Config->Get('TempDashboardNoTraffic'))
+			$Elements
+			->Push(new Atlantis\Dashboard\AtlantisTagsElement($App))
+			->Push(new Atlantis\Dashboard\AtlantisTrafficElement($App));
+
+		}
 
 		$Elements
 		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App));

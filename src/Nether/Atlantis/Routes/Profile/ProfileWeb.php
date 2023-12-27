@@ -26,6 +26,10 @@ extends Atlantis\PublicWeb {
 		$Related = $Profile->FetchRelatedProfiles();
 		$News = NULL;
 
+		$ExtraData = static::ProfileViewExtraData(
+			$this->App, $Profile
+		);
+
 		////////
 
 		if(class_exists('Nether\\Blog\\Library')) {
@@ -38,10 +42,10 @@ extends Atlantis\PublicWeb {
 				]
 			]);
 
-			$News = Blog\Post::Find([
-				'UUID' => $NewsItems->GetData(),
-				'Sort' => 'newest'
-			]);
+			//$News = Blog\Post::Find([
+			//	'UUID' => $NewsItems->GetData(),
+			//	'Sort' => 'newest'
+			//]);
 		}
 
 		////////
@@ -50,7 +54,9 @@ extends Atlantis\PublicWeb {
 		->Set('Page.Title', $Profile->Title)
 		->Set('Page.ImageURL', $Profile->GetCoverImageURL('lg'))
 		->Area($this->GetViewArea(), [
-			'Profile' => $Profile,
+			'Profile'   => $Profile,
+			'ExtraData' => $ExtraData,
+
 			'Tags'    => $Tags,
 			'Photos'  => $Photos,
 			'Videos'  => $Videos,
@@ -86,6 +92,76 @@ extends Atlantis\PublicWeb {
 		////////
 
 		return ($this->Response)::CodeOK;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-12-26')]
+	static public function
+	ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
+	Atlantis\Struct\DropdownMenu {
+
+		$AdminMenu = Atlantis\Struct\DropdownMenu::New();
+
+		if(!$App->User || !$App->User->IsAdmin())
+		return $AdminMenu;
+
+		////////
+
+		$Plugins = (
+			($App->Plugins)
+			->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
+			->Remap(fn(string $C)=> new $C($App))
+			->Accumulate(new Common\Datastore, (
+				fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
+				=> $C->MergeRight($P->GetItems( $Profile ))
+			))
+			->Sort()
+		);
+
+		($AdminMenu)
+		->ItemNew('Manage Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
+		->ItemNew('Edit Title & Alias', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE))
+		->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
+		->ItemNew('Edit Street Address', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE))
+		->ItemNew('Edit Web Links', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE))
+		->ItemNew('Enable Profile', 'mdi-eye', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE), If: !$Profile->Enabled)
+		->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
+		->ItemNew('-');
+
+		if($Plugins && $Plugins->Count()) {
+			$AdminMenu->ItemPush($Plugins);
+			$AdminMenu->ItemNew('-');
+		}
+
+		($AdminMenu)
+		->ItemNew('Upload Photos', 'mdi-upload', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE))
+		->ItemNew('Add Related Link', 'mdi-web', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'related-link' ], TRUE))
+		->ItemNew('Add Video URL', 'mdi-video', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE))
+		->ItemNew('-');
+
+		($AdminMenu)
+		->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
+
+		return $AdminMenu;
+	}
+
+	#[Common\Meta\Date('2023-12-26')]
+	static public function
+	ProfileViewExtraData(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
+	Common\Datastore {
+
+		$Plugins = $App->Plugins->GetInstanced(
+			Atlantis\Plugin\Interfaces\ProfileViewExtraDataInterface::class
+		);
+
+		$Output = $Plugins->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, Atlantis\Plugin\Interfaces\ProfileViewExtraDataInterface $P)
+			=> $C->MergeRight($P->GetExtraData( $Profile ))
+		));
+
+		return $Output;
 	}
 
 	////////////////////////////////////////////////////////////////

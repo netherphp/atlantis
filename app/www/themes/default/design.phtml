@@ -17,6 +17,8 @@
 
 $ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
 
+$FavIconURL = $Surface->Get('Page.FavIconURL') ?? '/themes/default/gfx/favicon.ico';
+
 $Surface
 ->Set('Theme.Page.ThemeMode', (array_key_exists('theme', $_COOKIE) ? $_COOKIE['theme'] : 'dark' ))
 ->Set('Theme.Page.MainCSS', ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'));
@@ -27,7 +29,7 @@ $Surface
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="shortcut icon" href="<?php $ThemeURL('gfx/favicon.ico') ?>" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?php $Util->Print($FavIconURL) ?>" type="image/x-icon" />
 	<title><?php $Surface->Show('Page.Title') ?></title>
 
 	<script type="text/javascript" src="<?php $ThemeURL('lib/js/jquery.min.js') ?>"></script>

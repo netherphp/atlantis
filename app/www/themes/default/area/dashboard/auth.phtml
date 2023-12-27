@@ -124,6 +124,12 @@ $GetRemoveButton = function(string $Type) {
 		<hr />
 		<?php endif; ?>
 
+		<?php if(!Nether\User\Library::HasAnyThirdPartyAuth()): ?>
+		<div class="jumbotron rounded ta-center fst-italic">
+			No third party authentication has been set up.
+		</div>
+		<?php endif; ?>
+
 	</div>
 
 </div>

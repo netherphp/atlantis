@@ -44,7 +44,10 @@ class Manager {
 	Get(string $IFace):
 	Common\Datastore {
 
-		return $this->Interfaces[$IFace] ?? new Common\Datastore;
+		if(!$this->Interfaces->HasKey($IFace))
+		$this->Interfaces->Shove($IFace, new Common\Datastore);
+
+		return $this->Interfaces[$IFace]->Copy();
 	}
 
 	public function
@@ -53,7 +56,7 @@ class Manager {
 
 		$Output = $this->Get($IFace);
 
-		$Output->Remap(fn(string $Class)=> new $Class);
+		$Output->Remap(fn(string $Class)=> new $Class($this->App));
 
 		return $Output;
 	}
@@ -82,14 +85,14 @@ class Manager {
 	}
 
 	public function
-	RegisterMany(iterable $Map):
+	RegisterPluginMap(iterable $Map):
 	static {
 
 		$Key = NULL;
 		$Val = NULL;
 
 		foreach($Map as $Key => $Val) {
-
+			$this->Register($Key, $Val);
 		}
 
 		return $this;

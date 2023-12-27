@@ -21,50 +21,6 @@ use Nether\User;
  * @var Database\ResultSet $Videos
  */
 
-$Address = $Profile->GetAddresssLines();
-$MapURL = $Profile->GetMapURL();
-
-$AdminMenu = NULL;
-
-if($Route->IsUserAdmin()) {
-	$AdminMenu = Atlantis\Struct\DropdownMenu::New();
-
-	$Plugins = (
-		($App->Plugins)
-		->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
-		->Remap(fn(string $C)=> new $C($App))
-		->Accumulate(new Common\Datastore, (
-			fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
-			=> $C->MergeRight($P->GetItems( $Profile ))
-		))
-		->Sort()
-	);
-
-	($AdminMenu)
-	->ItemNew('Manage Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
-	->ItemNew('Edit Title & Alias', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE))
-	->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
-	->ItemNew('Edit Street Address', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE))
-	->ItemNew('Edit Web Links', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE))
-	->ItemNew('Enable Profile', 'mdi-eye', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE), If: !$Profile->Enabled)
-	->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
-	->ItemNew('-');
-
-	if($Plugins && $Plugins->Count()) {
-		$AdminMenu->ItemPush($Plugins);
-		$AdminMenu->ItemNew('-');
-	}
-
-	($AdminMenu)
-	->ItemNew('Upload Photos', 'mdi-upload', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE))
-	->ItemNew('Add Related Link', 'mdi-web', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'related-link' ], TRUE))
-	->ItemNew('Add Video URL', 'mdi-video', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE))
-	->ItemNew('-');
-
-	($AdminMenu)
-	->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
-}
-
 $FilterTags = fn(Atlantis\Tag\Entity $T)=> $T->Type !== 'site';
 
 $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
@@ -82,7 +38,7 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 
 <?php $Surface->Area('profile/view-before-pre', $__SCOPE) ?>
 
-<div class="container pt-6 pb-6">
+<div class="container pt-0 pb-0">
 
 	<?php if(!$Profile->Enabled): ?>
 	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
@@ -90,64 +46,15 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 
 	<!-- HEADER -->
 	<div class="mb-6">
-		<div class="row">
-			<?php if(isset($Profile->CoverImage)): ?>
-			<div class="col-12 col-md-3 mb-4 mb-md-0">
-				<div class="ratiobox widescreen rounded">
-					<div class="position-absolutely wallpapered covered rounded" style="transform:scale(1.1);filter:blur(26px);background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);"></div>
-					<div class="position-absolutely wallpapered rounded contained bg-transparent" style="background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);">
-						<a class="position-absolutely" href="<?php $Util->Print($Profile->Alias) ?>"></a>
-					</div>
-				</div>
-			</div>
-			<?php endif; ?>
-			<div class="col">
-				<div class="row">
-					<div class="col">
-						<h2 class="mb-0"><?php $Util->Print($Profile->Title) ?></h2>
-					</div>
+		<?php
 
-					<?php if($Route->IsUserAdmin()): ?>
-					<div class="col-auto">
-						<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $AdminMenu ]) ?>
-					</div>
-					<?php endif; ?>
+		$Surface->Area('profile/header', [
+			'Profile'   => $Profile,
+			'ExtraData' => $ExtraData,
+			'Tags'      => $Tags
+		])
 
-				</div>
-				<hr class="mt-1 mb-3" />
-				<div class="mb-0">
-					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags, 'URL'=> $Route->GetTagURL() ]) ?>
-				</div>
-
-				<?php if($Address->Count()): ?>
-				<div class="font-size-large">
-					<span class="tt-upper fw-bold">Address:</span>
-					<a class="td-underline" href="<?php $Util->Print($Profile->GetMapURL()) ?>"><?php $Util->Print($Address->Join(' ')) ?></a>
-				</div>
-				<?php elseif($Profile->AddressState): ?>
-				<div class="font-size-large">
-					<span class="tt-upper fw-bold">State:</span>
-					<?php $Util->Print($Profile->AddressState) ?>
-				</div>
-				<?php endif; ?>
-
-				<?php if($Profile->SocialData->HasAnyItems()): ?>
-				<div class="row font-size-large tight align-items-center">
-					<div class="col-auto">
-						<span class="fw-bold text-uppercase">Links:</span>
-					</div>
-					<?php foreach($Profile->SocialData->GetIterator() as $Key => $Val): ?>
-					<div class="col-auto">
-						<a href="<?php $Util->Print($Val) ?>" class="ml-2" target="_blank">
-							<i class="<?php $Util->Print($Profile->SocialData->GetIconStyleClass($Key)) ?>"></i>
-						</a>
-					</div>
-					<?php endforeach; unset($Key, $Val); ?>
-				</div>
-				<?php endif; ?>
-
-			</div>
-		</div>
+		?>
 	</div>
 
 	<!-- DETAILS -->
@@ -190,7 +97,7 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 
 			<?php if($Route->IsUserAdmin()): ?>
 			<div class="col-auto">
-				<button class="btn btn-outline-dark" <?php echo $Profile->GetDataAttrForHTML([ 'profile-cmd'=> 'photo' ]) ?>>
+				<button class="btn btn-dark" <?php echo $Profile->GetDataAttrForHTML([ 'profile-cmd'=> 'photo' ]) ?>>
 					<i class="mdi mdi-plus"></i>
 					Upload
 				</button>

@@ -21,12 +21,14 @@
 					Change Password
 				</a>
 			</div>
+			<?php if(Nether\User\Library::HasAnyThirdPartyAuth()): ?>
 			<div class="mb-2">
 				<a href="/dashboard/settings/auth" class="btn btn-dark btn-block text-align-left">
 					<i class="mdi mdi-account-settings"></i>
 					Manage Login Methods
 				</a>
 			</div>
+			<?php endif; ?>
 			<div class="mb-0">
 				<a href="/logout" class="btn btn-dark btn-block text-align-left">
 					<i class="mdi mdi-account-off-outline"></i>

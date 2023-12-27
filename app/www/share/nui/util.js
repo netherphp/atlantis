@@ -48,6 +48,21 @@ class Util {
 		return;
 	};
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static TemporaryStyleClassSwap(el, toRem, toAdd) {
+
+		el.removeClass(toRem).addClass(toAdd);
+
+		setTimeout(
+			(()=> el.removeClass(toAdd).addClass(toRem)),
+			500
+		);
+
+		return;
+	};
+
 };
 
 export default Util;

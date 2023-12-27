@@ -40,4 +40,14 @@
 	mix-blend-mode: soft-light;
 }
 
+.scale-anim {
+	transition: transform 250ms;
+}
 
+.scale-anim-1 {
+	transform: scale(1.0);
+}
+
+.scale-anim-1a {
+	transform: scale(1.1);
+}
