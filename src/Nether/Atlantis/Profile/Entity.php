@@ -252,6 +252,10 @@ implements Atlantis\Packages\ExtraDataInterface {
 	HasDetails():
 	bool {
 
+		// this is to handle the cases where you blank out the description
+		// editor but it still is <div><br></div> which is common for those
+		// html editors.
+
 		if(strlen($this->Details) < 32)
 		return trim(strip_tags($this->Details)) !== '';
 
