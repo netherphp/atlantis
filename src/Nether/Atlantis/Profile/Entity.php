@@ -248,6 +248,16 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return $Output;
 	}
 
+	public function
+	HasDetails():
+	bool {
+
+		if(strlen($this->Details) < 32)
+		return trim(strip_tags($this->Details)) !== '';
+
+		return !!$this->Details;
+	}
+
 	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Database\Prototype ///////////////////////////////
 

@@ -7,8 +7,16 @@ use Nether\Avenue;
 use Nether\Blog;
 use Nether\Common;
 
+use Nether\Atlantis\Plugin\Interfaces;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 use Exception;
 use Nether\Atlantis\Struct\EntityRelationship;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 class ProfileWeb
 extends Atlantis\PublicWeb {
@@ -25,6 +33,14 @@ extends Atlantis\PublicWeb {
 		$Links = $Profile->FetchRelatedLinks();
 		$Related = $Profile->FetchRelatedProfiles();
 		$News = NULL;
+
+		$SectionsBefore = static::ProfileViewExtraSectionsBefore(
+			$this->App, $Profile
+		);
+
+		$SectionsAfter = static::ProfileViewExtraSectionsAfter(
+			$this->App, $Profile
+		);
 
 		$ExtraData = static::ProfileViewExtraData(
 			$this->App, $Profile
@@ -54,8 +70,10 @@ extends Atlantis\PublicWeb {
 		->Set('Page.Title', $Profile->Title)
 		->Set('Page.ImageURL', $Profile->GetCoverImageURL('lg'))
 		->Area($this->GetViewArea(), [
-			'Profile'   => $Profile,
-			'ExtraData' => $ExtraData,
+			'Profile'        => $Profile,
+			'SectionsBefore' => $SectionsBefore,
+			'SectionsAfter'  => $SectionsAfter,
+			'ExtraData'      => $ExtraData,
 
 			'Tags'    => $Tags,
 			'Photos'  => $Photos,
@@ -97,7 +115,25 @@ extends Atlantis\PublicWeb {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public function
+	GetViewArea():
+	string {
+
+		return 'profile/view';
+	}
+
+	public function
+	GetTagURL():
+	string {
+
+		return '/tag/:Alias:';
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Common\Meta\Date('2023-12-26')]
+	#[Common\Meta\Info('Allow plugins add things to the Profile Admin Menu.')]
 	static public function
 	ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
 	Atlantis\Struct\DropdownMenu {
@@ -148,37 +184,55 @@ extends Atlantis\PublicWeb {
 	}
 
 	#[Common\Meta\Date('2023-12-26')]
+	#[Common\Meta\Info('Allow plugins fill a Datastore with additional info custom templates might need.')]
 	static public function
 	ProfileViewExtraData(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
 	Common\Datastore {
 
 		$Plugins = $App->Plugins->GetInstanced(
-			Atlantis\Plugin\Interfaces\ProfileViewExtraDataInterface::class
+			Interfaces\ProfileView\ExtraDataInterface::class
 		);
 
 		$Output = $Plugins->Accumulate(new Common\Datastore, (
-			fn(Common\Datastore $C, Atlantis\Plugin\Interfaces\ProfileViewExtraDataInterface $P)
+			fn(Common\Datastore $C, Interfaces\ProfileView\ExtraDataInterface $P)
 			=> $C->MergeRight($P->GetExtraData( $Profile ))
 		));
 
 		return $Output;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	#[Common\Meta\Date('2023-12-27')]
+	static public function
+	ProfileViewExtraSectionsBefore(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
+	Common\Datastore {
 
-	public function
-	GetViewArea():
-	string {
+		$Plugins = $App->Plugins->GetInstanced(
+			Interfaces\ProfileView\ExtraSectionsBeforeInterface::class
+		);
 
-		return 'profile/view';
+		$Output = $Plugins->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, Interfaces\ProfileView\ExtraSectionsBeforeInterface $P)
+			=> $C->MergeRight($P->GetExtraSectionsBefore( $Profile ))
+		));
+
+		return $Output;
 	}
 
-	public function
-	GetTagURL():
-	string {
+	#[Common\Meta\Date('2023-12-27')]
+	static public function
+	ProfileViewExtraSectionsAfter(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
+	Common\Datastore {
 
-		return '/tag/:Alias:';
+		$Plugins = $App->Plugins->GetInstanced(
+			Interfaces\ProfileView\ExtraSectionAfterInterface::class
+		);
+
+		$Output = $Plugins->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, Interfaces\ProfileView\ExtraSectionsAfterInterface $P)
+			=> $C->MergeRight($P->GetExtraSectionsAfter( $Profile ))
+		));
+
+		return $Output;
 	}
 
 }

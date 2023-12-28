@@ -1,11 +1,11 @@
 <?php
 
-namespace Nether\Atlantis\Plugin\Interfaces;
+namespace Nether\Atlantis\Plugin\Interfaces\ProfileView;
 
 use Nether\Atlantis;
 use Nether\Common;
 
-interface ProfileViewExtraDataInterface {
+interface ExtraDataInterface {
 
 	public function
 	GetExtraData(Atlantis\Profile\Entity $Profile):

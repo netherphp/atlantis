@@ -391,6 +391,14 @@ implements Packages\DescribeForPublicInterface {
 	////////////////////////////////////////////////////////////////
 	//// FILTER/MAPPER CALLABLES ///////////////////////////////////
 
+	#[Common\Meta\Date('2023-12-27')]
+	static public function
+	MapToUUID(self $Inst):
+	string {
+
+		return $Inst->UUID;
+	}
+
 	#[Common\Meta\Date('2023-07-07')]
 	static public function
 	MapForPublicAPI(self $Inst):

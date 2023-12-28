@@ -17,7 +17,7 @@ constructor dumped in object form.
 		title, fields=[], body=null,
 		labelAccept='OK', labelCancel='Cancel',
 		onAccept=null,
-		show=false, maximise=false
+		show=false, maximise=false, width=null
 	}) {
 
 		this.title = title;
@@ -28,6 +28,7 @@ constructor dumped in object form.
 		this.onAccept = onAccept;
 		this.show = show;
 		this.maximise = maximise;
+		this.width = width;
 
 		return;
 	};
@@ -77,11 +78,18 @@ in-page dialog windows.
 
 		this.onAcceptFunc = this.config.onAccept;
 
+		if(this.config.width !== null)
+		this.element.find('.modal-dialog').css({
+			'min-width': this.config.width,
+			'max-width': this.config.width,
+			'width':     this.config.width
+		});
+
 		if(this.config.maximise === true)
 		this.element.find('.modal-dialog').css({
 			'min-width': '95vw',
 			'max-width': '95vw',
-			'width': '95vw'
+			'width':     '95vw'
 		});
 
 		if(this.config.show === true)
@@ -256,6 +264,9 @@ inside the dialog window.
 		if(this.type === 'text')
 		return this.buildTextField();
 
+		if(this.type === 'textarea')
+		return this.buildTextareaField();
+
 		if(this.type === 'date')
 		return this.buildDateField();
 
@@ -328,6 +339,32 @@ inside the dialog window.
 			field = jQuery('<input />')
 			.addClass('form-control')
 			.attr('type', 'text')
+			.attr('name', this.name)
+			.attr('title', this.title)
+			.attr('data-fieldtype', this.type)
+		);
+
+		if(this.value)
+		field.val(this.value);
+
+		return output;
+	};
+
+	buildTextareaField() {
+
+		let output = jQuery('<div />');
+		let field = null;
+
+		output.append(
+			jQuery('<div />')
+			.addClass('fw-bold')
+			.text(this.title)
+		);
+
+		output.append(
+			field = jQuery('<textarea />')
+			.addClass('form-control')
+			.attr('rows', 5)
 			.attr('name', this.name)
 			.attr('title', this.title)
 			.attr('data-fieldtype', this.type)

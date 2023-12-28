@@ -14,6 +14,8 @@ use Nether\User;
  * @var Surface\Engine $Surface
  * @var User\EntitySession $User
  *
+ * @var Common\Datastore $SectionsBefore
+ * @var Common\Datastore $SectionsAfter
  * @var Atlantis\PublicWeb $Route
  * @var Atlantis\Profile\Entity $Profile
  * @var Database\ResultSet $Tags
@@ -21,16 +23,14 @@ use Nether\User;
  * @var Database\ResultSet $Videos
  */
 
-$FilterTags = fn(Atlantis\Tag\Entity $T)=> $T->Type !== 'site';
-
-$GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
-
-	$Menu = Atlantis\Struct\DropdownMenu::New();
-	$Menu->ItemNew('Edit Link', 'mdi-pencil', Attr: $Rel->GetDataAttr([ 'link-cmd' => 'edit' ], TRUE));
-	$Menu->ItemNew('Delete', 'mdi-close', Attr: $Rel->GetDataAttr([ 'link-cmd' => 'delete' ], TRUE));
-
-	return $Menu;
-};
+$Scopeify = (
+	fn($Item): array
+	=> array_merge(
+		$__SCOPE,
+		[ 'Element'=> $Item, 'Parent'=> $Profile ],
+		$Item->GetExtraData()->GetData()
+	)
+);
 
 ?>
 
@@ -57,6 +57,7 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 		?>
 	</div>
 
+	<?php if($Profile->HasDetails()): ?>
 	<!-- DETAILS -->
 	<div class="mb-8">
 		<h2 class="text-uppercase mb-0">Description</h2>
@@ -70,6 +71,14 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 		<div class="fst-italic">No additional information has been added.</div>
 		<?php endif; ?>
 	</div>
+	<?php endif; ?>
+
+	<!-- SECTIONS: BEFORE -->
+	<?php if($SectionsBefore): foreach($SectionsBefore as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
+	<div class="atl-profile-section atl-profile-section-before">
+		<?php $Surface->Area($Item->GetURL(), $Scopeify($Item)) ?>
+	</div>
+	<?php endforeach; endif; unset($Item); ?>
 
 	<?php if($News && $News->Count()): ?>
 	<!-- NEWS -->
@@ -164,11 +173,6 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 					<a href="<?php $Util->Print($Rel->URL) ?>" target="_blank" class="fw-bold"><?php $Util->Print($Rel->Title) ?></a>
 				</div>
 			</div>
-			<?php if($Route->IsUserAdmin()): ?>
-			<div class="col-auto">
-				<?php $Surface->Area('widgets/dropdown', [ 'Menu'=> $GetMenuForRelatedLink($Rel) ]) ?>
-			</div>
-			<?php endif; ?>
 		</div>
 		<hr />
 		<?php endforeach; unset($Rel); ?>
@@ -176,6 +180,18 @@ $GetMenuForRelatedLink = function(Atlantis\Media\RelatedLink $Rel) use($Route) {
 	<?php endif; ?>
 
 	<?php $Surface->Area('profile/view-extend', $__SCOPE) ?>
+
+	<!-- SECTIONS: AFTER -->
+	<?php if($SectionsAfter): foreach($SectionsAfter as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
+	<div class="atl-profile-section atl-profile-section-after">
+		<h2 class="atl-profile-section-title"><?php $Util->Print($Item->GetTitle()) ?></h2>
+		<hr class="mt-0 mb-3" />
+
+		<div class="atl-profile-section-content">
+			<?php $Surface->Area($Item->GetURL(), $Scopeify($Item)) ?>
+		</div>
+	</div>
+	<?php endforeach; endif; unset($Item); ?>
 
 </div>
 
