@@ -46,11 +46,15 @@ $TagClasses = function(Atlantis\Tag\Entity $T): string {
 	return 'btn-outline-dark';
 };
 
-if(!$User || !$User->IsAdmin())
-$Tags = $Tags->Distill(
-	fn(Atlantis\Tag\Entity $T)
-	=> $T->Type !== 'site'
-);
+/*
+$Tags = $Tags->Distill(function($T) {
+
+	if($T instanceof Atlantis\Tag\Entity)
+	return $T->Type !== 'site';
+
+	return TRUE;
+});
+*/
 
 ?>
 

@@ -1,10 +1,11 @@
 /*//
-@date 2023-12-22 23:32:11 UTC
-@files 30 [
+@date 2023-12-27 23:20:38 UTC
+@files 31 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-bootstrap\/buttons.css",
+    "src\/ext-bootstrap\/filters.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
     "src\/ext-bootstrap\/opacity.css",
     "src\/ext-bootstrap\/position.css",
@@ -250,8 +251,10 @@ strong {
 .btn-primary {
 	--bs-btn-bg: var(--theme-primary);
 	--bs-btn-hover-bg: var(--theme-primary-alt);
+	--bs-btn-active-bg: var(--theme-primary-alt);
 	--bs-btn-border-color: var(--theme-primary);
 	--bs-btn-hover-border-color: var(--theme-primary-alt);
+	--bs-btn-active-border-color: var(--theme-primary-alt);
 }
 
 .btn-outline-primary {
@@ -908,6 +911,7 @@ grouped are to be considered depreciated. */
 	border-left-color: var(--ColourPrimaryAccent);
 }
 
+.rounded-less { border-radius: 4px; }
 .rounded-extra { border-radius: 10px; }
 
 .th-shrink,
@@ -1075,6 +1079,30 @@ grouped are to be considered depreciated. */
 	box-shadow: none !important;
 }
 
+.atl-btn-flip-save-check i:nth-of-type(1) {
+	display: inline;
+}
+
+.atl-btn-flip-save-check i:nth-of-type(2) {
+	display: none;
+}
+
+.atl-btn-flip-save-check.btn-success i:nth-of-type(1) {
+	display: none;
+}
+
+.atl-btn-flip-save-check.btn-success i:nth-of-type(2) {
+	display: inline;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/filters.css ///////////////////////////////////////////*/
+
+.filter-desaturate,
+.filter-desaturate-0  { filter: saturate(0.00); }
+.filter-desaturate-50 { filter: saturate(0.50); }
+.filter-desaturate-25 { filter: saturate(0.25); }
+
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/font-text-stuff.css ///////////////////////////////////*/
 
@@ -1228,6 +1256,14 @@ grouped are to be considered depreciated. */
 	opacity: 0.64;
 }
 
+.text-crossed-fs {
+	background: linear-gradient(to bottom right, transparent 45.9%, currentColor 49.0%, currentColor 51.0%, transparent 52.1%);
+}
+
+.text-crossed-bs {
+	background: linear-gradient(to top right, transparent 45.9%, currentColor 49.0%, currentColor 51.0%, transparent 52.1%);
+}
+
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/opacity.css ///////////////////////////////////////////*/
 
@@ -1280,7 +1316,8 @@ grouped are to be considered depreciated. */
 
 .pos-h-center { left: 50%; transform: translateX(-50%); }
 .pos-v-center { top: 50%; transform: translateY(-50%); }
-.pos-h-center.pos-v-center { transform: translateX(-50%) translateY(-50%); }
+.pos-h-center.pos-v-center,
+.pos-middle { transform: translateX(-50%) translateY(-50%); }
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/tags.css //////////////////////////////////////////////*/
@@ -1407,6 +1444,18 @@ grouped are to be considered depreciated. */
 	left: 3px;
 	opacity: 0.8;
 	mix-blend-mode: soft-light;
+}
+
+.scale-anim {
+	transition: transform 250ms;
+}
+
+.scale-anim-1 {
+	transform: scale(1.0);
+}
+
+.scale-anim-1a {
+	transform: scale(1.1);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1814,6 +1863,31 @@ is being used and then prefixing all these with that theme name, if i recall. */
 
 .GalleryItem:hover .GalleryHoverTools {
 	opacity: 1.0;
+}
+
+.atl-ui-gallery-item {
+	background: var(--theme-dark-glass);
+	padding: 0.65em;
+
+	border-radius: 0.75em;
+}
+
+.atl-ui-gallery-item img,
+.atl-ui-gallery-item .btn {
+	border-radius: 0.45em;
+}
+
+.atl-ui-gallery-item img {
+	border-radius: 0.45em;
+}
+
+.atl-ui-gallery-item .atl-ui-gallery-item-tools {
+	display: none;
+	padding: 0.325em;
+}
+
+.atl-ui-gallery-item:hover .atl-ui-gallery-item-tools {
+	display: block;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
