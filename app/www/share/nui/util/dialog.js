@@ -115,7 +115,7 @@ in-page dialog windows.
 
 		for(const item of this.config.fields) {
 			output.append(item.build());
-			output.append('<hr class="border-0 mt-0 mb-2" />');
+			output.append('<hr class="border-0 mt-0 mb-3" />');
 		}
 
 		this.setBody(output);
@@ -240,10 +240,10 @@ inside the dialog window.
 	constructor(type, name, title, value, list) {
 
 		if(typeof type === 'object') {
+			type = type.type;
 			name = type.name;
 			title = type.title;
 			value = type.value;
-			type = type.type;
 			list = type.list;
 		}
 
@@ -495,7 +495,6 @@ inside the dialog window.
 
 		editor = new Editor(field);
 		field.data('Editor', editor);
-		console.log(editor);
 
 		if(this.value)
 		editor.setContent(this.value);

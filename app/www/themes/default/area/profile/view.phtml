@@ -76,7 +76,7 @@ $Scopeify = (
 	<!-- SECTIONS: BEFORE -->
 	<?php if($SectionsBefore): foreach($SectionsBefore as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
 	<div class="atl-profile-section atl-profile-section-before">
-		<?php $Surface->Area($Item->GetURL(), $Scopeify($Item)) ?>
+		<?php echo $Item ?>
 	</div>
 	<?php endforeach; endif; unset($Item); ?>
 
@@ -179,19 +179,14 @@ $Scopeify = (
 	</div>
 	<?php endif; ?>
 
-	<?php $Surface->Area('profile/view-extend', $__SCOPE) ?>
-
-	<!-- SECTIONS: AFTER -->
+	<!-- SECTIONS: BEFORE -->
 	<?php if($SectionsAfter): foreach($SectionsAfter as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
 	<div class="atl-profile-section atl-profile-section-after">
-		<h2 class="atl-profile-section-title"><?php $Util->Print($Item->GetTitle()) ?></h2>
-		<hr class="mt-0 mb-3" />
-
-		<div class="atl-profile-section-content">
-			<?php $Surface->Area($Item->GetURL(), $Scopeify($Item)) ?>
-		</div>
+		<?php echo $Item ?>
 	</div>
 	<?php endforeach; endif; unset($Item); ?>
+
+	<?php $Surface->Area('profile/view-extend', $__SCOPE) ?>
 
 </div>
 
