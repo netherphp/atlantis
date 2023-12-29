@@ -1,5 +1,5 @@
 /*//
-@date 2023-12-27 23:20:38 UTC
+@date 2023-12-29 01:00:03 UTC
 @files 31 [
     "src\/imports.css",
     "src\/main.css",
@@ -458,6 +458,10 @@ strong {
 	100% {
 		opacity: 0.0;
 	}
+}
+
+.atl-profile-section {
+	margin-bottom: 6em;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
