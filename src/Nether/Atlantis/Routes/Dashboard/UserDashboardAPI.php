@@ -14,6 +14,37 @@ use Nether\Atlantis\Routes\User\AuthGoogle;
 class UserDashboardAPI
 extends Atlantis\ProtectedAPI {
 
+	#[Atlantis\Meta\RouteHandler('/api/dashboard/alias', Verb: 'POST')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	public function
+	HandleChangeAlias():
+	void {
+
+		($this->Data)
+		->Alias(Common\Filters\Text::SlottableKey(...));
+
+		////////
+
+		$Existing = User\Entity::GetByAlias($this->Data->Alias);
+
+		if($Existing) {
+			if($Existing->ID === $this->User->ID)
+			$this->Quit(1, 'Yeah OK.');
+
+			$this->Quit(2, 'Account Alias already taken.');
+		}
+
+		////////
+
+		$this->User->Update([
+			'Alias' => $this->Data->Alias
+		]);
+
+		$this->SetGoto('/dashboard/settings/alias?updated=1');
+
+		return;
+	}
+
 	#[Atlantis\Meta\RouteHandler('/api/dashboard/email', Verb: 'POST')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function

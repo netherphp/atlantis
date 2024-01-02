@@ -14,6 +14,8 @@ use Nether\Atlantis\Plugin\Interfaces;
 
 use Exception;
 use Nether\Atlantis\Struct\EntityRelationship;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsBeforeInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsAfterInterface;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +48,8 @@ extends Atlantis\PublicWeb {
 			$this->App, $Profile
 		);
 
+		$AdminMenu = static::ProfileViewAdminMenu($this->App, $Profile);
+
 		////////
 
 		if(class_exists('Nether\\Blog\\Library')) {
@@ -71,6 +75,7 @@ extends Atlantis\PublicWeb {
 		->Set('Page.ImageURL', $Profile->GetCoverImageURL('lg'))
 		->Area($this->GetViewArea(), [
 			'Profile'        => $Profile,
+			'AdminMenu'      => $AdminMenu,
 			'SectionsBefore' => $SectionsBefore,
 			'SectionsAfter'  => $SectionsAfter,
 			'ExtraData'      => $ExtraData,
@@ -207,11 +212,11 @@ extends Atlantis\PublicWeb {
 	Common\Datastore {
 
 		$Plugins = $App->Plugins->GetInstanced(
-			Interfaces\ProfileView\ExtraSectionsBeforeInterface::class
+			ExtraSectionsBeforeInterface::class
 		);
 
 		$Output = $Plugins->Accumulate(new Common\Datastore, (
-			fn(Common\Datastore $C, Interfaces\ProfileView\ExtraSectionsBeforeInterface $P)
+			fn(Common\Datastore $C, ExtraSectionsBeforeInterface $P)
 			=> $C->MergeRight($P->GetExtraSectionsBefore( $Profile ))
 		));
 
@@ -224,11 +229,11 @@ extends Atlantis\PublicWeb {
 	Common\Datastore {
 
 		$Plugins = $App->Plugins->GetInstanced(
-			Interfaces\ProfileView\ExtraSectionAfterInterface::class
+			ExtraSectionsAfterInterface::class
 		);
 
 		$Output = $Plugins->Accumulate(new Common\Datastore, (
-			fn(Common\Datastore $C, Interfaces\ProfileView\ExtraSectionsAfterInterface $P)
+			fn(Common\Datastore $C, ExtraSectionsAfterInterface $P)
 			=> $C->MergeRight($P->GetExtraSectionsAfter( $Profile ))
 		));
 

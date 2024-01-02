@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Surface\Engine $Surface
+ * @var Atlantis\Struct\TemplateHelper $Util
+ *
+ * @var bool $Updated
+ */
+
+$Surface->Area('dashboard/nav', [ 'Trail' => [
+	'Account' => NULL,
+	'Alias'   => NULL
+]]);
+
+?>
+
+<div class="row justify-content-center">
+	<div class="col-12 col-md-6">
+
+		<?php if($Updated === TRUE): ?>
+		<div class="alert alert-success text-center mb-4">
+			Your account alias has been updated.
+		</div>
+		<?php endif; ?>
+
+		<div class="fs-large ta-center mb-4">
+			<strong>Current Alias:</strong>
+			<?php $Util->Print($User->Alias ?? '- Not Set -') ?>
+		</div>
+
+		<form id="AliasChangeForm" method="post">
+			<div class="mb-2">
+				<input type="text" name="Alias" class="form-control" placeholder="Alias..." value="<?php $Util->Print($User->GetAlias(TRUE)) ?>" />
+			</div>
+			<div>
+				<button type="submit" class="btn btn-primary btn-block fw-bold">
+					Update Account Alias
+				</button>
+			</div>
+		</form>
+
+	</div>
+</div>
+
+<script type="module">
+import NUI from '/share/nui/nui.js?v=<?php $Util->Print($CacheBuster) ?>';
+
+jQuery(function(){
+
+	jQuery('#AliasChangeForm')
+	.on('submit', function(){
+
+		let form = new NUI.Form(this);
+		let req = new NUI.Request('POST', '/api/dashboard/alias');
+
+		(req.send(form.read()))
+		.then(req.goto)
+		.catch(req.catch);
+
+		return false;
+	});
+
+	return;
+});
+</script>

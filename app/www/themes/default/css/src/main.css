@@ -55,6 +55,12 @@
 	--theme-glass-bg-25:  #0000003F;
 	--theme-glass-bg-0:   #00000000;
 
+	--theme-glass-light-bg-100: #222222FF;
+	--theme-glass-light-bg-75:  #222222BD;
+	--theme-glass-light-bg-50:  #2222227F;
+	--theme-glass-light-bg-25:  #2222223F;
+	--theme-glass-light-bg-0:   #22222200;
+
 	--theme-glass-filter-out:         contrast(1.0) saturate(1.0) blur(0.0px);
 	--theme-glass-filter-thin:        contrast(1.0) saturate(0.5) blur(2.0px);
 	--theme-glass-filter-thick:       contrast(1.0) saturate(0.5) blur(8.0px);

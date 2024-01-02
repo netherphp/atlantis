@@ -1,0 +1,50 @@
+<?php
+
+namespace Local;
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+
+class ClassExtendPrototype
+extends Atlantis\Prototype {
+
+	// ...
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static protected function
+	FindExtendOptions(Common\Datastore $Input):
+	void {
+
+		parent::FindExtendOptions($Input);
+
+		// ...
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		parent::FindExtendFilters($SQL, $Input);
+
+		// ...
+
+		return;
+	}
+
+	static protected function
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		parent::FindExtendSorts($SQL, $Input);
+
+		// ...
+
+		return;
+	}
+
+};

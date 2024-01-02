@@ -1,5 +1,5 @@
 /*//
-@date 2023-12-29 01:00:03 UTC
+@date 2024-01-02 02:08:12 UTC
 @files 31 [
     "src\/imports.css",
     "src\/main.css",
@@ -99,6 +99,12 @@
 	--theme-glass-bg-50:  #0000007F;
 	--theme-glass-bg-25:  #0000003F;
 	--theme-glass-bg-0:   #00000000;
+
+	--theme-glass-light-bg-100: #222222FF;
+	--theme-glass-light-bg-75:  #222222BD;
+	--theme-glass-light-bg-50:  #2222227F;
+	--theme-glass-light-bg-25:  #2222223F;
+	--theme-glass-light-bg-0:   #22222200;
 
 	--theme-glass-filter-out:         contrast(1.0) saturate(1.0) blur(0.0px);
 	--theme-glass-filter-thin:        contrast(1.0) saturate(0.5) blur(2.0px);
@@ -1077,6 +1083,12 @@ grouped are to be considered depreciated. */
 	width: 100%;
 }
 
+.btn-thinner,
+.form-thinner {
+	padding-top: 0.35em;
+	padding-bottom: 0.35em;
+}
+
 .btn:active:focus,
 .btn:focus {
 	outline: none !important;
@@ -1106,6 +1118,11 @@ grouped are to be considered depreciated. */
 .filter-desaturate-0  { filter: saturate(0.00); }
 .filter-desaturate-50 { filter: saturate(0.50); }
 .filter-desaturate-25 { filter: saturate(0.25); }
+
+.bg-glass-50 {
+	background-color: var(--theme-glass-bg-50);
+	backdrop-filter: var(--theme-glass-filter-thin);
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/font-text-stuff.css ///////////////////////////////////*/

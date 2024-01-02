@@ -50,6 +50,7 @@ $Scopeify = (
 
 		$Surface->Area('profile/header', [
 			'Profile'   => $Profile,
+			'AdminMenu' => $AdminMenu,
 			'ExtraData' => $ExtraData,
 			'Tags'      => $Tags
 		])
@@ -106,7 +107,7 @@ $Scopeify = (
 
 			<?php if($Route->IsUserAdmin()): ?>
 			<div class="col-auto">
-				<button class="btn btn-dark" <?php echo $Profile->GetDataAttrForHTML([ 'profile-cmd'=> 'photo' ]) ?>>
+				<button class="btn btn-dark btn-thinner" <?php echo $Profile->GetDataAttrForHTML([ 'profile-cmd'=> 'photo' ]) ?>>
 					<i class="mdi mdi-plus"></i>
 					Upload
 				</button>

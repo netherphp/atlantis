@@ -49,6 +49,25 @@ extends Atlantis\ProtectedWeb {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Atlantis\Meta\RouteHandler('/dashboard/settings/alias')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\UserActivationFlow]
+	public function
+	PageAlias():
+	void {
+
+		($this->Data)
+		->Updated(Common\Filters\Numbers::BoolType(...));
+
+		($this->App->Surface)
+		->Wrap('dashboard/alias', [
+			'Updated' => $this->Data->Updated
+		]);
+
+		return;
+	}
+
+
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/email')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Atlantis\Meta\UserActivationFlow]

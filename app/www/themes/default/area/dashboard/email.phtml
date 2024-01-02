@@ -9,7 +9,8 @@
  */
 
 $Surface->Area('dashboard/nav', [ 'Trail' => [
-	'Update Email Address' => NULL
+	'Account' => NULL,
+	'Email'   => NULL
 ]]);
 
 ?>
@@ -32,10 +33,11 @@ $Surface->Area('dashboard/nav', [ 'Trail' => [
 		</div>
 		<?php endif; ?>
 
-		<div class="mb-2">
-			<strong>Current:</strong>
+		<div class="fs-large ta-center mb-4">
+			<strong>Current Email:</strong>
 			<?php $Printer($User->Email) ?>
 		</div>
+
 		<form id="EmailChangeForm" method="post">
 			<div class="mb-2">
 				<input type="text" name="Email" class="form-control" placeholder="Email Address..." />
