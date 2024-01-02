@@ -232,9 +232,21 @@ strong {
 }
 
 .btn-dark {
-	--bs-btn-bg: var(--theme-dark-bg);
-	--bs-btn-border-color: var(--theme-dark-bg);
-	--bs-btn-color: var(--theme-dark-fg);
+	--bs-btn-bg: var(--theme-form-bg);
+	--bs-btn-border-color: var(--theme-form-bg);
+	--bs-btn-color: var(--theme-form-fg);
+}
+
+.btn-dark-alt {
+	--bs-btn-bg: var(--bs-btn-hover-bg);
+	--bs-btn-border-color: var(--bs-btn-hover-bg);
+	--bs-btn-color: var(--bs-btn-hover-fg);
+}
+
+.btn-dark-alt:hover {
+	--bs-btn-bg: var(--bs-btn-active-bg);
+	--bs-btn-border-color: var(--bs-btn-active-bg);
+	--bs-btn-color: var(--bs-btn-active-fg);
 }
 
 .btn-outline-light {

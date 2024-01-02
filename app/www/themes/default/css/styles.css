@@ -1,5 +1,5 @@
 /*//
-@date 2024-01-02 04:08:06 UTC
+@date 2024-01-02 10:53:11 UTC
 @files 31 [
     "src\/imports.css",
     "src\/main.css",
@@ -277,9 +277,21 @@ strong {
 }
 
 .btn-dark {
-	--bs-btn-bg: var(--theme-dark-bg);
-	--bs-btn-border-color: var(--theme-dark-bg);
-	--bs-btn-color: var(--theme-dark-fg);
+	--bs-btn-bg: var(--theme-form-bg);
+	--bs-btn-border-color: var(--theme-form-bg);
+	--bs-btn-color: var(--theme-form-fg);
+}
+
+.btn-dark-alt {
+	--bs-btn-bg: var(--bs-btn-hover-bg);
+	--bs-btn-border-color: var(--bs-btn-hover-bg);
+	--bs-btn-color: var(--bs-btn-hover-fg);
+}
+
+.btn-dark-alt:hover {
+	--bs-btn-bg: var(--bs-btn-active-bg);
+	--bs-btn-border-color: var(--bs-btn-active-bg);
+	--bs-btn-color: var(--bs-btn-active-fg);
 }
 
 .btn-outline-light {
@@ -1118,6 +1130,7 @@ grouped are to be considered depreciated. */
 .filter-desaturate-0  { filter: saturate(0.00); }
 .filter-desaturate-50 { filter: saturate(0.50); }
 .filter-desaturate-25 { filter: saturate(0.25); }
+.filter-desaturate-10 { filter: saturate(0.10); }
 
 .bg-glass-50 {
 	background-color: var(--theme-glass-bg-50);
