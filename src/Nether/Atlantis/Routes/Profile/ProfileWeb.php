@@ -14,6 +14,9 @@ use Nether\Atlantis\Plugin\Interfaces;
 
 use Exception;
 use Nether\Atlantis\Struct\EntityRelationship;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuBeforeInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAfterInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsBeforeInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsAfterInterface;
 
@@ -150,40 +153,47 @@ extends Atlantis\PublicWeb {
 
 		////////
 
-		$Plugins = (
-			($App->Plugins)
-			->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
-			->Remap(fn(string $C)=> new $C($App))
-			->Accumulate(new Common\Datastore, (
-				fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
-				=> $C->MergeRight($P->GetItems( $Profile ))
-			))
-			->Sort()
-		);
+		$Plugins = $App->Plugins->GetInstanced(AdminMenuSectionInterface::class);
 
-		($AdminMenu)
-		->ItemNew('Manage Tags', 'mdi-tag-multiple', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE))
-		->ItemNew('Edit Title & Alias', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE))
-		->ItemNew('Edit Description', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE))
-		->ItemNew('Edit Street Address', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE))
-		->ItemNew('Edit Web Links', 'mdi-pencil', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE))
-		->ItemNew('Enable Profile', 'mdi-eye', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE), If: !$Profile->Enabled)
-		->ItemNew('Disable Profile', 'mdi-eye-off', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE), If: $Profile->Enabled)
-		->ItemNew('-');
+		$Sections = Common\Datastore::FromArray([
+			'before'  => NULL,
+			'editing' => NULL,
+			'tagging' => NULL,
+			'media'   => NULL,
+			'danger'  => NULL,
+			'after'   => NULL
+		]);
 
-		if($Plugins && $Plugins->Count()) {
-			$AdminMenu->ItemPush($Plugins);
-			$AdminMenu->ItemNew('-');
-		}
+		// have the plugins prepare their button lists and bake them into
+		// the final admin menu button.
 
-		($AdminMenu)
-		->ItemNew('Upload Photos', 'mdi-upload', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE))
-		->ItemNew('Add Related Link', 'mdi-web', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'related-link' ], TRUE))
-		->ItemNew('Add Video URL', 'mdi-video', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE))
-		->ItemNew('-');
+		($Sections)
+		->RemapKeyValue(function(string $Key) use($Plugins, $Profile) {
+			return $Plugins->Compile(
+				fn(Common\Datastore $C, AdminMenuSectionInterface $S)
+				=> $C->MergeRight($S->GetItemsForSection( $Profile, $Key ) ?? [])
+			);
+		})
+		->EachKeyValue(function(string $Key, Common\Datastore $Items) use($AdminMenu) {
 
-		($AdminMenu)
-		->ItemNew('Delete', 'mdi-delete', Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE));
+			if(!$Items->Count())
+			return;
+
+			////////
+
+			if($Key === 'danger')
+			$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '-'));
+			else
+			$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '~'));
+
+			////////
+
+			$AdminMenu->Items->MergeRight($Items);
+
+			return;
+		});
+
+		////////
 
 		return $AdminMenu;
 	}

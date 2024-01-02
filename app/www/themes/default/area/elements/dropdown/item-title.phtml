@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\Atlantis\UI\Dropdown $Element
+ * @var Nether\Atlantis\Struct\DropdownItem $Item
+ */
+
+?>
+
+<div class="dropdown-div">
+	<div <?php echo $Item->GetAttrForHTML() ?>>
+		<div class="fs-smaller fw-normal o-50"><?php $Util->Print(str_replace('# ', '', $Item->GetTitle())) ?></div>
+		<hr class="mt-0 mb-0" />
+	</div>
+</div>

@@ -161,6 +161,11 @@ grouped are to be considered depreciated. */
 	z-index: 9011;
 }
 
+.dropdown-menu > hr:first-child,
+.dropdown-menu > hr:last-child {
+	display: none;
+}
+
 .dropdown-menu.dropdown-menu-scrolled {
 	max-height: var(--DropdownMaxHeight);
 	overflow-y: scroll;

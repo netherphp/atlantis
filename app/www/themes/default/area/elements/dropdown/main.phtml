@@ -11,7 +11,7 @@
 ?>
 
 <div class="dropdown">
-	<button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+	<button class="btn <?php $Util->Print($Element->MenuBtnStyleClass) ?> dropdown-toggle" type="button" data-bs-toggle="dropdown">
 		<i class="mdi mdi-fw mdi-cog m-0 p-0"></i>
 	</button>
 
@@ -24,6 +24,18 @@
 			if($Item->Title === '-')
 			$Surface->Area(
 				'elements/dropdown/item-hr',
+				[ 'Element'=> $Element, 'Item'=> $Item ]
+			);
+
+			elseif($Item->Title === '~')
+			$Surface->Area(
+				'elements/dropdown/item-space',
+				[ 'Element'=> $Element, 'Item'=> $Item ]
+			);
+
+			elseif(str_starts_with($Item->Title, '# '))
+			$Surface->Area(
+				'elements/dropdown/item-title',
 				[ 'Element'=> $Element, 'Item'=> $Item ]
 			);
 

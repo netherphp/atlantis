@@ -90,6 +90,10 @@ implements
 		->Register(
 			Atlantis\Plugins\CommandLineExtensionInterface::class,
 			Atlantis\Plugins\CommandLineExtension::class
+		)
+		->Register(
+			Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface::class,
+			Atlantis\Plugins\Profile\AdminMenuDefault::class
 		);
 
 		return;

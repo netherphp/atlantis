@@ -19,7 +19,7 @@ switch($Item->Warn) {
 		$BtnClasses->Push('btn-outline-danger');
 	break;
 	default:
-		$BtnClasses->Push('btn-outline-dark');
+		$BtnClasses->Push($Element->ItemBtnStyleClass);
 	break;
 };
 

@@ -14,6 +14,9 @@ class Entity
 extends Atlantis\Prototype
 implements Atlantis\Packages\ExtraDataInterface {
 
+	const
+	EntType = 'Profile.Entity';
+
 	use
 	Atlantis\Packages\ExtraData;
 
