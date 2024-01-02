@@ -35,7 +35,7 @@ $MapURL = $Profile->GetMapURL();
 
 			<?php if($Route->IsUserAdmin()): ?>
 			<div class="col-auto">
-				<?php $Surface->Area('widgets/dropdown', [ 'Dropdown'=> $AdminMenu ]) ?>
+				<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [ 'Menu' => $AdminMenu, 'MenuBtnStyleClass'=> 'btn-outline-dark', 'ItemBtnStyleClass'=> 'btn-outline-dark' ]) ?>
 			</div>
 			<?php endif; ?>
 
