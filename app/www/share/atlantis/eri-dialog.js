@@ -158,6 +158,8 @@ extends ModalDialog {
 		this.query.val('');
 		this.querybin.empty();
 
+		this.query.focus();
+
 		console.log(`[onSearchTagClick] ${id} ${uuid}`);
 
 		return;
@@ -189,6 +191,8 @@ extends ModalDialog {
 		(this.tagbin)
 		.empty()
 		.append(output.children());
+
+		this.query.focus();
 
 		return;
 	};
