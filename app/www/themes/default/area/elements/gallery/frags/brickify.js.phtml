@@ -1,0 +1,28 @@
+(function(){
+	let brickboxes = jQuery('.atl-ui-gallery > .row');
+	let brickconf = {
+		itemSelector: '.atl-ui-gallery-brick',
+		percentPosition: true,
+		transitionDuration: 0,
+		stagger: 0
+	};
+
+	brickboxes.each(function() {
+
+		let that = jQuery(this);
+		let box = that.masonry(brickconf);
+		let loader = box.imagesLoaded();
+
+		// give each gallery the ability to update themselves as their
+		// images are loaded in.
+
+		loader.progress(function() {
+			box.masonry('layout');
+			return;
+		});
+
+		return;
+	});
+
+	return;
+})();

@@ -4,55 +4,24 @@
  * @var Nether\Atlantis\Struct\TemplateHelper $Util
  * @var Nether\Surface\Engine $Surface
  * @var Nether\Atlantis\UI\Gallery $Element
+ *
+ * @var bool $Brick
  */
-
-$CacheBust = $Util->GetCacheBuster();
-$ElementID = $Element->GetID();
-$ScriptURL = "/themes/default/lib/js/simplelightbox.js?v={$CacheBust}";
-$ScriptSelector = $Element->GetSelectorID();
-$AttrMasonry = '';
 
 $Brick ??= TRUE;
 
 if($Brick) {
 	$Surface
-	->AddScriptURL('https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js');
-
-	$AttrMasonry = (''
-		. 'data-masonry="{'
-		. '&quot;percentPosition&quot;: true,'
-		. '&quot;transitionDuration&quot;: 0, '
-		. '&quot;transitionDuration&quot;: 0, '
-		. '&quot;stagger&quot;: 50'
-		. '}"'
-	);
+	->AddScriptURL('/themes/default/lib/js/masonry.pkgd.min.js')
+	->AddScriptURL('/themes/default/lib/js/imagesloaded.min.js')
+	->AddScriptReadyFrag('elements/gallery/frags/galleryify.js')
+	->AddScriptReadyFrag('elements/gallery/frags/brickify.js');
 }
 
 ?>
 
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="atl-ui-gallery">
-	<div class="row flex-row" <?php echo $AttrMasonry ?>>
+	<div class="row">
 		<?php $Element->PrintItems() ?>
 	</div>
 </div>
-
-<script type="module">
-import SimpleLightbox from "<?php echo $ScriptURL ?>";
-
-jQuery(function(){
-
-	let select = <?php $Util->PrintJSON($ScriptSelector) ?>;
-
-	let gallery = new SimpleLightbox(`${select} .atl-ui-gallery-item-link`, {
-		captions: true,
-		captionSelector: 'self',
-		scrollZoom: false,
-		fileExt: false,
-		sourceAttr: 'data-url-lg'
-	});
-
-	return;
-});
-</script>
-
-

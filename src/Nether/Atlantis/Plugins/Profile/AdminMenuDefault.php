@@ -14,21 +14,21 @@ extends Atlantis\Plugin
 implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 
 	public function
-	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Key):
+	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Key, Common\Datastore $ExtraData):
 	?Common\Datastore {
 
 		return match($Key) {
 			'editing'
-			=> $this->GetItemsForEditing($Profile),
+			=> $this->GetItemsForEditing($Profile, $ExtraData),
 
 			'tagging'
-			=> $this->GetItemsForTagging($Profile),
+			=> $this->GetItemsForTagging($Profile, $ExtraData),
 
 			'media'
-			=> $this->GetItemsForMedia($Profile),
+			=> $this->GetItemsForMedia($Profile, $ExtraData),
 
 			'danger'
-			=> $this->GetItemsForDangerZone($Profile),
+			=> $this->GetItemsForDangerZone($Profile, $ExtraData),
 
 			default
 			=> NULL
@@ -39,7 +39,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 	////////////////////////////////////////////////////////////////
 
 	protected function
-	GetItemsForEditing(Atlantis\Profile\Entity $Profile):
+	GetItemsForEditing(Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Common\Datastore {
 
 		$Output = new Common\Datastore;
@@ -91,7 +91,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 	}
 
 	protected function
-	GetItemsForTagging(Atlantis\Profile\Entity $Profile):
+	GetItemsForTagging(Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Common\Datastore {
 
 		$Output = new Common\Datastore;
@@ -123,7 +123,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 	}
 
 	protected function
-	GetItemsForMedia(Atlantis\Profile\Entity $Profile):
+	GetItemsForMedia(Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Common\Datastore {
 
 		$Output = new Common\Datastore;
@@ -156,7 +156,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 	}
 
 	protected function
-	GetItemsForDangerZone(Atlantis\Profile\Entity $Profile):
+	GetItemsForDangerZone(Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Common\Datastore {
 
 		$Output = new Common\Datastore;

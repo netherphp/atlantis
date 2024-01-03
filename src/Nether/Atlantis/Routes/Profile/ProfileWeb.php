@@ -51,7 +51,7 @@ extends Atlantis\PublicWeb {
 			$this->App, $Profile
 		);
 
-		$AdminMenu = static::ProfileViewAdminMenu($this->App, $Profile);
+		$AdminMenu = static::ProfileViewAdminMenu($this->App, $Profile, $ExtraData);
 
 		////////
 
@@ -143,7 +143,7 @@ extends Atlantis\PublicWeb {
 	#[Common\Meta\Date('2023-12-26')]
 	#[Common\Meta\Info('Allow plugins add things to the Profile Admin Menu.')]
 	static public function
-	ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
+	ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Atlantis\Struct\DropdownMenu {
 
 		$AdminMenu = Atlantis\Struct\DropdownMenu::New();
@@ -168,10 +168,10 @@ extends Atlantis\PublicWeb {
 		// the final admin menu button.
 
 		($Sections)
-		->RemapKeyValue(function(string $Key) use($Plugins, $Profile) {
+		->RemapKeyValue(function(string $Key) use($Plugins, $Profile, $ExtraData) {
 			return $Plugins->Compile(
 				fn(Common\Datastore $C, AdminMenuSectionInterface $S)
-				=> $C->MergeRight($S->GetItemsForSection( $Profile, $Key ) ?? [])
+				=> $C->MergeRight($S->GetItemsForSection( $Profile, $Key, $ExtraData ) ?? [])
 			);
 		})
 		->EachKeyValue(function(string $Key, Common\Datastore $Items) use($AdminMenu) {

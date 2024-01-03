@@ -1,0 +1,13 @@
+import SimpleLightbox from '/themes/default/lib/js/simplelightbox.js';
+
+(function(){
+	new SimpleLightbox('.atl-ui-gallery-item-link', {
+		captions: true,
+		captionSelector: 'self',
+		scrollZoom: false,
+		fileExt: false,
+		sourceAttr: 'data-url-lg'
+	});
+
+	return;
+})();

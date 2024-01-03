@@ -8,7 +8,7 @@ use Nether\Common;
 interface AdminMenuSectionInterface {
 
 	public function
-	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Key):
+	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Key, Common\Datastore $ExtraData):
 	?Common\Datastore;
 
 };
