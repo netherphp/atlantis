@@ -12,7 +12,12 @@
 
 <div class="dropdown">
 	<button class="btn <?php $Util->Print($Element->MenuBtnStyleClass) ?> dropdown-toggle" type="button" data-bs-toggle="dropdown">
-		<i class="mdi mdi-fw mdi-cog m-0 p-0"></i>
+		<?php if($Element->Menu->Icon): ?><i class="<?php $Util->Print($Element->Menu->Icon) ?> m-0 p-0 mr-1"></i>
+		<?php endif; ?>
+		<?php if($Element->Menu->Title): ?><?php $Util->Print($Element->Menu->Title) ?>
+		<?php endif; ?>
+		<?php if(!$Element->Menu->Title && !$Element->Menu->Icon): ?>Menu
+		<?php endif; ?>
 	</button>
 
 	<div class="dropdown-menu dropdown-menu-end">

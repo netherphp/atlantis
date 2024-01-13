@@ -189,6 +189,20 @@ $Scopeify = (
 
 	<?php $Surface->Area('profile/view-extend', $__SCOPE) ?>
 
+	<!-- FOOTER -->
+	<div class="mb-6">
+		<?php
+
+		$Surface->Area('profile/footer', [
+			'Profile'   => $Profile,
+			'AdminMenu' => $AdminMenu,
+			'ExtraData' => $ExtraData,
+			'Tags'      => $Tags
+		])
+
+		?>
+	</div>
+
 </div>
 
 <script type="module">

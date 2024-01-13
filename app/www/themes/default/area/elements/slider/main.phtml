@@ -18,7 +18,7 @@ $Surface->AddScriptReadyFrag('elements/slider/ready');
 
 ?>
 
-<div class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-slider o-0')) ?>" data-slide-count="4">
+<div class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-slider o-0')) ?>" <?php echo $Element->GetDataAttrForHTML() ?>>
 	<div class="swiper-supercontainer">
 		<div id="<?php $Util->Print($ElementID) ?>" class="swiper swiper-coldboot">
 			<div class="swiper-wrapper">

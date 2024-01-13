@@ -86,7 +86,7 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $Title=NULL, ?string $Icon='mdi-cog'):
+	New(?string $Title=NULL, ?string $Icon=NULL):
 	static {
 
 		$Output = new static;

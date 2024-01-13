@@ -1,5 +1,5 @@
 /*//
-@date 2024-01-02 23:04:47 UTC
+@date 2024-01-13 06:15:17 UTC
 @files 31 [
     "src\/imports.css",
     "src\/main.css",
@@ -1406,7 +1406,7 @@ grouped are to be considered depreciated. */
 
 .si {
 	display: inline-block;
-	vertical-align: bottom;
+	vertical-align: middle;
 	width: 1.0em;
 }
 

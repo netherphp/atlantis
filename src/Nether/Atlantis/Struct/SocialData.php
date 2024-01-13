@@ -159,6 +159,37 @@ implements
 		return $Icon;
 	}
 
+	public function
+	GetBtnStyleClass(string $Key):
+	?string {
+
+		$Prefab = sprintf(
+			'btn-%s',
+			Common\Filters\Text::SlottableKey($Key)
+		);
+
+		return $Prefab;
+	}
+
+	public function
+	GetFilteredURL(string $Key, string $URL):
+	string {
+
+		$Prefab = "{$Key}URL";
+
+		////////
+
+		if(method_exists(Common\Filters\Links::class, $Prefab))
+		return call_user_func(
+			[ Common\Filters\Links::class, $Prefab ],
+			$URL
+		);
+
+		////////
+
+		return $URL;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

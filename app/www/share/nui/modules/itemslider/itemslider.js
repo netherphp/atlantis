@@ -283,11 +283,14 @@ class SliderConfig {
 		////////
 
 		let slideCount = parseInt(el.attr('data-slide-count'));
+		let pagerShow = parseInt(el.attr('data-pager-show'));
 
 		////////
 
 		if(slideCount > 0)
 		output.setSlideCount(slideCount);
+
+		output.setPagerShow(pagerShow);
 
 		////////
 
