@@ -56,7 +56,7 @@ class Manager {
 			class_implements($Class),
 			(fn(string $I)=> $this->Namespaces->Accumulate(
 				FALSE,
-				(fn($C, $N)=> str_starts_with($I, $N) ? TRUE : $C)
+				(fn(bool $C, string $N)=> str_starts_with($I, $N) ? TRUE : $C)
 			))
 		);
 
