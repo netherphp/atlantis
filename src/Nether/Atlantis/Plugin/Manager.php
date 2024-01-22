@@ -26,7 +26,7 @@ class Manager {
 		$this->Interfaces = new Common\Datastore;
 		$this->Namespaces = new Common\Datastore;
 
-		$this->RegisterNamespace('Nether\Atlantis\Plugin\Interfaces');
+		$this->RegisterInterfaceNamespace('Nether\Atlantis\Plugin\Interfaces');
 
 		return;
 	}
@@ -34,9 +34,9 @@ class Manager {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Common\Meta\Info('Register a namespace to be a valid plugin interface namespace for auto-registration of plugins.')]
+	#[Common\Meta\Info('Register a plugin namespace for magic registration.')]
 	public function
-	RegisterNamespace(string $Namespace):
+	RegisterInterfaceNamespace(string $Namespace):
 	static {
 
 		$this->Namespaces->Push($Namespace);
@@ -44,9 +44,22 @@ class Manager {
 		return $this;
 	}
 
-	#[Common\Meta\Info('Register a plugin with any valid plugin interfaces it implements.')]
+	#[Common\Meta\Info('Register a specific plugin with a specific interface.')]
 	public function
-	RegisterPlugin(string $Class):
+	RegisterInterfacePlugin(string $IFace, string $Plugin):
+	static {
+
+		if(!$this->Has($IFace))
+		$this->Clear($IFace);
+
+		$this->Interfaces[$IFace]->Push($Plugin);
+
+		return $this;
+	}
+
+	#[Common\Meta\Info('Register class with all its plugin interfaces.')]
+	public function
+	Register(string $Class):
 	static {
 
 		// make a list of any interfaces this class implements that are
@@ -65,7 +78,7 @@ class Manager {
 
 		array_walk(
 			$Faces,
-			(fn(string $IFace)=> $this->Register($IFace, $Class))
+			(fn(string $IFace)=> $this->RegisterInterfacePlugin($IFace, $Class))
 		);
 
 		return $this;
@@ -119,18 +132,6 @@ class Manager {
 	}
 
 	public function
-	Register(string $IFace, string $Plugin):
-	static {
-
-		if(!$this->Has($IFace))
-		$this->Clear($IFace);
-
-		$this->Interfaces[$IFace]->Push($Plugin);
-
-		return $this;
-	}
-
-	public function
 	RegisterPluginMap(iterable $Map):
 	static {
 
@@ -143,7 +144,5 @@ class Manager {
 
 		return $this;
 	}
-
-
 
 }
