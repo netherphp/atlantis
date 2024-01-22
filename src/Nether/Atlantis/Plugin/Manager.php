@@ -131,18 +131,4 @@ class Manager {
 		);
 	}
 
-	public function
-	RegisterPluginMap(iterable $Map):
-	static {
-
-		$Key = NULL;
-		$Val = NULL;
-
-		foreach($Map as $Key => $Val) {
-			$this->Register($Key, $Val);
-		}
-
-		return $this;
-	}
-
 }
