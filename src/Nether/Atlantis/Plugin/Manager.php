@@ -13,6 +13,9 @@ class Manager {
 	protected Common\Datastore
 	$Interfaces;
 
+	protected Common\Datastore
+	$Namespaces;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -21,8 +24,51 @@ class Manager {
 
 		$this->App = $App;
 		$this->Interfaces = new Common\Datastore;
+		$this->Namespaces = new Common\Datastore;
+
+		$this->RegisterNamespace('Nether\Atlantis\Plugin\Interfaces');
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Info('Register a namespace to be a valid plugin interface namespace for auto-registration of plugins.')]
+	public function
+	RegisterNamespace(string $Namespace):
+	static {
+
+		$this->Namespaces->Push($Namespace);
+
+		return $this;
+	}
+
+	#[Common\Meta\Info('Register a plugin with any valid plugin interfaces it implements.')]
+	public function
+	RegisterPlugin(string $Class):
+	static {
+
+		// make a list of any interfaces this class implements that are
+		// within any of the registered plugin interface namespaces.
+
+		$Faces = array_filter(
+			class_implements($Class),
+			(fn(string $I)=> $this->Namespaces->Accumulate(
+				FALSE,
+				(fn($C, $N)=> str_starts_with($I, $N) ? TRUE : $C)
+			))
+		);
+
+		// then register this plugin with each of those interfaces so that
+		// they can be queried later.
+
+		array_walk(
+			$Faces,
+			(fn(string $IFace)=> $this->Register($IFace, $Class))
+		);
+
+		return $this;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -73,13 +119,13 @@ class Manager {
 	}
 
 	public function
-	Register(string $IFace, string $Plug):
+	Register(string $IFace, string $Plugin):
 	static {
 
 		if(!$this->Has($IFace))
 		$this->Clear($IFace);
 
-		$this->Interfaces[$IFace]->Push($Plug);
+		$this->Interfaces[$IFace]->Push($Plugin);
 
 		return $this;
 	}
@@ -97,5 +143,7 @@ class Manager {
 
 		return $this;
 	}
+
+
 
 }

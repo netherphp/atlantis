@@ -47,39 +47,39 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		////////
 
 		($Output)
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileEditMenuTitle', Atlantis\Struct\DropdownItem::New(
 			Title: '# Editing'
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileEditTitleAlias', Atlantis\Struct\DropdownItem::New(
 			Title: 'Title & Alias',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE)
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileEditDetails', Atlantis\Struct\DropdownItem::New(
 			Title: 'Description',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE)
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileEditAddress', Atlantis\Struct\DropdownItem::New(
 			Title: 'Addresss',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE)
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileEditLinks', Atlantis\Struct\DropdownItem::New(
 			Title: 'Social Media',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE)
 		));
 
 		if(!$Profile->Enabled)
-		$Output->Push(Atlantis\Struct\DropdownItem::New(
+		$Output->Shove('ProfileEditEnable', Atlantis\Struct\DropdownItem::New(
 			Title: 'Enable Profile',
 			Icon: 'mdi-eye',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE)
 		));
 
 		else
-		$Output->Push(Atlantis\Struct\DropdownItem::New(
+		$Output->Shove('ProfileEditDisable', Atlantis\Struct\DropdownItem::New(
 			Title: 'Disable Profile',
 			Icon: 'mdi-eye-off',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE)
@@ -99,15 +99,15 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		////////
 
 		($Output)
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileTaggingMenuTitle', Atlantis\Struct\DropdownItem::New(
 			Title: '# Tagging'
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileTaggingEdit', Atlantis\Struct\DropdownItem::New(
 			Title: 'Tags',
 			Icon: 'mdi-tag-multiple',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE)
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileTaggingERLink', Atlantis\Struct\DropdownItem::New(
 			Title: 'Related Profiles',
 			Icon: 'mdi-text-box-multiple-outline',
 			Attr: $Profile->GetDataAttr([
@@ -131,20 +131,20 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		////////
 
 		($Output)
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileMediaMenuTitle', Atlantis\Struct\DropdownItem::New(
 			Title: '# Media'
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileMediaUploadPhoto', Atlantis\Struct\DropdownItem::New(
 			Title: 'Upload Photos',
 			Icon: 'mdi-upload',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE)
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileMediaAddVideoURL', Atlantis\Struct\DropdownItem::New(
 			Title: 'Add Video URL',
 			Icon: 'mdi-video-plus',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE)
 		))
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileMediaAddRelatedLink', Atlantis\Struct\DropdownItem::New(
 			Title: 'Add Related Link',
 			Icon: 'mdi-link-plus',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'related-link' ], TRUE)
@@ -164,7 +164,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		////////
 
 		($Output)
-		->Push(Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileDangerDelete', Atlantis\Struct\DropdownItem::New(
 			Title: 'Delete',
 			Icon: 'mdi-trash-can',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE)

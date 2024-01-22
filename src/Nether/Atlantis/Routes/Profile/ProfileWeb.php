@@ -14,9 +14,10 @@ use Nether\Atlantis\Plugin\Interfaces;
 
 use Exception;
 use Nether\Atlantis\Struct\EntityRelationship;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAuditInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuBeforeInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAfterInterface;
-use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsBeforeInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsAfterInterface;
 
@@ -154,6 +155,7 @@ extends Atlantis\PublicWeb {
 		////////
 
 		$Plugins = $App->Plugins->GetInstanced(AdminMenuSectionInterface::class);
+		$Audits = $App->Plugins->GetInstanced(AdminMenuAuditInterface::class);
 
 		$Sections = Common\Datastore::FromArray([
 			'before'  => NULL,
@@ -164,27 +166,42 @@ extends Atlantis\PublicWeb {
 			'after'   => NULL
 		]);
 
-		// have the plugins prepare their button lists and bake them into
-		// the final admin menu button.
+		// have the plugins prepare their button lists merging them all down
+		// into one list. plugins loaded later can override plugins loaded
+		// earlier if the aliases collide. this is on purpose.
 
-		($Sections)
-		->RemapKeyValue(function(string $Key) use($Plugins, $Profile, $ExtraData) {
+		$Sections->RemapKeyValue(function(string $Key) use($Profile, $Plugins, $ExtraData) {
 			return $Plugins->Compile(
 				fn(Common\Datastore $C, AdminMenuSectionInterface $S)
 				=> $C->MergeRight($S->GetItemsForSection( $Profile, $Key, $ExtraData ) ?? [])
 			);
-		})
-		->EachKeyValue(function(string $Key, Common\Datastore $Items) use($AdminMenu) {
+		});
+
+		// allow plugins to audit menu items in case they wanted to replace
+		// or remove something.
+
+		$Audits->Each(function(AdminMenuAuditInterface $Audit) use($Profile, $Sections, $ExtraData) {
+			$Audit->AuditItems($Profile, $Sections, $ExtraData);
+			return;
+		});
+
+		// cook the buttons into the admin menu.
+
+		$Sections->EachKeyValue(function(string $Key, Common\Datastore $Items) use($AdminMenu) {
 
 			if(!$Items->Count())
 			return;
 
 			////////
 
-			if($Key === 'danger')
-			$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '-'));
-			else
-			$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '~'));
+			if($Key === 'danger') {
+				$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '~'));
+				$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '-'));
+			}
+
+			else {
+				$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '~'));
+			}
 
 			////////
 
