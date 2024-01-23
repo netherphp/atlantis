@@ -2,12 +2,12 @@
 
 namespace Nether\Atlantis\Routes\Profile;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 use Nether\Atlantis;
 use Nether\Avenue;
-use Nether\Blog;
 use Nether\Common;
-
-use Nether\Atlantis\Plugin\Interfaces;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,8 +16,7 @@ use Exception;
 use Nether\Atlantis\Struct\EntityRelationship;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAuditInterface;
-use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuBeforeInterface;
-use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAfterInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraDataInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsBeforeInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsAfterInterface;
 
@@ -221,17 +220,21 @@ extends Atlantis\PublicWeb {
 	ProfileViewExtraData(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
 	Common\Datastore {
 
-		$Plugins = $App->Plugins->GetInstanced(
-			Interfaces\ProfileView\ExtraDataInterface::class
-		);
+		$Plugins = $App->Plugins->GetInstanced(ExtraDataInterface::class);
 
 		$Output = $Plugins->Accumulate(new Common\Datastore, (
-			fn(Common\Datastore $C, Interfaces\ProfileView\ExtraDataInterface $P)
+			fn(Common\Datastore $C, ExtraDataInterface $P)
 			=> $C->MergeRight($P->GetExtraData( $Profile ))
 		));
 
 		return $Output;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// these need to be restructured to work more like the admin menu where
+	// it generates a section list that can be audited later.
 
 	#[Common\Meta\Date('2023-12-27')]
 	static public function

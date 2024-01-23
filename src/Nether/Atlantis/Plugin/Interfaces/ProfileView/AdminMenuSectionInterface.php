@@ -2,14 +2,21 @@
 
 namespace Nether\Atlantis\Plugin\Interfaces\ProfileView;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 use Nether\Atlantis;
 use Nether\Common;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 interface AdminMenuSectionInterface {
 
+	#[Common\Meta\Date('2024-01-08')]
+	#[Common\Meta\Info('Return a list of items to add to the specified menu section.')]
 	public function
-	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Key, Common\Datastore $ExtraData):
+	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Section, Common\Datastore $ExtraData):
 	?Common\Datastore;
 
 };
-
