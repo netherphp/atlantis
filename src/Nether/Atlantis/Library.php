@@ -83,14 +83,7 @@ implements
 		////////
 
 		($App->Plugins)
-		->RegisterInterfacePlugin(
-			Atlantis\Plugins\AccessTypeDefineInterface::class,
-			Atlantis\Plugins\AccessTypeDefine::class
-		)
-		->RegisterInterfacePlugin(
-			Atlantis\Plugins\CommandLineExtensionInterface::class,
-			Atlantis\Plugins\CommandLineExtension::class
-		)
+		->Register(Atlantis\Plugins\User\AccessTypeDefault::class)
 		->Register(Atlantis\Plugins\Profile\AdminMenuDefault::class);
 
 		return;

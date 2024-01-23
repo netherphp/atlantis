@@ -1,8 +1,7 @@
 <?php
 
-namespace Nether\Atlantis\Plugins;
+namespace Nether\Atlantis\Plugin\Interfaces\User;
 
-use Nether\Atlantis;
 use Nether\Common;
 
 interface AccessTypeDefineInterface {
@@ -12,4 +11,4 @@ interface AccessTypeDefineInterface {
 	Get():
 	iterable;
 
-}
+};
