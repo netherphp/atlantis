@@ -104,8 +104,7 @@ application instance.
 
 		$this
 		->LoadRequiredLibraries()
-		->LoadAdditionalLibraries()
-		->UpdateLogging();
+		->LoadAdditionalLibraries();
 
 		$this->Library->Each(function(Nether\Common\Library $Inst){
 
@@ -407,17 +406,6 @@ application instance.
 
 		$this->Log = new Util\LogManager($this->ProjectRoot);
 		$this->Log->Init();
-
-		return $this;
-	}
-
-	protected function
-	UpdateLogging():
-	static {
-
-		$this->Log->Update(
-			$this->Config[Atlantis\Key::ConfLogFormat]
-		);
 
 		return $this;
 	}
