@@ -6,6 +6,11 @@ let DialogTemplate = `
 	<div class="col-12 mb-4">
 		<div class="fw-bold text-uppercase">Search</div>
 		<div class="mb-2">
+			<select class="form-select">
+				<option value="any">All Profiles</option>
+			</select>
+		</div>
+		<div class="mb-2">
 			<input name="Query" type="text" class="form-control" />
 		</div>
 		<div class="TagsQuery"></div>
@@ -40,18 +45,29 @@ extends ModalDialog {
 		this.childType = 'Profile.Entity';
 		this.parentChild = false;
 
-		this.searchVerb = 'SEARCH';
-		this.searchURL = '/api/profile/entity';
+		// list existing relationships.
 
 		this.listVerb = 'RELGET';
 		this.listURL = '/api/eri/entity';
 
+		// add new relationship
+
 		this.saveVerb = 'POST';
 		this.saveURL = '/api/eri/entity';
 
-		this.bakeOptions(opt);
+		// search for new objects to relate to.
+
+		this.searchVerb = 'SEARCH';
+		this.searchURL = '/api/profile/entity';
+
+		// check for filter sets to make searching easier.
+
+		this.filtersVerb = 'FILTERS';
+		this.filtersURL = '/api/profile/entity';
 
 		////////
+
+		this.bakeOptions(opt);
 
 		this.addButton('Cancel', 'btn-dark', 'cancel');
 		this.addButton('Save', 'btn-primary', 'accept');
@@ -72,13 +88,52 @@ extends ModalDialog {
 
 		////////
 
-		let api = new API.Request(this.listVerb, this.listURL);
+		// TODO lock ui
 
-		(api.send({ UUID: this.uuid, Type: this.childType }))
-		.then(this.onTagFetch.bind(this))
-		.catch(api.catch);
+		let f1 = this.fetchCurrentTags();
+		let f2 = this.fetchFilterTypes();
+
+		Promise.all([f1, f2]).then(function(){
+			// TODO unlock ui
+			console.log('tee hee');
+			return;
+		});
 
 		return;
+	};
+
+	fetchCurrentTags() {
+
+		let self = this;
+
+		return new Promise(function(next, fail) {
+
+			let api = new API.Request(self.listVerb, self.listURL);
+
+			(api.send({ UUID: self.uuid, Type: self.childType }))
+			.then(self.onTagFetch.bind(self))
+			.then(next)
+			.catch(api.catch);
+
+			return;
+		});
+	};
+
+	fetchFilterTypes() {
+
+		let self = this;
+
+		return new Promise(function(next, fail) {
+
+			let api = new API.Request(self.filtersVerb, self.filtersURL);
+
+			(api.send({ UUID: self.uuid, Type: self.childType }))
+			.then(self.onFilterFetch.bind(self))
+			.then(next)
+			.catch(api.catch);
+
+			return;
+		});
 	};
 
 	//#[Common\Meta\Date('2023-12-14')]
@@ -193,6 +248,13 @@ extends ModalDialog {
 		.append(output.children());
 
 		this.query.focus();
+
+		return;
+	};
+
+	onFilterFetch(result) {
+
+		// populate filter dropdown with choices.
 
 		return;
 	};

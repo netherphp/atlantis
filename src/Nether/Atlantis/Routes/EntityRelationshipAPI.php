@@ -203,6 +203,9 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'RELGET')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
@@ -257,24 +260,31 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
-	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'RELSEARCH')]
-	#[Atlantis\Meta\RouteAccessTypeAdmin]
-	public function
-	EntityRelationshipSearch():
-	void {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		($this->Data)
-		->Type(Common\Filters\Text::TrimmedNullable(...))
-		->Q(Common\Filters\Text::TrimmedNullable(...));
+	protected function
+	VerifyTypeUUID(string $Type, string $UUID):
+	Atlantis\Prototype {
 
-		$Type = $this->Data->Type ?? 'Profile.Entity';
+		// 1. if we can find a registered class
+		// 2. and the class could find a row
+
 		$Class = Atlantis\Struct\EntityRelationship::TypeClass($Type);
+		$Inst = $Class::GetByField('UUID', $UUID);
 
-		var_dump($Class);
+		if(!$Inst)
+		throw new Exception("entity not found {$Class} {$Type} {$UUID}");
 
-		return;
+		return $Inst;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// things to check if they are still being used.
 
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity', Verb: 'LIST')]
 	#[Atlantis\Meta\RouteHandler('/api/eri/entity/list', Verb: 'GET')]
@@ -304,25 +314,6 @@ extends Atlantis\ProtectedAPI {
 
 		$this->SetPayload($Payload->GetData());
 		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	protected function
-	VerifyTypeUUID(string $Type, string $UUID):
-	Atlantis\Prototype {
-
-		// 1. if we can find a registered class
-		// 2. and the class could find a row
-
-		$Class = Atlantis\Struct\EntityRelationship::TypeClass($Type);
-		$Inst = $Class::GetByField('UUID', $UUID);
-
-		if(!$Inst)
-		throw new Exception("entity not found {$Class} {$Type} {$UUID}");
-
-		return $Inst;
 	}
 
 }

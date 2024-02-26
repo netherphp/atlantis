@@ -71,20 +71,6 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE)
 		));
 
-		if(!$Profile->Enabled)
-		$Output->Shove('ProfileEditEnable', Atlantis\Struct\DropdownItem::New(
-			Title: 'Enable Profile',
-			Icon: 'mdi-eye',
-			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE)
-		));
-
-		else
-		$Output->Shove('ProfileEditDisable', Atlantis\Struct\DropdownItem::New(
-			Title: 'Disable Profile',
-			Icon: 'mdi-eye-off',
-			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE)
-		));
-
 		////////
 
 		return $Output;
@@ -163,8 +149,24 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 
 		////////
 
+		if(!$Profile->Enabled)
+		$Output->Shove('ProfileStateEnable', Atlantis\Struct\DropdownItem::New(
+			Title: 'Enable Profile',
+			Icon: 'mdi-eye',
+			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'enable' ], TRUE)
+		));
+
+		else
+		$Output->Shove('ProfileStateDisable', Atlantis\Struct\DropdownItem::New(
+			Title: 'Disable Profile',
+			Icon: 'mdi-eye-off',
+			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'disable' ], TRUE)
+		));
+
+		////////
+
 		($Output)
-		->Shove('ProfileDangerDelete', Atlantis\Struct\DropdownItem::New(
+		->Shove('ProfileStateDelete', Atlantis\Struct\DropdownItem::New(
 			Title: 'Delete',
 			Icon: 'mdi-trash-can',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE)

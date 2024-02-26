@@ -218,7 +218,7 @@ extends Console\Client {
 		$ImageIn->ResizeImage(
 			$OW, $OH,
 			Imagick::FILTER_SINC,
-			0.0,
+			1.0,
 			FALSE,
 			FALSE
 		);

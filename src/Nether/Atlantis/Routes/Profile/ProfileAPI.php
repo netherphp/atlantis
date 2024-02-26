@@ -184,6 +184,19 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/profile/entity', Verb: 'FILTERS')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	EntityFilters():
+	void {
+
+		$this->SetPayload([
+			'test' => 'Test'
+		]);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

@@ -33,21 +33,7 @@ $NextURL = $Element->NextURL ?? sprintf(
 <div id="<?php $Util->Print($ElementID) ?>" class="atl-ui-pager">
 	<div class="row justify-content-center align-items-center">
 
-		<div class="col-auto">
-			<?php if($Page > 1): ?>
-			<a class="btn btn-primary" href="<?php $Util->Print($PrevURL) ?>">
-				<i class="mdi mdi-chevron-left"></i>
-				Prev
-			</a>
-			<?php else: ?>
-			<span class="btn btn-dark disabled">
-				<i class="mdi mdi-chevron-left"></i>
-				Prev
-			</span>
-			<?php endif; ?>
-		</div>
-
-		<div class="col-auto">
+		<div class="col-12 ta-center mb-2">
 			<div class="atl-ui-pager pager-status">
 				Page <span class="pager-pagenum"><?php $Util->Print(number_format($Page)) ?></span>
 				of <span class="pager-pagecount"><?php $Util->Print(number_format(max(1, $PageCount))) ?></span>
@@ -55,13 +41,27 @@ $NextURL = $Element->NextURL ?? sprintf(
 		</div>
 
 		<div class="col-auto">
+			<?php if($Page > 1): ?>
+			<a class="btn btn-block btn-primary" href="<?php $Util->Print($PrevURL) ?>">
+				<i class="mdi mdi-chevron-left"></i>
+				Prev
+			</a>
+			<?php else: ?>
+			<span class="btn btn-block btn-dark disabled">
+				<i class="mdi mdi-chevron-left"></i>
+				Prev
+			</span>
+			<?php endif; ?>
+		</div>
+
+		<div class="col-auto">
 			<?php if($Page < $PageCount): ?>
-			<a class="btn btn-primary" href="<?php $Util->Print($NextURL) ?>">
+			<a class="btn btn-block btn-primary" href="<?php $Util->Print($NextURL) ?>">
 				Next
 				<i class="mdi mdi-chevron-right"></i>
 			</a>
 			<?php else: ?>
-			<span class="btn btn-dark disabled">
+			<span class="btn btn-block btn-dark disabled">
 				Next
 				<i class="mdi mdi-chevron-right"></i>
 			</span>

@@ -73,7 +73,11 @@ in-page dialog windows.
 
 		this.setTitle(this.config.title);
 		this.buildFields(this.config.fields);
+
+		if(this.config.labelCancel !== null)
 		this.addButton(this.config.labelCancel, 'btn-dark', 'cancel');
+
+		if(this.config.labelAccept !== null)
 		this.addButton(this.config.labelAccept, 'btn-primary', 'accept');
 
 		this.onAcceptFunc = this.config.onAccept;

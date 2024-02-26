@@ -1,14 +1,14 @@
 <?php
 
-use Nether\Atlantis;
-use Nether\Common;
+use Nether\Atlantis\UI\Dropdown;
 
 /**
- * @var Atlantis\Routes\Profile\ProfileWeb $Route
+ * @var Nether\Atlantis\Routes\Profile\ProfileWeb $Route
+ * @var Nether\Atlantis\Profile\Entity $Profile
+ * @var Nether\Common\Datastore $ExtraData
  */
 
-$AdminMenu = $Route::ProfileViewAdminMenu($App, $Profile);
-
+$AdminMenu = $Route::ProfileViewAdminMenu($App, $Profile, $ExtraData);
 $Address = $Profile->GetAddresssLines();
 $MapURL = $Profile->GetMapURL();
 
@@ -30,12 +30,12 @@ $MapURL = $Profile->GetMapURL();
 	<div class="col">
 		<div class="row">
 			<div class="col">
-				<h2 class="mb-0"><?php $Util->Print($Profile->Title) ?></h2>
+				<h2 class="mb-0"><a href=""><?php $Util->Print($Profile->Title) ?></a></h2>
 			</div>
 
 			<?php if($Route->IsUserAdmin()): ?>
 			<div class="col-auto">
-				<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [ 'Menu' => $AdminMenu, 'MenuBtnStyleClass'=> 'btn-outline-dark', 'ItemBtnStyleClass'=> 'btn-outline-dark' ]) ?>
+				<?php echo Dropdown::FromSurfaceWith($Surface, [ 'Menu' => $AdminMenu, 'MenuBtnStyleClass'=> 'btn-outline-dark', 'ItemBtnStyleClass'=> 'btn-outline-dark' ]) ?>
 			</div>
 			<?php endif; ?>
 
