@@ -251,6 +251,15 @@ application instance.
 	}
 
 	public function
+	SetProjectEnv(string $Env):
+	static {
+
+		$this->ProjectEnv = $Env;
+
+		return $this;
+	}
+
+	public function
 	GetProjectRoot():
 	string {
 
@@ -275,6 +284,23 @@ application instance.
 		);
 
 		return $WebRoot;
+	}
+
+	public function
+	RewriteURL(string $URL):
+	string {
+
+		if(str_starts_with($URL, 'atl://')) {
+			$URL = match(TRUE) {
+				$this->IsDev()
+				=> preg_replace('#^atl://(?:www\.)?#', 'https://dev.', $URL),
+
+				default
+				=> preg_replace('#^atl://#', 'https://', $URL)
+			};
+		}
+
+		return $URL;
 	}
 
 	////////////////////////////////////////////////////////////////
