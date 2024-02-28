@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\Engine $App
+ * @var Nether\Atlantis\Struct\TemplateHelper $Util
+ * @var Nether\Avenue\Router $Router
+ * @var Nether\Surface\Engine $Surface
+ * @var Nether\User\EntitySession $User
+ *
+ * @var ?Nether\Blog\Blog $Blog
+ * @var ?Nether\Database\ResultSet $Results
+ * @var ?string $Query
+ * @var ?string $ButtonIcon
+ * @var ?string $ButtonLabel
+ * @var ?string $InputHint
+ */
+
+// search data info things.
+
+$Blog ??= NULL;
+$Results ??= NULL;
+$Query ??= '';
+
+$UserCanWrite ??= FALSE;
+$UserCanAdmin ??= FALSE;
+
+// cometic things.
+
+$ButtonIcon ??= 'mdi mdi-magnify';
+$ButtonLabel ??= 'Search';
+$InputHint ??= NULL;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$Summary = new Nether\Common\Datastore;
+
+if($Query && $Results) {
+	$Summary->Push(sprintf('Found <b>%d</b> posts', $Results->Total));
+
+	if($Query)
+	$Summary->Push(sprintf('matching <b>&quot;%s&quot;</b>', $Util->Encode($Query)));
+}
+
+$InputHint = match(TRUE) {
+	($InputHint !== NULL)
+	=> trim($InputHint),
+
+	($Blog instanceof Nether\Blog\Blog)
+	=> sprintf('Search %s...', $Blog->Title),
+
+	default
+	=> 'Search...'
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+?>
+
+<div class="jumbotron rounded p-2">
+	<form method="get">
+		<div class="row tight">
+			<div class="col">
+				<input type="text" name="q" class="form-control" placeholder="<?php $Util->Print($InputHint) ?>" value="<?php $Util->Print($Query) ?>" />
+			</div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-primary">
+					<i class="<?php $Util->Print($ButtonIcon) ?>"></i>
+					<?php $Util->Print($ButtonLabel) ?>
+				</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<?php if($Summary->Count()): ?>
+<hr class="border-0 mb-4" />
+<div class="fs-larger">
+	<div class="row justify-content-center">
+		<div class="col-auto tt-upper">
+			<?php echo $Summary->Join(' ') ?>
+		</div>
+	</div>
+</div>
+<?php endif; ?>
+
