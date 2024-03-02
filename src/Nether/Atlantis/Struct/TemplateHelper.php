@@ -61,13 +61,12 @@ class TemplateHelper {
 		// this is some magic that will need to be documented or just not
 		// be here honestly.
 
-		if($Input && str_starts_with($Input, 'atl://'))
+		if(str_starts_with($Input, 'atl://'))
 		$Input = Atlantis\WebURL::Rewrite($this->App, $Input);
 
 		////////
 
 		Atlantis\Util::PrintHTML($Input ?? '');
-
 		return;
 	}
 
@@ -124,12 +123,21 @@ class TemplateHelper {
 	}
 
 	#[Common\Meta\Date('2023-08-07')]
-	#[Common\Meta\Info('Mostly for rewriting URLs to our own application.')]
+	#[Common\Meta\Info('Returns the URL after running it through the system thing.')]
 	public function
 	RewriteURL(string $URL):
 	string {
 
 		return Atlantis\WebURL::Rewrite($this->App, $URL);
+	}
+
+	#[Common\Meta\Date('2023-08-07')]
+	#[Common\Meta\Info('Prints the URL running it through the system thing.')]
+	public function
+	PrintURL(string $URL):
+	string {
+
+		return $this->RewriteURL($URL);
 	}
 
 	public function
