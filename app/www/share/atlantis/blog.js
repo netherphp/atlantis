@@ -89,6 +89,9 @@ class Post {
 		jQuery('[data-post-cmd=photoset]')
 		.on('click', this.onPhotoSet.bind(this));
 
+		//jQuery('[data-post-cmd=erlink')
+		//.on('click', this.onEditRels.bind(this));
+
 		return this;
 	};
 

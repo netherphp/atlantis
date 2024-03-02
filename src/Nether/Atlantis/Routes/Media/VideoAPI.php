@@ -176,8 +176,9 @@ extends Atlantis\ProtectedAPI {
 		////////
 
 		if($this->Data->ParentUUID) {
-			Atlantis\Struct\EntityRelationship::DeleteByParentUUID(
-				$this->Data->ParentUUID
+			Atlantis\Struct\EntityRelationship::DeleteByPair(
+				$this->Data->ParentUUID,
+				$Video->UUID
 			);
 		}
 

@@ -22,74 +22,6 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
-
-$GenerateBlogUserMenu = function(Atlantis\Engine $App, Blog\Post $Post) {
-
-	$Menu = Atlantis\Struct\DropdownMenu::New();
-	$Break = [ [ 'Title' => '-' ] ];
-	$Items = NULL;
-	$Item = NULL;
-
-	// the menu has various sections that will likely need to be hooked onto
-	// separately so things can be added and sorted within their subgroups.
-
-	$PostItems = Common\Datastore::FromArray([
-		[ 'Title' => 'Edit Post', 'Icon' => 'mdi-pencil', 'URL' => $Post->GetEditURL() ],
-		[ 'Title' => 'Edit Tags', 'Icon' => 'mdi-tag-multiple', 'Attr' => $Post->GetDataAttr([ 'post-cmd'=> 'tags' ], TRUE) ],
-		[ 'Title' => 'Link Profiles...', 'Icon' => 'mdi-tag-multiple', 'Attr' => $Post->GetDataAttr([ 'profile-cmd'=> 'erlink', 'parent-type'=> 'Blog.Post' ], TRUE) ]
-	]);
-
-	$ActionItems = Common\Datastore::FromArray([
-		[ 'Title' => 'Add Video URL', 'Icon' => 'mdi-video', 'Attr' => $Post->GetDataAttr([ 'videotp-cmd'=> 'new', 'parent-type'=> Blog\Key::EntityTypePost, 'parent-uuid'=> $Post->UUID ], TRUE) ],
-		[ 'Title' => 'Upload Photos', 'Icon' => 'mdi-image', 'Attr' => $Post->GetDataAttr([ 'photolib-cmd'=> 'upload', 'parent-type'=> Blog\Key::EntityTypePost, 'parent-uuid'=> $Post->UUID ], TRUE) ]
-	]);
-
-	$PrivacyItems = Common\Datastore::FromArray([
-		[ 'Title' => 'Set to Draft Mode', 'Icon' => 'mdi-eye-off', 'Attr' => $Post->GetDataAttr([ 'post-cmd'=> 'draft' ], TRUE), 'If' => $Post->Enabled ],
-		[ 'Title' => 'Set to Published Mode', 'Icon' => 'mdi-eye', 'Attr' => $Post->GetDataAttr([ 'post-cmd'=> 'publish' ], TRUE), 'If' => !$Post->Enabled ]
-	]);
-
-	$FinalItems = Common\Datastore::FromArray([
-		[ 'Title' => 'Delete Post', 'Icon' => 'mdi-trash-can', 'Attr' => $Post->GetDataAttr([ 'post-cmd'=> 'delete' ], TRUE), 'Warn' => Atlantis\Struct\DropdownItem::Danger ]
-	]);
-
-	// apply any additional menu items from website plugins and then sort
-	// those subgroups.
-
-	($App->Plugins->Get(Blog\Plugins\BlogPostWriterMenuInterface::class))
-	->Remap(fn(string $ClassName)=> new $ClassName($App))
-	->Each(function(Blog\Plugins\BlogPostWriterMenuInterface $P) use($App, $Post, $ActionItems) {
-		$ActionItems->MergeRight($P->GetActionItems($App, $Post));
-		return;
-	});
-
-	$ActionItems->Sort(fn($A, $B)=> $A['Title'] <=> $B['Title']);
-
-	// compile the final menu from all of the sections. dont sort this set
-	// because the subsets have all been managed.
-
-	$Items = Common\Datastore::FromStackMerged(
-		$PostItems, $Break,
-		$ActionItems, $Break,
-		$PrivacyItems, $Break,
-		$FinalItems
-	);
-
-	foreach($Items as $Item)
-	$Menu->ItemNew(...$Item);
-
-	return $Menu;
-};
-
-$BlogUserMenu = match(TRUE) {
-	($BlogUser && $BlogUser->CanWrite())
-	=> $GenerateBlogUserMenu($App, $Post),
-
-	default
-	=> NULL
-};
-
-
 ?>
 
 <hr id="PostInfo" class="d-none"
@@ -111,10 +43,13 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 			</h2>
 		</div>
 
-		<!-- EDIT CONTROLS -->
-		<?php if($BlogUserMenu !== NULL): ?>
+		<?php if($Route->IsUserAdmin()): ?>
 		<div class="col-auto">
-			<?php echo Atlantis\UI\Dropdown::FromMenuStruct($Surface, $BlogUserMenu) ?>
+			<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [
+				'Menu'              => $AdminMenu,
+				'MenuBtnStyleClass' => 'btn-outline-dark',
+				'ItemBtnStyleClass' => 'btn-outline-dark'
+			]) ?>
 		</div>
 		<?php endif; ?>
 

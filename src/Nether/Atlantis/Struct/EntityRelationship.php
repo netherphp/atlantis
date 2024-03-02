@@ -212,6 +212,39 @@ extends Atlantis\Prototype {
 		return;
 	}
 
+	static public function
+	DeleteByPair(string $UUID1, string $UUID2):
+	void {
+
+		$DBM = new Database\Manager;
+
+		////////
+
+		if(!$UUID1)
+		throw new Exception('Missing or Invalid UUID1');
+
+		if(!$UUID2)
+		throw new Exception('Missing or Invalid UUID2');
+
+		////////
+
+		$SQL = (
+			($DBM->NewVerse(static::$DBA))
+			->FromMetaDelete(static::class)
+			->Where('(`ParentUUID`=:UUID1 AND `ChildUUID`=:UUID2) OR (`ParentUUID`=:UUID2 AND `ChildUUID`=:UUID1)')
+		);
+
+		$Result = $SQL->Query([
+			':UUID1' => $UUID1,
+			':UUID2' => $UUID2
+		]);
+
+		if(!$Result->IsOK())
+		throw new Exception($Result->GetError());
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
