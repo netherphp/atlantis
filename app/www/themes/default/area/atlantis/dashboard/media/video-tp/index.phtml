@@ -25,12 +25,10 @@ $Surface
 				<input type="text" name="q" class="form-control" placeholder="Search..." />
 			</div>
 			<div class="col-12 mb-2">
-				<div class="form-check form-switch">
-					<label class="form-check-label fw-bold text-uppercase">
-						<input type="checkbox" name="untagged" value="1" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
-						Untagged Only
-					</label>
-				</div>
+				<label class="form-label fw-bold text-uppercase">
+					<input type="checkbox" name="untagged" value="1" class="form-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
+					Untagged Only
+				</label>
 			</div>
 			<div class="col-12"></div>
 			<div class="col-auto">

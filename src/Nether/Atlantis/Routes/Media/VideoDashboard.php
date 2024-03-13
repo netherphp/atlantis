@@ -30,7 +30,8 @@ extends Atlantis\ProtectedWeb {
 			'Search'   => $this->Data->Q,
 			'Page'     => $this->Data->Page,
 			'Untagged' => $this->Data->Untagged,
-			'Enabled'  => NULL
+			'Enabled'  => NULL,
+			'Sort'     => 'newest'
 		]);
 
 		$Videos = Atlantis\Media\VideoThirdParty::Find($Filters);
