@@ -61,10 +61,10 @@ $Surface
 	Found <?php $Util->Print($Videos->Total) ?> Videos
 </div>
 
-<?php
+<div class="mb-5">
+	<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos ]) ?>
+</div>
+<hr />
 
-$Surface
-->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos ])
-->Area('widgets/pager', [ 'Results'=> $Videos ])
+<?php echo Nether\Atlantis\UI\Pager::FromSurfaceWithResultSet($Surface, $Videos); ?>
 
-?>
