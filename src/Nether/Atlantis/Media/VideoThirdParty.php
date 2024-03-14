@@ -83,7 +83,7 @@ extends Atlantis\Prototype {
 	public Atlantis\Media\File
 	$CoverImage;
 
-	public Atlantis\Profile\Entity
+	public ?Atlantis\Profile\Entity
 	$Profile;
 
 	////////////////////////////////////////////////////////////////
