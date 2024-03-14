@@ -6,7 +6,7 @@ let DialogTemplate = `
 	<div class="col-12 mb-4">
 		<div class="fw-bold text-uppercase">Search</div>
 		<div class="mb-2">
-			<select class="form-select">
+			<select class="form-select eri-type-selector">
 				<option value="any">All Profiles</option>
 			</select>
 		</div>
@@ -68,6 +68,10 @@ extends ModalDialog {
 		////////
 
 		this.bakeOptions(opt);
+
+		if(this.childType !== 'Profile.Entity') {
+			this.element.find('.eri-type-selector').remove();
+		}
 
 		this.addButton('Cancel', 'btn-dark', 'cancel');
 		this.addButton('Save', 'btn-primary', 'accept');

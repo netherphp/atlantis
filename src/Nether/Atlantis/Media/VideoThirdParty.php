@@ -83,6 +83,9 @@ extends Atlantis\Prototype {
 	public Atlantis\Media\File
 	$CoverImage;
 
+	public Atlantis\Profile\Entity
+	$Profile;
+
 	////////////////////////////////////////////////////////////////
 	// OVERRIDE Atlantis\Prototype /////////////////////////////////
 
@@ -94,6 +97,17 @@ extends Atlantis\Prototype {
 		$this->CoverImage = Atlantis\Media\File::FromPrefixedDataset(
 			$Args->Input, 'UP_'
 		);
+
+		////////
+
+		// @todo 2024-03-13 migrate this to a table join.
+
+		if(!$this->ParentUUID)
+		$this->Profile = $this->BootstrapParentProfile();
+		else
+		$this->Profile = Atlantis\Profile\Entity::GetByUUID($this->ParentUUID);
+
+		////////
 
 		return;
 	}
@@ -227,6 +241,25 @@ extends Atlantis\Prototype {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	BootstrapParentProfile():
+	Atlantis\Profile\Entity {
+
+		$Profile = Atlantis\Profile\Entity::Insert([
+			'Title'   => $this->Title,
+			'Alias'   => sprintf('video-profile-%d', $this->ID),
+			'Enabled' => $this->Enabled,
+			'Details' => $this->Details,
+			'Enabled' => 1
+		]);
+
+		$this->Update([
+			'ParentUUID' => $Profile->UUID
+		]);
+
+		return $Profile;
+	}
 
 	public function
 	IsVimeo():

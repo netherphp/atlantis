@@ -26,7 +26,14 @@ $Surface
 			</div>
 			<div class="col-12 mb-2">
 				<label class="form-label fw-bold text-uppercase">
-					<input type="checkbox" name="untagged" value="1" class="form-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
+					<input
+						type="checkbox"
+						name="untagged"
+						value="1"
+						class="form-input mr-2"
+						<?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?>
+					/>
+
 					Untagged Only
 				</label>
 			</div>

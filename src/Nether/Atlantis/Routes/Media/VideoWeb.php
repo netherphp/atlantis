@@ -16,6 +16,11 @@ extends Atlantis\ProtectedWeb {
 	View(int $VideoID, Atlantis\Media\VideoThirdParty $Video):
 	void {
 
+		$Links = $Video->Profile->FetchRelatedLinks();
+		$Related = $Video->Profile->FetchRelatedProfiles();
+
+		////////
+
 		$Profiles = NULL;
 		$Posts = NULL;
 
@@ -49,6 +54,8 @@ extends Atlantis\ProtectedWeb {
 		->Set('Page.Title', sprintf('Video: %s', $Video->Title))
 		->Wrap('media/video/view', [
 			'Video'    => $Video,
+			'Related'  => $Related,
+			'Links'    => $Links,
 			'Tags'     => $Video->GetTags(),
 			'News'     => $Posts,
 			'Profiles' => $Profiles

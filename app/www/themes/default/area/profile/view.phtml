@@ -23,6 +23,9 @@ use Nether\User;
  * @var Database\ResultSet $Videos
  */
 
+$AdminMenu ??= NULL;
+$Embed ??= FALSE;
+
 $Scopeify = (
 	fn($Item): array
 	=> array_merge(
@@ -34,16 +37,17 @@ $Scopeify = (
 
 ?>
 
-<?php $Surface->Area('design/subheader'); ?>
+<?php if(!$Embed) $Surface->Area('design/subheader'); ?>
 
 <?php $Surface->Area('profile/view-before-pre', $__SCOPE) ?>
 
-<div class="container pt-0 pb-0">
+<div class="<?php $Embed ? '' : 'container' ?> pt-0 pb-0">
 
 	<?php if(!$Profile->Enabled): ?>
 	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
 	<?php endif; ?>
 
+	<?php if(!$Embed): ?>
 	<!-- HEADER -->
 	<div class="mb-6">
 		<?php
@@ -57,6 +61,7 @@ $Scopeify = (
 
 		?>
 	</div>
+	<?php endif; ?>
 
 	<?php if($Profile->HasDetails()): ?>
 	<!-- DETAILS -->
