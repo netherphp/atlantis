@@ -209,6 +209,13 @@ extends Atlantis\Prototype {
 	void {
 
 		switch($Input['Sort']) {
+			case 'newest-added':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+			break;
+			case 'oldest-added':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortAsc);
+			break;
+
 			case 'newest':
 				$SQL->Sort('Main.TimePosted', $SQL::SortDesc);
 			break;
@@ -216,6 +223,8 @@ extends Atlantis\Prototype {
 				$SQL->Sort('Main.TimePosted', $SQL::SortAsc);
 			break;
 		}
+
+		//Common\Dump::Var($SQL, TRUE);
 
 		return;
 	}

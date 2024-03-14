@@ -18,7 +18,8 @@ extends Atlantis\ProtectedWeb {
 		($this->Data)
 		->Q(Common\Filters\Text::TrimmedNullable(...))
 		->Page(Common\Filters\Numbers::Page(...))
-		->Untagged(Common\Filters\Numbers::BoolNullable(...));
+		->Untagged(Common\Filters\Numbers::BoolNullable(...))
+		->Sort(Common\Filters\Misc::OneOfTheseFirst(...), [ 'newest-added', 'newest' ]);
 
 		$Title = 'Videos (Third Party)';
 		$Area = 'atlantis/dashboard/media/video-tp/index';
@@ -31,8 +32,9 @@ extends Atlantis\ProtectedWeb {
 			'Page'     => $this->Data->Page,
 			'Untagged' => $this->Data->Untagged,
 			'Enabled'  => NULL,
-			'Sort'     => 'newest',
+			'Sort'     => $this->Data->Sort,
 			'Page'     => $this->Data->Page,
+			'UseSiteTags' => FALSE,
 			'Limit'    => 20
 		]);
 

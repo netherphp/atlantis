@@ -24,7 +24,13 @@ $Surface
 			<div class="col-12 mb-2">
 				<input type="text" name="q" class="form-control" placeholder="Search..." />
 			</div>
-			<div class="col-12 mb-2">
+			<div class="col-12 col-md-auto mb-2">
+				<select name="sort" class="form-select">
+					<option <?php echo $Util->GetSelectedHTML($Route->Data->Sort === 'newest-added') ?> value="newest-added">Sort by Date Added</option>
+					<option <?php echo $Util->GetSelectedHTML($Route->Data->Sort === 'newest') ?> value="newest">Sort by Date On Video</option>
+				</select>
+			</div>
+			<div class="col-12 col-md mb-2">
 				<label class="form-label fw-bold text-uppercase">
 					<input
 						type="checkbox"
