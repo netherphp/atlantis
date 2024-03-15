@@ -52,21 +52,6 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 				}; ?>
 			</div>
 
-			<div class="d-none">
-				<div class="fw-bold text-uppercase font-size-small">
-					<?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
-				</div>
-				<div class="fw-bold font-size-large mb-1">
-					<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
-				</div>
-
-				<div class="mb-2"><?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?></div>
-
-				<div class="EditorContent mb-2">
-					<?php echo $Post->GetExcerpt() ?>
-				</div>
-			</div>
-
 			<div>
 				<a href="<?php $Util->Print($Post->GetURL()) ?>" class="btn btn-primary">Read More...</a>
 			</div>

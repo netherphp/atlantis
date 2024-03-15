@@ -24,6 +24,19 @@ class Plugin {
 	__Construct(Engine $App) {
 
 		$this->App = $App;
+		$this->OnReady();
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady():
+	void {
+
+		// for overwrite from plugin.
 
 		return;
 	}
