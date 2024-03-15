@@ -48,7 +48,20 @@ $GetDatePosted = function(mixed $Input) {
 	</div>
 
 	<div class="col">
-		<div class="fw-bold font-size-large">
+
+		<div class="row align-items-center">
+			<div class="col">
+				<div class="mb-1">
+					<a href="<?php $Util->Print($Link->URL) ?>" target="_blank" class="fw-bold fs-larger"><?php $Util->Print($Link->Title) ?></a>
+				</div>
+				<div class="">
+					<span class="tt-upper fw-bold">Source:</span> <?php $Util->Print(Atlantis\Util::DomainFromURL($Link->URL)) ?>,
+					<span class="tt-upper fw-bold">Date Released:</span> <?php $Util->Print(Common\Date::FromDateString($Link->DatePosted)->Get(Common\Values::DateFormatFancyDate)) ?>
+				</div>
+			</div>
+		</div>
+
+		<div class="d-none fw-bold font-size-large">
 			<a href="<?php $Util->Print($Link->URL) ?>" target="_blank" class="btn btn-outline-dark p-1 pl-2 pr-2 mr-2">Link</a>
 			<a href="<?php $Util->Print($Link->URL) ?>" target="_blank"><?php $Util->Print($Link->Title) ?></a>
 		</div>
