@@ -41,7 +41,7 @@ $Scopeify = (
 
 <?php $Surface->Area('profile/view-before-pre', $__SCOPE) ?>
 
-<div class="<?php $Embed ? '' : 'container' ?> pt-0 pb-0">
+<div class="<?php $Util->Print($Embed ? '' : 'container') ?> pt-0 pb-0">
 
 	<?php if(!$Profile->Enabled): ?>
 	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
