@@ -28,8 +28,11 @@ required data in.
 	SortNewest = 'newest',
 	SortOldest = 'oldest';
 
-	static private array
+	static public array
 	$TypeList = [];
+
+	static public array
+	$TypeInfo = [];
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -108,6 +111,10 @@ required data in.
 	static public function
 	Register():
 	void {
+
+		// @todo 2024-03-15 populate typeinfo with more detailed info like
+		// the keys and class names so that searches can happen either way.
+		// also so the class map is only reflectioned once.
 
 		/** @var Common\Prototype\PropertyInfo $Prop */
 
@@ -239,6 +246,17 @@ required data in.
 			'LinkClass'   => $LinkClass,
 			'EntityClass' => $Prop->Type
 		];
+	}
+
+
+	static public function
+	GetTypeByEntityClass(string $CName):
+	string {
+
+
+
+		throw new Exception("no type found for $CName");
+		return '';
 	}
 
 	static public function
@@ -410,6 +428,33 @@ required data in.
 		$Input->BlendLeft([
 			'TimeCreated' => time(),
 			'Type'        => $Type
+		]);
+
+		////////
+
+		if(!$Input['Type'])
+		throw new Exception('no Type specified');
+
+		if(!$Input['TagID'])
+		throw new Exception('no TagID specified');
+
+		if(!$Input['EntityUUID'])
+		throw new Exception('no EntityUUID specified');
+
+		$Result = parent::Insert($Input);
+
+		////////
+
+		return $Result;
+	}
+
+	static public function
+	Rawcert(iterable $Input):
+	?static {
+
+		$Input = new Common\Datastore($Input);
+		$Input->BlendLeft([
+			'TimeCreated' => time(),
 		]);
 
 		////////

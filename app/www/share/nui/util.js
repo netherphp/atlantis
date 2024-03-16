@@ -25,7 +25,7 @@ class Util {
 		return false;
 	};
 
-	static copyValueToClipboard(what) {
+	static copyValueToClipboard(what, that=null) {
 
 		let textbox = null;
 
@@ -44,6 +44,12 @@ class Util {
 		textbox.select();
 		document.execCommand('copy');
 		textbox.remove();
+
+		if(that) {
+			originalText = jQuery(that).html();
+			jQuery(that).text('Copied!');
+			setTimeout(function(){ jQuery(that).html(originalText); },1000);
+		}
 
 		return;
 	};
