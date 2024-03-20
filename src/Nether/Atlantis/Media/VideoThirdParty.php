@@ -167,13 +167,6 @@ extends Atlantis\Prototype {
 		if($Input['URL'] !== NULL)
 		$SQL->Where('Main.URL LIKE :URL');
 
-		if($Input['Search'] !== NULL) {
-			if(is_string($Input['Search'])) {
-				$Input['SearchRegEx'] = join('|', explode(' ', $Input['Search']));
-				$SQL->Where('Main.Title REGEXP :SearchRegEx');
-			}
-		}
-
 		if($Input['SearchURL'] !== NULL) {
 			if(is_string($Input['SearchURL'])) {
 				$Input['LikeSearchURL'] = "%{$Input['SearchURL']}%";
@@ -187,6 +180,8 @@ extends Atlantis\Prototype {
 
 			$SQL->Where('Main.Enabled=:Enabled');
 		}
+
+		static::FindExtendFilters_SearchBasicRel($SQL, $Input);
 
 		/* this was moved to prototype
 		if($Input['Untagged'] === TRUE) {
@@ -203,6 +198,87 @@ extends Atlantis\Prototype {
 
 		return;
 	}
+
+	static protected function
+	FindExtendFilters_SearchBasicRel(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		$InputFields = NULL;
+		$InputFieldCalc = NULL;
+		$InputBinds = NULL;
+		$InputText = NULL;
+		$InputWords = NULL;
+		$InputRegex = NULL;
+
+		////////
+
+		// determine if a search value was input with bailing out as
+		// the default.
+
+		if(!is_string($Input['Search']) || !$Input['Search'])
+		return;
+
+		///////
+
+		// determine where to search and bail if the answer ended up
+		// being nowhere.
+
+		$InputFields = new Common\Datastore;
+
+		if($Input['SearchTitle'])
+		$InputFields->Push('Main.Title');
+
+		if($Input['SearchDetails'])
+		$InputFields->Push('Main.Details');
+
+		if(!$InputFields->Count())
+		return;
+
+		////////
+
+		// turn the input into a by-word regex. this creates an or search
+		// with the words.
+
+		$InputText = preg_replace('/[\h\s]{2,}/', ' ', $Input['Search']);
+		$InputWords = Common\Datastore::FromArray(explode(' ', $InputText));
+		$InputRegex = $InputWords->Join('|');
+
+		// bake each word into individual numbered bound parameters.
+
+		$InputBinds = $InputWords->MapKeys(fn(int $K, string $V)=> [
+			sprintf(':SearchRelCheck%d', ($K+1))
+			=> "[[:<:]]{$V}[[:>:]]"
+		]);
+
+		// bake each word into a stack of inline math that my friend said
+		// would fit right in at home in every sap report ever.
+
+		$InputFieldCalc = $InputBinds->MapKeyValue(fn(string $K)=> sprintf(
+			'CASE WHEN Main.Title RLIKE %1$s THEN %2$s ELSE 0 END+'.
+			'CASE WHEN Main.Details RLIKE %1$s THEN %3$s ELSE 0 END',
+			$K,
+			($InputFields->HasValue('Main.Title') ? 1 : 0),
+			($InputFields->HasValue('Main.Details') ? 1 : 0)
+		));
+
+		////////
+
+		($Input)
+		->Shove(':SearchRegEx', "[[:<:]]($InputRegex)[[:>:]]")
+		->MergeRight($InputBinds);
+
+		($SQL)
+		->Where(
+			$InputFields
+			->Map(fn(string $F)=> "{$F} REGEXP :SearchRegEx")
+			->Join(' OR ')
+		)
+		->Fields(sprintf('(%s) AS RelVal', $InputFieldCalc->Join('+')))
+		->Sort('RelVal', $SQL::SortDesc);
+
+		return;
+	}
+
 
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):

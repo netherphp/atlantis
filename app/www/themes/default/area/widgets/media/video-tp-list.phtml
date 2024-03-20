@@ -20,7 +20,7 @@ use Nether\User;
 ?>
 
 <div class="hr-hide-last">
-	<?php foreach($Videos as $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
+	<?php foreach($Videos as $VK=> $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
 	<div class="row">
 		<div class="col-12 col-md-3">
 			<div class="ratiobox widescreen wallpapered covered rounded bg-dark" style="background-image:url(<?php $Util->Print($Video->GetCoverImageURL()) ?>);">
@@ -51,7 +51,9 @@ use Nether\User;
 			</div>
 		</div>
 	</div>
-	<hr />
+	<?php if(!$Videos->IsLastKey($VK)): ?>
+	<hr class="mt-1 mb-5" />
+	<?php endif; ?>
 	<?php endforeach; unset($Video); ?>
 </div>
 

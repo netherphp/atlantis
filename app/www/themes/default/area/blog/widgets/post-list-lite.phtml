@@ -33,7 +33,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 ?>
 
-<?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
+<?php foreach($Posts as $PK=> $Post): /** @var Blog\Post $Post */ ?>
 <div>
 	<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
 		<div class="col-12 col-md-2 mb-4 mb-md-0">
@@ -58,5 +58,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 		</div>
 	</div>
 </div>
+<?php if(!$Posts->IsLastKey($PK)): ?>
 <hr class="mt-5 mb-5" />
+<?php endif; ?>
 <?php endforeach; ?>

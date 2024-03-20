@@ -1,0 +1,57 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+//$TagFilter = fn(Atlantis\Tag\Entity $T)=> $T->ID !== $TagPrimary->ID;
+
+?>
+
+<?php foreach($Profiles as $PK=> $Profile): ?>
+<div class="row">
+	<div class="col-12 col-md-3 mb-4 mb-md-0">
+		<div class="ratiobox widescreen rounded">
+			<div class="position-absolutely wallpapered covered rounded" style="transform:scale(1.1);filter:blur(26px);background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);"></div>
+			<div class="position-absolutely wallpapered rounded contained bg-transparent" style="background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);">
+				<a class="position-absolutely" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL())) ?>"></a>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<h3><a href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL())) ?>"><?php $Util->Print($Profile->Title) ?></a></h3>
+
+		<div class="mb-2">
+			<?php
+			$Surface->Area(
+				'widgets/tag-buttons',
+				[ 'Tags'=> $Profile->GetTags() ]
+			);
+			?>
+		</div>
+
+		<div class="mb-4">
+			<?php echo $Profile->GetExcerpt(64) ?>
+		</div>
+
+		<div>
+			<a class="btn btn-primary" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL())) ?>">View Issue</a>
+		</div>
+	</div>
+</div>
+<?php if(!$Profiles->IsLastKey($PK)): ?>
+<hr class="mt-4 mb-5" />
+<?php endif; ?>
+<?php endforeach; ?>
