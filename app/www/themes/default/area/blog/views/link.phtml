@@ -39,7 +39,7 @@ $Excerpt ??= TRUE;
 $ShowTags ??= TRUE;
 
 $Link = Blog\Struct\EditorLink::FromJSON($Post->Content);
-$OutboundURL = $Full ? $Link->URL : $Post->GetURL();
+$OutboundURL = $Full ? $Link->URL : $App->RewriteURL($Post->GetURL(), $Post->GetTags());
 $OutboundTab = $Full ? 'target="_blank"' : '';
 $OutboundDomain = Atlantis\Util::DomainFromURL($Link->URL);
 
@@ -66,7 +66,7 @@ $Profiles = $Post->FetchRelatedProfiles();
 	<?php endif; ?>
 
 	<h3 class="mb-3">
-		<a href="<?php $Printer($Post->GetURL()) ?>"><?php $Printer($Post->Title) ?></a>
+		<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
 	</h3>
 
 	<div class="mb-0">

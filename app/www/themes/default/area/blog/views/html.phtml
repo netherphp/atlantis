@@ -42,7 +42,7 @@ $ShowTags ??= TRUE;
 <!-- POST HEADING -->
 <div class="mb-4">
 	<h3 class="mb-4">
-		<a href="<?php $Printer($Post->GetURL()) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
+		<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>" class="border-0"><?php $Printer($Post->Title) ?></a>
 	</h3>
 	<div class="mb-1">
 		<span class="fw-bold text-uppercase">Post Date:</span>
