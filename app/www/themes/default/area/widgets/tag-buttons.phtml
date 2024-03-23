@@ -43,6 +43,9 @@ $TagClasses = function(Atlantis\Tag\Entity $T): string {
 	if($T->Type === 'site')
 	return 'btn-dark opacity-50';
 
+	if($T->Type === 'admin')
+	return 'btn-outline-danger opacity-50';
+
 	return 'btn-outline-dark';
 };
 
@@ -69,6 +72,7 @@ $Tags = $Tags->Distill(function($T) {
 	if($Tags) {
 		foreach($Tags as $Tag) {
 			if($Tag instanceof Atlantis\Tag\Entity)
+			if($Tag->Type !== 'admin' || $Route->IsUserAdmin())
 			printf(
 				'<a href="%s" class="text-transform-none btn %s p-1 pl-2 pr-2 mb-2">%s</a> ',
 				$Util->RewriteURL($RewriteURL($Tag, $URL)),

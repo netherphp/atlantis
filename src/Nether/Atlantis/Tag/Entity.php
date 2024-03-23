@@ -192,8 +192,6 @@ implements
 		if(!$Input['Name'])
 		throw new Exception('tag needs a name');
 
-		////////
-
 		if(!$Input['Alias'])
 		$Input['Alias'] = Common\Filters\Text::PathableKey($Input['Name']);
 
@@ -206,6 +204,31 @@ implements
 		////////
 
 		return parent::Insert($Input);
+	}
+
+	static public function
+	InsertIfMissing(iterable $Input):
+	?static {
+
+		if(!$Input['Alias'])
+		throw new Exception('tag needs a alias');
+
+		if(!$Input['Type'])
+		throw new Exception('tag needs a type');
+
+		if(!$Input['Name'])
+		$Input['Name'] = $Input['Alias'];
+
+		////////
+
+		$Old = static::GetByField('Alias', $Input['Alias']);
+
+		if($Old)
+		return $Old;
+
+		////////
+
+		return static::Insert($Input);
 	}
 
 	////////////////////////////////////////////////////////////////
