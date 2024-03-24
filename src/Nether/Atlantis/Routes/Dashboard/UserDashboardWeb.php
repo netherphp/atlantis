@@ -11,6 +11,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageDashboard():
 	void {
@@ -52,6 +53,7 @@ extends Atlantis\ProtectedWeb {
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/alias')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageAlias():
 	void {
@@ -67,10 +69,10 @@ extends Atlantis\ProtectedWeb {
 		return;
 	}
 
-
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/email')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageEmail():
 	void {
@@ -126,6 +128,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/password')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PagePassword():
 	void {
@@ -143,6 +146,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/settings/auth')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageAuth():
 	void {

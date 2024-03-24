@@ -58,8 +58,10 @@ class TemplateHelper {
 	@date 2023-06-07
 	//*/
 
-		// this is some magic that will need to be documented or just not
-		// be here honestly.
+		if(!$Input)
+		return;
+
+		// this is some magic that will need to be documented.
 
 		if(str_starts_with($Input, 'atl://'))
 		$Input = Atlantis\WebURL::Rewrite($this->App, $Input);
@@ -67,6 +69,7 @@ class TemplateHelper {
 		////////
 
 		Atlantis\Util::PrintHTML($Input ?? '');
+
 		return;
 	}
 

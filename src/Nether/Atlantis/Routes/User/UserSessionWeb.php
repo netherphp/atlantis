@@ -31,6 +31,7 @@ extends PublicWeb {
 
 	#[RouteHandler('/login')]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageLogin():
 	void {
@@ -43,6 +44,7 @@ extends PublicWeb {
 
 	#[RouteHandler('/logout')]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageLogout():
 	void {
@@ -55,6 +57,7 @@ extends PublicWeb {
 
 	#[RouteHandler('/login/reset')]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageForgot():
 	void {
@@ -81,6 +84,7 @@ extends PublicWeb {
 
 	#[RouteHandler('/signup')]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageSignup():
 	void {
@@ -95,6 +99,7 @@ extends PublicWeb {
 
 	#[RouteHandler('/login/activate')]
 	#[Atlantis\Meta\UserActivationFlow]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	PageActivate():
 	void {

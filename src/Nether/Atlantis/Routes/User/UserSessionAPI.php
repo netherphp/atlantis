@@ -408,7 +408,7 @@ extends Atlantis\PublicAPI {
 			'Email'      => $this->Data->Email,
 			'PHash'      => User\Entity::GeneratePasswordHash($this->Data->Password1),
 			'RemoteAddr' => $RemoteAddr,
-			'Activated'  => !$RequireActivation
+			'Activated'  => $RequireActivation ? 0 : 1
 		]);
 
 		if(!$User)

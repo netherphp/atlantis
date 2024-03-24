@@ -1,0 +1,51 @@
+<?php
+
+use Nether\Atlantis;
+
+/**
+ * @var Routes\Docs $Route
+ */
+
+$Route->Title = 'Cargo Bay';
+$Route->Info = 'It contains containers.';
+
+$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
+	Title: 'Cargo Bay',
+	URL: '/docs/css/cargobay'
+));
+
+?>
+
+<div class="ta-center mb-4">
+	<h3>.cargobay > .container</h3>
+</div>
+
+<div class="cargobay mb-4">
+	<?php for($A = 0; $A < 5; $A++): ?>
+	<div class="container">
+		<div class="jumbotron">
+			This is a Jumbotron in a Container in a Cargo Bay.
+		</div>
+	</div>
+	<?php endfor; ?>
+</div>
+
+<hr class="border-0 mb-8" />
+
+<div class="ta-center mb-4">
+	<h3>.cargobay > section > .container</h3>
+</div>
+
+<div class="cargobay mb-6">
+	<?php for($A = 0; $A < 5; $A++): ?>
+	<section>
+		<div class="container">
+			<div class="jumbotron">
+				This is a Jumbotron in a Container in a Section in a Cargo Bay.
+			</div>
+		</div>
+	</section>
+	<?php endfor; ?>
+</div>
+
+<hr class="border-0 mb-4" />

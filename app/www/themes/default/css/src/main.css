@@ -38,11 +38,11 @@
 	/* these should be generically neutral colours as they will be used for
 	various page elements for division and such. */
 
-	--theme-body-bg:      #161616;
-	--theme-body-bg-alt:  #0F0F0F;
+	--theme-body-bg:      #141414;
+	--theme-body-bg-alt:  #101010;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt1: var(--theme-body-bg-alt);
-	--theme-body-bg-alt2: #111111;
+	--theme-body-bg-alt2: #131313;
 	--theme-body-fg:      #FAFAFA;
 
 	/* styles for glass panels of various opacity and filters. opacity is

@@ -1,0 +1,40 @@
+:root {
+	--atl-cargobay-container-spacing: 1.5rem;
+	--atl-cargobay-section-padding: 2.0rem;
+
+	--atl-cargobay-s1-bg-colour: var(--theme-body-bg-alt0);
+	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
+	--atl-cargobay-s3-bg-colour: var(--theme-body-bg-alt2);
+}
+
+/* container directly added */
+
+.cargobay > .container {
+	margin-bottom: var(--atl-cargobay-container-spacing);
+}
+
+.cargobay > .container:last-of-type {
+	margin-bottom: 0px;
+}
+
+/* containers put into sections */
+
+.cargobay > section {
+	padding: var(--atl-cargobay-section-padding) 0px;
+}
+
+.cargobay > section:last-of-type {
+	margin-bottom: 0px;
+}
+
+.cargobay > section:nth-of-type(3n+1) {
+	background-color: var(--atl-cargobay-s1-bg-colour);
+}
+
+.cargobay > section:nth-of-type(3n+2) {
+	background-color: var(--atl-cargobay-s2-bg-colour);;
+}
+
+.cargobay > section:nth-of-type(3n+3) {
+	background-color: var(--atl-cargobay-s3-bg-colour);
+}
