@@ -58,7 +58,7 @@ class TemplateHelper {
 	@date 2023-06-07
 	//*/
 
-		if(!$Input)
+		if($Input === NULL)
 		return;
 
 		// this is some magic that will need to be documented.
