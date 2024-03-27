@@ -33,11 +33,32 @@ $Surface
 				<input type="text" name="q" class="form-control" placeholder="Search..." value="<?php $Util->Print($Route->Data->Q) ?>" />
 			</div>
 			<div class="col-12 mb-2">
-				<div class="form-check form-switch">
-					<label class="form-check-label fw-bold text-uppercase">
-						<input type="checkbox" name="untagged" value="1" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
-						Untagged Only
-					</label>
+
+				<div class="row tight align-items-center">
+					<div class="col-auto">
+						<select name="sitetag" class="form-select">
+							<option value="">Filter By Site...</option>
+							<optgroup label="Site Tags">
+								<?php foreach($SiteTags as $ST): ?>
+								<option value="<?php $Util->Print($ST->Alias) ?>" <?php echo $Util->GetSelectedHTML($SiteTag&&$ST->Alias===$SiteTag->Alias) ?>><?php $Util->Print($ST->Name) ?></option>
+								<?php endforeach; ?>
+							</optgroup>
+						</select>
+					</div>
+					<div class="col-auto">
+						<select name="sort" class="form-select">
+							<option value="title-az" <?php $Util->Print($Util->GetSelectedHTML($Route->Data->Sort === 'title-az')) ?>>Sort By Title</option>
+							<option value="title-za" <?php $Util->Print($Util->GetSelectedHTML($Route->Data->Sort === 'title-za')) ?>>Sort By Title (Reverse)</option>
+						</select>
+					</div>
+					<div class="col-auto">
+						<div class="form-check">
+							<label class="form-check-label fw-bold text-uppercase">
+								<input type="checkbox" name="untagged" value="1" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($Filters['Untagged'] === TRUE)) ?> />
+								Untagged Only
+							</label>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="col-12"></div>
@@ -74,7 +95,7 @@ $Surface
 <?php
 
 $Surface
-->Area('widgets/profile-list', [ 'Profiles'=> $Profiles ])
+->Area('atlantis/dashboard/profile/list', [ 'Profiles'=> $Profiles ])
 ->Area('widgets/pager', [ 'Results'=> $Profiles ])
 
 ?>

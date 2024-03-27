@@ -18,10 +18,18 @@ use Nether\User;
 
 ?>
 
-<?php foreach($Profiles as $Profile): ?>
-<div class="row tight align-items-center">
+<?php foreach($Profiles as $Profile): /** @var Atlantis\Profile\Entity $Profile */ ?>
+<div class="row align-items-center">
+	<div class="col-1">
+		<div class="ratiobox square wallpapered rounded" style="background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);">
+
+		</div>
+	</div>
 	<div class="col">
-		<a href="<?php $Util->Print($Profile->GetPageURL()) ?>"><?php $Util->Print($Profile->Title) ?></a>
+		<div class="fw-bold mb-2">
+			<a href="<?php $Util->Print($Profile->GetPageURL()) ?>"><?php $Util->Print($Profile->Title) ?></a>
+		</div>
+		<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Profile->GetTags() ]) ?>
 	</div>
 	<div class="col-auto">
 		<a class="btn btn-block btn-dark" href="<?php $Util->Print($Profile->GetPageURL()) ?>">Visit</a>

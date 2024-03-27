@@ -1,10 +1,11 @@
 /*//
-@date 2024-01-13 06:15:17 UTC
-@files 31 [
+@date 2024-03-26 23:36:40 UTC
+@files 32 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-bootstrap\/buttons.css",
+    "src\/ext-bootstrap\/cargobay.css",
     "src\/ext-bootstrap\/filters.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
     "src\/ext-bootstrap\/opacity.css",
@@ -83,11 +84,11 @@
 	/* these should be generically neutral colours as they will be used for
 	various page elements for division and such. */
 
-	--theme-body-bg:      #161616;
-	--theme-body-bg-alt:  #0F0F0F;
+	--theme-body-bg:      #141414;
+	--theme-body-bg-alt:  #101010;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt1: var(--theme-body-bg-alt);
-	--theme-body-bg-alt2: #111111;
+	--theme-body-bg-alt2: #131313;
 	--theme-body-fg:      #FAFAFA;
 
 	/* styles for glass panels of various opacity and filters. opacity is
@@ -1126,6 +1127,50 @@ grouped are to be considered depreciated. */
 
 .atl-btn-flip-save-check.btn-success i:nth-of-type(2) {
 	display: inline;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/cargobay.css //////////////////////////////////////////*/
+
+:root {
+	--atl-cargobay-container-spacing: 1.5rem;
+	--atl-cargobay-section-padding: 2.0rem;
+
+	--atl-cargobay-s1-bg-colour: var(--theme-body-bg-alt0);
+	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
+	--atl-cargobay-s3-bg-colour: var(--theme-body-bg-alt2);
+}
+
+/* container directly added */
+
+.cargobay > .container {
+	margin-bottom: var(--atl-cargobay-container-spacing);
+}
+
+.cargobay > .container:last-of-type {
+	margin-bottom: 0px;
+}
+
+/* containers put into sections */
+
+.cargobay > section {
+	padding: var(--atl-cargobay-section-padding) 0px;
+}
+
+.cargobay > section:last-of-type {
+	margin-bottom: 0px;
+}
+
+.cargobay > section:nth-of-type(3n+1) {
+	background-color: var(--atl-cargobay-s1-bg-colour);
+}
+
+.cargobay > section:nth-of-type(3n+2) {
+	background-color: var(--atl-cargobay-s2-bg-colour);;
+}
+
+.cargobay > section:nth-of-type(3n+3) {
+	background-color: var(--atl-cargobay-s3-bg-colour);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
