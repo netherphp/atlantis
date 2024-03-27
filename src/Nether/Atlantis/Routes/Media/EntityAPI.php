@@ -377,10 +377,10 @@ extends Atlantis\Routes\UploadAPI {
 
 		$Existing = (
 			$Links
-			->Distill(
-				fn(Atlantis\Tag\EntityLink $Link)
-				=> $Link->Tag->Type !== 'site'
-			)
+			//->Distill(
+			//	fn(Atlantis\Tag\EntityLink $Link)
+			//	=> $Link->Tag->Type !== 'site'
+			//)
 			->Remap(
 				fn(Atlantis\Tag\EntityLink $Link)
 				=> $Link->TagID
