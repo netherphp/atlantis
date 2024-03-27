@@ -454,7 +454,7 @@ required data in.
 
 		$Input = new Common\Datastore($Input);
 		$Input->BlendLeft([
-			'TimeCreated' => time(),
+			'TimeCreated' => time()
 		]);
 
 		////////

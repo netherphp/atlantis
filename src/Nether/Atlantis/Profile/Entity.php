@@ -20,6 +20,16 @@ implements Atlantis\Packages\ExtraDataInterface {
 	use
 	Atlantis\Packages\ExtraData;
 
+	#[Database\Meta\TypeChar(Size: 36, Nullable: TRUE, Default: NULL)]
+	#[Database\Meta\FieldIndex]
+	#[Common\Meta\Info('If set, defines the UUID of an object this is a meta-profile for.')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'UUID' ])]
+	public string
+	$ParentUUID;
+
+	// this needs to go away. it was an artifact of the civil uid that
+	// was invented for dealing with a google api.
 	#[Database\Meta\TypeVarChar(Size: 128)]
 	#[Database\Meta\FieldIndex]
 	public string
@@ -331,6 +341,8 @@ implements Atlantis\Packages\ExtraDataInterface {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
+		$Input['ParentUUID'] ??= FALSE;
+
 		$Input['UseSiteTags'] ??= TRUE;
 		$Input['TagsAll'] ??= NULL;
 		$Input['TagsAny'] ??= NULL;
@@ -347,6 +359,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		$Input['AddressState'] ??= NULL;
 
+		$Input['Cleanup'] ??= NULL;
 		$Input['TagID'] ??= NULL;
 		$Input['SubtagID'] ??= NULL;
 
@@ -370,6 +383,16 @@ implements Atlantis\Packages\ExtraDataInterface {
 			if(is_int($Input['Enabled']))
 			$SQL->Where('Main.Enabled=:Enabled');
 		}
+
+		////////
+
+		if($Input['ParentUUID'] === FALSE)
+		$SQL->Where('ParentUUID IS NULL');
+
+		elseif(is_string($Input['ParentUUID']))
+		$SQL->Where('Main.ParentUUID=:ParentUUID');
+
+		////////
 
 		if($Input['TagID'] !== NULL)
 		static::FindExtendFilters_ByEntityFields_ByTagID($SQL, $Input);
@@ -406,6 +429,18 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		if($Input['AddressState'] !== NULL)
 		$SQL->Where('Main.AddressState LIKE :AddressState');
+
+		////////
+
+		if($Input['Cleanup'] === TRUE) {
+			// these are stupid problems i created for myself with
+			// solutions that just take me time to loop back around.
+			// this should be replaced with an option that checks if
+			// parent uuid is null because these are meta profiles.
+			$SQL->Where('Main.Alias NOT LIKE "video-profile-%"');
+		}
+
+		////////
 
 		return;
 	}

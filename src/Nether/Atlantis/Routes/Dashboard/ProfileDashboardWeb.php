@@ -40,11 +40,12 @@ extends Atlantis\ProtectedWeb {
 		$Filters = [
 			'Enabled'  => FALSE,
 			'UseSiteTags' => FALSE,
-			'Search'   => $this->Data->Q,
-			'Untagged' => $this->Data->Untagged,
-			'Page'     => $this->Data->Page,
-			'Sort'     => $this->Data->Sort,
-			'Limit'    => 20
+			//'Cleanup'     => TRUE,
+			'Search'      => $this->Data->Q,
+			'Untagged'    => $this->Data->Untagged,
+			'Page'        => $this->Data->Page,
+			'Sort'        => $this->Data->Sort,
+			'Limit'       => 20
 		];
 
 		if($SiteTag)
@@ -56,6 +57,9 @@ extends Atlantis\ProtectedWeb {
 		$Searched = (FALSE
 			|| $this->Data->Q
 			|| $this->Data->Untagged
+			|| $this->Data->SiteTag
+			|| $this->Data->Page > 1
+			|| $this->Data->Sort !== 'title-az'
 		);
 
 

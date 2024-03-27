@@ -16,6 +16,8 @@ use Exception;
 class VideoThirdParty
 extends Atlantis\Prototype {
 
+	// @todo 2024-03-26
+	// this needs to be renamed to ProfileUUID.
 	#[Database\Meta\TypeChar(Size: 36)]
 	#[Database\Meta\FieldIndex]
 	public string
@@ -102,10 +104,16 @@ extends Atlantis\Prototype {
 
 		// @todo 2024-03-13 migrate this to a table join.
 
-		if(!$this->ParentUUID)
-		$this->Profile = $this->BootstrapParentProfile();
-		else
-		$this->Profile = Atlantis\Profile\Entity::GetByUUID($this->ParentUUID);
+		if(!$this->ParentUUID) {
+			$this->Profile = $this->BootstrapParentProfile();
+		}
+
+		else {
+			$this->Profile = Atlantis\Profile\Entity::GetByUUID($this->ParentUUID);
+
+			if(!$this->Profile)
+			$this->Profile = $this->BootstrapParentProfile();
+		}
 
 		////////
 
@@ -120,6 +128,27 @@ extends Atlantis\Prototype {
 		$Output['PageURL'] = $this->GetPageURL(FALSE);
 
 		return $Output;
+	}
+
+	public function
+	Drop():
+	static {
+
+		// this property is not parent it is profile it needs to be
+		// renamed on this object.
+
+		if($this->ParentUUID) {
+			$Profile = Atlantis\Profile\Entity::GetByField(
+				'UUID', $this->ParentUUID
+			);
+
+			if($Profile)
+			$Profile->Drop();
+		}
+
+		parent::Drop();
+
+		return $this;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -332,11 +361,12 @@ extends Atlantis\Prototype {
 	Atlantis\Profile\Entity {
 
 		$Profile = Atlantis\Profile\Entity::Insert([
-			'Title'   => $this->Title,
-			'Alias'   => sprintf('video-profile-%d', $this->ID),
-			'Enabled' => $this->Enabled,
-			'Details' => $this->Details,
-			'Enabled' => 1
+			'ParentUUID' => $this->UUID,
+			'Title'      => $this->Title,
+			'Alias'      => sprintf('video-profile-%d', $this->ID),
+			'Enabled'    => $this->Enabled,
+			'Details'    => $this->Details,
+			'Enabled'    => 1
 		]);
 
 		$this->Update([
