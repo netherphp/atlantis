@@ -49,6 +49,7 @@ implements Packages\DescribeForPublicInterface {
 
 		// remove entries from nfk obj relationship table.
 		Struct\EntityRelationship::DeleteByUUID($this->UUID);
+		Struct\PrototypeIndex::DeleteByUUID($this->UUID);
 
 		// bye.
 		parent::Drop();
@@ -167,11 +168,18 @@ implements Packages\DescribeForPublicInterface {
 	Insert(iterable $Input):
 	?static {
 
-		$Input = Common\Datastore::FromStackBlended($Input, [
-			'UUID' => Common\UUID::V7()
-		]);
+		$Opt = Common\Datastore::FromStackMerged(
+			[ 'UUID'=> Common\UUID::V7() ],
+			$Input
+		);
 
-		return parent::Insert($Input);
+		$Object = parent::Insert($Opt);
+		$Const = sprintf('%s::EntType', $Object::class);
+
+		if(defined($Const))
+		$PIndex = Struct\PrototypeIndex::InsertFor($Object);
+
+		return $Object;
 	}
 
 	////////////////////////////////////////////////////////////////
