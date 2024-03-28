@@ -92,6 +92,7 @@ application instance.
 		->LoadDefaultConfig()
 		->LoadProjectConfig()
 		->LoadEnvironmentConfig()
+		->LoadProjectJSON()
 		->SetupEnvironment();
 
 		if($Conf !== NULL)
@@ -588,8 +589,39 @@ application instance.
 	}
 
 	protected function
+	LoadProjectJSON():
+	static {
+
+		$JSON = Struct\ProjectJSON::FromApp($this);
+		$DBC = new Common\Datastore;
+
+		if(is_iterable($this->Config[Database\Library::ConfConnections]))
+		$DBC->MergeRight($this->Config[Database\Library::ConfConnections]);
+
+		////////
+
+		$JSON->Each(function(Struct\ProjectJSON $Project) use($DBC) {
+
+			if($Project->DB->HasAnything())
+			$DBC->MergeRight($Project->DB->GetConnections());
+
+			return;
+		});
+
+		////////
+
+		$this->Config[Database\Library::ConfConnections] = $DBC->GetData();
+
+		////////
+
+		return $this;
+	}
+
+	protected function
 	LoadProjectConfig():
 	static {
+
+		// load config script files.
 
 		$Files = [
 			sprintf('%s/conf/config.php', $this->ProjectRoot),
@@ -604,6 +636,8 @@ application instance.
 			require($__FILENAME);
 			return;
 		})($File, $this->Config, $this);
+
+		////////
 
 		return $this;
 	}
