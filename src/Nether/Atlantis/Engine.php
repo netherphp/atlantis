@@ -359,11 +359,12 @@ application instance.
 
 	#[Common\Meta\DateAdded('2023-07-10')]
 	public function
-	FromConfEnv(?string $File=NULL):
+	FromConfEnv(?string $File=NULL, ?string $Env=NULL):
 	string {
 
 		$File ??= '';
-		$Path = sprintf('env/%s/%s', $this->GetProjectEnv(), $File);
+		$Env ??= $this->GetProjectEnv();
+		$Path = sprintf('env/%s/%s', $Env, $File);
 
 		return Common\Filesystem\Util::Repath(
 			$this->FromConfRoot(rtrim($Path, '/'))

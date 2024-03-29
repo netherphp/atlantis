@@ -3,6 +3,7 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
+use Nether\Database;
 
 use Nether\Atlantis\Struct\ProjectJSON;
 use Nether\Common\Filesystem;
@@ -597,6 +598,110 @@ extends Atlantis\TerminalApp {
 		});
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('db')]
+	public function
+	HandleDatabase():
+	int {
+
+		$Project = Atlantis\Struct\ProjectJSON::FromFile(
+			$this->App->FromConfEnv('atlantis.json')
+		);
+
+		$List = $Project->DB->GetConnections();
+		$Keys = Common\Datastore::FromArray($List->Keys());
+		$Choice = NULL;
+		$Index = NULL;
+
+		////////
+
+		$DidSomething = (
+			FALSE
+			|| $this->HandleDatabaseTrySet($Project)
+		);
+
+		////////
+
+		$this->PrintH2('Databases');
+		$this->PrintLn($this->FormatBulletList($Keys, Bull: ''), 2);
+
+		if(!$DidSomething)
+		$Choice = $this->PromptForValue(
+			'View Details?', 'db num', FALSE,
+			Common\Filters\Numbers::IntType(...)
+		);
+
+		if(!$Choice)
+		$this->Quit(0);
+
+		////////
+
+		$Index = $Choice - 1;
+
+		if(!$Keys->HasKey($Index))
+		$this->Quit(1);
+
+		if(!$List[$Keys[$Index]])
+		$this->Quit(2);
+
+		////////
+
+		$this->PrintH2($Keys[$Index]);
+		$this->PrintBulletList(
+			Common\Datastore::FromArray($List[$Keys[$Index]]->ToArray())
+			->Remove('Name')
+			->GetData()
+		);
+
+		return 0;
+	}
+
+	protected function
+	HandleDatabaseTrySet(Atlantis\Struct\ProjectJSON $Project):
+	bool {
+
+		$List = $Project->DB->GetConnections();
+
+		$Name = $this->GetOption('set');
+		$Type = $this->GetOption('type');
+		$Host = $this->GetOption('host');
+		$Data = $this->GetOption('db');
+		$User = $this->GetOption('user');
+		$Pass = $this->GetOption('pass');
+		$Conf = NULL;
+
+		////////
+
+		if(!$Name)
+		return FALSE;
+
+		////////
+
+
+		if($List->HasKey($Name))
+		$Conf = $List[$Name];
+
+		else
+		$Conf = new Database\Connection(
+			'type', 'host',
+			'db', 'user', 'pass'
+		);
+
+		if($Type !== NULL) $Conf->Type = $Type;
+		if($Host !== NULL) $Conf->Hostname = $Host;
+		if($Data !== NULL) $Conf->Database = $Data;
+		if($User !== NULL) $Conf->Username = $User;
+		if($Pass !== NULL) $Conf->Password = $Pass;
+
+		$Conf->Name = $Name;
+		$Project->DB->SetConnection($Conf);
+		$Project->Write();
+
+		return TRUE;
 	}
 
 	////////////////////////////////////////////////////////////////

@@ -83,6 +83,15 @@ implements
 	}
 
 	public function
+	SetConnection(Database\Connection $Cnx):
+	static {
+
+		$this->Connections[$Cnx->Name] = $Cnx;
+
+		return $this;
+	}
+
+	public function
 	HasAnything():
 	bool {
 
