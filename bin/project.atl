@@ -604,6 +604,13 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('db')]
+	#[Console\Meta\Info('Manage the project database connection info.')]
+	#[Console\Meta\Value('--set', 'The connection name to set config for. ["Default"]')]
+	#[Console\Meta\Value('--del', 'The connection name to delete from config.')]
+	#[Console\Meta\Value('--host', 'Hostname of the DB Server.')]
+	#[Console\Meta\Value('--db', 'Name of the Database to open.')]
+	#[Console\Meta\Value('--user', 'Database auth user name.')]
+	#[Console\Meta\Value('--user', 'Database auth password.')]
 	public function
 	HandleDatabase():
 	int {
@@ -664,6 +671,9 @@ extends Atlantis\TerminalApp {
 	HandleDatabaseTrySet(Atlantis\Struct\ProjectJSON $Project):
 	bool {
 
+		// handle creating new databases or updating values for already
+		// existing ones.
+
 		$List = $Project->DB->GetConnections();
 
 		$Name = $this->GetOption('set');
@@ -679,8 +689,10 @@ extends Atlantis\TerminalApp {
 		if(!$Name)
 		return FALSE;
 
-		////////
+		if($Name === TRUE)
+		$Name = 'Default';
 
+		////////
 
 		if($List->HasKey($Name))
 		$Conf = $List[$Name];
@@ -691,13 +703,15 @@ extends Atlantis\TerminalApp {
 			'db', 'user', 'pass'
 		);
 
+		$Conf->Name = $Name;
 		if($Type !== NULL) $Conf->Type = $Type;
 		if($Host !== NULL) $Conf->Hostname = $Host;
 		if($Data !== NULL) $Conf->Database = $Data;
 		if($User !== NULL) $Conf->Username = $User;
 		if($Pass !== NULL) $Conf->Password = $Pass;
 
-		$Conf->Name = $Name;
+		////////
+
 		$Project->DB->SetConnection($Conf);
 		$Project->Write();
 
