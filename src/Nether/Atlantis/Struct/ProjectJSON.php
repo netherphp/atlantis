@@ -131,15 +131,23 @@ implements
 	FromFile(string $Filename, bool $Create=TRUE):
 	static {
 
+		$JSON = '';
+
+		////////
+
 		if(!file_exists($Filename))
 		if($Create && is_writable(dirname($Filename)))
 		file_put_contents($Filename, '{}');
 
 		////////
 
+		if(file_exists($Filename))
 		$Output = static::FromJSON(
 			file_get_contents($Filename) ?: '{}'
 		);
+
+		else
+		$Output = new static;
 
 		$Output->Filename = $Filename;
 
