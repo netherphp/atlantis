@@ -5,11 +5,170 @@ namespace Nether\Atlantis\Routes\Media;
 use GuzzleHttp;
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Database;
 
 use Exception;
 
 class VideoAPI
 extends Atlantis\ProtectedAPI {
+
+	#[Atlantis\Meta\RouteHandler('/api/video/entity')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	VideoGet():
+	void {
+
+		($this->Data)
+		->ID(Common\Filters\Numbers::IntType(...))
+		->UUID(Common\Filters\Text::UUID(...));
+
+		////////
+
+		$Video = match(TRUE) {
+			(!!$this->Data->UUID)
+			=> Atlantis\Media\VideoThirdParty::GetByUUID($this->Data->UUID),
+
+			default
+			=> Atlantis\Media\VideoThirdParty::GetByID($this->Data->ID)
+		};
+
+		if(!$Video)
+		$this->Quit(1, 'video not found');
+
+		////////
+
+		$this->SetPayload($Video->DescribeForPublicAPI());
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/video/entity', Verb: 'SEARCH')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	VideoSearch():
+	void {
+
+		($this->Data)
+		->Q(Common\Filters\Text::TrimmedNullable(...))
+		->SearchTitle(Common\Filters\Numbers::BoolType(...))
+		->SearchURL(Common\Filters\Numbers::BoolType(...))
+		->Page(Common\Filters\Numbers::Page(...));
+
+		////////
+
+		$Filters = [
+			'Search'      => $this->Data->Q,
+			'SearchTitle' => $this->Data->SearchTitle,
+			'SearchURL'   => $this->Data->SearchURL,
+			'Limit'       => 10,
+			'Page'        => $this->Data->Page
+		];
+
+		if($this->Data->Q)
+		$Results = Atlantis\Media\VideoThirdParty::Find($Filters);
+		else
+		$Results = new Database\ResultSet([ ]);
+
+		////////
+
+		$this->SetPayload([
+			'Filters' => $Filters,
+			'Page'    => $Results->Page,
+			'Total'   => $Results->Total,
+			'Results' => $Results->Map(
+				fn(Atlantis\Media\VideoThirdParty $V)
+				=> $V->DescribeForPublicAPI()
+			)->GetData()
+		]);
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/video/entity', Verb: 'POST')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	VideoPost():
+	void {
+
+		($this->Data)
+		->URL(Common\Filters\Text::TrimmedNullable(...))
+		->Title(Common\Filters\Text::TrimmedNullable(...))
+		->Date(Common\Filters\Text::TrimmedNullable(...))
+		->OtherType(Common\Filters\Text::TrimmedNullable(...))
+		->OtherUUID(Common\Filters\Text::TrimmedNullable(...));
+
+		////////
+
+		$URL = $this->Data->URL;
+		$Title = $this->Data->Title;
+		$TimePosted = (
+			Common\Date::FromDateString($this->Data->Date ?: 'now')
+			->GetUnixtime()
+		);
+
+		$ShouldRelateOther = (TRUE
+			&& $this->Data->OtherType
+			&& $this->Data->OtherUUID
+		);
+
+		if(!$URL)
+		$this->Quit(1, 'no URL specified');
+
+		if(!$Title)
+		$this->Quit(2, 'no Title specified');
+
+		////////
+
+		// prevent dups.
+
+		$Video = Atlantis\Media\VideoThirdParty::GetByField('URL', $URL);
+
+		if($Video) {
+			if($ShouldRelateOther)
+			Atlantis\Struct\EntityRelationship::InsertByPair(
+				$this->Data->OtherType,
+				$this->Data->OtherUUID,
+				$Video::EntType,
+				$Video->UUID
+			);
+
+			$this->SetPayload($Video->DescribeForPublicAPI());
+
+			return;
+		}
+
+		////////
+
+		$Video = Atlantis\Media\VideoThirdParty::Insert([
+			'URL'        => $URL,
+			'Title'      => $Title ?: '',
+			'TimePosted' => $TimePosted
+		]);
+
+		if($ShouldRelateOther)
+		Atlantis\Struct\EntityRelationship::InsertByPair(
+			$this->Data->OtherType,
+			$this->Data->OtherUUID,
+			$Video::EntType,
+			$Video->UUID
+		);
+
+		$this->SetPayload($Video->DescribeForPublicAPI());
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/video/entity', Verb: 'RELATE')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	VideoRelate():
+	void {
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/api/media/video-tp', Verb: 'GET')]
 	#[Atlantis\Meta\RouteHandler('/api/video-tp/entity', Verb: 'GET')]

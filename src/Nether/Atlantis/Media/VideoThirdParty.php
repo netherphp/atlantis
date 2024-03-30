@@ -16,6 +16,9 @@ use Exception;
 class VideoThirdParty
 extends Atlantis\Prototype {
 
+	const
+	EntType = 'Media.Video.ThirdParty';
+
 	// @todo 2024-03-26
 	// this needs to be renamed to ProfileUUID.
 	#[Database\Meta\TypeChar(Size: 36)]
@@ -126,6 +129,7 @@ extends Atlantis\Prototype {
 
 		$Output = parent::DescribeForPublicAPI();
 		$Output['PageURL'] = $this->GetPageURL(FALSE);
+		$Output['ImageURL'] = $this->GetCoverImageURL();
 
 		return $Output;
 	}
@@ -174,10 +178,13 @@ extends Atlantis\Prototype {
 		$Input['Enabled'] ??= 1;
 
 		$Input['Search'] ??= NULL;
+		$Input['SearchTitle'] ??= FALSE;
+		$Input['SearchDetails'] ??= FALSE;
+		$Input['SearchURL'] ??= FALSE;
+
 		$Input['Untagged'] ??= NULL;
 
 		$Input['URL'] ??= NULL;
-		$Input['SearchURL'] ??= NULL;
 
 		return;
 	}
@@ -260,6 +267,9 @@ extends Atlantis\Prototype {
 		if($Input['SearchDetails'])
 		$InputFields->Push('Main.Details');
 
+		if($Input['SearchURL'])
+		$InputFields->Push('Main.URL');
+
 		if(!$InputFields->Count())
 		return;
 
@@ -270,24 +280,27 @@ extends Atlantis\Prototype {
 
 		$InputText = preg_replace('/[\h\s]{2,}/', ' ', $Input['Search']);
 		$InputWords = Common\Datastore::FromArray(explode(' ', $InputText));
+		$InputWords->Remap(fn(string $Word)=> preg_quote($Word));
 		$InputRegex = $InputWords->Join('|');
 
 		// bake each word into individual numbered bound parameters.
 
 		$InputBinds = $InputWords->MapKeys(fn(int $K, string $V)=> [
 			sprintf(':SearchRelCheck%d', ($K+1))
-			=> "[[:<:]]{$V}[[:>:]]"
+			=> sprintf("[[:<:]]%s[[:>:]]", preg_quote($V))
 		]);
 
 		// bake each word into a stack of inline math that my friend said
 		// would fit right in at home in every sap report ever.
 
 		$InputFieldCalc = $InputBinds->MapKeyValue(fn(string $K)=> sprintf(
-			'CASE WHEN Main.Title RLIKE %1$s THEN %2$s ELSE 0 END+'.
-			'CASE WHEN Main.Details RLIKE %1$s THEN %3$s ELSE 0 END',
+			'CASE WHEN Main.Title RLIKE %1$s THEN %2$d ELSE 0 END+'.
+			'CASE WHEN Main.Details RLIKE %1$s THEN %3$d ELSE 0 END+'.
+			'CASE WHEN Main.URL RLIKE %1$s THEN %4$d ELSE 0 END',
 			$K,
 			($InputFields->HasValue('Main.Title') ? 1 : 0),
-			($InputFields->HasValue('Main.Details') ? 1 : 0)
+			($InputFields->HasValue('Main.Details') ? 1 : 0),
+			($InputFields->HasValue('Main.URL') ? 1 : 0)
 		));
 
 		////////
@@ -299,11 +312,13 @@ extends Atlantis\Prototype {
 		($SQL)
 		->Where(
 			$InputFields
-			->Map(fn(string $F)=> "{$F} REGEXP :SearchRegEx")
+			->Map(fn(string $F)=> sprintf("{$F} %s :SearchRegEx", ($F==='Main.URL' ? 'REGEXP BINARY' : 'REGEXP') ))
 			->Join(' OR ')
 		)
 		->Fields(sprintf('(%s) AS RelVal', $InputFieldCalc->Join('+')))
 		->Sort('RelVal', $SQL::SortDesc);
+
+		//echo $SQL;
 
 		return;
 	}
@@ -362,7 +377,7 @@ extends Atlantis\Prototype {
 
 		$Profile = Atlantis\Profile\Entity::Insert([
 			'ParentUUID' => $this->UUID,
-			'Title'      => $this->Title,
+			'Title'      => $this->Title ?: "Video Profile {$this->ID}",
 			'Alias'      => sprintf('video-profile-%d', $this->ID),
 			'Enabled'    => $this->Enabled,
 			'Details'    => $this->Details,

@@ -374,6 +374,20 @@ extends Atlantis\Prototype {
 		return parent::Insert($Input);
 	}
 
+	static public function
+	InsertByPair(string $Type1, string $UUID1, string $Type2, string $UUID2):
+	?static {
+
+		$Data = [
+			'ParentType' => $Type1,
+			'ParentUUID' => $UUID1,
+			'ChildType'  => $Type2,
+			'ChildUUID'  => $UUID2
+		];
+
+		return static::Insert($Data);
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

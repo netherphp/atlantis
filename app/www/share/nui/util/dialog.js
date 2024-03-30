@@ -16,7 +16,7 @@ constructor dumped in object form.
 	constructor({
 		title, fields=[], body=null,
 		labelAccept='OK', labelCancel='Cancel',
-		onAccept=null,
+		onAccept=null, onReady=null,
 		show=false, maximise=false, width=null
 	}) {
 
@@ -26,6 +26,7 @@ constructor dumped in object form.
 		this.labelAccept = labelAccept;
 		this.labelCancel = labelCancel;
 		this.onAccept = onAccept;
+		this.onReady = onReady;
 		this.show = show;
 		this.maximise = maximise;
 		this.width = width;
@@ -96,6 +97,9 @@ in-page dialog windows.
 			'width':     '95vw'
 		});
 
+		if(typeof this.config.onReady === 'function')
+		this.config.onReady.call(this);
+
 		if(this.config.show === true)
 		this.show();
 
@@ -113,13 +117,13 @@ in-page dialog windows.
 		if(this.config.body)
 		output.append(
 			jQuery('<div />')
-			.addClass('mb-3')
+			.addClass('mb-2')
 			.append(this.config.body)
 		);
 
 		for(const item of this.config.fields) {
 			output.append(item.build());
-			output.append('<hr class="border-0 mt-0 mb-3" />');
+			output.append('<hr class="border-0 mt-0 mb-2" />');
 		}
 
 		this.setBody(output);
