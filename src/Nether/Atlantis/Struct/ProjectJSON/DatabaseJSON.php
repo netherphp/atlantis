@@ -92,6 +92,16 @@ implements
 	}
 
 	public function
+	DeleteConnection(string $Name):
+	static {
+
+		if($this->Connections->HasKey($Name))
+		$this->Connections->Remove($Name);
+
+		return $this;
+	}
+
+	public function
 	HasAnything():
 	bool {
 

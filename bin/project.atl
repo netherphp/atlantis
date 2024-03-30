@@ -605,12 +605,14 @@ extends Atlantis\TerminalApp {
 
 	#[Console\Meta\Command('db')]
 	#[Console\Meta\Info('Manage the project database connection info.')]
-	#[Console\Meta\Value('--set', 'The connection name to set config for. ["Default"]')]
-	#[Console\Meta\Value('--del', 'The connection name to delete from config.')]
+	#[Console\Meta\Value('--info', 'Specify the connection name to display the connection info.')]
+	#[Console\Meta\Value('--json', 'Specify the connection name to print the connection as JSON.')]
+	#[Console\Meta\Value('--set', 'Specify the connection name to add or update. ["Default"]')]
+	#[Console\Meta\Value('--del', 'Specify the connection name to delete from the config.')]
 	#[Console\Meta\Value('--host', 'Hostname of the DB Server.')]
 	#[Console\Meta\Value('--db', 'Name of the Database to open.')]
-	#[Console\Meta\Value('--user', 'Database auth user name.')]
-	#[Console\Meta\Value('--user', 'Database auth password.')]
+	#[Console\Meta\Value('--user', 'Database auth username.')]
+	#[Console\Meta\Value('--pass', 'Database auth password.')]
 	public function
 	HandleDatabase():
 	int {
@@ -620,56 +622,35 @@ extends Atlantis\TerminalApp {
 		);
 
 		$List = $Project->DB->GetConnections();
-		$Keys = Common\Datastore::FromArray($List->Keys());
-		$Choice = NULL;
-		$Index = NULL;
+		$Item = NULL;
 
 		////////
 
-		$DidSomething = (
-			FALSE
-			|| $this->HandleDatabaseTrySet($Project)
-		);
+		$this->HandleDatabaseTrySet($Project);
+		$this->HandleDatabaseTryDel($Project);
+		$this->HandleDatabaseTryPrint($Project, 'json');
+		$this->HandleDatabaseTryPrint($Project, 'info');
 
 		////////
 
 		$this->PrintH2('Databases');
-		$this->PrintLn($this->FormatBulletList($Keys, Bull: ''), 2);
 
-		if(!$DidSomething)
-		$Choice = $this->PromptForValue(
-			'View Details?', 'db num', FALSE,
-			Common\Filters\Numbers::IntType(...)
-		);
+		foreach($List as $Item) {
+			$this->PrintLn(sprintf(
+				' * %s (%s)',
+				$Item->Name,
+				$this->Format($Item->Type, Console\Theme::Muted)
+			));
+		}
 
-		if(!$Choice)
-		$this->Quit(0);
-
-		////////
-
-		$Index = $Choice - 1;
-
-		if(!$Keys->HasKey($Index))
-		$this->Quit(1);
-
-		if(!$List[$Keys[$Index]])
-		$this->Quit(2);
-
-		////////
-
-		$this->PrintH2($Keys[$Index]);
-		$this->PrintBulletList(
-			Common\Datastore::FromArray($List[$Keys[$Index]]->ToArray())
-			->Remove('Name')
-			->GetData()
-		);
+		$this->PrintLn();
 
 		return 0;
 	}
 
 	protected function
 	HandleDatabaseTrySet(Atlantis\Struct\ProjectJSON $Project):
-	bool {
+	void {
 
 		// handle creating new databases or updating values for already
 		// existing ones.
@@ -687,7 +668,7 @@ extends Atlantis\TerminalApp {
 		////////
 
 		if(!$Name)
-		return FALSE;
+		return;
 
 		if($Name === TRUE)
 		$Name = 'Default';
@@ -712,10 +693,87 @@ extends Atlantis\TerminalApp {
 
 		////////
 
+		$this->PrintStatus(sprintf(
+			'Updating connection "%s"...',
+			$Conf->Name
+		));
+
+		$this->PrintBulletList($Conf->ToArray());
+
+		////////
+
 		$Project->DB->SetConnection($Conf);
 		$Project->Write();
+		$this->Quit(0);
 
-		return TRUE;
+		return;
+	}
+
+
+	protected function
+	HandleDatabaseTryDel(Atlantis\Struct\ProjectJSON $Project):
+	void {
+
+		$List = $Project->DB->GetConnections();
+		$Name = $this->GetOption('del');
+
+		////////
+
+		if($Name === NULL)
+		return;
+
+		if(!is_string($Name) || !$Name)
+		$this->Quit(3);
+
+		////////
+
+		if($List->HasKey($Name)) {
+			$this->PrintStatus(sprintf(
+				'Removing connection "%s"...',
+				$Name
+			));
+
+			$Project->DB->DeleteConnection($Name);
+			$Project->Write();
+
+			$this->Quit(0);
+		}
+
+		return;
+	}
+
+	protected function
+	HandleDatabaseTryPrint(Atlantis\Struct\ProjectJSON $Project, string $Format):
+	void {
+
+		$List = $Project->DB->GetConnections();
+		$Name = $this->GetOption($Format);
+
+		////////
+
+		if($Name === NULL)
+		return;
+
+		if(!is_string($Name) || !$Name)
+		$this->Quit(3);
+
+		////////
+
+		switch($Format) {
+			case 'json': {
+				$this->PrintLn(json_encode($List[$Name]->ToArray()));
+				break;
+			}
+
+			default: {
+				$this->PrintBulletList($List[$Name]->ToArray());
+				break;
+			}
+		}
+
+		$this->Quit(0);
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////
