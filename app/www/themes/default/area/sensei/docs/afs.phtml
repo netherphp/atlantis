@@ -29,24 +29,153 @@ $Surface->Area('sensei/docs/__header', [
 
 ?>
 
+<div class="cargobay">
+	<section class="pt-0">
+		<div class="container">
+			<blockquote class="jumbotron rounded p-4">
+				<dl class="mb-4">
+					<dt class="mb-0">System:</dt>
+					<dd class="fs-smaller fst-italic text-muted mb-2">
+						These are not hard requirements but adjustments
+						will need to be made.
+					</dd>
+					<dd class="pl-2">
+						<i class="mdi mdi-desktop-classic"></i>
+						Ubuntu (20+)
+					</dd>
+					<dd class="pl-2">
+						<i class="mdi mdi-horse-variant"></i>
+						Apache 2.4
+					</dd>
+					<dd class="pl-2">
+						<i class="mdi mdi-database"></i>
+						MariaDB or MySQL 5.x (optional)
+					</dd>
+					<dd class="pl-2">
+						<i class="mdi mdi-elephant"></i>
+						PHP 8.1+
+					</dd>
+				</dl>
 
-<div class="atl-cargobay">
+				<dl class="mb-4">
+					<dt class="mb-2">Tips:</dt>
+					<dd class="mb-4">
+						<i class="mdi mdi-chevron-right"></i>
+						Add <code>./vendor/bin</code> to your <code>PATH</code>
+						to gain access to vendor scripts like <code>project.atl</code>,
+						<code>dev.atl</code>, etc, without typing the full path to
+						it. All examples will be making use of this.
+					</dd>
+					<dd class="mb-0">
+						<i class="mdi mdi-chevron-right"></i>
+						The <code>.atl</code> commands have help to see more
+						info by prefixing the command.
+
+						Example: <code>$ project.atl db</code> lists the configured
+						databse connections, and <code>$ project.atl help db</code>
+						will show all the possible db command arguments.
+					</dd>
+				</dl>
+
+			</blockquote>
+		</div>
+	</section>
 	<section>
 		<div class="container">
+			<h2>Installation and Setup</h2>
+			<hr />
 
-			<dl>
+			<dl class="mb-6">
 				<dt>Prepare Project Directory</dt>
 				<dd><code>$ git clone git@github.com:netherphp/project app</code></dd>
 				<dd><code>$ cd app</code></dd>
 				<dd><code>$ rm -rf .git</code></dd>
 			</dl>
 
-			<dl>
+			<dl class="mb-6">
 				<dt>Install Framework</dt>
 				<dd><code>$ composer require netherphp/atlantis dev-master</code></dd>
+				<dd><code>$ project.atl init -y</code></dd>
+				<dd><code>$ project.atl setup</code></dd>
+				<dd><code>$ composer update</code></dd>
+			</dl>
+
+			<dl class="mb-6">
+				<dt>Edit <span class="ff-mono">conf/config.php</span></dt>
+				<dd>Specifically the Project ID, Name, and Domain as a minimum.</dd>
+			</dl>
+
+			<div class="mb-6">
+				At this point PHP's built-in web server should be able
+				to serve the application over basic HTTP. That can be
+				tested with the following command:
+
+				<code class="d-block mt-4">
+					$ php -S localhost:8080 -t www
+				</code>
+			</div>
+
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<h2>Database Configuration</h2>
+			<hr />
+
+			<dl class="mb-0">
+				<dt>Configure the Default connection.</dt>
+				<dd><code>$ project.atl db --set --host=localhost --db=dbname --user=dbuser --pass=dbpass</code></dd>
 			</dl>
 
 		</div>
 	</section>
+
+	<section>
+		<div class="container">
+			<h2>Web Server (HTTP)</h2>
+			<hr />
+
+			<dl class="mb-6">
+				<dt>Configure Web Server (Apache)</dt>
+				<dd>If this is the initial setup, it will be easier to say no to SSL to start with.</dd>
+				<dd><code>$ web.atl config</code></dd>
+				<dd><code>$ web.atl setup</code></dd>
+				<dd><code>$ web.atl reload</code></dd>
+			</dl>
+
+			<div>
+				At this point the real web server should be able to
+				serve the application over basic HTTP.
+			</div>
+
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<h2>SSL Certificate (HTTPS)</h2>
+			<hr />
+
+			<dl class="mb-6">
+				<dt>Configure SSL</dt>
+				<dd>Configure and fetch a certificate from LetEncrypt automatically.</dd>
+				<dd><code>$ ssl.atl config</code></dd>
+				<dd class="mb-4"><code>$ ssl.atl renew</code></dd>
+
+				<dd>Update the web server to use the SSL.</dd>
+				<dd><code>$ web.atl config</code></dd>
+				<dd><code>$ web.atl reload</code></dd>
+			</dl>
+
+			<div>
+				The web server should now be redirecting to serve the
+				application over encrypted HTTPS. Add the renew command
+				to crontab to automatically renew the certificate.
+			</div>
+
+		</div>
+	</section>
+
 </div>
 
