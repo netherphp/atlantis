@@ -126,9 +126,9 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'photo' ], TRUE)
 		))
 		->Shove('ProfileMediaAddVideoURL', Atlantis\Struct\DropdownItem::New(
-			Title: 'Add Video URL',
+			Title: 'Add Video',
 			Icon: 'mdi-video-plus',
-			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'videotp' ], TRUE)
+			Attr: $Profile->GetDataAttr([ 'videotp-cmd' => 'new2', 'other-type'=> $Profile::EntType, 'other-uuid'=> $Profile->UUID ], TRUE)
 		))
 		->Shove('ProfileMediaAddRelatedLink', Atlantis\Struct\DropdownItem::New(
 			Title: 'Add Related Link',
