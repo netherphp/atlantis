@@ -130,6 +130,8 @@ extends Atlantis\TerminalApp {
 	HandleProjectDist():
 	int {
 
+		$Overwrite = $this->GetOption('y');
+
 		$AppRoot = $this->App->FromProjectRoot();
 		$DistRoot = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(
 			'vendor', 'netherphp', 'atlantis'
@@ -181,7 +183,7 @@ extends Atlantis\TerminalApp {
 			=> Common\Filesystem\Util::Pathify('www', 'index.php')
 		]);
 
-		$Todo->Each(function(string $Dst, string $Src) use($DistRoot, $AppRoot) {
+		$Todo->Each(function(string $Dst, string $Src) use($DistRoot, $AppRoot, $Overwrite) {
 
 			$Copy = Atlantis\Util::CopyWithConfirm(
 				Common\Filesystem\Util::Pathify($DistRoot, $Src),
@@ -192,6 +194,11 @@ extends Atlantis\TerminalApp {
 
 			foreach($Copy as $Cur) {
 				if(is_string($Cur)) {
+					if($Overwrite) {
+						$Copy->Send(TRUE);
+						continue;
+					}
+
 					$Copy->Send(!$this->PromptTrue(
 						$this->Format("Overwrite {$Cur}?", Console\Theme::Accent),
 						'[N/y]'

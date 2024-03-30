@@ -29,167 +29,24 @@ $Surface->Area('sensei/docs/__header', [
 
 ?>
 
-<div class="container pb-6">
 
-	<div class="row">
-		<div class="col-12 col-lg">
-			<p class="mb-4">
-				The process of starting with an empty directory and ending with a working website with SSL.
-				The following assumptions in this guide are just reasonable defaults not requirements.
-				You may need to adjust commands based on your environment.
-			</p>
-			<ul class="mb-4">
-				<li>Ubuntu Server</li>
-				<li>PHP 8.1</li>
-				<li>Apache 2.4</li>
-				<li>AcmePHP at <code>/opt/ssl/acmephp.phar</code></li>
-			</ul>
-			<div class="edged-left mb-0">
-				<div class="fw-bold">Note:</div>
-				Commands provided by Atlantis (or any Composer based packages) will only work as shown if <code>./vendor/bin</code> is in the shell <code>$PATH</code>.
-				Otherwise commands may need to be manually prefixed with <code>vendor/bin</code> when calling them.
-				This includes <code>atlantis</code>, <code>project.atl</code>, <code>ssl.atl</code>, etc.
-			</div>
+<div class="atl-cargobay">
+	<section>
+		<div class="container">
+
+			<dl>
+				<dt>Prepare Project Directory</dt>
+				<dd><code>$ git clone git@github.com:netherphp/project app</code></dd>
+				<dd><code>$ cd app</code></dd>
+				<dd><code>$ rm -rf .git</code></dd>
+			</dl>
+
+			<dl>
+				<dt>Install Framework</dt>
+				<dd><code>$ composer require netherphp/atlantis dev-master</code></dd>
+			</dl>
+
 		</div>
-		<div class="col-12 col-lg-4">
-			<div class="PrettyModernBox">
-				<h3>
-					<hr />
-					<span>Contents</span>
-				</h3>
-				<div>
-					<ul class="list-unstyled">
-						<li class="mb-2"><a class="underdot" href="#bootstrap">1) Bootstrap Project</a></li>
-						<li class="mb-2"><a class="underdot" href="#apache">2) Configure Apache 2.4</a></li>
-						<li class="mb-2"><a class="underdot" href="#acmephp">3) Configure SSL</a></li>
-						<li class="mb-2"><a class="underdot" href="#env">4) Configure Environment</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	</section>
 </div>
 
-<!-- SUMMARY -->
-<div id="bootstrap" class="bg-alt1">
-	<div class="container pt-8 pb-8">
-		<h2 class="fw-bold mb-4">Bootstrap Project</h2>
-		<ul class="mb-0">
-			<li class="mb-4">
-				<p>Grab the Project template.</p>
-				<blockquote class="edged-left">
-					<div class="mb-0"><code class="cli">$ git clone https://github.com/netherphp/project</code></div>
-					<div class="mb-0"><code class="cli">$ cd project</code></div>
-					<div class="mb-0"><code class="cli">$ rm -rf .git</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-4">
-				<p>Install Atlantis.</p>
-				<blockquote class="edged-left">
-					<div class="mb-0"><code class="cli">$ composer require netherphp/atlantis</code></div>
-					<div class="mb-0"><code class="cli">$ project.atl init</code></div>
-					<div class="mb-0"><code class="cli">$ composer update</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-0">
-				<p>At this stage it should be working in that it will serve the app over basic HTTP with PHP's built-in webserver.</p>
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ php -S localhost:80 -t www</code></div>
-				</blockquote>
-			</li>
-		</ul>
-	</div>
-</div>
-
-<!-- WEB SERVER -->
-<div id="apache" class="bg-alt2">
-	<div class="container pt-8 pb-8">
-		<h2 class="fw-bold mb-4">Configure Apache 2.4</h2>
-		<ul class="mb-0">
-			<li class="mb-4">
-				<p>Run the web config tool to generate an <code>apache24.conf</code> file and link it into the Apache sites directory.</p>
-
-				<div class="edged-left opacity-75 mb-2">
-					<div class="fw-bold">Note:</div>
-					If this is your first time choose NO when it asks about SSL.
-				</div>
-
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ web.atl config</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-4">
-				<p>Run the web setup tool to push the configuration into the web service and get it serving.</p>
-
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ web.atl setup</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-0">
-				<p>Apache should now be serving the project over basic HTTP.</p>
-			</li>
-		</ul>
-	</div>
-</div>
-
-<!-- SSL CERT -->
-<div id="acmephp" class="bg-alt0">
-	<div class="container pt-8 pb-8">
-		<h2 class="fw-bold mb-4">Configure SSL</h2>
-		<ul class="mb-0">
-			<li class="mb-4">
-				<p>Run the SSL config tool to generate an <code>acmephp.yml</code> file.</p>
-
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ ssl.atl config</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-0">
-				<p>Run the SSL renew tool to get the certs.</p>
-
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ ssl.atl renew</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-0">
-				<p>If SSL was set No the first time, re-run the web config tool saying yes to SSL.</p>
-
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ web.atl config</code></div>
-				</blockquote>
-			</li>
-			<li class="mb-0">
-				<p>To renew automatically the following command will generate a Crontab Line that can be setup in the system.</p>
-
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ ssl.atl cron</code></div>
-				</blockquote>
-
-				<div class="edged-left">
-					<div class="mb-4"><code class="cli">Crontab Line:<br />20 4 * * * env php /opt/web-atl/vendor/bin/ssl.atl renew</code></div>
-					<div><code class="cli">Runs At:<br />2023-10-23 23:20:00 CDT (in 5min 26sec)</code></div>
-				</div>
-			</li>
-		</ul>
-	</div>
-</div>
-
-<!-- ENV CONF -->
-<div id="env" class="bg-alt1">
-	<div class="container pt-6 pb-6">
-		<h2 class="fw-bold mb-4">Configure Environment</h2>
-		<ul class="mb-0">
-			<li class="mb-0">
-				<p>
-					The default environment is called <code>dev</code> with the matching <code class="file">conf/env/dev</code> config directory.
-					Choosing an env is done with the contents of the <code class="file">env.lock</code> file in the project root.
-					This example will put it in production mode looking for config files in <code class="file">conf/env/prod</code>.
-				</p>
-				<blockquote class="edged-left">
-					<div class="mb-2"><code class="cli">$ atlantis env --set=prod</code></div>
-				</blockquote>
-			</li>
-		</ul>
-	</div>
-</div>
