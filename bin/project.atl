@@ -195,7 +195,7 @@ extends Atlantis\TerminalApp {
 			foreach($Copy as $Cur) {
 				if(is_string($Cur)) {
 					if($Overwrite) {
-						$Copy->Send(TRUE);
+						$Copy->Send(FALSE);
 						continue;
 					}
 
