@@ -1,0 +1,12 @@
+/*******************************************************************************
+**** restoration of the jumbotron *********************************************/
+
+.jumbotron {
+	background-color: #0007;
+	padding: 1rem;
+}
+
+.jumbotron-outline {
+	background-color: transparent;
+	border: 4px solid #0007;
+}

@@ -38,12 +38,14 @@
 	/* these should be generically neutral colours as they will be used for
 	various page elements for division and such. */
 
-	--theme-body-bg:      #141414;
-	--theme-body-bg-alt:  #101010;
-	--theme-body-bg-alt0: var(--theme-body-bg);
-	--theme-body-bg-alt1: var(--theme-body-bg-alt);
-	--theme-body-bg-alt2: #131313;
 	--theme-body-fg:      #FAFAFA;
+
+	--theme-body-bg:      #141414;
+	--theme-body-bg-alt:  #0c0c0c;
+	--theme-body-bg-alt0: var(--theme-body-bg);
+	--theme-body-bg-alt2: var(--theme-body-bg-alt);
+	--theme-body-bg-alt1: #17181f;
+	--theme-body-bg-alt3: #1d1e29;
 
 	/* styles for glass panels of various opacity and filters. opacity is
 	chosen via a bg class so that backdrop-filter can then apply the glass
@@ -387,19 +389,6 @@ strong {
 .bg-alt-rows > div:nth-of-type(3n+3),
 .bg-alt-rows > section:nth-of-type(3n+3) {
 	background-color: var(--theme-body-bg-alt2);
-}
-
-/*******************************************************************************
-**** restoration of the jumbotron *********************************************/
-
-.jumbotron {
-	background-color: var(--theme-body-bg-alt1);
-	padding: 1rem;
-}
-
-.jumbotron-outline {
-	background-color: transparent;
-	border: 4px solid var(--theme-body-bg-alt1);
 }
 
 /*******************************************************************************

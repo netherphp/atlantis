@@ -163,4 +163,128 @@ extends Atlantis\PublicWeb {
 		return Avenue\Response::CodeOK;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Avenue\Meta\RouteHandler('/docs/css/:Page:')]
+	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	public function
+	SectionStylesPage(string $Page, string $Area):
+	void {
+
+		($this->Pathbar->Items)
+		->Push(Atlantis\Struct\Item::New(
+			Title: 'CSS Reference',
+			URL: '/docs/css'
+		));
+
+		$Content = $this->Surface->GetArea($Area);
+
+		////////
+
+		($this->Surface)
+		->Set('Page.Title', sprintf(
+			'%s - CSS - Documentation',
+			$this->Title
+		))
+		->Area('sensei/docs/__header', [
+			'Title'   => $this->Title,
+			'Section' => $this->Pathbar,
+			'Info'    => $this->Info
+		]);
+
+		echo $Content;
+
+		return;
+	}
+
+	protected function
+	SectionStylesPageWillAnswerRequest(string $Page, Avenue\Struct\ExtraData $Data):
+	int {
+
+		$Area = sprintf(
+			'sensei/docs/css/%s/index',
+			Common\Filters\Text::SlottableKey($Page)
+		);
+
+		$File = Common\Filesystem\Util::Pathify(
+			$this->App->GetProjectRoot(),
+			'www', 'themes', 'default', 'area',
+			"{$Area}.phtml"
+		);
+
+		////////
+
+		if(!file_exists($File))
+		return Avenue\Response::CodeNope;
+
+		////////
+
+		$Data['Area'] = $Area;
+
+		return Avenue\Response::CodeOK;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Avenue\Meta\RouteHandler('/docs/cli/:Page:')]
+	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	public function
+	CommandsStylesPage(string $Page, string $Area):
+	void {
+
+		($this->Pathbar->Items)
+		->Push(Atlantis\Struct\Item::New(
+			Title: 'CLI Reference',
+			URL: '/docs/cli'
+		));
+
+		$Content = $this->Surface->GetArea($Area);
+
+		////////
+
+		($this->Surface)
+		->Set('Page.Title', sprintf(
+			'%s - CLI - Documentation',
+			$this->Title
+		))
+		->Area('sensei/docs/__header', [
+			'Title'   => $this->Title,
+			'Section' => $this->Pathbar,
+			'Info'    => $this->Info
+		]);
+
+		echo $Content;
+
+		return;
+	}
+
+	protected function
+	CommandsStylesPageWillAnswerRequest(string $Page, Avenue\Struct\ExtraData $Data):
+	int {
+
+		$Area = sprintf(
+			'sensei/docs/cli/%s/index',
+			Common\Filters\Text::SlottableKey($Page)
+		);
+
+		$File = Common\Filesystem\Util::Pathify(
+			$this->App->GetProjectRoot(),
+			'www', 'themes', 'default', 'area',
+			"{$Area}.phtml"
+		);
+
+		////////
+
+		if(!file_exists($File))
+		return Avenue\Response::CodeNope;
+
+		////////
+
+		$Data['Area'] = $Area;
+
+		return Avenue\Response::CodeOK;
+	}
+
 };

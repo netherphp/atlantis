@@ -550,6 +550,55 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('gen-cli-html')]
+	#[Console\Meta\Info('Generate the theme PHTML files for the CLI commmand helps.')]
+	public function
+	HandleGenDocsForCLI():
+	int {
+
+		$File = NULL;
+		$Run = NULL;
+		$Pathify = Common\Filesystem\Util::Pathify(...);
+
+		$Outdir = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(
+			'www', 'themes', 'default',
+			'area', 'sensei', 'docs', 'cli'
+		));
+
+		$Runs = [
+			'project.atl help init'     => $Pathify($Outdir, 'project', 'help-init.phtml'),
+			'project.atl help setup'    => $Pathify($Outdir, 'project', 'help-setup.phtml'),
+			'project.atl help db'       => $Pathify($Outdir, 'project', 'help-db.phtml'),
+			'project.atl help dirs'     => $Pathify($Outdir, 'project', 'help-dirs.phtml'),
+			'project.atl help symlinks' => $Pathify($Outdir, 'project', 'help-symlinks.phtml'),
+
+			'dev.atl help cachebust' => $Pathify($Outdir, 'dev', 'help-cachebust.phtml'),
+			'dev.atl help gen-cli-html' => $Pathify($Outdir, 'dev', 'help-genclihtml.phtml'),
+			'dev.atl help jsondbg' => $Pathify($Outdir, 'dev', 'help-jsondbg.phtml'),
+			'dev.atl help loc' => $Pathify($Outdir, 'dev', 'help-loc.phtml'),
+			'dev.atl help run' => $Pathify($Outdir, 'dev', 'help-run.phtml')
+		];
+
+		foreach($Runs as $Run => $File) {
+			if(!is_dir(dirname($File)))
+			Common\Filesystem\Util::MkDir(dirname($File));
+
+			$Command = sprintf(
+				'%s --cli-format-html --cli-no-appheader > %s',
+				$Run,
+				$File
+			);
+
+			Common\Dump::Var($Run);
+			system($Command);
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Console\Meta\Command('classtime', TRUE)]
 	public function
 	HandleClassTimeline():

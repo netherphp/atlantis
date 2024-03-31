@@ -5,6 +5,7 @@
 	--atl-cargobay-s1-bg-colour: var(--theme-body-bg-alt0);
 	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
 	--atl-cargobay-s3-bg-colour: var(--theme-body-bg-alt2);
+	--atl-cargobay-s4-bg-colour: var(--theme-body-bg-alt3);
 }
 
 /* container directly added */
@@ -27,14 +28,18 @@
 	margin-bottom: 0px;
 }
 
-.cargobay > section:nth-of-type(3n+1) {
+.cargobay > section:nth-of-type(4n+1) {
 	background-color: var(--atl-cargobay-s1-bg-colour);
 }
 
-.cargobay > section:nth-of-type(3n+2) {
+.cargobay > section:nth-of-type(4n+2) {
 	background-color: var(--atl-cargobay-s2-bg-colour);;
 }
 
-.cargobay > section:nth-of-type(3n+3) {
+.cargobay > section:nth-of-type(4n+3) {
 	background-color: var(--atl-cargobay-s3-bg-colour);
+}
+
+.cargobay > section:nth-of-type(4n+4) {
+	background-color: var(--atl-cargobay-s4-bg-colour);
 }
