@@ -121,10 +121,14 @@
 
 [data-bs-theme="light"] {
 
-	--theme-body-bg:      #FAFAFA;
-	--theme-body-bg-alt:  #F0F0F0;
-	--theme-body-bg-alt2: #EAEAEA;
 	--theme-body-fg:      #161616;
+
+	--theme-body-bg:      #fafafa;
+	--theme-body-bg-alt0: var(--theme-body-bg);
+	--theme-body-bg-alt:  #eaeaea;
+	--theme-body-bg-alt1: #d9dbea;
+	--theme-body-bg-alt2: var(--theme-body-bg-alt);
+	--theme-body-bg-alt3: #cfd1e2;
 
 	--theme-dark-bg: #5a5a5a;
 	--theme-dark-glass: #09090988;

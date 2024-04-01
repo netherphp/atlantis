@@ -1,12 +1,21 @@
+:root {
+	--atl-jumbotron-bg: #0007;
+}
+
+[data-bs-theme="light"] {
+	--atl-jumbotron-bg: #0002;
+}
+
 /*******************************************************************************
 **** restoration of the jumbotron *********************************************/
 
 .jumbotron {
-	background-color: #0007;
+	background-color: var(--atl-jumbotron-bg);
 	padding: 1rem;
 }
 
 .jumbotron-outline {
 	background-color: transparent;
-	border: 4px solid #0007;
+	border: 4px solid var(--atl-jumbotron-bg);
 }
+
