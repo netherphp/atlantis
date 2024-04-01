@@ -6,45 +6,13 @@
 
 Standards non-compliant website framework.
 
-These are the open source components of our system that we commit back despite
-nobody needing any of it. If you are using it I am more than happy to interact
-but I am done pretending that I want a huge community for now while we are
-constantly building, trying, refactoring, and re-imagining.
-
-The framework itself will present completed documentation once you get it
-running, so we keep a vanilla copy running on our intranet for reference lol.
+The framework will present documentation once it is running.
 
 
 
 # **Quick Setup**
 
-**Clone the project Bootstrapper.**
-
-* git clone git@github.com:netherphp/project app
-* cd app
-* rm -rf .git
-
-**Initialise System**
-
-* composer require netherphp/atlantis dev-master
-
-* project.atl init
-* project.atl setup
-
-* web.atl config
-* web.atl setup
-* web.atl reload
-
-**Database**
-
-Add Default to config.php.
-
-* `sh vendor/netherphp/atlantis/tables.sh`
-
-**SSL?**
-
-* `ssl.atl help`
-
+https://atl.pegasusgate.net/docs/afs
 
 
 
