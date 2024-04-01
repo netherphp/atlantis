@@ -2,17 +2,11 @@
 
 use Nether\Atlantis;
 
-/**
- * @var Routes\Docs $Route
- */
-
-$Route->Title = 'Article & Content Element';
-$Route->Info = 'Present some basic data in the style of an article or news post.';
-
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'Article',
-	URL: '/docs/ui/article'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'UI Elements',
+	'Page.Title'         => 'Article',
+	'Page.Info'          => NULL
+]);
 
 $Surface->Area('sensei/docs/__example-via-area', [
 	'Areas' => [

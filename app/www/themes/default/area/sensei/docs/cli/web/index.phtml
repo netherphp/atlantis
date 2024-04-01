@@ -17,9 +17,11 @@ use Nether\User;
  * ...
  */
 
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'web.atl'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'CLI Reference',
+	'Page.Title'         => '$ web.atl',
+	'Page.Info'          => 'vendor/bin/web.atl'
+]);
 
 $Files = Nether\Common\Filesystem\Indexer::DatastoreFromPath(dirname(__FILE__), $Page);
 

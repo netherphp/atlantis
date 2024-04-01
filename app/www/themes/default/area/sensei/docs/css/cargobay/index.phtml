@@ -6,13 +6,11 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Route->Title = 'Cargo Bay';
-$Route->Info = 'It contains containers.';
-
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'Cargo Bay',
-	URL: '/docs/css/cargobay'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'CSS Reference',
+	'Page.Title'         => 'Container Cargo Bay',
+	'Page.Info'          => NULL
+]);
 
 ?>
 

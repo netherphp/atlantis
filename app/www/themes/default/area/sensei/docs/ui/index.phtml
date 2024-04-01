@@ -8,16 +8,11 @@ use Nether\Common;
  * @var Common\Datastore $Pages
  */
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Route->Title = 'Surface Element UI';
-
-($Route->Pathbar->Items)
-->Push(Atlantis\Struct\Item::New(
-	Title: 'Element UI',
-	URL: '/docs/ui'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'UI Elements',
+	'Page.Title'         => 'Surface Element Based Widgets',
+	'Page.Info'          => NULL
+]);
 
 $Sections = Common\Datastore::FromArray([
 	'Navigation' => Common\Datastore::FromArray([
@@ -39,14 +34,6 @@ $Sections = Common\Datastore::FromArray([
 		'Article' => '/docs/ui/article',
 		'Promo Video' => '/docs/ui/promo-video'
 	])
-]);
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Surface->Area('sensei/docs/__header', [
-	'Title'   => $Route->Title,
-	'Section' => $Route->Pathbar
 ]);
 
 ?>

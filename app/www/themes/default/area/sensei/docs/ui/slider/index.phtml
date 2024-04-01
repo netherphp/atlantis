@@ -6,13 +6,11 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Route->Title = 'Item Slider Widget';
-$Route->Info = 'Does the sideways media browser style finger flicking slider things.';
-
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'Slider',
-	URL: '/docs/ui/slider'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'UI Elements',
+	'Page.Title'         => 'Slider',
+	'Page.Info'          => NULL
+]);
 
 $Surface->Area('sensei/docs/__example-via-area', [
 	'Areas' => [

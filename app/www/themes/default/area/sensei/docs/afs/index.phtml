@@ -2,29 +2,17 @@
 
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Surface;
 
 /**
  * @var Routes\Docs $Route
  * @var Common\Datastore $Pages
+ * @var Surface\Engine $Surface
  */
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Route->Title = 'Atlantis From Scratch';
-
-($Route->Pathbar->Items)
-->Push(Atlantis\Struct\Item::New(
-	Title: 'Install & Setup',
-	URL: '/docs/afs'
-));
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Surface->Area('sensei/docs/__header', [
-	'Title'   => $Route->Title,
-	'Section' => $Route->Pathbar
+$Surface->Set([
+	'Page.Section.Title' => 'Install & Setup',
+	'Page.Title'         => 'Atlantis From Scratch'
 ]);
 
 ?>

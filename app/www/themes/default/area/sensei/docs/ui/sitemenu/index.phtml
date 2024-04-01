@@ -6,13 +6,11 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Route->Title = 'Site Menu';
-$Route->Info = 'Provides a stack of off-screen sidebars in the style of mobile app menus using the offcanvas element in Bootstrap.';
-
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'PromoVideo',
-	URL: '/docs/ui/promo-video'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'UI Elements',
+	'Page.Title'         => 'SiteMenu',
+	'Page.Info'          => NULL
+]);
 
 $Surface->Area('sensei/docs/__example-via-area', [
 	'Areas' => [

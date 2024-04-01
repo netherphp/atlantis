@@ -8,15 +8,10 @@ use Nether\Common;
  * @var Common\Datastore $Pages
  */
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Route->Title = 'Command Line Utilities';
-
-($Route->Pathbar->Items)
-->Push(Atlantis\Struct\Item::New(
-	Title: 'CLI Reference'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'CLI Reference',
+	'Page.Title'         => 'Command Line Utilities'
+]);
 
 $Pages = Common\Datastore::FromArray([
 	'dev.atl'     => '/docs/cli/dev',
@@ -24,14 +19,6 @@ $Pages = Common\Datastore::FromArray([
 	'ssl.atl'     => '/docs/cli/ssl',
 	'project.atl' => '/docs/cli/project',
 	'web.atl'     => '/docs/cli/web'
-]);
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Surface->Area('sensei/docs/__header', [
-	'Title'   => $Route->Title,
-	'Section' => $Route->Pathbar
 ]);
 
 ?>

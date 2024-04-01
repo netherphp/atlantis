@@ -6,13 +6,11 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Route->Title = 'Ace Editor & Code Viewer';
-$Route->Info = 'Provides for wrapping content into an editable source code editor, provided by Ace not the hardware place.';
-
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'AceEditor',
-	URL: '/docs/ui/ace-editor'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'UI Elements',
+	'Page.Title'         => 'Ace Editor',
+	'Page.Info'          => NULL
+]);
 
 $Surface->Area('sensei/docs/__example-via-area', [
 	'Areas' => [

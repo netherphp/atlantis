@@ -6,13 +6,11 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Route->Title = 'Article & Content Element';
-$Route->Info = 'Provide a Next/Prev pagination widget.';
-
-$Route->Pathbar->Items->Push(Atlantis\Struct\Item::New(
-	Title: 'Pager',
-	URL: '/docs/ui/pager'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'UI Elements',
+	'Page.Title'         => 'Pager',
+	'Page.Info'          => NULL
+]);
 
 $Surface->Area('sensei/docs/__example-via-area', [
 	'Areas' => [

@@ -8,16 +8,11 @@ use Nether\Common;
  * @var Common\Datastore $Pages
  */
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Route->Title = 'CSS Reference';
-
-($Route->Pathbar->Items)
-->Push(Atlantis\Struct\Item::New(
-	Title: $Route->Title,
-	URL: '/docs/afs'
-));
+$Surface->Set([
+	'Page.Section.Title' => 'CSS Reference',
+	'Page.Title'         => 'Basic Page Example',
+	'Page.Info'          => NULL
+]);
 
 $FontSizes = [
 	'mostest-small', 'most-small', 'smallerest', 'smallerer', 'smallest',
@@ -44,24 +39,6 @@ $Ratioboxes = [
 ];
 
 ?>
-
-<!-- FANCY HEADER -->
-<div class="wallpapered bg-black box-shadow-inset" style="background-image: url(/themes/default/gfx/space.jpg);">
-	<div class="container pt-6 pb-6">
-		<?php
-		$Surface->Area('sensei/docs/__header', [
-			'Title'     => $Route->Title,
-			'Section'   => $Route->Pathbar,
-			'Classes'   => [ 'mb-4' ],
-			'Container' => FALSE,
-			'Boxify'    => FALSE
-		]);
-		?>
-
-		<p class="mb-0">Adds more CSS utilities following Bootstrap's style of small additive classes.</p>
-		<p>Just testing my CSS.</p>
-	</div>
-</div>
 
 <div class="bg-alt-rows">
 
