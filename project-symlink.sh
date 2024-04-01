@@ -28,13 +28,15 @@ echo "Symlinking in www/index.php..."
 rm $PROOT/www/index.php
 ln -s $SROOT/app/www/index.php $PROOT/www/index.php
 
-echo "Symlinking in www/themes/default..."
-rm -rf $PROOT/www/themes/default
-ln -s $SROOT/app/www/themes/default $PROOT/www/themes/default
+# these are thandled by atlanits.json now by default for porjects.
 
-echo "Symlinking in www/share..."
-rm -rf $PROOT/www/share
-ln -s $SROOT/app/www/share $PROOT/www/share
+#echo "Symlinking in www/themes/default..."
+#rm -rf $PROOT/www/themes/default
+#ln -s $SROOT/app/www/themes/default $PROOT/www/themes/default
+
+#echo "Symlinking in www/share..."
+#rm -rf $PROOT/www/share
+#ln -s $SROOT/app/www/share $PROOT/www/share
 
 ################################################################################
 ################################################################################
