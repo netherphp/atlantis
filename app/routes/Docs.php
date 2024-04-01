@@ -15,23 +15,24 @@ extends Atlantis\PublicWeb {
 	Index():
 	void {
 
-		$PTitle = 'Documentation';
+		$PTitle = 'Framework Overview';
 		$Pathbar = Atlantis\UI\Pathbar::FromSurface($this->Surface);
 
 		////////
 
 		($Pathbar->Items)
 		->Push(Atlantis\Struct\Item::New(
-			Title: 'Docs', URL: '/docs',
-			Classes: [ 'tag' ]
+			Title: 'Docs', URL: '/docs', Classes: [ 'tag' ]
 		));
+
+		////////
 
 		($this->Surface)
 		->Set('Page.Title', $PTitle)
-		->Area('sensei/docs/__header', [
-			'Section' => $Pathbar,
-			'Title'   => 'Documentation'
-		])
+		->Area(
+			'sensei/docs/__header',
+			[ 'Section'=> $Pathbar, 'Title'=> $PTitle ]
+		)
 		->Area('sensei/docs/index');
 
 		return;
@@ -47,14 +48,7 @@ extends Atlantis\PublicWeb {
 	SectionNew(?string $Sect=NULL, ?string $Page=NULL, ?string $Area=NULL):
 	void {
 
-		$STitle = NULL;
-		$PTitle = NULL;
-		$SLink = sprintf('/docs/%s', $Sect);
-		$PLink = sprintf('/docs/%s/%s', $Sect, $Page);
 		$Pathbar = Atlantis\UI\Pathbar::FromSurface($this->Surface);
-
-		// allow the doc pages to set their page meta in their templates
-		// that we apply consistently from out here.
 
 		$Content = $this->Surface->GetArea($Area, [
 			'Section' => $Sect,
@@ -62,10 +56,12 @@ extends Atlantis\PublicWeb {
 		]);
 
 		$PTitle = $this->Surface->Get('Page.Title');
+		$PInfo = $this->Surface->Get('Page.Info');
+		$PLink = sprintf('/docs/%s/%s', $Sect, $Page);
 
 		$STitle = $this->Surface->Get('Page.Section.Title');
+		$SInfo = $this->Surface->Get('Page.Section.Info');
 		$SLink = $this->Surface->Get('Page.Section.Link') ?? "/docs/{$Sect}";
-		$PInfo = $this->Surface->Get('Page.Info');
 
 		////////
 
@@ -82,9 +78,10 @@ extends Atlantis\PublicWeb {
 		////////
 
 		$Header = $this->Surface->GetArea('sensei/docs/__header', [
-			'Section' => $Pathbar,
-			'Title'   => $PTitle,
-			'Info'    => $PInfo
+			'Section'  => $Pathbar,
+			'Title'    => $PTitle,
+			'Info'     => $PInfo,
+			'TitleURL' => $PLink
 		]);
 
 		////////
