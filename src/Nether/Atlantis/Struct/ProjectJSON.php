@@ -96,6 +96,8 @@ implements
 	Write():
 	bool {
 
+		$this->Prewrite();
+
 		$JSON = $this->ToJSON();
 		$Bytes = file_put_contents($this->Filename, $JSON);
 
@@ -106,6 +108,42 @@ implements
 		throw new Exception('written did not match expected');
 
 		return TRUE;
+	}
+
+	protected function
+	Prewrite():
+	void {
+
+		// pivot the file creation magic to on write rather than on
+		// read because idk why that did not make more sense to me during
+		// the prototype phase.
+
+		$Dir = dirname($this->Filename);
+		$Lnk = NULL;
+
+		// if we have a dir then there is nothing to do just continue
+		// saving the file there. try to accept a symlink to a directory.
+
+		if(file_exists($Dir)) {
+			if(is_dir($Dir))
+			return;
+
+			if(is_link($Dir)) {
+				$Lnk = readlink($Dir);
+
+				if($Lnk && is_dir($Lnk))
+				return;
+			}
+
+			throw new Exception('parent directory exists as a file?');
+		}
+
+		// try to make the directory we want to save to.
+
+		if(!Common\Filesystem\Util::MkDir($Dir))
+		throw new Exception('failed to create parent directory.');
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -128,8 +166,11 @@ implements
 	#[Common\Meta\Date('2023-11-09')]
 	#[Common\Meta\Info('Load a JSON file from disk.')]
 	static public function
-	FromFile(string $Filename, bool $Create=TRUE):
+	FromFile(string $Filename, bool $Create=FALSE):
 	static {
+
+		// @TODO 2024-04-01 remove the create stuff from here because
+		// that is being moved to on write.
 
 		$JSON = '';
 

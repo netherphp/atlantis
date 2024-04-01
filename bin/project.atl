@@ -624,8 +624,10 @@ extends Atlantis\TerminalApp {
 	HandleDatabase():
 	int {
 
+		$Env = $this->GetOption('env') ?? $this->App->GetProjectEnv();
+
 		$Project = Atlantis\Struct\ProjectJSON::FromFile(
-			$this->App->FromConfEnv('atlantis.json')
+			$this->App->FromConfEnv('atlantis.json', $Env)
 		);
 
 		$List = $Project->DB->GetConnections();
@@ -640,7 +642,7 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		$this->PrintH2('Databases');
+		$this->PrintH2("Databases: {$Project->Filename}");
 
 		foreach($List as $Item) {
 			$this->PrintLn(sprintf(
