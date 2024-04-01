@@ -240,7 +240,9 @@ extends Atlantis\PublicWeb {
 			URL: '/docs/cli'
 		));
 
-		$Content = $this->Surface->GetArea($Area);
+		$Content = $this->Surface->GetArea($Area, [
+			'Page' => $Page
+		]);
 
 		////////
 
