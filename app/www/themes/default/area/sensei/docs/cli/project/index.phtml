@@ -25,7 +25,7 @@ $Files = Nether\Common\Filesystem\Indexer::DatastoreFromPath(dirname(__FILE__), 
 
 $Files
 ->Remap(fn(string $F)=> str_replace('.phtml', '', basename($F)))
-->Filter(fn(string $F)=> str_starts_with($F, 'help-'))
+->Filter(fn(string $F)=> str_starts_with($F, 'help'))
 ->Sort();
 
 ?>

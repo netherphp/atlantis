@@ -566,17 +566,34 @@ extends Atlantis\TerminalApp {
 		));
 
 		$Runs = [
+			'project.atl help'          => $Pathify($Outdir, 'project', 'help.phtml'),
 			'project.atl help init'     => $Pathify($Outdir, 'project', 'help-init.phtml'),
 			'project.atl help setup'    => $Pathify($Outdir, 'project', 'help-setup.phtml'),
 			'project.atl help db'       => $Pathify($Outdir, 'project', 'help-db.phtml'),
 			'project.atl help dirs'     => $Pathify($Outdir, 'project', 'help-dirs.phtml'),
 			'project.atl help symlinks' => $Pathify($Outdir, 'project', 'help-symlinks.phtml'),
 
-			'dev.atl help cachebust' => $Pathify($Outdir, 'dev', 'help-cachebust.phtml'),
+			'ssl.atl help'              => $Pathify($Outdir, 'ssl', 'help.phtml'),
+			'ssl.atl help config'       => $Pathify($Outdir, 'ssl', 'help-config.phtml'),
+			'ssl.atl help renew'        => $Pathify($Outdir, 'ssl', 'help-renew.phtml'),
+			'ssl.atl help cron'         => $Pathify($Outdir, 'ssl', 'help-cron.phtml'),
+			'ssl.atl help lookup'       => $Pathify($Outdir, 'ssl', 'help-lookup.phtml'),
+
+			'web.atl help'              => $Pathify($Outdir, 'web', 'help.phtml'),
+			'web.atl help config'       => $Pathify($Outdir, 'web', 'help-config.phtml'),
+			'web.atl help setup'        => $Pathify($Outdir, 'web', 'help-setup.phtml'),
+			'web.atl help reload'       => $Pathify($Outdir, 'web', 'help-reload.phtml'),
+
+			'dev.atl help'              => $Pathify($Outdir, 'dev', 'help.phtml'),
+			'dev.atl help cachebust'    => $Pathify($Outdir, 'dev', 'help-cachebust.phtml'),
 			'dev.atl help gen-cli-html' => $Pathify($Outdir, 'dev', 'help-genclihtml.phtml'),
-			'dev.atl help jsondbg' => $Pathify($Outdir, 'dev', 'help-jsondbg.phtml'),
-			'dev.atl help loc' => $Pathify($Outdir, 'dev', 'help-loc.phtml'),
-			'dev.atl help run' => $Pathify($Outdir, 'dev', 'help-run.phtml')
+			'dev.atl help jsondbg'      => $Pathify($Outdir, 'dev', 'help-jsondbg.phtml'),
+			'dev.atl help loc'          => $Pathify($Outdir, 'dev', 'help-loc.phtml'),
+			'dev.atl help run'          => $Pathify($Outdir, 'dev', 'help-run.phtml'),
+
+			'gfx.atl help'              => $Pathify($Outdir, 'gfx', 'help.phtml'),
+			'gfx.atl help genshare'     => $Pathify($Outdir, 'gfx', 'help-genshare.phtml'),
+			'gfx.atl help qr'           => $Pathify($Outdir, 'gfx', 'help-qr.phtml')
 		];
 
 		foreach($Runs as $Run => $File) {
