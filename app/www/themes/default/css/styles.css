@@ -1,6 +1,6 @@
 /*//
-@date 2024-03-26 23:36:40 UTC
-@files 32 [
+@date 2024-04-01 22:09:22 UTC
+@files 33 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -8,6 +8,7 @@
     "src\/ext-bootstrap\/cargobay.css",
     "src\/ext-bootstrap\/filters.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
+    "src\/ext-bootstrap\/jumbotron.css",
     "src\/ext-bootstrap\/opacity.css",
     "src\/ext-bootstrap\/position.css",
     "src\/ext-bootstrap\/tags.css",
@@ -84,12 +85,14 @@
 	/* these should be generically neutral colours as they will be used for
 	various page elements for division and such. */
 
-	--theme-body-bg:      #141414;
-	--theme-body-bg-alt:  #101010;
-	--theme-body-bg-alt0: var(--theme-body-bg);
-	--theme-body-bg-alt1: var(--theme-body-bg-alt);
-	--theme-body-bg-alt2: #131313;
 	--theme-body-fg:      #FAFAFA;
+
+	--theme-body-bg:      #141414;
+	--theme-body-bg-alt:  #0c0c0c;
+	--theme-body-bg-alt0: var(--theme-body-bg);
+	--theme-body-bg-alt2: var(--theme-body-bg-alt);
+	--theme-body-bg-alt1: #17181f;
+	--theme-body-bg-alt3: #1d1e29;
 
 	/* styles for glass panels of various opacity and filters. opacity is
 	chosen via a bg class so that backdrop-filter can then apply the glass
@@ -165,10 +168,14 @@
 
 [data-bs-theme="light"] {
 
-	--theme-body-bg:      #FAFAFA;
-	--theme-body-bg-alt:  #F0F0F0;
-	--theme-body-bg-alt2: #EAEAEA;
 	--theme-body-fg:      #161616;
+
+	--theme-body-bg:      #fafafa;
+	--theme-body-bg-alt0: var(--theme-body-bg);
+	--theme-body-bg-alt:  #eaeaea;
+	--theme-body-bg-alt1: #d9dbea;
+	--theme-body-bg-alt2: var(--theme-body-bg-alt);
+	--theme-body-bg-alt3: #cfd1e2;
 
 	--theme-dark-bg: #5a5a5a;
 	--theme-dark-glass: #09090988;
@@ -433,19 +440,6 @@ strong {
 .bg-alt-rows > div:nth-of-type(3n+3),
 .bg-alt-rows > section:nth-of-type(3n+3) {
 	background-color: var(--theme-body-bg-alt2);
-}
-
-/*******************************************************************************
-**** restoration of the jumbotron *********************************************/
-
-.jumbotron {
-	background-color: var(--theme-body-bg-alt1);
-	padding: 1rem;
-}
-
-.jumbotron-outline {
-	background-color: transparent;
-	border: 4px solid var(--theme-body-bg-alt1);
 }
 
 /*******************************************************************************
@@ -1139,6 +1133,7 @@ grouped are to be considered depreciated. */
 	--atl-cargobay-s1-bg-colour: var(--theme-body-bg-alt0);
 	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
 	--atl-cargobay-s3-bg-colour: var(--theme-body-bg-alt2);
+	--atl-cargobay-s4-bg-colour: var(--theme-body-bg-alt3);
 }
 
 /* container directly added */
@@ -1161,16 +1156,20 @@ grouped are to be considered depreciated. */
 	margin-bottom: 0px;
 }
 
-.cargobay > section:nth-of-type(3n+1) {
+.cargobay > section:nth-of-type(4n+1) {
 	background-color: var(--atl-cargobay-s1-bg-colour);
 }
 
-.cargobay > section:nth-of-type(3n+2) {
+.cargobay > section:nth-of-type(4n+2) {
 	background-color: var(--atl-cargobay-s2-bg-colour);;
 }
 
-.cargobay > section:nth-of-type(3n+3) {
+.cargobay > section:nth-of-type(4n+3) {
 	background-color: var(--atl-cargobay-s3-bg-colour);
+}
+
+.cargobay > section:nth-of-type(4n+4) {
+	background-color: var(--atl-cargobay-s4-bg-colour);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1346,6 +1345,30 @@ grouped are to be considered depreciated. */
 
 .text-crossed-bs {
 	background: linear-gradient(to top right, transparent 45.9%, currentColor 49.0%, currentColor 51.0%, transparent 52.1%);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/jumbotron.css /////////////////////////////////////////*/
+
+:root {
+	--atl-jumbotron-bg: #0007;
+}
+
+[data-bs-theme="light"] {
+	--atl-jumbotron-bg: #0002;
+}
+
+/*******************************************************************************
+**** restoration of the jumbotron *********************************************/
+
+.jumbotron {
+	background-color: var(--atl-jumbotron-bg);
+	padding: 1rem;
+}
+
+.jumbotron-outline {
+	background-color: transparent;
+	border: 4px solid var(--atl-jumbotron-bg);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
