@@ -1,5 +1,5 @@
 /*//
-@date 2024-04-01 22:09:22 UTC
+@date 2024-04-04 00:59:46 UTC
 @files 33 [
     "src\/imports.css",
     "src\/main.css",
@@ -173,9 +173,9 @@
 	--theme-body-bg:      #fafafa;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt:  #eaeaea;
-	--theme-body-bg-alt1: #d9dbea;
+	--theme-body-bg-alt1: #eaebf7;
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
-	--theme-body-bg-alt3: #cfd1e2;
+	--theme-body-bg-alt3: #e2e3f1;
 
 	--theme-dark-bg: #5a5a5a;
 	--theme-dark-glass: #09090988;
@@ -1355,7 +1355,7 @@ grouped are to be considered depreciated. */
 }
 
 [data-bs-theme="light"] {
-	--atl-jumbotron-bg: #0002;
+	--atl-jumbotron-bg: #0001;
 }
 
 /*******************************************************************************
@@ -2238,15 +2238,21 @@ is being used and then prefixing all these with that theme name, if i recall. */
 //// src/elements/pillbox.css ////////////////////////////////////////////////*/
 
 .atl-ui-pillbox-item a:link,
-.atl-ui-pillbox-item a:visited {
+.atl-ui-pillbox-item a:visited,
+.atl-ui-pillbox-moredown-dropdown .dropdown-toggle {
 	background: var(--theme-body-bg) !important;
 	color: var(--theme-body-fg) !important;
 
 	border-bottom: 0px;
 	display: block;
-	font-weight: bold;
-	padding: 5px 10px 4px 10px;
+	font-weight: bold !important;
+	padding: 6px 10px 5px 10px;
 	border-radius: 4px;
+}
+
+.atl-ui-pillbox-moredown-dropdown .dropdown-menu-item {
+	/* give in the menu some finger space. */
+	padding: 4px 0px;
 }
 
 .atl-ui-pillbox-item a:hover {
