@@ -14,7 +14,7 @@ extends PublicWeb {
 	void {
 
 		($this->App->Surface)
-		->Wrap('contact/index');
+		->Area('contact/index');
 
 		return;
 	}
