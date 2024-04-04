@@ -22,8 +22,25 @@ extends Surface\Element {
 	public array|Common\Datastore
 	$Items = [];
 
+	#[Common\Meta\Info('used by moredown')]
+	public int
+	$Max = 3;
+
+	#[Common\Meta\Info('used by moredown')]
+	public bool
+	$MaxAuto = FALSE;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	SetMax(?int $Max=NULL):
+	static {
+
+		$this->Max = (int)$Max;
+
+		return $this;
+	}
 
 	public function
 	GetSection():

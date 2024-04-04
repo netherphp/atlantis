@@ -1,0 +1,92 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Surface;
+
+/**
+ * @var Surface\Engine $Surface
+ * @var Atlantis\Struct\TemplateHelper $Util
+ *
+ * @var Atlantis\UI\Pillbox $Element
+ */
+
+// in this element it is important that the items that are outside of the
+// dropdown are the exact same html markup as the items inside of the dropdown
+// because the front end is going to have code to magically move them with
+// responsive and i want that code to be simple (the .atl-ui-pillbox-item).
+
+$Surface->AddScriptReadyFrag('elements/pillbox/moredown-ready');
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$ItemsToShow = NULL;
+$ItemsToMore = NULL;
+$MainMoreClassCSS = '';
+
+if(!$Element->MaxAuto && $Element->Max > 0) {
+	$ItemsToShow = $Element->Items->Slice(0, $Element->Max);
+	$ItemsToMore = $Element->Items->Slice($Element->Max, NULL);
+}
+
+else {
+	$ItemsToShow = $Element->Items;
+	$ItemsToMore = new Common\Datastore;
+	$MainMoreClassCSS = 'o-0';
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$RenderItem = function(Atlantis\Struct\Item $Item) use($Element): string {
+
+	$Classes = $Item->GetClassesForHTML(
+		'atl-ui-pillbox-item atl-ui-moredown-item',
+		($Item->IsTheUUID($Element->Section) ? 'on' : 'off')
+	);
+
+	$DataAttr = $Item->GetDataAttrAsHTML();
+	$URL = $Item->GetURL();
+	$Title = $Item->GetTitle();
+
+	$Item = <<< LULZDOC
+	<div class="{$Classes}" {$DataAttr}>
+		<a href="{$URL}" class="">{$Title}</a>
+	</div>
+	LULZDOC;
+
+	return $Item;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+?>
+
+<div id="<?php $Util->Print($Element->GetID()) ?>" class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-pillbox-moredown', $MainMoreClassCSS)) ?>">
+	<div class="row tight flex-nowrap align-items-center justify-content-center">
+
+		<?php foreach($ItemsToShow as $Item): /** @var Nether\Atlantis\Struct\Item $Item */ ?>
+		<div class="col-auto atl-ui-pillbox-moredown-showing">
+			<?php echo $RenderItem($Item) ?>
+		</div>
+		<?php endforeach; ?>
+
+		<div class="col-auto atl-ui-pillbox-moredown-overflow">
+			<div class="dropdown atl-ui-pillbox-moredown-dropdown">
+				<div class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<span>More</span>
+				</div>
+				<div class="dropdown-menu w-100">
+					<?php foreach($ItemsToMore as $Item): ?>
+					<div class="dropdown-menu-item">
+						<?php echo $RenderItem($Item) ?>
+					</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

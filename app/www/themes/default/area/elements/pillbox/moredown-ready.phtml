@@ -1,0 +1,81 @@
+(function(){
+
+	let isHangingOff = function(box, item) {
+
+		let bsize = box.width();
+		let ipos = item.position().left;
+		let isize = item.width();
+
+		// if the dropdown extends out of the bar's box then the item
+		// before it needs to be consumed by the dropdown.
+
+		if((ipos + isize) > bsize)
+		return true;
+
+		return false;
+	};
+
+	let init = function() {
+
+		let bar = jQuery(this);
+		let drop = bar.find('.atl-ui-pillbox-moredown-dropdown');
+		let menu = drop.find('.dropdown-menu');
+		let mcount = 0;
+
+		// if the dropdown menu is extending out of bounds then it will
+		// consume the item before it to dock within its menu. this
+		// continues until it is satisified it can sit and fit.
+
+		while(isHangingOff(bar, drop)) {
+
+			let sib = drop.parent().prev();
+
+			////////
+
+			if(!sib.length)
+			break;
+
+			if(!sib.hasClass('atl-ui-pillbox-moredown-showing'))
+			break;
+
+			////////
+
+			menu.prepend(
+				jQuery('<div />')
+				.addClass('dropdown-menu-item')
+				.append(sib.children())
+			);
+
+			sib.remove();
+			continue;
+		};
+
+		// if the menu is empty then get rid of it. if it is not then
+		// make sure it is shown.
+
+		mcount = menu.children().length;
+
+		if(mcount === 0) {
+			drop.addClass('d-none');
+		}
+
+		else {
+			drop.removeClass('d-none');
+		}
+
+		// after it is all done make sure the bar also can be seen.
+
+		bar.removeClass('o-0');
+
+		////////
+
+		console.log(`[Pillbox.Moredown] ${menu.children().length} items in the overflow menu.`);
+
+		return;
+	};
+
+	jQuery('.atl-ui-pillbox-moredown')
+	.each(init);
+
+	return;
+})();

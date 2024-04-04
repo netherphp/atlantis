@@ -343,12 +343,18 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $ID=NULL, ?string $UUID=NULL, ?string $Title=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $ImageURL=NULL, ?string $Info=NULL, ?array $Classes=NULL, ?array $ExtraData=NULL):
+	New(?string $ID=NULL, string|bool|NULL $UUID=TRUE, ?string $Title=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $ImageURL=NULL, ?string $Info=NULL, ?array $Classes=NULL, ?array $ExtraData=NULL):
 	static {
 
 		$Output = new static([
 			'ID'        => $ID,
-			'UUID'      => $UUID,
+			'UUID'      => (match(TRUE){
+				(is_bool($UUID) && $UUID)
+				=> Common\UUID::V7(),
+
+				default
+				=> $UUID
+			}),
 			'Title'     => $Title,
 			'URL'       => $URL,
 			'Icon'      => $Icon,

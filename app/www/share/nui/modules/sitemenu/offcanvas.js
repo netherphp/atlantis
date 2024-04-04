@@ -69,7 +69,7 @@ class StackManager {
 
 	constructor(selector='#SiteMenu', conf={}) {
 
-		console.log(`[StackManager] ${selector}`);
+		console.log(`[SiteMenu.StackManager] ${selector}`);
 
 		this.element = jQuery(selector);
 		this.conf = StackManagerConfig.FromObject(conf);
@@ -179,9 +179,7 @@ class StackManager {
 		.bind('click', this.onSiteMenuUnfold.bind(this));
 
 		let closers = this.element.find(`[data-${this.conf.datakey}-close]`);
-
 		closers.bind('click', this.onSiteMenuClose.bind(this));
-		console.log(`found ${closers.length} ${this.conf.datakey} closers`);
 
 		////////
 
