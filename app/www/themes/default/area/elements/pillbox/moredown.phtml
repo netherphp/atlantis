@@ -16,6 +16,7 @@ use Nether\Surface;
 // because the front end is going to have code to magically move them with
 // responsive and i want that code to be simple (the .atl-ui-pillbox-item).
 
+if($Element->Max <= 0)
 $Surface->AddScriptReadyFrag('elements/pillbox/moredown-ready');
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +26,7 @@ $ItemsToShow = NULL;
 $ItemsToMore = NULL;
 $MainMoreClassCSS = '';
 
-if(!$Element->MaxAuto && $Element->Max > 0) {
+if($Element->Max > 0) {
 	$ItemsToShow = $Element->Items->Slice(0, $Element->Max);
 	$ItemsToMore = $Element->Items->Slice($Element->Max, NULL);
 }
@@ -33,7 +34,7 @@ if(!$Element->MaxAuto && $Element->Max > 0) {
 else {
 	$ItemsToShow = $Element->Items;
 	$ItemsToMore = new Common\Datastore;
-	$MainMoreClassCSS = 'o-0';
+	$MainMoreClassCSS = 'atl-ui-pillbox-moredown-auto o-0';
 }
 
 ////////////////////////////////////////////////////////////////////////////////

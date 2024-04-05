@@ -15,20 +15,17 @@ extends Surface\Element {
 
 	////////
 
-	public ?string
-	$Section = NULL;
-
 	#[Common\Meta\PropertyFactory('FromArray')]
 	public array|Common\Datastore
 	$Items = [];
 
-	#[Common\Meta\Info('used by moredown')]
+	#[Common\Meta\Info('moredown: if greater than zero forces n+menu. -1 = autofit.')]
 	public int
-	$Max = 3;
+	$Max = -1;
 
-	#[Common\Meta\Info('used by moredown')]
-	public bool
-	$MaxAuto = FALSE;
+	#[Common\Meta\Info('set to the uuid of one of the items to turn it on.')]
+	public ?string
+	$Section = NULL;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
