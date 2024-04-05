@@ -3,6 +3,7 @@
 namespace Nether\Atlantis\Profile;
 
 use Nether\Atlantis;
+use Nether\Blog;
 use Nether\Common;
 use Nether\Database;
 
@@ -813,6 +814,31 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return $Result;
 	}
 
+	public function
+	FetchNews():
+	Common\Datastore {
+
+		$Index = Atlantis\Struct\EntityRelationship::Find([
+			'EntityUUID' => $this->UUID,
+			'EntityType' => Blog\Post::EntType,
+			'Remappers'  => (
+				fn(Atlantis\Struct\EntityRelationship $ERI)
+				=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne($ERI, $this->UUID)
+			)
+		]);
+
+		if(!$Index->Count())
+		$Index->Push('null-null-null');
+
+		$Result = Blog\Post::Find([
+			'UUID'    => $Index->GetData(),
+			'Sort'    => 'newest',
+			'Limit'   => 0
+		]);
+
+		return $Result;
+	}
+
 	#[Common\Meta\Date('2023-07-28')]
 	public function
 	FetchPhotos():
@@ -896,8 +922,8 @@ implements Atlantis\Packages\ExtraDataInterface {
 	Common\Datastore {
 
 		$Results = Atlantis\Struct\EntityRelationship::Find([
-			'EntityUUID' => $this->UUID,
-			'Remappers'  => fn($T)=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne($T, $this->UUID)
+			'EntityUUID'  => $this->UUID,
+			'Remappers'   => fn($T)=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne($T, $this->UUID)
 		]);
 
 		return Common\Datastore::FromArray($Results->GetData());

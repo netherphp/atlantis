@@ -37,7 +37,7 @@ extends Atlantis\PublicWeb {
 		$Videos = $Profile->FetchVideos();
 		$Links = $Profile->FetchRelatedLinks();
 		$Related = $Profile->FetchRelatedProfiles();
-		$News = NULL;
+		$News = $Profile->FetchNews();
 
 		$SectionsBefore = static::ProfileViewExtraSectionsBefore(
 			$this->App, $Profile
