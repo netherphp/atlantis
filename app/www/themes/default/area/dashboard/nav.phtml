@@ -13,6 +13,8 @@ $Trail ??= $Surface->Get('Trail') ?? [];
 $Key = NULL;
 $Val = NULL;
 
+$DashRoot ??= '/dashboard';
+
 ?>
 
 <div class="mb-4">
@@ -23,7 +25,7 @@ $Val = NULL;
 			</div>
 			<div class="col-auto">
 				<i class="d-none mdi mdi-fw mdi-chevron-right"></i>
-				<a href="/dashboard">Dashboard</a>
+				<a href="<?php $Util->Print($DashRoot) ?>">Dashboard</a>
 			</div>
 			<?php foreach($Trail as $Key => $Val): ?>
 			<?php if($Val): ?>
