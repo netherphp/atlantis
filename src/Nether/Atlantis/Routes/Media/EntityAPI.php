@@ -318,7 +318,7 @@ extends Atlantis\Routes\UploadAPI {
 	}
 
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'TAGSPATCH')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	EntityTagsSet():
 	void {
@@ -326,6 +326,7 @@ extends Atlantis\Routes\UploadAPI {
 		($this->Data)
 		->EntityType(Common\Filters\Text::Trimmed(...))
 		->EntityUUID(Common\Filters\Text::Trimmed(...))
+		->OnlyAdd(Common\Filters\Numbers::BoolType(...))
 		->TagID(
 			Common\Filters\Lists::ArrayOfNullable(...),
 			Common\Filters\Numbers::IntType(...)
@@ -377,10 +378,6 @@ extends Atlantis\Routes\UploadAPI {
 
 		$Existing = (
 			$Links
-			//->Distill(
-			//	fn(Atlantis\Tag\EntityLink $Link)
-			//	=> $Link->Tag->Type !== 'site'
-			//)
 			->Remap(
 				fn(Atlantis\Tag\EntityLink $Link)
 				=> $Link->TagID
@@ -413,13 +410,12 @@ extends Atlantis\Routes\UploadAPI {
 
 		////////
 
-		//var_dump($EInfo->LinkClass);
-
 		$Add->Each(
 			fn(int $TagID)
 			=> ($EInfo->LinkClass)::Insert([ 'TagID'=> $TagID, 'EntityUUID'=> $Entity->UUID ])
 		);
 
+		if(!$this->Data->OnlyAdd)
 		$Remove->Each(
 			fn(int $TagID)
 			=> ($EInfo->LinkClass)::DeleteByPair($TagID, $Entity->UUID)
@@ -441,7 +437,7 @@ extends Atlantis\Routes\UploadAPI {
 	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'REGEN')]
-	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	EntityRegen():
 	void {

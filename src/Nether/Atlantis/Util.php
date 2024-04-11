@@ -492,4 +492,15 @@ class Util {
 		return $Output;
 	}
 
+	static public function
+	FetchStatesFromJSON(Atlantis\Engine $App):
+	Common\Datastore {
+
+		$Output = Common\Datastore::FromFile($App->FromProjectRoot(
+			'www/share/atlantis/data/us-states.json'
+		));
+
+		return $Output;
+	}
+
 }

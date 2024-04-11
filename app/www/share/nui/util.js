@@ -69,6 +69,32 @@ class Util {
 		return;
 	};
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static ElementValueOrNull(el) {
+	/*//
+	@date 2024-04-11
+	given an element selector return the value of it or null.
+	//*/
+
+		return Util.ValueOrNull(jQuery(el).val());
+	};
+
+	static ValueOrNull(v) {
+	/*//
+	@date 2024-04-11
+	given a value return it if it means anything else return null;
+	//*/
+
+		let val = jQuery.trim(v);
+
+		if(val)
+		return val;
+
+		return null;
+	};
+
 };
 
 export default Util;

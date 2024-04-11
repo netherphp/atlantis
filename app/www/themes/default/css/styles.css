@@ -1,6 +1,6 @@
 /*//
-@date 2024-04-04 00:59:46 UTC
-@files 33 [
+@date 2024-04-11 21:10:12 UTC
+@files 34 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -24,6 +24,7 @@
     "src\/elements\/blog.css",
     "src\/elements\/collapser.css",
     "src\/elements\/editor-html.css",
+    "src\/elements\/field-tag-search.css",
     "src\/elements\/gallery.css",
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
@@ -1956,6 +1957,26 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	border-radius: 6px;
 	padding: 16px;
 	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/field-tag-search.css ///////////////////////////////////////*/
+
+.atl-field-tag-search-results {
+
+}
+
+.atl-field-tag-search-results > div.position-absolute {
+	background: #fffc;
+	border: 1px solid #0004;
+	backdrop-filter: blur(6px);
+	border-radius: 4px;
+	padding: 0.5rem;
+	bottom: 0.5rem;
+}
+
+.atl-field-tag-search-selected {
+
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

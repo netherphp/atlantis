@@ -200,8 +200,13 @@ class FormUtil {
 
 		let output = [];
 
-		for(const key of Object.keys(input))
-		output.push(`${key}=${encodeURIComponent(input[key])}`);
+		for(const key of Object.keys(input)) {
+			if(input[key] === null)
+			output.push(`${key}=`);
+			else
+			output.push(`${key}=${encodeURIComponent(input[key])}`);
+		}
+
 
 		return output.join('&');
 

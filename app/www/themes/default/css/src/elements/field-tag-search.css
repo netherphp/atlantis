@@ -1,0 +1,16 @@
+.atl-field-tag-search-results {
+
+}
+
+.atl-field-tag-search-results > div.position-absolute {
+	background: #fffc;
+	border: 1px solid #0004;
+	backdrop-filter: blur(6px);
+	border-radius: 4px;
+	padding: 0.5rem;
+	bottom: 0.5rem;
+}
+
+.atl-field-tag-search-selected {
+
+}

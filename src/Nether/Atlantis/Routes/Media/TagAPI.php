@@ -30,10 +30,11 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
-		->Query(Common\Filters\Text::Trimmed(...));
+		->Query(Common\Filters\Text::Trimmed(...))
+		->Type(Common\Filters\Text::TrimmedNullable(...));
 
 		$Result = Atlantis\Tag\Entity::Find([
-			//'Type'     => 'tag',
+			'Type'     => $this->Data->Type,
 			'NameLike' => $this->Data->Query,
 			'Sort'     => 'tag-name-az',
 			'Limit'    => 20
@@ -55,7 +56,8 @@ extends Atlantis\Routes\UploadAPI {
 
 		$this->SetPayload([
 			'Query' => $this->Data->Query,
-			'Tags'  => $Tags
+			'Tags'  => $Tags,
+			'Total' => $Result->Total
 		]);
 
 		return;
