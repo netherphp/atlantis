@@ -350,6 +350,9 @@ required data in.
 	void {
 
 		switch($Input['Sort']) {
+			case 'newest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+			break;
 			case 'tag-name-az':
 				$SQL->Sort('T1.Name', $SQL::SortAsc);
 			break;

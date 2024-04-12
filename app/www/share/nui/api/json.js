@@ -1,4 +1,4 @@
-import FormUtil from '/share/nui/util/form.js?v=20240411a';
+import FormUtil from '/share/nui/util/form.js';
 
 class JsonResult {
 
