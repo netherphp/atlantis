@@ -1,5 +1,5 @@
 /*//
-@date 2024-04-11 21:10:12 UTC
+@date 2024-04-12 01:17:01 UTC
 @files 34 [
     "src\/imports.css",
     "src\/main.css",
@@ -1970,6 +1970,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	background: #fffc;
 	border: 1px solid #0004;
 	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
 	border-radius: 4px;
 	padding: 0.5rem;
 	bottom: 0.5rem;
