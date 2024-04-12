@@ -550,6 +550,14 @@ grouped are to be considered depreciated. */
 	display: none;
 }
 
+.hr-dark {
+	/* todo */
+}
+
+.hr-phatline {
+	--bs-border-width: 2px;
+}
+
 /*******************************************************************************
 **** offcanvas tweaks *********************************************************/
 
