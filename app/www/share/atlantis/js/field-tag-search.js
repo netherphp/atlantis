@@ -1,5 +1,5 @@
-import API from '/share/nui/api/json.js';
-import Util from '/share/nui/util.js';
+import API from '/share/nui/api/json.js?v=20240411a';
+import Util from '/share/nui/util.js?v=20240411a';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,6 +217,9 @@ class FieldTagSearch {
 		// selected.
 
 		btn.toggleClass('btn-primary btn-outline-primary');
+
+		this.element.val('');
+		(self.searchBin.find('.mdi-close').parent()).trigger('click');
 
 		return;
 	};
