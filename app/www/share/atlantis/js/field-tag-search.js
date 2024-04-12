@@ -39,7 +39,7 @@ class FieldTagSearch {
 
 		this.searchVerb = 'SEARCH';
 		this.searchURL = '/api/tag/entity';
-		this.searchDelayMS = 300;
+		this.searchDelayMS = 250;
 
 		////////
 
