@@ -174,7 +174,7 @@ class FieldTagSearch {
 
 			////////
 
-			if(result.payload.Tags.length === 0) {
+			if(self.searchBin.find(`button[data-tag-match="${result.payload.Query.toLowerCase()}"]`).length === 0) {
 				let row = self.prepareSearchNew(result);
 				self.addToSearchBin(row);
 			}
@@ -287,6 +287,7 @@ class FieldTagSearch {
 
 		row.find('button')
 		.attr('data-tag-id', tag.ID)
+		.attr('data-tag-match', tag.Name.toLowerCase())
 		.text(tag.Name)
 		.on('click', function() {
 			self.onSearchItemSelect(jQuery(this));
