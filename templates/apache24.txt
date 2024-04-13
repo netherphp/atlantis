@@ -18,6 +18,7 @@
 		ServerName $SSLDomain
 		ServerAlias $Domain *.$Domain
 		DocumentRoot $WebRoot
+		FileETag INode MTime Size
 
 		<Directory $WebRoot>
 			RewriteEngine On
@@ -35,6 +36,7 @@
 		ServerName $Domain
 		ServerAlias $Domain *.$Domain
 		DocumentRoot $WebRoot
+		FileETag INode MTime Size
 
 		<Directory $WebRoot>
 			RewriteEngine On
@@ -53,6 +55,7 @@
 		ServerName $Domain
 		ServerAlias $Domain *.$Domain
 		DocumentRoot $WebRoot
+		FileETag INode MTime Size
 
 		SSLEngine             on
 		SSLProtocol           all -SSLv2 -SSLv3
@@ -72,6 +75,16 @@
 			RewriteCond %{REQUEST_FILENAME} !-f
 			RewriteRule ^(.*)$ /index.php [QSA,L]
 		</Directory>
+
+		<FilesMatch "\.es6\.(js)$">
+			<IfModule mod_headers.c>
+				Header unset ETag
+				Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+				Header set Pragma "no-cache"
+				Header set Expires -1
+			</IfModule>
+		</FilesMatch>
+
 	</VirtualHost>
 </Macro>
 
