@@ -332,7 +332,7 @@ extends Atlantis\Routes\UploadAPI {
 			Common\Filters\Numbers::IntType(...)
 		)
 		->TagName(
-			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Lists::CommaOfNullable(...),
 			Common\Filters\Text::Trimmed(...)
 		);
 
