@@ -313,4 +313,20 @@ implements
 		};
 	}
 
+	static public function
+	KeepThoseTyped(Entity $Tag, ?string $Type='tag'):
+	bool {
+
+		var_dump($Type);
+
+		return $Tag->Type === $Type;
+	}
+
+	static public function
+	KeepThoseTypedSite(Entity $Tag):
+	bool {
+
+		return static::KeepThoseTyped($Tag, 'site');
+	}
+
 }

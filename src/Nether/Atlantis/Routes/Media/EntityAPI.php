@@ -328,7 +328,7 @@ extends Atlantis\Routes\UploadAPI {
 		->EntityUUID(Common\Filters\Text::Trimmed(...))
 		->OnlyAdd(Common\Filters\Numbers::BoolType(...))
 		->TagID(
-			Common\Filters\Lists::ArrayOfNullable(...),
+			Common\Filters\Lists::CommaOfNullable(...),
 			Common\Filters\Numbers::IntType(...)
 		)
 		->TagName(

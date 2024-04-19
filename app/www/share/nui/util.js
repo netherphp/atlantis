@@ -81,6 +81,11 @@ class Util {
 		return Util.ValueOrNull(jQuery(el).val());
 	};
 
+	static EVON(el) {
+
+		return Util.ElementValueOrNull(el);
+	};
+
 	static ValueOrNull(v) {
 	/*//
 	@date 2024-04-11
@@ -89,10 +94,15 @@ class Util {
 
 		let val = jQuery.trim(v);
 
-		if(val)
+		if(val.length !== 0)
 		return val;
 
 		return null;
+	};
+
+	static VON(v) {
+
+		return Util.ValueOrNull(v);
 	};
 
 };
