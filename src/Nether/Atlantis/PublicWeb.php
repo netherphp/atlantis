@@ -34,7 +34,7 @@ as html pages. //*/
 	protected bool
 	$IsDone = FALSE;
 
-	protected Atlantis\Engine
+	public Atlantis\Engine
 	$App;
 
 	protected Surface\Engine
@@ -439,6 +439,42 @@ as html pages. //*/
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	SetApp(Atlantis\Engine $App):
+	static {
+
+		$this->App = $App;
+
+		return $this;
+	}
+
+	public function
+	SetQuery(Datafilter $In):
+	static {
+
+		$this->Query = $In;
+
+		return $this;
+	}
+
+	public function
+	SetData(Datafilter $In):
+	static {
+
+		$this->Data = $In;
+
+		return $this;
+	}
+
+	public function
+	SetDone(bool $State=TRUE):
+	static {
+
+		$this->IsDone = $State;
+
+		return $this;
+	}
 
 	public function
 	SetHeader(string $Name, mixed $Value):
