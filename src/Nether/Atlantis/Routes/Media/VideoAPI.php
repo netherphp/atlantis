@@ -112,10 +112,10 @@ extends Atlantis\ProtectedAPI {
 		);
 
 		if(!$URL)
-		$this->Quit(1, 'no URL specified');
+		$this->Quit(1, 'MissingURL');
 
 		if(!$Title)
-		$this->Quit(2, 'no Title specified');
+		$this->Quit(2, 'MissingTitle');
 
 		////////
 

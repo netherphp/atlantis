@@ -74,6 +74,7 @@ $RenderItem = function(Atlantis\Struct\Item $Item) use($Element): string {
 		</div>
 		<?php endforeach; ?>
 
+		<?php if($ItemsToMore->Count() > 0 || $Element->Max < 0): ?>
 		<div class="col-auto atl-ui-pillbox-moredown-overflow">
 			<div class="dropdown atl-ui-pillbox-moredown-dropdown">
 				<div class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -88,6 +89,7 @@ $RenderItem = function(Atlantis\Struct\Item $Item) use($Element): string {
 				</div>
 			</div>
 		</div>
+		<?php endif; ?>
 
 	</div>
 </div>
