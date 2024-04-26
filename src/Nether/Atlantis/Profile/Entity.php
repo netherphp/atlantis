@@ -56,14 +56,14 @@ implements Atlantis\Packages\ExtraDataInterface {
 	#[Database\Meta\TypeVarChar(Size: 100)]
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	public string
 	$Alias;
 
 	#[Database\Meta\TypeVarChar(Size: 100)]
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	public string
 	$Title;
 
@@ -105,7 +105,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
-	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	public string
 	$Details;
 
@@ -354,8 +354,10 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		$Input['SearchLocation'] ??= FALSE;
 
+		$Input->Define('Enabled', 1);
+
 		$Input['ProfileID'] ??= NULL;
-		$Input['Enabled'] ??= 1;
+
 		$Input['Alias'] ??= NULL;
 
 		$Input['AddressState'] ??= NULL;
@@ -729,20 +731,24 @@ implements Atlantis\Packages\ExtraDataInterface {
 			case 'name-az':
 			case 'title-az':
 				$SQL->Sort('Main.Title', $SQL::SortAsc);
-			break;
+				break;
 
 			case 'name-za':
 			case 'title-za':
 				$SQL->Sort('Main.Title', $SQL::SortDesc);
-			break;
+				break;
 
 			case 'state-az':
 				$SQL->Sort('Main.AddressState', $SQL::SortAsc);
-			break;
+				break;
 
 			case 'state-za':
 				$SQL->Sort('Main.AddressState', $SQL::SortDesc);
-			break;
+				break;
+
+			case 'newest':
+				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
+				break;
 		}
 
 		//file_put_contents('/opt/ss-dev/temp/ok.txt', (string)$SQL . PHP_EOL . json_encode($Input));

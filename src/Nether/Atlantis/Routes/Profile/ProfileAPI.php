@@ -40,6 +40,15 @@ extends Atlantis\ProtectedAPI {
 	EntityPost():
 	void {
 
+		($this->Data)
+		->AdminNotes(Common\Filters\Text::TrimmedNullable(...))
+		->ProfilePhoto(
+			fn(Common\Struct\DatafilterItem $In)=>
+			isset($_FILES['ProfilePhoto']) ? $_FILES['ProfilePhoto'] : NULL
+		);
+
+		////////
+
 		$Dataset = Atlantis\Profile\Entity::DatasetFromInput($this->Data);
 		$Ent = NULL;
 		$Tag = NULL;
@@ -72,6 +81,22 @@ extends Atlantis\ProtectedAPI {
 					$Ent->UUID
 				);
 			}
+
+			if($this->Data->ProfilePhoto) {
+				$Importer = Atlantis\Util\FileUploadImporter::FromUploadItem(
+					$this->App,
+					$this->Data->ProfilePhoto
+				);
+
+				$Image = $Importer->GetFileObject();
+
+				$Ent->Update([ 'CoverImageID'=> $Image->ID ]);
+			}
+
+			if($this->Data->AdminNotes)
+			$Ent->Update($Ent->Patch([
+				'ExtraData' => [ 'AdminNotes'=> $this->Data->AdminNotes ]
+			]));
 		}
 
 		catch(Exception $Err) {

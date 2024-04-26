@@ -44,7 +44,7 @@ $Scopeify = (
 <div class="<?php $Util->Print($Embed ? '' : 'container') ?> pt-0 pb-0">
 
 	<?php if(!$Profile->Enabled): ?>
-	<div class="alert alert-primary text-align-center">This profile is currently disabled.</div>
+	<div class="alert alert-primary text-align-center mb-4">This profile is currently disabled.</div>
 	<?php endif; ?>
 
 	<?php if(!$Embed): ?>
@@ -76,6 +76,15 @@ $Scopeify = (
 		<?php else: ?>
 		<div class="fst-italic">No additional information has been added.</div>
 		<?php endif; ?>
+	</div>
+	<?php endif; ?>
+
+	<?php if($Route->IsUserAdmin() && $Profile->HasExtraData('AdminNotes')): ?>
+	<div class="jumbotron rounded p-2 mb-4">
+		<div class="fw-bold">Admin Notes</div>
+		<div>
+			<?php $Util->Print($Profile->ExtraData['AdminNotes']) ?>
+		</div>
 	</div>
 	<?php endif; ?>
 

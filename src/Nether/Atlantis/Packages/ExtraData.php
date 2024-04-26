@@ -18,4 +18,11 @@ trait ExtraData {
 	public ?Common\Protostore
 	$ExtraData;
 
+	public function
+	HasExtraData(string $Key):
+	bool {
+
+		return $this->ExtraData->HasKey($Key);
+	}
+
 };
