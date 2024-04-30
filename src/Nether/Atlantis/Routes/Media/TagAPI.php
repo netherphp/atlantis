@@ -31,10 +31,12 @@ extends Atlantis\Routes\UploadAPI {
 
 		($this->Data)
 		->Query(Common\Filters\Text::Trimmed(...))
-		->Type(Common\Filters\Text::TrimmedNullable(...));
+		->Type(Common\Filters\Text::TrimmedNullable(...))
+		->ParentID(Common\Filters\Numbers::IntNullable(...));
 
 		$Result = Atlantis\Tag\Entity::Find([
 			'Type'     => $this->Data->Type,
+			'ParentID' => $this->Data->ParentID,
 			'NameLike' => $this->Data->Query,
 			'Sort'     => 'tag-name-az',
 			'Limit'    => 20

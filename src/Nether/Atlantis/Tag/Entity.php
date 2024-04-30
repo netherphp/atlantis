@@ -105,10 +105,11 @@ implements
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['Alias'] ??= NULL;
-		$Input['Type'] ??= [ 'tag', 'site' ];
-
-		$Input['NameLike'] ??= NULL;
+		($Input)
+		->Define('Alias', NULL)
+		->Define('Type', [ 'tag', 'site' ])
+		->Define('NameLike', NULL)
+		->Define('ParentID', NULL);
 
 		return;
 	}
@@ -126,7 +127,6 @@ implements
 			$SQL->Where('Main.Type=:Type');
 		}
 
-
 		if($Input['Alias'] !== NULL) {
 			if(is_array($Input['Alias'])) {
 				if(!count($Input['Alias']))
@@ -143,6 +143,34 @@ implements
 			$SQL->Where('Main.Name LIKE :NameLikeLike');
 			$Input['NameLikeLike'] = "%%{$Input['NameLike']}%%";
 		}
+
+		static::FindExtendFilters_ParentID($SQL, $Input);
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_ParentID(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(!$Input['ParentID'])
+		return;
+
+		////////
+
+		$Parent = Atlantis\Tag\Entity::GetByID($Input['ParentID']);
+
+		if(!$Parent)
+		return;
+
+		////////
+
+		$Table = Atlantis\Tag\EntityLink::GetTableInfo();
+		$Input[':ParentUUID'] = $Parent->UUID;
+
+		$SQL
+		->Join("{$Table->Name} TPL ON (Main.ID=TPL.TagID)")
+		->Where('TPL.EntityUUID=:ParentUUID');
 
 		return;
 	}
@@ -233,6 +261,13 @@ implements
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Common\Prototype /////////////////////////////////
+
+	static public function
+	GetByAlias(string $Alias):
+	?static {
+
+		return static::GetByField('Alias', $Alias);
+	}
 
 	static public function
 	New(string $Type=NULL, string $Name=NULL, string $Alias=NULL):

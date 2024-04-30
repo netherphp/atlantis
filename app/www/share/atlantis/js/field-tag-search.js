@@ -48,6 +48,7 @@ class FieldTagSearch {
 
 		// elements.
 		this.element = el;
+		this.elSubtagParent = null;
 		this.searchBin = null;
 		this.selectBin = null;
 
@@ -63,6 +64,18 @@ class FieldTagSearch {
 	};
 
 	initDocObjects() {
+
+		this.elSubtagParent = jQuery(
+			this.element.attr('data-subtag-parent')
+		);
+
+		if(this.elSubtagParent.length === 0)
+		this.elSubtagParent = null;
+
+		else
+		this.elSubtagParent.on('change', this.onSearchCommit.bind(this));
+
+		////////
 
 		this.selectBin = jQuery(TemplateSelectBin);
 		this.selectBin.addClass('d-none');
@@ -157,6 +170,9 @@ class FieldTagSearch {
 		let self = this;
 		let api = new API.Request(this.searchVerb, this.searchURL);
 		let data = { 'Query': this.getSearchQuery(), 'Type': 'tag' };
+
+		if(this.elSubtagParent !== null)
+		data.ParentID = parseInt(this.elSubtagParent.val() || 0);
 
 		(api.send(data))
 		.then(function(result) {
