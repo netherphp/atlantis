@@ -245,7 +245,7 @@ implements Packages\DescribeForPublicInterface {
 		if(!isset($this->TagLinks))
 		$this->TagLinks = $this->FetchTagLinks();
 
-		return $this->TagLinks;
+		return $this->TagLinks->Copy();
 	}
 
 	#[Common\Meta\Date('2023-03-07')]

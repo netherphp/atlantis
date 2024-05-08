@@ -50,12 +50,25 @@ $RenderItem = function(Atlantis\Struct\Item $Item) use($Element): string {
 	$DataAttr = $Item->GetDataAttrAsHTML();
 	$URL = $Item->GetURL();
 	$Title = $Item->GetTitle();
+	$Icon = $Item->GetIcon();
 
-	$Item = <<< LULZDOC
-	<div class="{$Classes}" {$DataAttr}>
-		<a href="{$URL}" class="">{$Title}</a>
-	</div>
-	LULZDOC;
+	if($Icon) {
+		$Item = <<< LULZDOC
+		<div class="{$Classes}" {$DataAttr}>
+			<a href="{$URL}" class="">
+				<i class="{$Icon}"></i> {$Title}
+			</a>
+		</div>
+		LULZDOC;
+	}
+
+	else {
+		$Item = <<< LULZDOC
+		<div class="{$Classes}" {$DataAttr}>
+			<a href="{$URL}" class="">{$Title}</a>
+		</div>
+		LULZDOC;
+	}
 
 	return $Item;
 };

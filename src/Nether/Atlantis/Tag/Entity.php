@@ -28,6 +28,13 @@ implements
 	public string
 	$Type;
 
+	#[Database\Meta\TypeChar(Size: 8, Default: 'normal', Nullable: FALSE)]
+	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
+	public string
+	$Subtype;
+
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
 	public int
 	$TimeCreated = 0;

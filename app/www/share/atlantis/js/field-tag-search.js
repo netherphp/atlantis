@@ -69,6 +69,9 @@ class FieldTagSearch {
 			this.element.attr('data-subtag-parent')
 		);
 
+		console.log(this.element.attr('data-subtag-parent'));
+		console.log(this.elSubtagParent);
+
 		if(this.elSubtagParent.length === 0)
 		this.elSubtagParent = null;
 
@@ -417,6 +420,25 @@ class FieldTagSearch {
 		.each(function(){ FieldTagSearch.New(this); });
 
 		return;
+	};
+
+	static FieldHTML() {
+
+		let out = `
+			<input type="text" class="form-control atl-field-tag-search" placeholder="Tag Search..." />
+		`;
+
+		return out;
+	};
+
+	static TopicSelectorHTML(topics) {
+
+		let out = '';
+
+		out += '<select class="form-select">';
+		out += '</select>';
+
+		return out;
 	};
 
 };
