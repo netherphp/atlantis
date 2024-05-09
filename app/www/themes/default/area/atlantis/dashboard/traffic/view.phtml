@@ -43,6 +43,13 @@ $GetDateFor = function(string $When) {
 //Common\Dump::Var($Next->Get(Common\Values::DateFormatYMDT12VO), TRUE);
 //Common\Dump::Var($Timeline, TRUE);
 
+$Domains = Common\Datastore::FromArray($App->Config['Network.Domains']);
+$Domains->Remap(function(string $D) use($Route) {
+	return Atlantis\Struct\Item::New(UUID: $D, Title: $D, URL: $Route->QueryCooker([ 'domain'=> $D ]));
+});
+
+$Domains->HeadPush(Atlantis\Struct\Item::New(UUID: 'all', Title: 'All Sites', URL: $Route->QueryCooker([ 'domain'=>NULL ])));
+
 ?>
 
 <!-- TRAFFIC HEADING -->
@@ -166,6 +173,23 @@ $GetDateFor = function(string $When) {
 	</div>
 </div>
 
+<div class="mb-4">
+
+	<select id="DomainSelect" class="form-select">
+		<?php foreach($Domains as $D): /** @var Atlantis\Struct\Item $D */ ?>
+		<option value="<?php $Util->Print($D->GetURL()) ?>" <?php $Util->Print($Util->GetSelectedHTML($D->GetUUID() === $Route->Data->Domain)) ?>><?php $Util->Print($D->GetTitle()) ?></option>
+		<?php endforeach; ?>
+	</select>
+	<script type="module">
+	jQuery(function() {
+		jQuery('#DomainSelect')
+		.on('change', function(){ location.href = jQuery(this).find(':selected').val(); })
+		return;
+	});
+	</script>
+
+</div>
+
 <!-- TRAFFIC DATA -->
 <table class="table table-striped">
 	<thead>
@@ -182,7 +206,7 @@ $GetDateFor = function(string $When) {
 		<?php foreach($Rows as $Row): /** @var Atlantis\Struct\TrafficRow $Row */ ?>
 		<tr>
 			<td>
-				<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->Path) ?></a>
+				<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->Domain) ?><?php $Util->Print($Row->Path) ?></a>
 			</td>
 			<td class="text-align-center">
 				<?php $Util->Print($Row->GetGroupCount()) ?>

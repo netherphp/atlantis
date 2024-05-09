@@ -16,14 +16,17 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->Data)
+		->Domain(Common\Filters\Text::TrimmedNullable(...))
 		->When(Common\Filters\Text::Trimmed(...))
 		->Path([
 			Common\Filters\Text::PathableKey(...),
 			Common\Filters\Text::StringNullable(...)
 		]);
 
+		// $this->App->Config[Atlantis\Key::ConfProjectDomain]
+
 		$Filters = [
-			'Domain'    => $this->App->Config[Atlantis\Key::ConfProjectDomain],
+			'Domain'    => $this->Data->Domain,
 			'Since'     => NULL,
 			'Before'    => NULL,
 			'PathStart' => $this->Data->Path,
