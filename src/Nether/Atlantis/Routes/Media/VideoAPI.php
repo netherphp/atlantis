@@ -348,6 +348,37 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/media/video-tp', Verb: 'UNLINK')]
+	#[Atlantis\Meta\RouteHandler('/api/video-tp/entity', Verb: 'UNLINK')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	VideoThirdPartyUnlink():
+	void {
+
+		($this->Data)
+		->ID(Common\Filters\Numbers::IntType(...))
+		->ParentUUID(Common\Filters\Text::TrimmedNullable(...));
+
+		////////
+
+		$Video = Atlantis\Media\VideoThirdParty::GetByID($this->Data->ID);
+
+		if(!$Video)
+		return;
+
+		////////
+
+		if($this->Data->ParentUUID) {
+			Atlantis\Struct\EntityRelationship::DeleteByPair(
+				$this->Data->ParentUUID,
+				$Video->UUID
+			);
+		}
+
+		return;
+	}
+
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

@@ -168,7 +168,7 @@ $Scopeify = (
 		<h2 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Total) ?>)</h2>
 		<hr class="mt-1 mb-3" />
 
-		<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos ]) ?>
+		<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos, 'ParentUUID'=> $Profile->UUID ]) ?>
 	</div>
 	<?php endif; ?>
 

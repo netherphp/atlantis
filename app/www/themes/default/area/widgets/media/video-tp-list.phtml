@@ -17,6 +17,8 @@ use Nether\User;
  * @var Database\ResultSet $Videos
  */
 
+$ParentUUID ??= NULL;
+
 ?>
 
 <div class="hr-hide-last">
@@ -28,7 +30,7 @@ use Nether\User;
 				<div class="position-absolute position-bottom position-right p-1">
 					<?php if($Route->IsUserAdmin()): ?>
 					<button class="btn btn-light" data-videotp-cmd="edit" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-pencil mr-0"></i></button>
-					<button class="btn btn-danger" data-videotp-cmd="delete" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-trash-can mr-0"></i></button>
+					<button class="btn btn-danger" data-videotp-cmd="delete" data-parent-uuid="<?php $Util->Print($ParentUUID) ?>" <?php echo $Video->GetDataAttrForHTML() ?>><i class="mdi mdi-trash-can mr-0"></i></button>
 					<?php endif; ?>
 				</div>
 			</div>

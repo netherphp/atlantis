@@ -128,7 +128,7 @@ class Video {
 		return false;
 	};
 
-	onDelete(ev, pUUID=null) {
+	onDeleteReal(ev, pUUID=null) {
 
 		let self = this;
 		let diag = null;
@@ -147,6 +147,49 @@ class Video {
 
 				let data = { ID: self.id };
 				let api = new API.Request('DELETE', self.endpoint, data);
+
+				if(pUUID !== null)
+				data['ParentUUID'] = pUUID;
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', this.endpoint,
+			{ ID: this.id },
+			true,
+			function(d, result) {
+				d.body.find('[data-field=Title]').text(result.payload.Title);
+				return;
+			}
+		);
+
+		return;
+	};
+
+	onDelete(ev, pUUID=null) {
+
+		let self = this;
+		let diag = null;
+
+		////////
+
+		diag = new DialogUtil.Window({
+			title: 'Confirm Video Remove',
+			labelAccept: 'Yes',
+			body: (''
+				+ '<div class="mb-2">Are you sure you want to remove this video from this profile?</div>'
+				+ `<div class="fst-italic mb-2"><q data-field="Title">${self.id}</q></div>`
+			),
+			onAccept: function() {
+
+				let data = { ID: self.id };
+				let api = new API.Request('UNLINK', self.endpoint, data);
 
 				if(pUUID !== null)
 				data['ParentUUID'] = pUUID;
@@ -252,10 +295,24 @@ class Video {
 			let that = jQuery(this);
 			let eID = that.attr('data-id') ?? null;
 			let eUUID = that.attr('data-uuid') ?? null;
-			let pUUID = that.attr('data-delete-from') ?? null;
+			let pUUID = that.attr('data-parent-uuid') ?? that.attr('data-delete-from') ?? null;
 
 			if(eID)
 			Video.WhenOnDelete(eID, eUUID, pUUID);
+
+			return false;
+		});
+
+		jQuery('[data-videotp-cmd=deletereal]')
+		.on('click', function(ev) {
+
+			let that = jQuery(this);
+			let eID = that.attr('data-id') ?? null;
+			let eUUID = that.attr('data-uuid') ?? null;
+			let pUUID = that.attr('data-parent-uuid') ?? that.attr('data-delete-from') ?? null;
+
+			if(eID)
+			Video.WhenOnDeleteReal(eID, eUUID, pUUID);
 
 			return false;
 		});
