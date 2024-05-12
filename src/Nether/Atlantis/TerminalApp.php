@@ -19,7 +19,10 @@ extends Console\Client {
 		// code is going to ask for classes that will be served from the
 		// local autoloader.
 
-		$ProjectRoot = $this->GetOption('atlantis');
+		$ProjectRoot = (NULL
+			?? $this->GetOption('Atlantis')
+			?? $this->GetOption('AppRoot')
+		);
 
 		////////
 
