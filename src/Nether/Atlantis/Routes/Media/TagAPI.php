@@ -34,8 +34,13 @@ extends Atlantis\Routes\UploadAPI {
 		->Type(Common\Filters\Text::TrimmedNullable(...))
 		->ParentID(Common\Filters\Numbers::IntNullable(...));
 
+		$TagTypes = [ 'site', 'tag' ];
+
+		if($this->User->IsAdmin())
+		$TagTypes[] = 'admin';
+
 		$Result = Atlantis\Tag\Entity::Find([
-			'Type'     => $this->Data->Type,
+			'Type'     => $this->Data->Type ?? $TagTypes,
 			'ParentID' => $this->Data->ParentID,
 			'NameLike' => $this->Data->Query,
 			'Sort'     => 'tag-name-az',
