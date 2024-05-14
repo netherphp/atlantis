@@ -135,7 +135,10 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		$Tag = $this->FetchTagbyField();
-		$Tag->Drop();
+
+		if($Tag) {
+			$Tag->Drop();
+		}
 
 		return;
 	}
