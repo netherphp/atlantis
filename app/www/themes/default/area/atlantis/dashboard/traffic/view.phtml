@@ -206,7 +206,7 @@ $Domains->HeadPush(Atlantis\Struct\Item::New(UUID: 'all', Title: 'All Sites', UR
 		<?php foreach($Rows as $Row): /** @var Atlantis\Struct\TrafficRow $Row */ ?>
 		<tr>
 			<td>
-				<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->Domain) ?><?php $Util->Print($Row->Path) ?></a>
+				<a href="<?php $Util->Print($Row->URL) ?>"><?php $Util->Print($Row->URL) ?></a>
 			</td>
 			<td class="text-align-center">
 				<?php $Util->Print($Row->GetGroupCount()) ?>
