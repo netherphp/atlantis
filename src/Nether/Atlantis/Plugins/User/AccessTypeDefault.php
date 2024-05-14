@@ -28,6 +28,10 @@ implements AccessTypeDefineInterface {
 			new AccessTypeDef(
 				Atlantis\Key::AccessPageManage, 1,
 				'Allow the user to manage Pages on the site.'
+			),
+			new AccessTypeDef(
+				Atlantis\Key::AccessTagAdmin, 1,
+				'Allow the user to use site administration tags.'
 			)
 		];
 

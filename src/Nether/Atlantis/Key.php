@@ -85,7 +85,8 @@ class Key {
 	const
 	AccessContactLogManage = 'Nether.Atlantis.ContactLog.Manage',
 	AccessPageManage       = 'Nether.Atlantis.Page.Manage',
-	AccessDeveloper        = 'Nether.Atlantis.Developer';
+	AccessDeveloper        = 'Nether.Atlantis.Developer',
+	AccessTagAdmin         = 'Nether.Atlantis.Tags.Admin';
 
 	const
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',

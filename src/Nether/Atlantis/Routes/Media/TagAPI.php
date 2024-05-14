@@ -31,39 +31,41 @@ extends Atlantis\Routes\UploadAPI {
 
 		($this->Data)
 		->Query(Common\Filters\Text::Trimmed(...))
-		->Type(Common\Filters\Text::TrimmedNullable(...))
+		->Type(Common\Filters\Misc::OneOfTheseNullable(...), [ 'site', 'tag' ])
 		->ParentID(Common\Filters\Numbers::IntNullable(...));
 
 		$TagTypes = [ 'site', 'tag' ];
+		$Tags = new Common\Datastore;
+		$Tag = NULL;
+		$Result = NULL;
 
-		if($this->User->IsAdmin())
+		////////
+
+		if($this->User->HasAccessTypeOrAdmin('Tags.Admin', 1))
 		$TagTypes[] = 'admin';
 
+		if($this->Data->Type !== NULL)
+		$TagTypes = $this->Data->Type;
+
+		////////
+
 		$Result = Atlantis\Tag\Entity::Find([
-			'Type'     => $this->Data->Type ?? $TagTypes,
+			'Type'     => $TagTypes,
 			'ParentID' => $this->Data->ParentID,
 			'NameLike' => $this->Data->Query,
 			'Sort'     => 'tag-name-az',
 			'Limit'    => 20
 		]);
 
-		$Tags = new Common\Datastore;
-		$Tag = NULL;
-
 		foreach($Result as $Tag) {
 			/** @var Atlantis\Tag\Entity $Tag */
-
-			$Tags[] = [
-				'ID'    => $Tag->ID,
-				'Type'  => $Tag->Type,
-				'Alias' => $Tag->Alias,
-				'Name'  => $Tag->Name
-			];
+			$Tags[] = $Tag->DescribeForPublicAPI();
 		}
 
 		$this->SetPayload([
 			'Query' => $this->Data->Query,
 			'Tags'  => $Tags,
+			'Type'  => $TagTypes,
 			'Total' => $Result->Total
 		]);
 
