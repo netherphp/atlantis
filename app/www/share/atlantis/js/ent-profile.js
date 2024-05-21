@@ -4,7 +4,7 @@ class Profile {
 
 	constructor({
 		ID=null, UUID=null,
-		Alias=null, Title=null, Content=null,
+		Alias=null, Title=null, Details=null,
 		Enabled=null, AdminNotes=null,
 		PageURL=null, CoverImageURL=null,
 		Tags=null
@@ -25,6 +25,7 @@ class Profile {
 		this.title = Title;
 		this.pageURL = PageURL;
 		this.coverImageURL = CoverImageURL;
+		this.details = Details;
 		this.adminNotes = AdminNotes;
 
 		this.tags = Tags;
@@ -40,6 +41,7 @@ class Profile {
 		fdat.append('UUID', this.uuid);
 		fdat.append('Alias', this.alias);
 		fdat.append('Title', this.title);
+		fdat.append('Details', this.details);
 		fdat.append('AdminNotes', this.adminNotes);
 
 		return fdat;
