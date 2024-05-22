@@ -41,6 +41,10 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
+		->AliasPrefix([
+			Common\Filters\Text::SlottableKey(...),
+			Common\Filters\Text::TrimmedNullable(...)
+		])
 		->AdminNotes(Common\Filters\Text::TrimmedNullable(...))
 		->ProfilePhoto(
 			fn(Common\Struct\DatafilterItem $In)=>
@@ -52,6 +56,23 @@ extends Atlantis\ProtectedAPI {
 		$Dataset = Atlantis\Profile\Entity::DatasetFromInput($this->Data);
 		$Ent = NULL;
 		$Tag = NULL;
+
+		////////
+
+		if($this->Data->AliasPrefix)
+		$Dataset['Alias'] = sprintf(
+			'%s-%s',
+			$this->Data->AliasPrefix,
+			match(TRUE) {
+				isset($Dataset['Alias'])
+				=> Common\Filters\Text::SlottableKey($Dataset['Alias']),
+
+				default
+				=> Common\Filters\Text::SlottableKey($Dataset['Title'])
+			}
+		);
+
+		////////
 
 		$TagList = (
 			Common\Datastore::FromArray(explode(
