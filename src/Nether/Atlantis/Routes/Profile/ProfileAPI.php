@@ -46,6 +46,7 @@ extends Atlantis\ProtectedAPI {
 			Common\Filters\Text::TrimmedNullable(...)
 		])
 		->AdminNotes(Common\Filters\Text::TrimmedNullable(...))
+		->ForceSiteTags(Common\Filters\Numbers::BoolNullable(...))
 		->ProfilePhoto(
 			fn(Common\Struct\DatafilterItem $In)=>
 			isset($_FILES['ProfilePhoto']) ? $_FILES['ProfilePhoto'] : NULL
@@ -83,12 +84,13 @@ extends Atlantis\ProtectedAPI {
 		);
 
 		$Tags = Atlantis\Tag\Entity::Find([
-			'Alias' => $TagList->GetData()
+			'Alias' => $TagList->Export()
 		]);
 
 		try {
 			$Ent = Atlantis\Profile\Entity::Insert($Dataset);
 
+			if($this->Data->ForceSiteTags !== FALSE)
 			foreach(Atlantis\Util::FetchSiteTags() as $Tag) {
 				Atlantis\Profile\EntityTagLink::InsertByPair(
 					$Tag->ID,

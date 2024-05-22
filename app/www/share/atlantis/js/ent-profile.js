@@ -49,7 +49,7 @@ class Profile {
 		return fdat;
 	};
 
-	insert(tids=null, tnames=null, img=null) {
+	insert(tids=null, tnames=null, img=null, sitetags=true) {
 	/*//
 	@arg array tids - list of tags to attch after inserting.
 	@arg array tnames - list of tags that dont exist to create and attach.
@@ -72,6 +72,9 @@ class Profile {
 
 		if(img !== null)
 		data.set('ProfilePhoto', img);
+
+		if(!sitetags)
+		data.set('ForceSiteTags', 0);
 
 		////////
 
