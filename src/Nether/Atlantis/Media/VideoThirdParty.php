@@ -218,6 +218,7 @@ extends Atlantis\Prototype {
 		}
 
 		static::FindExtendFilters_SearchBasicRel($SQL, $Input);
+		static::FindExtendFilters_ByEntityFields_TagsAll($SQL, $Input);
 
 		/* this was moved to prototype
 		if($Input['Untagged'] === TRUE) {
@@ -323,6 +324,55 @@ extends Atlantis\Prototype {
 		return;
 	}
 
+	static protected function
+	FindExtendFilters_ByEntityFields_TagsAll(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(!is_iterable($Input['TagsAll']))
+		return;
+
+		$TLink = VideoThirdPartyTagLink::GetTableInfo();
+
+		$GenTrainAnd = (function() use($SQL, $Input, $TLink) {
+
+			// this method generates a logical and restriction upon the
+			// main table by joining each tag over and over and honestly
+			// it is unclear if this is going to be a good idea or not.
+
+			$Key = 0;
+			$ID = NULL;
+			$TableQA = NULL;
+			$FieldQA = NULL;
+
+			foreach($Input['TagsAll'] as $ID) {
+				$Key += 1;
+
+				$TableQA = "TQA{$Key}";
+				$FieldQA = ":TagQA{$Key}";
+
+				$SQL->Join(sprintf(
+					'%s ON %s=%s',
+					$TLink->GetAliasedTable($TableQA),
+					$SQL::MkQuotedField('Main', 'UUID'),
+					$SQL::MkQuotedField($TableQA, 'EntityUUID')
+				));
+
+				$SQL->Where(sprintf(
+					'%s=%s',
+					$SQL::MkQuotedField($TableQA, 'TagID'),
+					$FieldQA
+				));
+
+				$Input[$FieldQA] = $ID;
+			}
+
+			return;
+		});
+
+		$GenTrainAnd();
+
+		return;
+	}
 
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
