@@ -17,6 +17,7 @@ use Nether\User;
  * @var Atlantis\Media\VideoThirdParty $Video
  */
 
+/*
 $AdminMenu = NULL;
 
 if($Route->IsUserAdmin()) {
@@ -32,6 +33,8 @@ if($Route->IsUserAdmin()) {
 		))
 		->Sort()
 	);
+
+	var_dump($Plugins);
 
 	($AdminMenu)
 	->ItemNew('Edit Video Info', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'edit' ], TRUE))
@@ -50,6 +53,7 @@ if($Route->IsUserAdmin()) {
 	->ItemNew('Delete Video', 'mdi-trash-can', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'delete' ], TRUE));
 
 }
+*/
 
 $PBefore = Atlantis\Routes\Profile\ProfileWeb::ProfileViewExtraSectionsBefore(
 	$App, $Video->Profile
@@ -79,6 +83,12 @@ $PMenu = (function(Atlantis\Struct\DropdownMenu $PMenu, Atlantis\Media\VideoThir
 		if($MK === 'ProfileStateDelete') {
 			unset($MI->Attr['data-profile-cmd']);
 			$MI->Attr['data-videotp-cmd'] = 'delete';
+			$MI->Attr['data-id'] = $Video->ID;
+			$MI->Attr['data-uuid'] = $Video->UUID;
+		}
+
+		if($MK == 'ProfileTaggingERLink') {
+			$MI->Attr['data-parent-type'] = $Video::EntType;
 			$MI->Attr['data-id'] = $Video->ID;
 			$MI->Attr['data-uuid'] = $Video->UUID;
 		}
@@ -161,6 +171,15 @@ $Surface->Area('profile/view', [
 ])
 
 ?>
+
+<?php if($Profiles && $Profiles->Count()): ?>
+<div>
+	<h2 class="text-uppercase">Related Profiles (<?php $Util->Print($Profiles->Count()) ?>)</h2>
+	<hr class="mt-2 mb-4" />
+
+	<?php $Surface->Area('widgets/profile-list-lite', [ 'Profiles'=> $Profiles ]) ?>
+</div>
+<?php endif; ?>
 
 <!------------ --- -->
 

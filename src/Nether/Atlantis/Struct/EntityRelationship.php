@@ -412,4 +412,21 @@ extends Atlantis\Prototype {
 
 		return $ERI->ParentUUID;
 	}
+
+	#[Common\Meta\Date('2024-05-22')]
+	static public function
+	MapToParentUUID(self $ERI):
+	string {
+
+		return $ERI->ParentUUID;
+	}
+
+	#[Common\Meta\Date('2024-05-22')]
+	static public function
+	MapToChildUUID(self $ERI):
+	string {
+
+		return $ERI->ChildUUID;
+	}
+
 }

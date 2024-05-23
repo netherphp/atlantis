@@ -27,14 +27,21 @@ extends Atlantis\ProtectedWeb {
 		////////
 
 		$ProfileIndex = Atlantis\Struct\EntityRelationship::Find([
-			'ParentType' => 'Profile.Entity',
-			'ChildUUID'  => $Video->UUID
+			'ParentUUID' => $Video->UUID,
+			'ChildType'  => 'Profile.Entity',
+			'Remappers'  => [
+				Atlantis\Struct\EntityRelationship::MapToChildUUID(...)
+			]
 		]);
 
-		$ProfileIndex->Remap(fn($I)=> $I->ParentUUID);
-
 		if($ProfileIndex->Count())
-		$Profiles = Atlantis\Profile\Entity::Find([ 'UUID'=> $ProfileIndex->GetData() ]);
+		$Profiles = Atlantis\Profile\Entity::Find([
+			'UseSiteTags' => FALSE,
+			'UUID'        => $ProfileIndex->Export()
+		]);
+
+		//Common\Dump::Var($ProfileIndex->Export(), TRUE);
+		//Common\Dump::Var($Profiles->Export(), TRUE);
 
 		////////
 
