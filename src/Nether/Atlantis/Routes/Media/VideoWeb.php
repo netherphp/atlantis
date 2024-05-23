@@ -28,10 +28,8 @@ extends Atlantis\ProtectedWeb {
 
 		$ProfileIndex = Atlantis\Struct\EntityRelationship::Find([
 			'ParentUUID' => $Video->UUID,
-			'ChildType'  => 'Profile.Entity',
-			'Remappers'  => [
-				Atlantis\Struct\EntityRelationship::MapToChildUUID(...)
-			]
+			'ChildType'  => Atlantis\Profile\Entity::EntType,
+			'Remappers'  => Atlantis\Struct\EntityRelationship::MapToChildUUID(...)
 		]);
 
 		if($ProfileIndex->Count())
