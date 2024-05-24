@@ -948,8 +948,8 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 	#[Common\Meta\Date('2023-12-15')]
 	public function
-	FetchRelatedProfiles():
-	Common\Datastore {
+	FetchRelatedProfiles(?array $TagsAll=NULL):
+	Database\ResultSet {
 
 		$UUIDS = $this->GetRelatedEntityIndex();
 

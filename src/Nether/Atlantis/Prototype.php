@@ -343,6 +343,42 @@ implements Packages\DescribeForPublicInterface {
 	}
 
 	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2024-05-23')]
+	public function
+	FetchRelatedProfiles(?array $TagsAll=NULL):
+	Database\ResultSet {
+
+		$Filters = [
+			'UseSiteTags' => FALSE
+		];
+
+		////////
+
+		if($TagsAll)
+		$Filters['TagsAll'] = $TagsAll;
+
+		////////
+
+		$UUID = Struct\EntityRelationship::Find([
+			'EntityUUID' => $this->UUID,
+			'EntityType' => Profile\Entity::EntType,
+			'Remappers'  => [
+				fn($I)=> Struct\EntityRelationship::KeepTheOtherOne($I, $this->UUID)
+			]
+		]);
+
+		$Filters['UUID'] = $UUID->Export();
+
+		////////
+
+		$Output = Profile\Entity::Find($Filters);
+
+		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
 	//// LOCAL STATIC API //////////////////////////////////////////
 
 	#[Common\Meta\Date('2023-05-23')]
