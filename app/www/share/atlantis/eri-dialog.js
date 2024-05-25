@@ -39,7 +39,7 @@ extends ModalDialog {
 		super(DialogTemplate);
 
 		this.uuid = entityUUID;
-		this.tags = tags;
+		this.tags = tags ?? null;
 
 		this.parentType = 'Profile.Entity';
 		this.childType = 'Profile.Entity';

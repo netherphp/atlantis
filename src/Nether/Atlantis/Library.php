@@ -63,11 +63,15 @@ implements
 
 			// things found to be walking our websites while providing
 			// absolutely no value back to the internet. these get
-			// served blank pages, and arent even logged by analytics.
+			// served blank pages, and are not logged by analytics.
 
-			Key::ConfAccessIgnoreAgentHard => (''
-				. 'AhrefsBot|Amazonbot|Barkrowler|BLEXBot|Bytespider|Bytedance|ClaudeBot|DataForSeoBot|DotBot|IonCrawl|ImagesiftBot|MJ12bot|SemrushBot|serpstatbot|PetalBot|'
-				. 'paloaltonetworks|linkfluence|internet\\-measurement|naver\\.me'
+			Key::ConfAccessIgnoreAgentHard => (
+				// abusive bots who identify themselves.
+				'AhrefsBot|Amazonbot|Barkrowler|BLEXBot|Bytespider|Bytedance|ClaudeBot|DataForSeoBot|DotBot|IonCrawl|ImagesiftBot|MJ12bot|SemrushBot|serpstatbot|PetalBot|'
+				// abusive bots who identify themselves poorly.
+				. 'paloaltonetworks|linkfluence|internet\\-measurement|naver\\.me|'
+				// abusive libraries used by people who cant be arsed to change the ua.
+				. 'go-http-client'
 			),
 
 			// these tend to be things used by companies to fetch

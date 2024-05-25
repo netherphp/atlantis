@@ -196,21 +196,32 @@ extends Atlantis\ProtectedAPI {
 			[ 'name-az', 'state-az' ]
 		);
 
+		$Enabled = $this->IsUserAdmin() ? NULL : 1;
+		$TagKeys = NULL;
+		$FilterTagsAll = NULL;
+
 		////////
 
 		if($this->Data->TagsAll) {
-			$TagKeys = explode(',', $this->Data->TagsAll);
-			$Tags = Atlantis\Tag\Entity::Find([ 'Alias' => $TagKeys ]);
-			var_dump($Tags);
-		}
+			$TagKeys = (
+				Common\Datastore::FromString($this->Data->TagsAll, ',')
+				->Remap(Common\Filters\Text::TrimmedNullable(...))
+				->Filter(fn(?string $S)=> $S !== NULL)
+				->Export()
+			);
 
-		$Enabled = $this->IsUserAdmin() ? NULL : 1;
+			$FilterTagsAll = (
+				Atlantis\Tag\Entity::Find([ 'Alias' => $TagKeys ])
+				->Remap(Atlantis\Prototype::MapToID(...))
+				->Export()
+			);
+		}
 
 		////////
 
 		$Results = Atlantis\Profile\Entity::Find([
 			'UseSiteTags'    => FALSE,
-			'TagsAll'        => $Tags->Map(fn($T)=> $T->ID)->GetData(),
+			'TagsAll'        => $FilterTagsAll,
 
 			'Search'         => $this->Data->Q,
 			'SearchTitle'    => TRUE,

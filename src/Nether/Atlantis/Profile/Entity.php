@@ -496,7 +496,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		$InputBinds = $InputWords->MapKeys(fn(int $K, string $V)=> [
 			sprintf(':SearchRelCheck%d', ($K+1))
-			=> "[[:<:]]{$V}[[:>:]]"
+			=> "{$V}"
 		]);
 
 		// bake each word into a stack of inline math that my friend said
@@ -513,7 +513,7 @@ implements Atlantis\Packages\ExtraDataInterface {
 		////////
 
 		($Input)
-		->Shove(':SearchRegEx', "[[:<:]]($InputRegex)[[:>:]]")
+		->Shove(':SearchRegEx', "($InputRegex)")
 		->MergeRight($InputBinds);
 
 		($SQL)
