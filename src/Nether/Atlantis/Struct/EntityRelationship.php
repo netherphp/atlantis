@@ -419,7 +419,7 @@ extends Atlantis\Prototype {
 
 	#[Common\Meta\Date('2024-05-27')]
 	static public function
-	MapToOtherUUID(self $ERI, string $UUID):
+	KeepTheOtherUUID(self $ERI, string $UUID):
 	static|string {
 
 		// if given a joined dataset we will have the full object and that
