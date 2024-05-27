@@ -195,26 +195,35 @@ implements Packages\DescribeForPublicInterface {
 			Common\Meta\PropertyListable::class
 		));
 
-		$Vals = $Props->Map(function(Common\Prototype\PropertyInfo $P) {
+		$PIndex = static::GetClassInfo();
+		//print_r($PIndex->Pa);
+		$Sorted = new Common\Datastore;
+
+		$Vals = $Props->Map(function(Common\Prototype\PropertyInfo $P) use($Sorted) {
 
 			$Attr = $P->GetAttribute(Common\Meta\PropertyListable::class);
+			$Val = NULL;
 			/** @var Common\Meta\PropertyListable $Attr */
 
 			if(isset($Attr->MethodName))
 			if(method_exists($this->{$P->Name}, $Attr->MethodName))
-			return $this->{$P->Name}->{$Attr->MethodName}(...$Attr->MethodArgs);
+			$Val = $this->{$P->Name}->{$Attr->MethodName}(...$Attr->MethodArgs);
 
 			if(is_object($this->{$P->Name}))
 			if(method_exists($this->{$P->Name}, 'DescribeForPublicAPI'))
-			return $this->{$P->Name}->DescribeForPublicAPI(...$Attr->MethodArgs);
+			$Val = $this->{$P->Name}->DescribeForPublicAPI(...$Attr->MethodArgs);
 
 			if(isset($this->{$P->Name}))
-			return $this->{$P->Name};
+			$Val = $this->{$P->Name};
+
+			if($Val) {
+				$Sorted->MergeRight([ $P->Name=> $Val ]);
+			}
 
 			return NULL;
 		});
 
-		return $Vals->Export();
+		return $Sorted->Export();
 	}
 
 	#[Common\Meta\Date('2023-03-07')]

@@ -142,8 +142,6 @@ extends Atlantis\Prototype {
 		if(isset($this->Child))
 		$Data['Child'] = $this->Child->DescribeForPublicAPI();
 
-		ksort($Data);
-
 		return $Data;
 	}
 
