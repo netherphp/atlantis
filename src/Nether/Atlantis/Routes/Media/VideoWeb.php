@@ -67,8 +67,8 @@ extends Atlantis\ProtectedWeb {
 			'EntityType' => Atlantis\Profile\Entity::EntType,
 			'Remappers'  => [
 				fn(Atlantis\Struct\EntityRelationship $ERI)
-				=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne(
-					$ERI, $Video->UUID, FALSE
+				=> Atlantis\Struct\EntityRelationship::KeepTheOtherUUID(
+					$ERI, $Video->UUID
 				)
 			]
 		]);
@@ -97,8 +97,8 @@ extends Atlantis\ProtectedWeb {
 			'EntityType' => Blog\Post::EntType,
 			'Remappers'  => [
 				fn(Atlantis\Struct\EntityRelationship $ERI)
-				=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne(
-					$ERI, $Video->UUID, FALSE
+				=> Atlantis\Struct\EntityRelationship::KeepTheOtherUUID(
+					$ERI, $Video->UUID
 				)
 			]
 		]);

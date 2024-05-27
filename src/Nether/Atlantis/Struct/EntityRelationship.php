@@ -417,6 +417,21 @@ extends Atlantis\Prototype {
 		return $ERI->ParentUUID;
 	}
 
+	#[Common\Meta\Date('2024-05-27')]
+	static public function
+	KeepTheOtherUUID(self $ERI, string $UUID):
+	static|string {
+
+		// if given a joined dataset we will have the full object and that
+		// is what will be kept. otherwise it will return what it has which
+		// is just the uuid.
+
+		if($ERI->ParentUUID === $UUID)
+		return $ERI->ChildUUID;
+
+		return $ERI->ParentUUID;
+	}
+
 	#[Common\Meta\Date('2024-05-22')]
 	static public function
 	MapToParentUUID(self $ERI):
