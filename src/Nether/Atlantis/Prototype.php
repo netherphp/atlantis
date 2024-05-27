@@ -214,9 +214,7 @@ implements Packages\DescribeForPublicInterface {
 			return NULL;
 		});
 
-
-
-		return $Vals->GetData();
+		return $Vals->Export();
 	}
 
 	#[Common\Meta\Date('2023-03-07')]

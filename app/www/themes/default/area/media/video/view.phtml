@@ -172,17 +172,7 @@ $Surface->Area('profile/view', [
 
 ?>
 
-<?php if($Profiles && $Profiles->Count()): ?>
-<div>
-	<h2 class="text-uppercase">Related Profiles (<?php $Util->Print($Profiles->Count()) ?>)</h2>
-	<hr class="mt-2 mb-4" />
-
-	<?php $Surface->Area('widgets/profile-list-lite', [ 'Profiles'=> $Profiles ]) ?>
-</div>
-<?php endif; ?>
-
 <!------------ --- -->
-
 
 <div class="d-none mb-8">
 	<h2 class="text-uppercase">Description</h2>

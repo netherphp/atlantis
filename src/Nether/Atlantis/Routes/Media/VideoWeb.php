@@ -4,6 +4,7 @@ namespace Nether\Atlantis\Routes\Media;
 
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Database;
 use Nether\Avenue;
 use Nether\Blog;
 
@@ -16,42 +17,9 @@ extends Atlantis\ProtectedWeb {
 	View(int $VideoID, Atlantis\Media\VideoThirdParty $Video):
 	void {
 
+		$Profiles = $this->FetchRelatedProfiles($Video);
+		$Posts = $this->FetchRelatedNews($Video);
 		$Links = $Video->Profile->FetchRelatedLinks();
-		$Related = $Video->Profile->FetchRelatedProfiles();
-
-		////////
-
-		$Profiles = NULL;
-		$Posts = NULL;
-
-		////////
-
-		$ProfileIndex = Atlantis\Struct\EntityRelationship::Find([
-			'ParentUUID' => $Video->UUID,
-			'ChildType'  => Atlantis\Profile\Entity::EntType,
-			'Remappers'  => Atlantis\Struct\EntityRelationship::MapToChildUUID(...)
-		]);
-
-		if($ProfileIndex->Count())
-		$Profiles = Atlantis\Profile\Entity::Find([
-			'UseSiteTags' => FALSE,
-			'UUID'        => $ProfileIndex->Export()
-		]);
-
-		//Common\Dump::Var($ProfileIndex->Export(), TRUE);
-		//Common\Dump::Var($Profiles->Export(), TRUE);
-
-		////////
-
-		$PostIndex = Atlantis\Struct\EntityRelationship::Find([
-			'ParentType' => 'Blog.Post',
-			'ChildUUID'  => $Video->UUID
-		]);
-
-		$PostIndex->Remap(fn($I)=> $I->ParentUUID);
-
-		if($PostIndex->Count())
-		$Posts = Blog\Post::Find([ 'UUID'=> $PostIndex->GetData() ]);
 
 		////////
 
@@ -59,11 +27,10 @@ extends Atlantis\ProtectedWeb {
 		->Set('Page.Title', sprintf('Video: %s', $Video->Title))
 		->Wrap('media/video/view', [
 			'Video'    => $Video,
-			'Related'  => $Related,
 			'Links'    => $Links,
 			'Tags'     => $Video->GetTags(),
 			'News'     => $Posts,
-			'Profiles' => $Profiles
+			'Related'  => $Profiles
 		]);
 
 		return;
@@ -82,6 +49,69 @@ extends Atlantis\ProtectedWeb {
 
 		$Data['Video'] = $Video;
 		return ($this->Response)::CodeOK;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	FetchRelatedProfiles(Atlantis\Media\VideoThirdParty $Video):
+	?Database\ResultSet {
+
+		$Profiles = NULL;
+
+		////////
+
+		$Index = Atlantis\Struct\EntityRelationship::Find([
+			'EntityUUID' => $Video->UUID,
+			'EntityType' => Atlantis\Profile\Entity::EntType,
+			'Remappers'  => [
+				fn(Atlantis\Struct\EntityRelationship $ERI)
+				=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne(
+					$ERI, $Video->UUID, FALSE
+				)
+			]
+		]);
+
+		if($Index->Count())
+		$Profiles = Atlantis\Profile\Entity::Find([
+			'UseSiteTags' => FALSE,
+			'UUID'        => $Index->Export()
+		]);
+
+		////////
+
+		return $Profiles;
+	}
+
+	protected function
+	FetchRelatedNews(Atlantis\Media\VideoThirdParty $Video):
+	?Database\ResultSet {
+
+		$Posts = NULL;
+
+		////////
+
+		$Index = Atlantis\Struct\EntityRelationship::Find([
+			'EntityUUID' => $Video->UUID,
+			'EntityType' => Blog\Post::EntType,
+			'Remappers'  => [
+				fn(Atlantis\Struct\EntityRelationship $ERI)
+				=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne(
+					$ERI, $Video->UUID, FALSE
+				)
+			]
+		]);
+
+		if($Index->Count())
+		$Posts = Blog\Post::Find([
+			'UseSiteTags' => FALSE,
+			'UUID'        => $Index->GetData()
+		]);
+
+		////////
+
+		return $Posts;
 	}
 
 }

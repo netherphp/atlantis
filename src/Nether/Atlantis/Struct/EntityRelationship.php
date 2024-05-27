@@ -133,12 +133,16 @@ extends Atlantis\Prototype {
 	array {
 
 		$Data = parent::DescribeForPublicAPI();
+		$Data['Parent'] = NULL;
+		$Data['Child'] = NULL;
 
 		if(isset($this->Parent))
 		$Data['Parent'] = $this->Parent->DescribeForPublicAPI();
 
 		if(isset($this->Child))
 		$Data['Child'] = $this->Child->DescribeForPublicAPI();
+
+		ksort($Data);
 
 		return $Data;
 	}
@@ -393,7 +397,7 @@ extends Atlantis\Prototype {
 
 	#[Common\Meta\Date('2023-12-06')]
 	static public function
-	KeepTheOtherOne(self $ERI, string $UUID):
+	KeepTheOtherOne(self $ERI, string $UUID, bool $ObjFirst=TRUE):
 	static|string {
 
 		// if given a joined dataset we will have the full object and that
@@ -401,13 +405,13 @@ extends Atlantis\Prototype {
 		// is just the uuid.
 
 		if($ERI->ParentUUID === $UUID) {
-			if(isset($ERI->Child))
+			if(isset($ERI->Child) && $ObjFirst)
 			return $ERI->Child;
 
 			return $ERI->ChildUUID;
 		}
 
-		if(isset($ERI->Parent))
+		if(isset($ERI->Parent) && $ObjFirst)
 		return $ERI->Parent;
 
 		return $ERI->ParentUUID;
