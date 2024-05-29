@@ -876,11 +876,14 @@ implements Atlantis\Packages\ExtraDataInterface {
 	Common\Datastore {
 
 		$Index = Atlantis\Struct\EntityRelationship::Find([
-			'ParentType' => 'Profile.Entity',
-			'ParentUUID' => $this->UUID,
-
-			'ChildType'  => 'Media.Video.ThirdParty',
-			'Remappers'  => fn(Atlantis\Struct\EntityRelationship $P)=> $P->ChildUUID
+			'EntityUUID' => $this->UUID,
+			'EntityType' => Atlantis\Media\VideoThirdParty::EntType,
+			'Remappers'  => [
+				fn(Atlantis\Struct\EntityRelationship $ER)=>
+				Atlantis\Struct\EntityRelationship::KeepTheOtherUUID(
+					$ER, $this->UUID
+				)
+			]
 		]);
 
 		if(!$Index->Count())
