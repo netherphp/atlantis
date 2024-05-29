@@ -99,7 +99,7 @@ $Scopeify = (
 	</div>
 	<?php endforeach; endif; unset($Item); ?>
 
-	<?php $Surface->Area('profile/view-extend-pre', $__SCOPE) ?>
+	<?php $Surface->Area('profile/view-extend-before', $__SCOPE) ?>
 
 	<?php if($News && $News->Count()): ?>
 	<!-- NEWS -->
@@ -202,11 +202,8 @@ $Scopeify = (
 	<?php if($SectionsAfter): foreach($SectionsAfter as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
 	<div class="atl-profile-section atl-profile-section-after">
 		<?php
-
-
 		if(is_callable($Item)) $Item($__SCOPE);
 		else echo $Item;
-
 		?>
 	</div>
 	<?php endforeach; endif; unset($Item); ?>
