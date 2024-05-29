@@ -21,7 +21,7 @@ $ParentUUID ??= NULL;
 
 ?>
 
-<div class="hr-hide-last">
+<div class="atl-video-list hr-hide-last">
 	<?php foreach($Videos as $VK=> $Video): /** @var Atlantis\Media\VideoThirdParty $Video */ ?>
 	<div class="row">
 		<div class="col-12 col-md-3">
@@ -53,9 +53,7 @@ $ParentUUID ??= NULL;
 			</div>
 		</div>
 	</div>
-	<?php if(!$Videos->IsLastKey($VK)): ?>
-	<hr class="mt-1 mb-5" />
-	<?php endif; ?>
+	<hr />
 	<?php endforeach; unset($Video); ?>
 </div>
 
