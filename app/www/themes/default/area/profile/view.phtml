@@ -92,9 +92,14 @@ $Scopeify = (
 	<!-- SECTIONS: BEFORE -->
 	<?php if($SectionsBefore): foreach($SectionsBefore as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
 	<div class="atl-profile-section atl-profile-section-before">
-		<?php echo $Item ?>
+		<?php
+		if(is_callable($Item)) $Item($__SCOPE);
+		else echo $Item;
+		?>
 	</div>
 	<?php endforeach; endif; unset($Item); ?>
+
+	<?php $Surface->Area('profile/view-extend-pre', $__SCOPE) ?>
 
 	<?php if($News && $News->Count()): ?>
 	<!-- NEWS -->
@@ -107,8 +112,6 @@ $Scopeify = (
 		</div>
 	</div>
 	<?php endif; ?>
-
-	<?php $Surface->Area('profile/view-extend-pre', $__SCOPE) ?>
 
 	<?php if(isset($Photos) && $Photos->Total): ?>
 	<?php if(defined('AtlantisProfileBetaPhotos')): ?>
@@ -195,14 +198,20 @@ $Scopeify = (
 	</div>
 	<?php endif; ?>
 
-	<!-- SECTIONS: BEFORE -->
+	<!-- SECTIONS: AFTER -->
 	<?php if($SectionsAfter): foreach($SectionsAfter as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
 	<div class="atl-profile-section atl-profile-section-after">
-		<?php echo $Item ?>
+		<?php
+
+
+		if(is_callable($Item)) $Item($__SCOPE);
+		else echo $Item;
+
+		?>
 	</div>
 	<?php endforeach; endif; unset($Item); ?>
 
-	<?php $Surface->Area('profile/view-extend', $__SCOPE) ?>
+	<?php $Surface->Area('profile/view-extend-after', $__SCOPE) ?>
 
 	<!-- FOOTER -->
 	<div class="mb-6">
