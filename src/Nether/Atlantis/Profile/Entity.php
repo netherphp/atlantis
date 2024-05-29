@@ -955,7 +955,8 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		$Profiles = static::Find([
 			'UseSiteTags' => FALSE,
-			'UUID'        => $UUIDS->GetData()
+			'UUID'        => $UUIDS->GetData(),
+			'Limit'       => 0
 		]);
 
 		return $Profiles;
