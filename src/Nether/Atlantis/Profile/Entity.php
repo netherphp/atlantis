@@ -7,6 +7,7 @@ use Nether\Blog;
 use Nether\Common;
 use Nether\Database;
 
+use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
 use ArrayAccess;
 use Exception;
 
@@ -178,16 +179,51 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return $Output;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
-	GetPageURL():
+	GetPageURL(?Atlantis\Engine $App=NULL):
 	string {
 
-		$URL = new Atlantis\WebURL(sprintf(
-			'/profile/%s',
-			$this->Alias
-		));
+		$Slug = NULL;
+		$URL = NULL;
+
+		// give plugins a chance to determine the url.
+
+		if($App !== NULL) {
+			$URL = static::ExtendGetPageURL($App, $this);
+
+			if($URL !== NULL)
+			return $URL;
+		}
+
+		// otherwise fall back to default behaviour.
+
+		$Slug = sprintf('/profile/%s', $this->Alias);
+		$URL = new Atlantis\WebURL($Slug);
 
 		return $URL->Get();
+	}
+
+	static public function
+	ExtendGetPageURL(Atlantis\Engine $App, self $Profile):
+	?string {
+
+		$Plugins = $App->Plugins->GetInstanced(ExtendGetPageURLInterface::class);
+		$URL = NULL;
+		$Plug = NULL;
+
+		if($Plugins->Count())
+		foreach($Plugins as $Plug) {
+			/** @var ExtendGetPageURLInterface $Plug */
+			$URL = $Plug->GetPageURL($Profile);
+
+			if($URL)
+			return $URL;
+		}
+
+		return NULL;
 	}
 
 	////////////////////////////////////////////////////////////////

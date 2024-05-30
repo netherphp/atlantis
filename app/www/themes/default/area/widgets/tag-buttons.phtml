@@ -22,19 +22,6 @@ use Nether\User;
 $Pre ??= NULL;
 $URL ??= '/tag/:Alias:';
 
-$RewriteURL = function(Atlantis\Tag\Entity $T, string $Template) use($Util): string {
-
-	if($T->HasDefinedURL())
-	return $Util->RewriteURL($T->GetPageURL());
-
-	////////
-
-	if($T->Type === 'tag')
-	return str_replace(':Alias:', $T->Alias, $Template);
-
-	return $Util->RewriteURL($T->GetPageURL());
-};
-
 $TagClasses = function(Atlantis\Tag\Entity $T): string {
 
 	if(str_starts_with($T->Type, 'btn-'))
@@ -64,18 +51,20 @@ $Tags = $Tags->Distill(function($T) {
 <div class="opacity-100">
 
 	<?php if($Pre) foreach($Pre as $Tag): /** @var Atlantis\Tag\Entity $Tag */ ?>
-	<a href="<?php $Util->Print($Util->RewriteURL($RewriteURL($Tag, $URL))) ?>" class="text-transform-none btn <?php $Util->Print($Tag->Type) ?> <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
+	<a href="<?php $Util->Print($Tag->GetPageURL($App)) ?>" class="text-transform-none btn <?php $Util->Print($Tag->Type) ?> <?php $Util->Print($TagClasses($Tag)) ?> p-1 pl-2 pr-2 mb-2"><?php $Util->Print($Tag->Name) ?></a>
 	<?php endforeach; ?>
 
 	<?php
 
 	if($Tags) {
+		$Tags->Sort(Atlantis\Tag\Entity::SortByType(...));
+
 		foreach($Tags as $Tag) {
 			if($Tag instanceof Atlantis\Tag\Entity)
 			if($Tag->Type !== 'admin' || $Route->IsUserAdmin())
 			printf(
 				'<a href="%s" class="text-transform-none btn %s p-1 pl-2 pr-2 mb-2">%s</a> ',
-				$Util->RewriteURL($RewriteURL($Tag, $URL)),
+				$Util->RewriteURL($Tag->GetPageURL($App)),
 				$TagClasses($Tag),
 				$Util->Encode($Tag->Name)
 			);
@@ -83,7 +72,7 @@ $Tags = $Tags->Distill(function($T) {
 			if($Tag instanceof Atlantis\Profile\Entity)
 			printf(
 				'<a href="%s" class="text-transform-none btn %s p-1 pl-2 pr-2 mb-2">%s</a> ',
-				$Util->RewriteURL($Tag->GetPageURL()),
+				$Util->RewriteURL($Tag->GetPageURL($App)),
 				'btn-outline-primary',
 				$Util->Encode($Tag->Title)
 			);

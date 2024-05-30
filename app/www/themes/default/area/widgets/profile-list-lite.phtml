@@ -26,12 +26,12 @@ use Nether\User;
 		<div class="ratiobox widescreen rounded">
 			<div class="position-absolutely wallpapered covered rounded" style="transform:scale(1.1);filter:blur(26px);background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);"></div>
 			<div class="position-absolutely wallpapered rounded contained bg-transparent" style="background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);">
-				<a class="position-absolutely" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL())) ?>"></a>
+				<a class="position-absolutely" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>"></a>
 			</div>
 		</div>
 	</div>
 	<div class="col">
-		<h3><a href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL())) ?>"><?php $Util->Print($Profile->Title) ?></a></h3>
+		<h3><a href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>"><?php $Util->Print($Profile->Title) ?></a></h3>
 
 		<div class="mb-2">
 			<?php
@@ -47,7 +47,7 @@ use Nether\User;
 		</div>
 
 		<div>
-			<a class="btn btn-primary" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL())) ?>">View Profile</a>
+			<a class="btn btn-primary" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>">View Profile</a>
 		</div>
 	</div>
 </div>

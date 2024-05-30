@@ -6,6 +6,7 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
 
+use Nether\Atlantis\Plugin\Interfaces\Tag\ExtendGetPageURLInterface;
 use Exception;
 
 #[Database\Meta\TableClass('Tags', 'T')]
@@ -308,20 +309,47 @@ implements
 	}
 
 	public function
-	GetPageURL():
+	GetDefinedURL():
+	?string {
+
+		if(!$this->ExtraData->HasKey('URL'))
+		return NULL;
+
+		return $this->ExtraData->Get('URL');
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetPageURL(?Atlantis\Engine $App=NULL):
 	string {
 
-		$Output = Atlantis\Library::Get(Atlantis\Key::PageTagViewURL);
-		$Key = NULL;
-		$Val = NULL;
+		$Slug = NULL;
+		$URL = NULL;
+		$Tokens = NULL;
 
-		if($this->ExtraData->Get('URL'))
-		return $this->ExtraData->Get('URL');
+		// if this tag has a defined url then that is where it goes.
 
-		////////
+		if($this->HasDefinedURL())
+		return $this->GetDefinedURL();
 
-		if($this->Type === 'topic')
-		$Output = '/:Alias:';
+		// give plugins a chance to determine a url.
+
+		if($App !== NULL) {
+			$URL = static::ExtendGetPageURL($App, $this);
+
+			if($URL)
+			return $URL;
+		}
+
+		// @todo 2024-05-30 this slug choice should probably be done as
+		// a plugin instead of being in here.
+
+		$Slug = match($this->Type) {
+			'topic' => $this->Alias,
+			default => "tag/{$this->Alias}"
+		};
 
 		$Tokens = [
 			':Alias:' => $this->Alias
@@ -330,11 +358,31 @@ implements
 		////////
 
 		foreach($Tokens as $Key => $Val)
-		$Output = str_replace($Key, $Val, $Output);
+		$Slug = str_replace($Key, $Val, $Slug);
 
 		////////
 
-		return (string)Atlantis\WebURL::FromString($Output);
+		return (string)Atlantis\WebURL::FromString($Slug);
+	}
+
+	static public function
+	ExtendGetPageURL(Atlantis\Engine $App, self $Tag):
+	?string {
+
+		$Plugins = $App->Plugins->GetInstanced(ExtendGetPageURLInterface::class);
+		$URL = NULL;
+		$Plug = NULL;
+
+		if($Plugins->Count())
+		foreach($Plugins as $Plug) {
+			/** @var ExtendGetPageURLInterface $Plug */
+			$URL = $Plug->GetPageURL($Tag);
+
+			if($URL)
+			return $URL;
+		}
+
+		return NULL;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -369,6 +417,29 @@ implements
 	bool {
 
 		return static::KeepThoseTyped($Tag, 'site');
+	}
+
+	static public function
+	SortByType(self $A, self $B):
+	int {
+
+		// -1 left, 0 no change, 1 right
+
+		if($A->Type !== $B->Type) {
+			if($A->Type === 'admin')
+			return -1;
+
+			if($B->Type === 'admin')
+			return 1;
+
+			if($A->Type === 'tag' || $A->Type === 'topic')
+			return -1;
+
+			if($B->Type === 'tag' || $B->Type === 'topic')
+			return 1;
+		}
+
+		return $A->Name <=> $B->Name;
 	}
 
 }
