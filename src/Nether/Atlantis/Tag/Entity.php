@@ -37,6 +37,9 @@ implements
 	$Subtype;
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
+	#[Database\Meta\FieldIndex]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
 	public int
 	$TimeCreated = 0;
 
@@ -77,6 +80,9 @@ implements
 	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
 	public Common\Date
 	$DateCreated;
+
+	public Atlantis\Media\File
+	$CoverImage;
 
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
@@ -205,11 +211,13 @@ implements
 			case 'oldest':
 				$SQL->Sort('Main.TimeCreated', $SQL::SortAsc);
 			break;
-
 		}
 
 		return;
 	}
+
+	////////////////////////////////////////////////////////////////
+	//// OVERRIDE Database\Prototype Inserts ///////////////////////
 
 	static public function
 	Insert(iterable $Input):
@@ -292,8 +300,11 @@ implements
 	//// LOCAL METHODS /////////////////////////////////////////////
 
 	public function
-	FetchPhotos():
+	_FetchPhotos():
 	Database\ResultSet {
+
+		// @todo 2024-05-30 delete this, the EntityPhoto class, and the
+		// TagPhotos table if renaming this broke nothing.
 
 		return EntityPhoto::Find([
 			'EntityID' => $this->ID,
@@ -317,9 +328,6 @@ implements
 
 		return $this->ExtraData->Get('URL');
 	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
 
 	public function
 	GetPageURL(?Atlantis\Engine $App=NULL):
@@ -365,28 +373,8 @@ implements
 		return (string)Atlantis\WebURL::FromString($Slug);
 	}
 
-	static public function
-	ExtendGetPageURL(Atlantis\Engine $App, self $Tag):
-	?string {
-
-		$Plugins = $App->Plugins->GetInstanced(ExtendGetPageURLInterface::class);
-		$URL = NULL;
-		$Plug = NULL;
-
-		if($Plugins->Count())
-		foreach($Plugins as $Plug) {
-			/** @var ExtendGetPageURLInterface $Plug */
-			$URL = $Plug->GetPageURL($Tag);
-
-			if($URL)
-			return $URL;
-		}
-
-		return NULL;
-	}
-
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	// COLLECTION FILTERS/SORTS ////////////////////////////////////
 
 	static public function
 	FilterValidType(mixed $Input):
@@ -440,6 +428,29 @@ implements
 		}
 
 		return $A->Name <=> $B->Name;
+	}
+
+	////////////////////////////////////////////////////////////////
+	// PLUGIN HELPERS //////////////////////////////////////////////
+
+	static public function
+	ExtendGetPageURL(Atlantis\Engine $App, self $Tag):
+	?string {
+
+		$Plugins = $App->Plugins->GetInstanced(ExtendGetPageURLInterface::class);
+		$URL = NULL;
+		$Plug = NULL;
+
+		if($Plugins->Count())
+		foreach($Plugins as $Plug) {
+			/** @var ExtendGetPageURLInterface $Plug */
+			$URL = $Plug->GetPageURL($Tag);
+
+			if($URL)
+			return $URL;
+		}
+
+		return NULL;
 	}
 
 }
