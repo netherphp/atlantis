@@ -8,6 +8,7 @@
 // getting itself ready.
 
 ($Surface)
+->AddScriptURL('https://www.google.com/recaptcha/api.js')
 ->AddStyleURL('/themes/default/lib/css/swiper-bundle.min.css')
 ->AddScriptURL('/themes/default/lib/js/swiper-bundle.min.js')
 ->Set('Theme.Header.Contain', FALSE)

@@ -716,15 +716,6 @@ class Video {
 				}
 
 				return;
-
-				let data = this.getFieldData();
-				let api = new API.Request('POST', endpoint, data);
-
-				(api.send())
-				.then(api.reload)
-				.catch(api.catch);
-
-				return;
 			}
 		});
 

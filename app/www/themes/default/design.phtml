@@ -1,11 +1,16 @@
-<?php
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
 
 /**
- * @var Nether\Atlantis\Engine $App
- * @var Nether\Atlantis\User $User
- * @var Nether\Avenue\Router $Router
- * @var Nether\Avenue\Route $Route
- * @var Nether\Surface\Engine $Surface
+ * @var Atlantis\Engine $App
+ * @var Atlantis\User $User
+ * @var Avenue\Router $Router
+ * @var Avenue\Route $Route
+ * @var Surface\Engine $Surface
  * @var void   $Printer(string in)
  * @var void   $ThemeURL(string path, string theme)
  * @var string $Encoder(string in)
@@ -15,13 +20,23 @@
  * @var string $CacheBuster
  */
 
+################################################################################
+################################################################################
+
 $ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
 
 $FavIconURL = $Surface->Get('Page.FavIconURL') ?? '/themes/default/gfx/favicon.ico';
+$DesignSubheader = $Surface->Get(Surface\Theme::KeyThemeSubheader);
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 $Surface
 ->Set('Theme.Page.ThemeMode', (array_key_exists('theme', $_COOKIE) ? $_COOKIE['theme'] : 'dark' ))
 ->Set('Theme.Page.MainCSS', ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'));
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 ?>
 <!DOCTYPE html>
@@ -65,7 +80,14 @@ $Surface
 </head>
 <body>
 
-<?php $Surface->Area('design/header') ?>
+<?php
+
+$Surface->Area('design/header');
+
+if($DesignSubheader !== NULL)
+$Surface->Area($DesignSubheader, $__SCOPE);
+
+?>
 
 <?php $Surface->Area('design/main', [ 'Output'=> $Output ]) ?>
 
