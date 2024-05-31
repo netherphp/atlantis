@@ -81,9 +81,6 @@ implements
 	public Common\Date
 	$DateCreated;
 
-	public Atlantis\Media\File
-	$CoverImage;
-
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Atlantis\Prototype ///////////////////////////////
 
