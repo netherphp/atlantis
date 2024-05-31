@@ -333,6 +333,8 @@ implements
 		$Slug = NULL;
 		$URL = NULL;
 		$Tokens = NULL;
+		$Key = NULL;
+		$Val = NULL;
 
 		// if this tag has a defined url then that is where it goes.
 
