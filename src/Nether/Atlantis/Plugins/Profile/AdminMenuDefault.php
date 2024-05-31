@@ -71,6 +71,13 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE)
 		));
 
+		if($this->App->User && $this->App->User->IsAdmin())
+		$Output->Shove('ProfileEditLinks', Atlantis\Struct\DropdownItem::New(
+			Title: 'Admin Notes',
+			Icon: 'mdi-pencil',
+			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'admin-notes' ], TRUE)
+		));
+
 		////////
 
 		return $Output;

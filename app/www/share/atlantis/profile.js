@@ -305,6 +305,33 @@ class Profile {
 		return false;
 	};
 
+	onEditAdminNotes(ev) {
+
+		let diag = new DialogUtil.Window({
+			show: true,
+			maximise: true,
+			title: 'Edit Admin Notes',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, this.id),
+				new DialogUtil.Field('editor-html', 'ExtraData[AdminNotes]', "Admin Notes", jQuery('#EntityAdminNotes').html())
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', '/api/profile/entity', data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		return false;
+	};
+
 	////////////////
 	////////////////
 
@@ -384,20 +411,21 @@ class Profile {
 	static WhenDocumentReady() {
 
 		let map = {
-			new:      new DocReadyFunc((i, u, b)=> Profile.WhenNew(i, u, b), false),
-			title:    new DocReadyFunc((i, u)=> Profile.WhenEditTitle(i, u), true),
-			alias:    new DocReadyFunc((i, u)=> Profile.WhenEditAlias(i, u), true),
-			links:    new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
-			details:  new DocReadyFunc((i, u)=> Profile.WhenEditDetails(i, u), true),
-			tags:     new DocReadyFunc((i, u)=> Profile.WhenEditTags(i, u), true),
-			erlink:   new DocReadyFunc((i, u, b)=> Profile.WhenEditRels(i, u, b), true),
-			photo:    new DocReadyFunc((i, u)=> Profile.WhenUploadPhoto(i, u), true),
-			videotp:  new DocReadyFunc((i, u)=> Profile.WhenAddVideo(i, u), true),
-			photoset: new DocReadyFunc((i, u, e)=> Profile.WhenSetPhoto(i, u, e), true),
-			disable:  new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 0), true),
-			enable:   new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 1), true),
-			delete:   new DocReadyFunc((i, u)=> Profile.WhenDelete(i, u), true),
-			address:  new DocReadyFunc((i, u)=> Profile.WhenEditAddress(i, u), true)
+			"new":         new DocReadyFunc((i, u, b)=> Profile.WhenNew(i, u, b), false),
+			"title":       new DocReadyFunc((i, u)=> Profile.WhenEditTitle(i, u), true),
+			"alias":       new DocReadyFunc((i, u)=> Profile.WhenEditAlias(i, u), true),
+			"links":       new DocReadyFunc((i, u)=> Profile.WhenEditLinks(i, u), true),
+			"details":     new DocReadyFunc((i, u)=> Profile.WhenEditDetails(i, u), true),
+			"tags":        new DocReadyFunc((i, u)=> Profile.WhenEditTags(i, u), true),
+			"erlink":      new DocReadyFunc((i, u, b)=> Profile.WhenEditRels(i, u, b), true),
+			"photo":       new DocReadyFunc((i, u)=> Profile.WhenUploadPhoto(i, u), true),
+			"videotp":     new DocReadyFunc((i, u)=> Profile.WhenAddVideo(i, u), true),
+			"photoset":    new DocReadyFunc((i, u, e)=> Profile.WhenSetPhoto(i, u, e), true),
+			"disable":     new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 0), true),
+			"enable":      new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 1), true),
+			"delete":      new DocReadyFunc((i, u)=> Profile.WhenDelete(i, u), true),
+			"address":     new DocReadyFunc((i, u)=> Profile.WhenEditAddress(i, u), true),
+			"admin-notes": new DocReadyFunc((i, u)=> Profile.WhenEditAdminNotes(i, u), true)
 		};
 
 		for(let key in map) {
@@ -454,6 +482,14 @@ class Profile {
 
 		let pro = new Profile(id, uuid);
 		pro.onEditTitle(null);
+
+		return;
+	};
+
+	static WhenEditAdminNotes(id, uuid) {
+
+		let pro = new Profile(id, uuid);
+		pro.onEditAdminNotes(null);
 
 		return;
 	};

@@ -83,8 +83,8 @@ $Scopeify = (
 	<?php if($Route->IsUserAdmin() && $Profile->HasExtraData('AdminNotes')): ?>
 	<div class="jumbotron rounded p-2 mb-4">
 		<div class="fw-bold">Admin Notes</div>
-		<div>
-			<?php $Util->Print($Profile->ExtraData['AdminNotes']) ?>
+		<div id="EntityAdminNotes">
+			<?php echo $Profile->ExtraData['AdminNotes'] ?>
 		</div>
 	</div>
 	<?php endif; ?>
