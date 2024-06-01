@@ -458,7 +458,7 @@ class StackManager {
 
 		if(jEv.originalEvent.type === 'keydown')
 		if(jEv.originalEvent.key !== 'Escape')
-		return false;
+		return true;
 
 		for(const i in this.items) {
 			if(this.items[i].isOpen())
