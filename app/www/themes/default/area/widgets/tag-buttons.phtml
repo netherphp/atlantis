@@ -57,7 +57,9 @@ $Tags = $Tags->Distill(function($T) {
 	<?php
 
 	if($Tags) {
-		$Tags->Sort(Atlantis\Tag\Entity::SortByType(...));
+		//$Tags->Sort(Atlantis\Tag\Entity::SortByType(...));
+		// need to do a sort that is more generic since we throw profiles
+		// in here sometimes.
 
 		foreach($Tags as $Tag) {
 			if($Tag instanceof Atlantis\Tag\Entity)
