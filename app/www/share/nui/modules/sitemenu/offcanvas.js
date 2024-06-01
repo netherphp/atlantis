@@ -72,6 +72,7 @@ class StackManager {
 		console.log(`[SiteMenu.StackManager] ${selector}`);
 
 		this.element = jQuery(selector);
+		this.eid = this.element.attr('id');
 		this.conf = StackManagerConfig.FromObject(conf);
 		this.io = null;
 		this.items = null;
@@ -181,6 +182,9 @@ class StackManager {
 		let closers = this.element.find(`[data-${this.conf.datakey}-close]`);
 		closers.bind('click', this.onSiteMenuClose.bind(this));
 
+		jQuery(document)
+		.on(`keydown.sitemenu-${this.eid}`, this.onSiteMenuCloseAll.bind(this));
+
 		////////
 
 		return items;
@@ -190,6 +194,9 @@ class StackManager {
 
 		if(this.io instanceof MutationObserver)
 		this.io.disconnect();
+
+		jQuery(document)
+		.off(`keydown.sitemenu-${this.eid}`);
 
 		this.io = null;
 		this.items = null;
@@ -269,6 +276,11 @@ class StackManager {
 			this.element.append(
 				drop = jQuery('<div />')
 				.addClass('offcanvas-backdrop fade')
+			);
+
+			drop.on(
+				`click.sitemenu-${this.eid}`,
+				this.onSiteMenuCloseAll.bind(this)
 			);
 
 			setTimeout(()=> drop.addClass('show'), 0);
@@ -438,6 +450,20 @@ class StackManager {
 
 		if(parent && this.items[parent.id])
 		this.items[parent.id].bsapi.hide();
+
+		return false;
+	};
+
+	onSiteMenuCloseAll(jEv) {
+
+		if(jEv.originalEvent.type === 'keydown')
+		if(jEv.originalEvent.key !== 'Escape')
+		return false;
+
+		for(const i in this.items) {
+			if(this.items[i].isOpen())
+			this.items[i].bsapi.hide();
+		}
 
 		return false;
 	};
