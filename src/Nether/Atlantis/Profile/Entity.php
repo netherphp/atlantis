@@ -858,7 +858,12 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 	public function
 	FetchNews():
-	Common\Datastore {
+	?Common\Datastore {
+
+		if(!class_exists('Nether\Blog\Post'))
+		return NULL;
+
+		////////
 
 		$Index = Atlantis\Struct\EntityRelationship::Find([
 			'EntityUUID' => $this->UUID,
