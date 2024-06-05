@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# NOTE: api access must be enabled per-domain on this registrar.
+
 export ACMESH="/opt/acmesh/acme.sh"
 export DOMAIN=""
 export PORKBUN_API_KEY=""
