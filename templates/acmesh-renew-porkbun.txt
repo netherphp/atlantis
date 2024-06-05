@@ -1,0 +1,8 @@
+#!/bin/sh
+
+export ACMESH="/opt/acmesh/acme.sh"
+export DOMAIN=""
+export PORKBUN_API_KEY=""
+export PORKBUN_SECRET_API_KEY=""
+
+$ACMESH --renew --server letsencrypt --dns dns_porkbun -d $DOMAIN
