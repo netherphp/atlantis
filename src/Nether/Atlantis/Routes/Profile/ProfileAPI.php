@@ -140,6 +140,9 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		$Ent = $this->DemandEntityByID($this->Data->ID);
+
+		static::PluginEntityPatch($this->App, $Ent, $this->Data);
+
 		$Patchset = $Ent->Patch($this->Data);
 
 		if(count($Patchset))
@@ -147,11 +150,30 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		// PLUGINS ON EDIT BRUH
+		$this->SetPayload($Ent->DescribeForPublicAPI());
+
+		return;
+	}
+
+	static public function
+	PluginEntityPatch(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datafilter $Data):
+	void {
+
+		// it is currently expected that plugins will manipulate the data
+		// using the Datafilter's methods.
+
+		$Plugins = $App->Plugins->GetInstanced(
+			Atlantis\Plugin\Interfaces\ProfileAPI\OnPatchInterface::class
+		);
 
 		////////
 
-		$this->SetPayload($Ent->DescribeForPublicAPI());
+		$Plug = NULL;
+
+		foreach($Plugins as $Plug) {
+			/** @var Atlantis\Plugin\Interfaces\ProfileAPI\OnPatchInterface $Plug */
+			$Plug->OnPatch($Profile, $Data);
+		}
 
 		return;
 	}
@@ -263,7 +285,7 @@ extends Atlantis\ProtectedAPI {
 	DemandEntityByID(int $ID):
 	Atlantis\Profile\Entity {
 
-		$Ent = Atlantis\profile\Entity::GetByID($ID);
+		$Ent = Atlantis\Profile\Entity::GetByID($ID);
 
 		if(!$Ent)
 		$this->Quit(1, "Entity ID {$ID} not found");

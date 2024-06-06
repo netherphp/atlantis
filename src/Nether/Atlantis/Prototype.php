@@ -216,6 +216,9 @@ implements Packages\DescribeForPublicInterface {
 			if(isset($this->{$P->Name}))
 			$Val = $this->{$P->Name};
 
+			if($Val instanceof Common\Protostore)
+			$Val = $Val->Export();
+
 			if($Val) {
 				$Sorted->MergeRight([ $P->Name=> $Val ]);
 			}
