@@ -7,6 +7,7 @@ class Profile {
 		AliasPrefix=null, Alias=null, Title=null, Details=null,
 		Enabled=null, AdminNotes=null,
 		PageURL=null, CoverImageURL=null,
+		ExtraData={},
 		Tags=null
 	}) {
 
@@ -28,6 +29,7 @@ class Profile {
 		this.coverImageURL = CoverImageURL;
 		this.details = Details;
 		this.adminNotes = AdminNotes;
+		this.extraData = ExtraData;
 
 		this.tags = Tags;
 
@@ -44,7 +46,12 @@ class Profile {
 		fdat.append('AliasPrefix', this.aliasPrefix);
 		fdat.append('Title', this.title);
 		fdat.append('Details', this.details);
-		fdat.append('AdminNotes', this.adminNotes);
+
+		for(const item of Object.keys(this.extraData))
+		fdat.append(`ExtraData[${item}]`, this.extraData[item]);
+
+		if(this.adminNotes)
+		fdat.append('ExtraData[AdminNotes]', this.adminNotes);
 
 		return fdat;
 	};

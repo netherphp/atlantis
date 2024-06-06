@@ -54,6 +54,7 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
+		static::PluginEntityPost($this->App, $this->Data);
 		$Dataset = Atlantis\Profile\Entity::DatasetFromInput($this->Data);
 		$Ent = NULL;
 		$Tag = NULL;
@@ -116,10 +117,16 @@ extends Atlantis\ProtectedAPI {
 				$Ent->Update([ 'CoverImageID'=> $Image->ID ]);
 			}
 
-			if($this->Data->AdminNotes)
-			$Ent->Update($Ent->Patch([
-				'ExtraData' => [ 'AdminNotes'=> $this->Data->AdminNotes ]
-			]));
+			if(is_array($this->Data->ExtraData)) {
+				$Ent->Update($Ent->Patch([
+					'ExtraData' => $this->Data->ExtraData
+				]));
+			}
+
+			//if($this->Data->AdminNotes)
+			//$Ent->Update($Ent->Patch([
+			//	'ExtraData' => [ 'AdminNotes'=> $this->Data->AdminNotes ]
+			//]));
 		}
 
 		catch(Exception $Err) {
@@ -151,29 +158,6 @@ extends Atlantis\ProtectedAPI {
 		////////
 
 		$this->SetPayload($Ent->DescribeForPublicAPI());
-
-		return;
-	}
-
-	static public function
-	PluginEntityPatch(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datafilter $Data):
-	void {
-
-		// it is currently expected that plugins will manipulate the data
-		// using the Datafilter's methods.
-
-		$Plugins = $App->Plugins->GetInstanced(
-			Atlantis\Plugin\Interfaces\ProfileAPI\OnPatchInterface::class
-		);
-
-		////////
-
-		$Plug = NULL;
-
-		foreach($Plugins as $Plug) {
-			/** @var Atlantis\Plugin\Interfaces\ProfileAPI\OnPatchInterface $Plug */
-			$Plug->OnPatch($Profile, $Data);
-		}
 
 		return;
 	}
@@ -291,6 +275,55 @@ extends Atlantis\ProtectedAPI {
 		$this->Quit(1, "Entity ID {$ID} not found");
 
 		return $Ent;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	PluginEntityPost(Atlantis\Engine $App, Common\Datafilter $Data):
+	void {
+
+		// it is currently expected that plugins will manipulate the data
+		// using the Datafilter's methods.
+
+		$Plugins = $App->Plugins->GetInstanced(
+			Atlantis\Plugin\Interfaces\ProfileAPI\OnPostInterface::class
+		);
+
+		////////
+
+		$Plug = NULL;
+
+		foreach($Plugins as $Plug) {
+			/** @var Atlantis\Plugin\Interfaces\ProfileAPI\OnPostInterface $Plug */
+			$Plug->OnPost($Data);
+		}
+
+		return;
+	}
+
+	static public function
+	PluginEntityPatch(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datafilter $Data):
+	void {
+
+		// it is currently expected that plugins will manipulate the data
+		// using the Datafilter's methods.
+
+		$Plugins = $App->Plugins->GetInstanced(
+			Atlantis\Plugin\Interfaces\ProfileAPI\OnPatchInterface::class
+		);
+
+		////////
+
+		$Plug = NULL;
+
+		foreach($Plugins as $Plug) {
+			/** @var Atlantis\Plugin\Interfaces\ProfileAPI\OnPatchInterface $Plug */
+			$Plug->OnPatch($Profile, $Data);
+		}
+
+		return;
 	}
 
 }
