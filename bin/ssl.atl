@@ -370,38 +370,16 @@ extends Atlantis\TerminalApp {
 	RenewProjectCertAcmeSh(Atlantis\Struct\ProjectJSON $Project):
 	bool {
 
-		$AcmeBin = '/opt/acmesh/acme.sh';
-		$Method = 'webroot';
-		$Server = 'letsencrypt';
-
-		$Mode = match(TRUE) {
-			($this->GetOption('issue'))
-			=> '--issue',
-
-			default
-			=> '--renew'
-		};
-
-		////////
-
-		$Cmd = sprintf(
-			'%s %s --server %s -d %s -w %s',
-			$AcmeBin,
-			$Mode,
-			$Server,
-			$Project->Cert->Domains->Join(' -d '),
-			$this->App->FromProjectRoot('www')
+		$AcmeSh = new Atlantis\Struct\AcmeSh(
+			Root: '/opt/acmesh',
+			Domains: $Project->Cert->Domains
 		);
 
-		$Result = $this->ExecuteCommandLine($Cmd);
-		$this->PrintLn();
+		$Result = $AcmeSh->Run(
+			Webroot: $this->App->FromProjectRoot('www')
+		);
 
-		if($Result->HasError()) {
-			$this->PrintLn($Result->GetOutputString(), 2);
-			return FALSE;
-		}
-
-		return TRUE;
+		return $Result;
 	}
 
 	#[Common\Meta\Date('2023-10-12')]
