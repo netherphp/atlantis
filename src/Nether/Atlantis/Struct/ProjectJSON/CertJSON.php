@@ -26,11 +26,13 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	const
-	TypeAcmePHP = 'acmephp';
+	TypeAcmePHP = 'acmephp',
+	TypeAcmeSH  = 'acmesh';
 
 	const
 	Types = [
-		self::TypeAcmePHP
+		self::TypeAcmePHP,
+		self::TypeAcmeSH
 	];
 
 	static public function

@@ -370,7 +370,28 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		$Cert->Type = 'acmephp';
+		$this->PrintLn($this->FormatHeaderLine('SSL System Types', static::FmtAccent), 2);
+		$this->PrintLn($this->FormatBulletList(Atlantis\Struct\ProjectJSON\CertJSON::Types), 2);
+
+		$Cert->Type = $this->PromptForValue(
+			Required: TRUE,
+			Name: 'Select Type',
+			Type: 'Number',
+			Default: (
+				isset($Cert->Type)
+				? ($Cert::Type($Cert->Type) + 1)
+				: NULL
+			),
+			Filter: function(?string $In) {
+				if(in_array($In, Atlantis\Struct\ProjectJSON\CertJSON::Types))
+				return $In;
+
+				if(!is_numeric($In))
+				return NULL;
+
+				return Atlantis\Struct\ProjectJSON\CertJSON::Type((int)$In - 1);
+			}
+		);
 
 		$Cert->Domains = $this->QueryDomainLineList(
 			$Cert->Domains
@@ -433,6 +454,9 @@ extends Atlantis\TerminalApp {
 
 		$Filename = NULL;
 		$Contents = NULL;
+
+		if($Project->Cert->Type !== Atlantis\Struct\ProjectJSON\CertJSON::TypeAcmePHP)
+		return;
 
 		if($Project->Cert->Type === 'acmephp') {
 			$Filename = 'acmephp.yml';
