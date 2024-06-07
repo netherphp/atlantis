@@ -107,6 +107,7 @@ extends Atlantis\TerminalApp {
 	#[Common\Meta\Date('2023-11-14')]
 	#[Console\Meta\Command('renew')]
 	#[Console\Meta\Info('Renew the SSL cert for this project.')]
+	#[Console\Meta\Toggle('--issue', 'Issue the SSL for the first time.')]
 	#[Console\Meta\Error(1, 'no project json selected')]
 	public function
 	HandleRenew():
@@ -134,7 +135,12 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		$this->RenewProjectCert($Project);
+		$Status = $this->RenewProjectCert($Project);
+
+		if($Status)
+		$this->PrintOK();
+		else
+		$this->PrintError();
 
 		return 0;
 	}
@@ -311,6 +317,9 @@ extends Atlantis\TerminalApp {
 		if($Project->Cert->Type === ($Project->Cert)::TypeAcmePHP)
 		return $this->RenewProjectCertAcmePHP($Project);
 
+		if($Project->Cert->Type === ($Project->Cert)::TypeAcmeSH)
+		return $this->RenewProjectCertAcmeSh($Project);
+
 		return FALSE;
 	}
 
@@ -354,9 +363,43 @@ extends Atlantis\TerminalApp {
 			return FALSE;
 		}
 
-		$this->PrintLn($this->FormatHeaderPoint(
-			'OK', Console\Theme::OK
-		), 2);
+		return TRUE;
+	}
+
+	protected function
+	RenewProjectCertAcmeSh(Atlantis\Struct\ProjectJSON $Project):
+	bool {
+
+		$AcmeBin = '/opt/acmesh/acme.sh';
+		$Method = 'webroot';
+		$Server = 'letsencrypt';
+
+		$Mode = match(TRUE) {
+			($this->GetOption('issue'))
+			=> '--issue',
+
+			default
+			=> '--renew'
+		};
+
+		////////
+
+		$Cmd = sprintf(
+			'%s %s --server %s -d %s -w %s',
+			$AcmeBin,
+			$Mode,
+			$Server,
+			$Project->Cert->Domains->Join(' -d '),
+			$this->App->FromProjectRoot('www')
+		);
+
+		$Result = $this->ExecuteCommandLine($Cmd);
+		$this->PrintLn();
+
+		if($Result->HasError()) {
+			$this->PrintLn($Result->GetOutputString(), 2);
+			return FALSE;
+		}
 
 		return TRUE;
 	}
