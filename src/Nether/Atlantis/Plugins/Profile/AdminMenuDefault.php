@@ -13,21 +13,43 @@ class AdminMenuDefault
 extends Atlantis\Plugin
 implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 
+	const
+	SectionEditing = 'editing',
+	SectionTagging = 'tagging',
+	SectionMedia   = 'media',
+	SectionDanger  = 'danger';
+
+	const
+	EditTitle           = 'ProfileEditMenuTitle',
+	EditItemTitle       = 'ProfileEditItemTitleAlias',
+	EditItemDetails     = 'ProfileEditItemDetails',
+	EditItemAddress     = 'ProfileEditItemAddress',
+	EditItemSocial      = 'ProfileEditItemSocialMedia',
+	EditItemAdminNotes  = 'ProfileEditItemAdminNotes';
+
+	const
+	TaggingTitle         = 'ProfileTaggingMenuTitle',
+	TaggingItemTags      = 'ProfileTaggingEdit',
+	TaggingItemRelations = 'ProfileTaggingERLink';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	GetItemsForSection(Atlantis\Profile\Entity $Profile, string $Key, Common\Datastore $ExtraData):
 	?Common\Datastore {
 
 		return match($Key) {
-			'editing'
+			static::SectionEditing
 			=> $this->GetItemsForEditing($Profile, $ExtraData),
 
-			'tagging'
+			static::SectionTagging
 			=> $this->GetItemsForTagging($Profile, $ExtraData),
 
-			'media'
+			static::SectionMedia
 			=> $this->GetItemsForMedia($Profile, $ExtraData),
 
-			'danger'
+			static::SectionDanger
 			=> $this->GetItemsForDangerZone($Profile, $ExtraData),
 
 			default
@@ -47,32 +69,32 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		////////
 
 		($Output)
-		->Shove('ProfileEditMenuTitle', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::EditTitle, Atlantis\Struct\DropdownItem::New(
 			Title: '# Editing'
 		))
-		->Shove('ProfileEditTitleAlias', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::EditItemTitle, Atlantis\Struct\DropdownItem::New(
 			Title: 'Title & Alias',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'title' ], TRUE)
 		))
-		->Shove('ProfileEditDetails', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::EditItemDetails, Atlantis\Struct\DropdownItem::New(
 			Title: 'Description',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE)
 		))
-		->Shove('ProfileEditAddress', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::EditItemAddress, Atlantis\Struct\DropdownItem::New(
 			Title: 'Addresss',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE)
 		))
-		->Shove('ProfileEditLinks', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::EditItemSocial, Atlantis\Struct\DropdownItem::New(
 			Title: 'Social Media',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE)
 		));
 
 		if($this->App->User && $this->App->User->IsAdmin())
-		$Output->Shove('ProfileEditLinks', Atlantis\Struct\DropdownItem::New(
+		$Output->Shove(static::EditItemAdminNotes, Atlantis\Struct\DropdownItem::New(
 			Title: 'Admin Notes',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'admin-notes' ], TRUE)
@@ -92,15 +114,15 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		////////
 
 		($Output)
-		->Shove('ProfileTaggingMenuTitle', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::TaggingTitle, Atlantis\Struct\DropdownItem::New(
 			Title: '# Tagging'
 		))
-		->Shove('ProfileTaggingEdit', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::TaggingItemTags, Atlantis\Struct\DropdownItem::New(
 			Title: 'Tags',
 			Icon: 'mdi-tag-multiple',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'tags' ], TRUE)
 		))
-		->Shove('ProfileTaggingERLink', Atlantis\Struct\DropdownItem::New(
+		->Shove(static::TaggingItemRelations, Atlantis\Struct\DropdownItem::New(
 			Title: 'Related Profiles',
 			Icon: 'mdi-text-box-multiple-outline',
 			Attr: $Profile->GetDataAttr([
