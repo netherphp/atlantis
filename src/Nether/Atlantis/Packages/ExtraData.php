@@ -25,4 +25,11 @@ trait ExtraData {
 		return $this->ExtraData->HasKey($Key);
 	}
 
+	public function
+	GetExtraData(string $Key):
+	mixed {
+
+		return $this->ExtraData->Get($Key);
+	}
+
 };

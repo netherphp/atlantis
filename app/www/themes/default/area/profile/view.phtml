@@ -70,13 +70,15 @@ $Scopeify = (
 		<h2 class="text-uppercase mb-0">Description</h2>
 		<hr class="mt-1 mb-3" />
 
-		<?php $Surface->Area('profile/view-desc-pre', $__SCOPE) ?>
+		<?php $Surface->Area('profile/view-desc-before', $__SCOPE) ?>
 
 		<?php if($Profile->Details): ?>
 		<div id="EditorContent" class="EditorContent"><?php echo $Profile->Details ?></div>
 		<?php else: ?>
 		<div class="fst-italic">No additional information has been added.</div>
 		<?php endif; ?>
+
+		<?php $Surface->Area('profile/view-desc-after', $__SCOPE) ?>
 	</div>
 	<?php endif; ?>
 

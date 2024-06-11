@@ -51,25 +51,9 @@ extends Atlantis\PublicWeb {
 			$this->App, $Profile
 		);
 
-		$AdminMenu = static::ProfileViewAdminMenu($this->App, $Profile, $ExtraData);
-
-		////////
-
-		if(class_exists('Nether\\Blog\\Library')) {
-			$NewsItems = EntityRelationship::Find([
-				'EntityUUID' => $Profile->UUID,
-				'EntityType' => 'Blog.Post',
-				'Remappers'  => [
-					fn(EntityRelationship $I)
-					=> EntityRelationship::KeepTheOtherOne($I, $Profile->UUID)
-				]
-			]);
-
-			//$News = Blog\Post::Find([
-			//	'UUID' => $NewsItems->GetData(),
-			//	'Sort' => 'newest'
-			//]);
-		}
+		$AdminMenu = static::ProfileViewAdminMenu(
+			$this->App, $Profile, $ExtraData
+		);
 
 		////////
 
