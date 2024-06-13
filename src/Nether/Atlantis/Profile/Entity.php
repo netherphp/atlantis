@@ -314,6 +314,9 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return $Output;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	HasDetails():
 	bool {
@@ -325,8 +328,30 @@ implements Atlantis\Packages\ExtraDataInterface {
 		if(strlen($this->Details) < 32)
 		return trim(strip_tags($this->Details)) !== '';
 
-		return !!$this->Details;
+		return TRUE;
 	}
+
+	public function
+	HasAdminNotes():
+	bool {
+
+		if(!$this->HasExtraData('AdminNotes'))
+		return FALSE;
+
+		// this is to handle the cases where you blank out the description
+		// editor but it still is <div><br></div> which is common for those
+		// html editors.
+
+		$Notes = $this->GetExtraData('AdminNotes');
+
+		if(strlen($Notes) < 32)
+		return trim(strip_tags($Notes)) !== '';
+
+		return TRUE;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	GetSearchRelVal():
