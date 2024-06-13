@@ -7,9 +7,11 @@ use Nether\Blog;
 use Nether\Common;
 use Nether\Database;
 
-use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
 use ArrayAccess;
 use Exception;
+use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindOptionsInterface;
+use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindFiltersInterface;
+use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
 class Entity
@@ -385,6 +387,9 @@ implements Atlantis\Packages\ExtraDataInterface {
 		return (string)(new Atlantis\WebURL($URL ?? '/share/atlantis/gfx/misc/no-image.png'));
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):
 	void {
@@ -413,8 +418,36 @@ implements Atlantis\Packages\ExtraDataInterface {
 		$Input['TagID'] ??= NULL;
 		$Input['SubtagID'] ??= NULL;
 
+		static::FindExtendOptionsFromPlugins($Input);
+
 		return;
 	}
+
+	static protected function
+	FindExtendOptionsFromPlugins(Common\Datastore $Input):
+	void {
+
+		/** @var ?Engine $App */
+
+		$App = defined('Atlantis') ? constant('Atlantis') : NULL;
+
+		if(!$App)
+		throw new Common\Error\RequiredDataMissing('Magic Atlantis');
+
+		////////
+
+		($App->Plugins)
+		->GetInstanced(ExtendFindOptionsInterface::class)
+		->Each(
+			fn(ExtendFindOptionsInterface $P)
+			=> $P->AddFindOptions($Input)
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static protected function
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
@@ -492,8 +525,36 @@ implements Atlantis\Packages\ExtraDataInterface {
 
 		////////
 
+		static::FindExtendFiltersFromPlugins($SQL, $Input);
+
 		return;
 	}
+
+	static protected function
+	FindExtendFiltersFromPlugins(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		/** @var ?Engine $App */
+
+		$App = defined('Atlantis') ? constant('Atlantis') : NULL;
+
+		if(!$App)
+		throw new Common\Error\RequiredDataMissing('Magic Atlantis');
+
+		////////
+
+		($App->Plugins)
+		->GetInstanced(ExtendFindFiltersInterface::class)
+		->Each(
+			fn(ExtendFindFiltersInterface $P)
+			=> $P->AddFindFilters($SQL, $Input)
+		);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static protected function
 	FindExtendFilters_SearchBasicRel(Database\Verse $SQL, Common\Datastore $Input):
