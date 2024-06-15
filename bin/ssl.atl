@@ -219,7 +219,7 @@ extends Atlantis\TerminalApp {
 		}
 
 		if($Format === 'json-pretty') {
-			$this->PrintLn(Common\Text::ReadableJSON($Output));
+			$this->PrintLn(Common\Filters\Text::ReadableJSON($Output));
 			return 0;
 		}
 

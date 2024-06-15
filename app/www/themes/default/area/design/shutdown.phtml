@@ -65,7 +65,7 @@ $Areas->Each(function(string $Area) use($Surface, $Imports, $Codes) {
 <?php if($Imports->Count()) echo $Imports->Join(PHP_EOL), PHP_EOL, PHP_EOL; ?>
 jQuery(function(){
 
-<?php echo Nether\Common\Text::IndentWithTab($Codes->Join(PHP_EOL)), PHP_EOL ?>
+<?php echo Nether\Common\Filters\Text::Tabbify($Codes->Join(PHP_EOL)), PHP_EOL ?>
 
 	return;
 });

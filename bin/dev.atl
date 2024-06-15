@@ -98,7 +98,7 @@ extends Atlantis\TerminalApp {
 				[ 'atlantis.json', 'Dev', 'Run', 'Commands' ]
 			), 2);
 
-			$Output = Common\Text::ReadableJSON([
+			$Output = Common\Filters\Text::ReadableJSON([
 				'Dev' => [ 'Run' => [ 'Commands' => (
 					Common\Struct\CommandList::FromArray([
 						'{%CmdName%}' => [ 'Steps'=> [

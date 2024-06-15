@@ -175,7 +175,7 @@ implements
 		$Values->RemapKeys(function(string $K, mixed $V) {
 
 			if(!is_object($V) && !is_array($V))
-			$V = trim(Common\Filters\Text::YamlEscapeSingleQuote($V));
+			$V = trim(Common\Filters\Text::EscapeSingleQuoteYAML($V));
 
 			else
 			$V = trim(
@@ -184,7 +184,7 @@ implements
 				->Accumulate('', fn(string $P, string $N)=> sprintf(
 					'%s      - \'%s\'%s',
 					$P,
-					Common\Filters\Text::YamlEscapeSingleQuote($N),
+					Common\Filters\Text::EscapeSingleQuoteYAML($N),
 					PHP_EOL
 				))
 			);
