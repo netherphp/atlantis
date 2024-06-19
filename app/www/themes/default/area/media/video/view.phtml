@@ -17,44 +17,6 @@ use Nether\User;
  * @var Atlantis\Media\VideoThirdParty $Video
  */
 
-/*
-$AdminMenu = NULL;
-
-if($Route->IsUserAdmin()) {
-	$AdminMenu = Atlantis\Struct\DropdownMenu::New();
-
-	$Plugins = (
-		($App->Plugins)
-		->Get(Atlantis\Plugins\PrototypeAdminMenuInterface::class)
-		->Remap(fn(string $C)=> new $C($App))
-		->Accumulate(new Common\Datastore, (
-			fn(Common\Datastore $C, Atlantis\Plugins\PrototypeAdminMenuInterface $P)
-			=> $C->MergeRight($P->GetItems( $Video ))
-		))
-		->Sort()
-	);
-
-	var_dump($Plugins);
-
-	($AdminMenu)
-	->ItemNew('Edit Video Info', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'edit' ], TRUE))
-	->ItemNew('Edit Video Description', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'details' ], TRUE))
-	->ItemNew('Edit Video Tags', 'mdi-pencil', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'tags' ], TRUE))
-	->ItemNew('Disable Video', 'mdi-eye-off', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'disable' ], TRUE), If: $Video->Enabled)
-	->ItemNew('Enable Video', 'mdi-eye', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'enable' ], TRUE), If: !$Video->Enabled)
-	->ItemNew('-');
-
-	if($Plugins && $Plugins->Count()) {
-		$AdminMenu->ItemPush($Plugins);
-		$AdminMenu->ItemNew('-');
-	}
-
-	($AdminMenu)
-	->ItemNew('Delete Video', 'mdi-trash-can', Attr: $Video->GetDataAttr([ 'videotp-cmd'=> 'delete' ], TRUE));
-
-}
-*/
-
 $PBefore = Atlantis\Routes\Profile\ProfileWeb::ProfileViewExtraSectionsBefore(
 	$App, $Video->Profile
 );
@@ -146,7 +108,7 @@ $PMenu = (function(Atlantis\Struct\DropdownMenu $PMenu, Atlantis\Media\VideoThir
 	<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Tags ]) ?>
 </div>
 
-<div class="ratiobox widescreen bg-dark text-light rounded mb-8">
+<div class="ratiobox widescreen bg-dark text-light rounded mb-0">
 	<div class="position-absolute position-v-center position-h-center">
 		<i class="mdi mdi-loading mdi-spin font-size-most-large"></i>
 	</div>
@@ -173,40 +135,3 @@ $Surface->Area('profile/view', [
 ?>
 
 <!------------ --- -->
-
-<div class="d-none mb-8">
-	<h2 class="text-uppercase">Description</h2>
-	<hr class="mt-2 mb-4" />
-
-	<div id="VideoDetails"><?php if($Video->Details): ?><?php echo $Video->Details ?><?php endif; ?></div>
-	<?php if(!$Video->Details): ?>
-	<div class="fst-italic">No additional information has been addded.</div>
-	<?php endif; ?>
-</div>
-
-<?php if($News && $News->Count()): ?>
-<!-- NEWS & UPDATES -->
-<div class="d-none mb-8">
-	<h2 class="text-uppercase">News (<?php $Util->Print($News->Count()) ?>)</h2>
-	<hr class="mt-2 mb-4" />
-
-	<div class="hr-hide-last pb-4">
-		<?php foreach($News as $Item): ?>
-		<div>
-			<?php
-
-			if($Item instanceof Nether\Blog\Post)
-			$Surface->Area('widgets/item-blog-post', [ 'Post'=> $Item, 'ShowTags'=> TRUE, 'ShowTools'=> FALSE ]);
-
-			?>
-		</div>
-		<hr class="mb-4 mt-4" />
-		<?php endforeach; ?>
-	</div>
-</div>
-<?php endif; ?>
-
-<div class="d-none">
-	<?php $Surface->Area('media/video/view-extend', $__SCOPE) ?>
-</div>
-

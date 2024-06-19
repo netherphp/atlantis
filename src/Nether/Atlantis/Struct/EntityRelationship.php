@@ -310,10 +310,16 @@ extends Atlantis\Prototype {
 		////////
 
 		if($Input['EntityUUID'] !== NULL && $Input['EntityType'] !== NULL) {
+			if(is_array($Input['EntityUUID']))
+			$SQL->Where('(Main.ParentType=:EntityType AND Main.ChildUUID IN(:EntityUUID)) OR (Main.ChildType=:EntityType AND Main.ParentUUID IN(:EntityUUID))');
+			else
 			$SQL->Where('(Main.ParentType=:EntityType AND Main.ChildUUID=:EntityUUID) OR (Main.ChildType=:EntityType AND Main.ParentUUID=:EntityUUID)');
 		}
 
 		if($Input['EntityUUID'] !== NULL) {
+			if(is_array($Input['EntityUUID']))
+			$SQL->Where('Main.ParentUUID IN(:EntityUUID) OR Main.ChildUUID IN(:EntityUUID)');
+			else
 			$SQL->Where('Main.ParentUUID=:EntityUUID OR Main.ChildUUID=:EntityUUID');
 		}
 

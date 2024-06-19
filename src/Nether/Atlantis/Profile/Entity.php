@@ -1068,8 +1068,13 @@ implements Atlantis\Packages\ExtraDataInterface {
 	FetchRelatedEntityIndex():
 	Common\Datastore {
 
+		$AnchorUUID = [ $this->UUID ];
+
+		if($this->ParentUUID)
+		$AnchorUUID[] = $this->ParentUUID;
+
 		$Results = Atlantis\Struct\EntityRelationship::Find([
-			'EntityUUID'  => $this->UUID,
+			'EntityUUID'  => $AnchorUUID,
 			'Remappers'   => fn($T)=> Atlantis\Struct\EntityRelationship::KeepTheOtherOne($T, $this->UUID)
 		]);
 
