@@ -16,7 +16,7 @@ extends OAuth2API {
 	AuthName  = 'Apple',
 	AuthField = 'AuthAppleID';
 
-	#[RouteHandler('/auth/apple')]
+	#[RouteHandler('/auth/apple', Verb: 'GET')]
 	#[RouteHandler('/auth/apple', Verb: 'POST')]
 	#[Atlantis\Meta\UserActivationFlow]
 	public function

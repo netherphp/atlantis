@@ -65,6 +65,8 @@ extends Atlantis\PublicWeb {
 				'state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE',
 				'scope' => $this->GetAuthScopes()
 			]));
+
+			return;
 		}
 
 		////////
