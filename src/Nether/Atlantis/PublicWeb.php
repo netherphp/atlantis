@@ -97,7 +97,7 @@ as html pages. //*/
 
 		if(!defined('UNIT_TEST_GO_BRRRT'))
 		if($Code >= 300 && $Code <= 399)
-		exit(0);
+		return;
 
 		////////
 
@@ -530,8 +530,8 @@ as html pages. //*/
 		// should not do this. the rewire trick works, but only if it was
 		// a WillConfirmAnswer method and not the method itself.
 
-		if(!defined('UNIT_TEST_GO_BRRRT'))
-		exit(0);
+		//if(!defined('UNIT_TEST_GO_BRRRT'))
+		//exit(0);
 
 		return;
 	}

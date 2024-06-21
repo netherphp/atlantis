@@ -417,13 +417,10 @@ extends Atlantis\Util\Tests\TestCasePU9 {
 		$App = static::BuildAtlantis();
 		$App->User = new Atlantis\Util\Tests\TestUserNormal;
 
-		$App->User->GetAccessTypes()->Shove(
-			'AccessType1',
-			new User\EntityAccessType([
-				'Key'   => 'AccessType1',
-				'Value' => 1
-			])
-		);
+		$App->User->PushAccessType(new User\EntityAccessType([
+			'Key'   => 'AccessType1',
+			'Value' => 1
+		]));
 
 		$Out = static::RunAtlantis($App);
 		$Handler = $App->Router->GetCurrentHandler();
@@ -435,6 +432,7 @@ extends Atlantis\Util\Tests\TestCasePU9 {
 			$App->Router->Response->Content,
 			'user access with type granted'
 		));
+
 
 		$this->AssertEquals(Avenue\Response::CodeOK, $App->Router->Response->Code);
 		$this->AssertFalse($App->Router->Response->Headers->HasKey('location'));
