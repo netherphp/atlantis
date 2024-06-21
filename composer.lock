@@ -2353,12 +2353,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/user.git",
-                "reference": "6343a12398bf52b336e2a7e6396af7bd1384026c"
+                "reference": "970f488df41dfa249cd8c815ea1f6b849b5fe1ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/user/zipball/6343a12398bf52b336e2a7e6396af7bd1384026c",
-                "reference": "6343a12398bf52b336e2a7e6396af7bd1384026c",
+                "url": "https://api.github.com/repos/netherphp/user/zipball/970f488df41dfa249cd8c815ea1f6b849b5fe1ee",
+                "reference": "970f488df41dfa249cd8c815ea1f6b849b5fe1ee",
                 "shasum": ""
             },
             "require": {
@@ -2406,7 +2406,7 @@
                 "issues": "https://github.com/netherphp/user/issues",
                 "source": "https://github.com/netherphp/user/tree/master"
             },
-            "time": "2024-04-20T01:46:32+00:00"
+            "time": "2024-06-21T00:25:20+00:00"
         },
         {
             "name": "paragonie/random_compat",
