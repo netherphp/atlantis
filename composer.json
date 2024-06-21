@@ -25,9 +25,9 @@
 	"prefer-stable": true,
 	"require": {
 		"php": ">=8.1",
+		"netherphp/avenue": "dev-redux as 5.0.98",
 		"netherphp/common": "dev-master as 5.0.98",
 		"netherphp/ki": "dev-redux",
-		"netherphp/avenue": "dev-redux as 5.0.98",
 		"netherphp/surface": "dev-redux",
 		"netherphp/console": "dev-redux",
 		"netherphp/user": "dev-master",
@@ -35,7 +35,6 @@
 		"netherphp/email": "dev-master",
 		"netherphp/storage": "dev-master",
 		"netherphp/browser": "dev-master",
-		"monolog/monolog": "^3.2",
 		"google/recaptcha": "^1.2.4",
 		"gravitypdf/querypath": "^3.2",
 		"bacon/bacon-qr-code": "^2.0"

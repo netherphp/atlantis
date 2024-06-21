@@ -194,10 +194,7 @@ extends Atlantis\ProtectedAPI {
 
 		$this->User->Update([ $Field => NULL ]);
 
-		$this->App->Log->Main(
-			"USER-AUTHDEL: {$this->User}",
-			[ 'UserID'=> $this->User->ID, 'Auth'=> $this->Data->AuthType ]
-		);
+		// log auth del
 
 		$this->SetGoto('/dashboard/settings/auth');
 

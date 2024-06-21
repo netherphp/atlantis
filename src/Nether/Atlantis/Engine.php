@@ -1,20 +1,20 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 namespace Nether\Atlantis;
-
-use Monolog;
-use Nether;
 
 use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
 use Nether\Database;
+use Nether\Email;
 use Nether\Ki;
 use Nether\Storage;
 use Nether\Surface;
 use Nether\User;
 
-use Nether\Common\Datastore;
+################################################################################
+################################################################################
 
 class Engine {
 /*//
@@ -48,8 +48,8 @@ application instance.
 	public ?User\EntitySession
 	$User;
 
-	public Util\LogManager
-	$Log;
+	//public Util\LogManager
+	//$Log;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ application instance.
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__Construct(string $ProjectRoot, ?Datastore $Conf=NULL) {
+	__Construct(string $ProjectRoot, ?Common\Datastore $Conf=NULL) {
 
 		// prepare some defaults.
 
@@ -107,7 +107,7 @@ application instance.
 		->LoadRequiredLibraries()
 		->LoadAdditionalLibraries();
 
-		$this->Library->Each(function(Nether\Common\Library $Inst){
+		$this->Library->Each(function(Common\Library $Inst){
 
 			$this
 			->Queue('Atlantis.Prepare', $Inst->OnPrepare(...))
@@ -171,7 +171,7 @@ application instance.
 
 		////////
 
-		$this->Router->Run(new Nether\Avenue\Struct\ExtraData([
+		$this->Router->Run(new Avenue\Struct\ExtraData([
 			'App'=> $this
 		]));
 
@@ -469,8 +469,6 @@ application instance.
 	InitLogging():
 	static {
 
-		$this->Log = new Util\LogManager($this->ProjectRoot);
-		$this->Log->Init();
 
 		return $this;
 	}
@@ -495,7 +493,7 @@ application instance.
 			if(!is_readable($EnvFile))
 			return $this;
 
-			$EnvData = Nether\Avenue\Util::MakePathableKey(
+			$EnvData = Avenue\Util::MakePathableKey(
 				trim(file_get_contents($EnvFile))
 			);
 		}
@@ -633,7 +631,7 @@ application instance.
 
 		foreach($Files as $File)
 		if(is_readable($File))
-		(function(string $__FILENAME, Nether\Common\Datastore $Config, Nether\Atlantis\Engine $App){
+		(function(string $__FILENAME, Common\Datastore $Config, Atlantis\Engine $App){
 			require($__FILENAME);
 			return;
 		})($File, $this->Config, $this);
@@ -654,7 +652,7 @@ application instance.
 		);
 
 		if(is_readable($File))
-		(function(string $__FILENAME, Nether\Common\Datastore $Config, Nether\Atlantis\Engine $App){
+		(function(string $__FILENAME, Common\Datastore $Config, Atlantis\Engine $App){
 			require($__FILENAME);
 			return;
 		})($File, $this->Config, $this);
@@ -667,14 +665,14 @@ application instance.
 	static {
 
 		($this->Library)
-		->Shove('Common', new Nether\Common\Library(Config: $this->Config, App: $this))
-		->Shove('Avenue', new Nether\Avenue\Library(Config: $this->Config, App: $this))
-		->Shove('Surface', new Nether\Surface\Library(Config: $this->Config, App: $this))
-		->Shove('Storage', new Nether\Storage\Library(Config: $this->Config, App: $this))
-		->Shove('Database', new Nether\Database\Library(Config: $this->Config, App: $this))
-		->Shove('User', new Nether\User\Library(Config: $this->Config, App: $this))
-		->Shove('Email', new Nether\Email\Library(Config: $this->Config, App: $this))
-		->Shove('Atlantis', new Nether\Atlantis\Library(Config: $this->Config, App: $this));
+		->Shove('Common', new Common\Library(Config: $this->Config, App: $this))
+		->Shove('Avenue', new Avenue\Library(Config: $this->Config, App: $this))
+		->Shove('Surface', new Surface\Library(Config: $this->Config, App: $this))
+		->Shove('Storage', new Storage\Library(Config: $this->Config, App: $this))
+		->Shove('Database', new Database\Library(Config: $this->Config, App: $this))
+		->Shove('User', new User\Library(Config: $this->Config, App: $this))
+		->Shove('Email', new Email\Library(Config: $this->Config, App: $this))
+		->Shove('Atlantis', new Atlantis\Library(Config: $this->Config, App: $this));
 
 		return $this;
 	}

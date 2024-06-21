@@ -104,12 +104,6 @@ implements
 
 		$App->User = User\EntitySession::Get();
 
-		if($App->User && $App->User->IsAdmin())
-		$App->Log->InitAdminlog(
-			$App->GetProjectRoot(),
-			$App->Config[Key::ConfLogFormat]
-		);
-
 		////////
 
 		Atlantis\Media\FileTagLink::Register();

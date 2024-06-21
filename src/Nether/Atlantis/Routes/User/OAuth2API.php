@@ -168,10 +168,7 @@ extends Atlantis\PublicWeb {
 					'RemoteAddr'      => $RemoteAddr
 				]);
 
-				$this->App->Log->Main(
-					"USER-CREATE: {$User}",
-					[ 'UserID'=> $User->ID, 'Origin'=> static::AuthName ]
-				);
+				// log user create
 			}
 		}
 
@@ -199,11 +196,8 @@ extends Atlantis\PublicWeb {
 
 		////////
 
-		if(!$User->{static::AuthField})
-		$this->App->Log->Main(
-			"USER-AUTHLINK: {$User}",
-			[ 'UserID'=> $User->ID, 'Auth'=> static::AuthName ]
-		);
+		//if(!$User->{static::AuthField})
+		// log access link
 
 		$User->Update([
 			static::AuthField => $Info->AuthID,

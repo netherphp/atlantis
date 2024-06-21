@@ -108,12 +108,7 @@ extends Atlantis\ProtectedAPI {
 
 		if(count($Dataset)) {
 			$User->Update($Dataset);
-
-			$this->App->Log->Admin("USER-PATCH: {$User} by {$this->User}", [
-				'Fields'  => array_keys($Dataset),
-				'UserID'  => $User->ID,
-				'AdminID' => $this->User->ID
-			]);
+			// log patch
 		}
 
 		$this->SetPayload($Dataset);
@@ -158,10 +153,7 @@ extends Atlantis\ProtectedAPI {
 
 		$User->Update([ 'TimeBanned'=> time() ]);
 
-		$this->App->Log->Admin("USER-BAN: {$User} by {$this->User}",[
-			'UserID'  => $User->ID,
-			'AdminID' => $this->User->ID
-		]);
+		// log ban
 
 		$this->SetGoto('reload');
 		return;
@@ -187,10 +179,7 @@ extends Atlantis\ProtectedAPI {
 
 		$User->Update([ 'TimeBanned'=> 0 ]);
 
-		$this->App->Log->Admin("USER-UNBAN: {$User} BY {$this->User}",[
-			'UserID'  => $User->ID,
-			'AdminID' => $this->User->ID
-		]);
+		// log unban
 
 		$this->SetGoto('reload');
 		return;
@@ -216,10 +205,7 @@ extends Atlantis\ProtectedAPI {
 
 		$Who->TransmitSession(TRUE);
 
-		$this->App->Log->Admin("USER-OVERSHADOW: {$Who} BY {$this->User}", [
-			'UserID'  => $Who->ID,
-			'AdminID' => $this->User->ID
-		]);
+		// log overshadow
 
 		$this
 		->SetGoto('/')
@@ -290,12 +276,7 @@ extends Atlantis\ProtectedAPI {
 			]);
 		}
 
-		$this->App->Log->Admin("USER-AXSET: {$User} by {$this->User}",[
-			'Key'     => $this->Data->Key,
-			'Value'   => $this->Data->Value,
-			'UserID'  => $User->ID,
-			'AdminID' => $this->User->ID
-		]);
+		// log access set
 
 		////////
 
@@ -328,12 +309,7 @@ extends Atlantis\ProtectedAPI {
 		$User = User\Entity::GetByID($Access->EntityID);
 		$Access->Drop();
 
-		$this->App->Log->Admin("USER-AXDEL: {$User} by {$this->User}",[
-			'Key'     => $Access->Key,
-			'Value'   => $Access->Value,
-			'UserID'  => $User->ID,
-			'AdminID' => $this->User->ID
-		]);
+		// log access del
 
 		$this->SetGoto('reload');
 		return;

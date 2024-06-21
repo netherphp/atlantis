@@ -426,10 +426,7 @@ extends Atlantis\PublicAPI {
 			$Confirm->Send(TRUE);
 		}
 
-		$this->App->Log->Main(
-			"USER-CREATE: {$User}",
-			[ 'UserID'=> $User->ID, 'Origin'=> 'Local' ]
-		);
+		// log user create
 
 		////////
 
