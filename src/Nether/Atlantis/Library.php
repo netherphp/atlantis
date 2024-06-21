@@ -90,12 +90,20 @@ implements
 		->Register(Atlantis\Plugins\User\AccessTypeDefault::class)
 		->Register(Atlantis\Plugins\Profile\AdminMenuDefault::class);
 
+		($App->Plugins)
+		->RegisterInterfacePlugin(
+			Atlantis\Plugin\Interfaces\Engine\AppInstanceStaticInterface::class,
+			Atlantis\Prototype::class
+		);
+
 		return;
 	}
 
 	public function
 	OnReady(... $Argv):
 	void {
+
+		/** @var Atlantis\Engine $App */
 
 		$App = $Argv['App'];
 		$Scan = NULL;
@@ -125,6 +133,19 @@ implements
 		);
 
 		$Scan->Commit();
+
+		$this->OnReadyPluginAppInstanceStatic($App);
+
+		return;
+	}
+
+	protected function
+	OnReadyPluginAppInstanceStatic(Atlantis\Engine $App):
+	void {
+
+		($App->Plugins)
+		->Get(Plugin\Interfaces\Engine\AppInstanceStaticInterface::class)
+		->Each(fn(string $Class)=> ($Class)::AppInstanceSet($App));
 
 		return;
 	}

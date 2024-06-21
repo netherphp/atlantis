@@ -13,7 +13,7 @@ use Exception;
 class Entity
 extends Atlantis\Prototype
 implements
-	Atlantis\Packages\ExtraDataInterface {
+	Atlantis\Interfaces\ExtraDataInterface {
 
 	use
 	Atlantis\Packages\CoverImage,

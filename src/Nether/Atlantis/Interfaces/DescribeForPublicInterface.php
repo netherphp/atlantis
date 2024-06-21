@@ -1,6 +1,6 @@
 <?php
 
-namespace Nether\Atlantis\Packages;
+namespace Nether\Atlantis\Interfaces;
 
 interface DescribeForPublicInterface {
 

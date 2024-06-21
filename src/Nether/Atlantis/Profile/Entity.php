@@ -16,7 +16,7 @@ use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
 #[Database\Meta\TableClass('Profiles', 'PRO')]
 class Entity
 extends Atlantis\Prototype
-implements Atlantis\Packages\ExtraDataInterface {
+implements Atlantis\Interfaces\ExtraDataInterface {
 
 	const
 	EntType = 'Profile.Entity';

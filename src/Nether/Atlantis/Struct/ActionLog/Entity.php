@@ -9,7 +9,7 @@ use Nether\Database;
 #[Database\Meta\TableClass('ActionLog')]
 class Entity
 extends Atlantis\Prototype
-implements Atlantis\Packages\ExtraDataInterface {
+implements Atlantis\Interfaces\ExtraDataInterface {
 
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	#[Database\Meta\ForeignKey('Users', 'ID', Delete: NULL)]

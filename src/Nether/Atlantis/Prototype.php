@@ -1,4 +1,5 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 namespace Nether\Atlantis;
 
@@ -7,11 +8,19 @@ use Nether\Database;
 
 use ArrayAccess;
 
+################################################################################
+################################################################################
+
 #[Common\Meta\Date('2023-02-15')]
 #[Common\Meta\Info('Adds core object features that anything built using the framework should expect to have.')]
 class Prototype
 extends Database\Prototype
-implements Packages\DescribeForPublicInterface {
+implements
+	Interfaces\DescribeForPublicInterface,
+	Plugin\Interfaces\Engine\AppInstanceStaticInterface {
+
+	use
+	Packages\AppInstanceStatic;
 
 	////////////////////////////////////////////////////////////////
 	//// DATABASE FIELDS ///////////////////////////////////////////
@@ -67,7 +76,7 @@ implements Packages\DescribeForPublicInterface {
 
 		// add magic ExtraData/ExtraJSON support.
 
-		if($this instanceof Packages\ExtraDataInterface)
+		if($this instanceof Interfaces\ExtraDataInterface)
 		$Data = array_merge($Data, $this->PatchExtraData($Input));
 
 		return $Data;

@@ -11,7 +11,7 @@ use Nether\Database;
 class TrafficReport
 extends Atlantis\Prototype
 implements
-	Atlantis\Packages\ExtraDataInterface {
+	Atlantis\Interfaces\ExtraDataInterface {
 
 	#[Database\Meta\TypeChar(Size: 10)]
 	#[Database\Meta\FieldIndex(Unique: TRUE)]
