@@ -214,14 +214,14 @@ implements
 		$Type = $Type ?: 'default';
 
 		switch($Type) {
-			case 'default':
-				$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
-			break;
 			case 'tagcover':
 				$this->OnUploadFinaliseTagCover($App, $UUID, $Name, $File);
 			break;
 			case 'tagphoto':
 				$this->OnUploadFinaliseTagPhoto($App, $UUID, $Name, $File);
+			break;
+			default:
+				$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
 			break;
 		}
 
