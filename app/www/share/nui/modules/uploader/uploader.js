@@ -42,10 +42,11 @@ let UploadDef = {
 
 class UploadChunker {
 
-	constructor(file, clen) {
+	constructor(fieldName, file, clen) {
 
 		this.file = file;
 		this.chunkSize = clen;
+		this.fieldName = fieldName;
 		this.count = Math.ceil(this.file.size / this.chunkSize);
 		this.uuid = null;
 
@@ -92,7 +93,7 @@ class UploadChunker {
 		let chunk = this.file.slice(range[0], (range[1] + 1));
 		let data = new FormData;
 
-		data.append('file', chunk, this.file.name);
+		data.append(this.fieldName, chunk, this.file.name);
 
 		return data;
 	};
@@ -131,7 +132,11 @@ extends ModalDialog {
 		this.method = main.options.method;
 		this.dataset = main.options.dataset;
 		this.onSuccess = main.options.onSuccess;
-		this.chunkSize = 1024 * 1024;
+		this.chunkSize = main.options.chunkSize;
+		this.fieldName = main.options.fieldName;
+
+		this.methodFinal = main.options.methodFinal;
+		this.urlFinal = main.options.urlFinal;
 
 		this.button.on('click', this.onSelectFile.bind(this));
 		this.input.on('change', this.onSelected.bind(this));
@@ -308,9 +313,11 @@ extends ModalDialog {
 
 		////////
 
-		let api = new API.Request('POSTFINAL', this.url);
+		let api = new API.Request(this.methodFinal, this.urlFinal);
 		let finish = {
 			'UUID': this.req.response.Payload.UUID,
+			'Path': this.req.response.Payload.Path,
+			'Type': this.req.response.Payload.Type,
 			'Name': this.req.response.Payload.Name
 		};
 
@@ -331,8 +338,10 @@ extends ModalDialog {
 			}
 
 			if(typeof self.onSuccess === 'string') {
-				if(self.onSuccess === 'reload')
+				if(self.onSuccess === 'reload' || self.onSuccess === 'refresh')
 				location.reload();
+				else
+				location.href = self.onSuccess;
 			}
 
 			return;
@@ -379,6 +388,7 @@ extends ModalDialog {
 	queueAddFile(file) {
 
 		this.queue.push(new UploadChunker(
+			this.fieldName,
 			file,
 			this.chunkSize
 		));
@@ -474,6 +484,18 @@ class UploadButtonOptions {
 			: 'POST'
 		);
 
+		this.urlFinal = (
+			typeof input.urlFinal !== 'undefined'
+			? input.urlFinal
+			: '/api/media/entity'
+		);
+
+		this.methodFinal = (
+			typeof input.methodFinal !== 'undefined'
+			? input.methodFinal
+			: 'POSTFINAL'
+		);
+
 		this.dataset = (
 			typeof input.dataset !== 'undefined'
 			? input.dataset
@@ -490,6 +512,18 @@ class UploadButtonOptions {
 			typeof input.onSuccess !== 'undefined'
 			? input.onSuccess
 			: null
+		);
+
+		this.chunkSize = (
+			typeof input.chunkSize !== 'undefined'
+			? input.chunkSize
+			: 1024 * 1024
+		);
+
+		this.fieldName = (
+			typeof input.fieldName !== 'undefined'
+			? input.fieldName
+			: 'file'
 		);
 
 		return;
@@ -522,6 +556,9 @@ class UploadButton {
 		if(this.element.is('[data-url]'))
 		this.options.url = ths.element.attr('data-url');
 
+		if(this.element.is('[data-on-success]'))
+		this.options.onSuccess = this.element.attr('data-on-success');
+
 		if(this.element.is('[data-dataset]'))
 		this.options.dataset = JSON.parse(
 			this.element.attr('data-dataset')
@@ -543,10 +580,13 @@ class UploadButton {
 		return;
 	};
 
-	onButtonClick() {
+	async onButtonClick() {
 	/*//
 	@date 2022-04-14
 	//*/
+
+		if(this.element.is('[data-conf]'))
+		await this.getRemoteConfig(this.element.attr('data-conf'));
 
 		this.dialog = new UploadButtonDialog(this);
 
@@ -560,6 +600,34 @@ class UploadButton {
 
 		this.dialog = null;
 		return;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	getRemoteConfig(url) {
+
+		let api = new API.Request('UPCONFIG', url);
+		let self = this;
+
+		let chain = (
+			(api.send())
+			.then(function(result) {
+				self.options.method = result.payload.UploadMethod;
+				self.options.url = result.payload.UploadURL;
+				self.options.chunkSize = result.payload.UploadChunk;
+				self.options.fieldName = result.payload.UploadName;
+
+				self.options.methodFinal = result.payload.FinalMethod;
+				self.options.urlFinal = result.payload.FinalURL;
+
+				console.log(self.options);
+				return;
+			})
+			.catch(api.catch)
+		);
+
+		return chain;
 	};
 
 };

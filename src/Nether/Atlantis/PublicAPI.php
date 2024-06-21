@@ -15,6 +15,13 @@ as json apis. all output is wrapped in a standardised json message. this version
 does not do any additional access checking.
 //*/
 
+	#[Common\Meta\PropertyFactory('FromArray')]
+	const
+	QuitMsg = [];
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	protected bool
 	$IsDone = FALSE;
 
@@ -211,10 +218,18 @@ does not do any additional access checking.
 	Quit(int $Err, ?string $Msg=NULL):
 	void {
 
-		if($Msg === NULL)
-		$Msg = match($Err) {
-			0       => 'OK',
-			default => 'Error'
+		$Msg = match(TRUE) {
+			($Msg !== NULL)
+			=> $Msg,
+
+			(isset(static::QuitMsg[$Err]))
+			=> static::QuitMsg[$Err],
+
+			($Err !== 0)
+			=> 'Error',
+
+			default
+			=> 'OK'
 		};
 
 		$this
