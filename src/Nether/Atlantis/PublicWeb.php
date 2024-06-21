@@ -301,6 +301,16 @@ as html pages. //*/
 		if(!$this->App->Config[Atlantis\Key::ConfTrafficReporting])
 		return;
 
+		// dont log things that are in the soft ignore list.
+
+		$IgnoreUA = Library::Get(Key::ConfAccessIgnoreAgentSoft);
+		$InputUA = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
+
+		if($IgnoreUA && $InputUA) {
+			if(preg_match(sprintf('#\b(?:%s)\b#msi', $IgnoreUA), $InputUA));
+			return;
+		}
+
 		// @todo 2023-07-21
 		// this unit test const should be replaced with a database
 		// availability check instead.
