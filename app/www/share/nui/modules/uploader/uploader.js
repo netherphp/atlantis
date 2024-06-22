@@ -472,6 +472,12 @@ class UploadButtonOptions {
 
 	constructor(input={}) {
 
+		this.conf = (
+			typeof input.conf !== 'undefined'
+			? input.conf
+			: null
+		);
+
 		this.url = (
 			typeof input.url !== 'undefined'
 			? input.url
@@ -585,8 +591,15 @@ class UploadButton {
 	@date 2022-04-14
 	//*/
 
-		if(this.element.is('[data-conf]'))
-		await this.getRemoteConfig(this.element.attr('data-conf'));
+		let conf = this.options.conf;
+
+		if(!conf)
+		conf = this.element.attr('data-conf');
+
+		////////
+
+		if(conf)
+		await this.getRemoteConfig(this.options.conf);
 
 		this.dialog = new UploadButtonDialog(this);
 

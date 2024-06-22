@@ -5,6 +5,7 @@ namespace Nether\Atlantis\Routes;
 
 use FileEye;
 use Nether\Atlantis;
+use Nether\Avenue;
 use Nether\Common;
 use Nether\Storage;
 
@@ -16,13 +17,9 @@ use Nether\Atlantis\Plugin\Interfaces\Engine\FileUploadInterface;
 ################################################################################
 
 #[Common\Meta\Date('2024-06-21')]
-#[Common\Meta\Info('This is to replace UploadAPI and the stack of finalise bullshit on the Atlantis Library.')]
+#[Common\Meta\Info('This is to replace UploadAPI with sanity and plugin support.')]
 class FileUploadAPI
 extends Atlantis\ProtectedAPI {
-
-	const
-	MatchContentRange  = '/(bytes) ([\d]+)-([\d]+)\/([\d]+)/',
-	HeaderContentRange = 'HTTP_CONTENT_RANGE';
 
 	const
 	QuitMsg = [
@@ -41,15 +38,18 @@ extends Atlantis\ProtectedAPI {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2024-06-21')]
 	protected ?Storage\Adaptor
 	$Temp;
 
+	#[Common\Meta\Date('2024-06-21')]
 	protected ?Storage\Adaptor
 	$Storage;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2024-06-21')]
 	public function
 	OnReady(?Common\Datastore $Input):
 	void {
@@ -78,6 +78,7 @@ extends Atlantis\ProtectedAPI {
 	#[Atlantis\Meta\RouteHandler('/api/file/upload', Verb: 'UPCONFIG')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Common\Meta\Info('Provides info for the front end to configure itself.')]
+	#[Common\Meta\Date('2024-06-21')]
 	public function
 	OnUploadConfig():
 	void {
@@ -104,6 +105,7 @@ extends Atlantis\ProtectedAPI {
 	#[Atlantis\Meta\RouteHandler('/api/file/upload', Verb: 'UPCHUNK')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Common\Meta\Info('Handle each incoming chunk to assemble a full file.')]
+	#[Common\Meta\Date('2024-06-21')]
 	public function
 	OnUploadChunk():
 	void {
@@ -113,11 +115,11 @@ extends Atlantis\ProtectedAPI {
 		->UUID(Common\Filters\Text::UUID(...));
 
 		$Upload = $this->Request->File->Get('File');
+		$Range = Avenue\Headers\HttpContentRange::FromEnv();
 		$TempOutput = NULL;
 		$TempInput = NULL;
 		$UUID = NULL;
 		$Type = NULL;
-		$Range = NULL;
 		$Name = NULL;
 		$Size = NULL;
 
@@ -126,7 +128,7 @@ extends Atlantis\ProtectedAPI {
 		if(!$Upload)
 		$this->Quit(1);
 
-		if(!isset($_SERVER[static::HeaderContentRange]))
+		if(!$Range)
 		$this->Quit(2);
 
 		if($Upload['size'] === 0)
@@ -140,7 +142,6 @@ extends Atlantis\ProtectedAPI {
 		$TempInput = $Upload['tmp_name'];
 		$TempOutput = $this->DetermineTempFile($UUID);
 
-		$Range = static::DigestChunkRange($_SERVER[static::HeaderContentRange]);
 		$Name = $Upload['name'];
 		$Size = $Upload['size'];
 		$File = NULL;
@@ -181,6 +182,7 @@ extends Atlantis\ProtectedAPI {
 	#[Atlantis\Meta\RouteHandler('/api/file/upload', Verb: 'UPFINAL')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Common\Meta\Info('Officially add the file to the tracking system and ask any plugins if they wanna do anything with it.')]
+	#[Common\Meta\Date('2024-06-21')]
 	public function
 	OnUploadDone():
 	void {
@@ -248,19 +250,29 @@ extends Atlantis\ProtectedAPI {
 		// a plugin that will check for blog-header and finish updating
 		// whatever needs to be updated with references to this new upload.
 
+		$this->OnUploadDonePlugins($Type, $Entity, $this->Data);
+
+		//$this->SetGoto($Entity->GetPageURL());
+		$this->SetPayload($Entity->DescribeForPublicAPI());
+
+		return;
+	}
+
+	#[Common\Meta\Date('2024-06-22')]
+	protected function
+	OnUploadDonePlugins(string $Type, Atlantis\Media\File $Entity, Common\Datafilter $Data):
+	void {
+
 		($this->App->Plugins)
 		->GetInstanced(FileUploadInterface::class)
 		->Filter(
 			fn(FileUploadInterface $P)
-			=> $P->WillHandleUpload($Type, $UUID, $Entity, $File)
+			=> $P->WillHandleUpload($Type, $Entity, $Data)
 		)
 		->Each(
 			fn(FileUploadInterface $P)
-			=> $P->OnHandleUpload($Type, $UUID, $Entity, $File)
+			=> $P->OnHandleUpload($Type, $Entity, $Data)
 		);
-
-		//$this->SetGoto($Entity->GetPageURL());
-		$this->SetPayload($Entity->DescribeForPublicAPI());
 
 		return;
 	}
@@ -336,27 +348,6 @@ extends Atlantis\ProtectedAPI {
 		$Ext = $Type->GetDefaultExtension();
 
 		return $Ext ?: 'unknown';
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	static public function
-	DigestChunkRange(string $Content):
-	?object {
-
-		$Match = NULL;
-		$Result = preg_match(static::MatchContentRange, $Content, $Match);
-
-		if(!$Result)
-		return NULL;
-
-		return (object)[
-			'Unit'  => $Match[1],
-			'Begin' => (int)$Match[2],
-			'End'   => (int)$Match[3],
-			'Total' => (int)$Match[4]
-		];
 	}
 
 };

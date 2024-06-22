@@ -9,7 +9,7 @@
 //Nether\Common\Dump::Var($Blog, TRUE);
 
 $Surface
-->Set('Page.Title', 'Blog Settings - Dashboard')
+->Set('Page.Title', sprintf('Blog Settings - %s', $Blog->Title))
 ->Area('dashboard/nav', [ 'Trail' => [
 	'Blog'                      => NULL,
 	"Settings ({$Blog->Title})" => NULL
@@ -24,8 +24,16 @@ $Surface
 			<?php $Surface->Area('blog/widgets/blog-header', [ 'Blog'=> $Blog, 'CacheBust'=> TRUE ]) ?>
 		</div>
 		<div class="row tight justify-content-center">
-			<div class="col-12 col-md-auto mb-2 mb-md-0"><button id="BlogSettingsUploadIcon" type="button" class="btn btn-block btn-outline-light">Upload Icon</button></div>
-			<div class="col-12 col-md-auto mb-0 mb-md-0"><button id="BlogSettingsUploadHeader" type="button" class="btn btn-block btn-outline-light">Upload Header</button></div>
+			<div class="col-12 col-md-auto mb-2 mb-md-0">
+				<button id="BlogSettingsUploadIcon" type="button" class="btn btn-block btn-outline-light">
+					Upload Icon
+				</button>
+			</div>
+			<div class="col-12 col-md-auto mb-0 mb-md-0">
+				<button id="BlogSettingsUploadHeader" type="button" class="btn btn-block btn-outline-light">
+					Upload Header
+				</button>
+			</div>
 		</div>
 	</div>
 
@@ -70,15 +78,15 @@ jQuery(function() {
 	let bid = root.attr('data-blog-id');
 
 	new UploadButton('#BlogSettingsUploadHeader', {
-		'url': '/api/blog/entity/header',
-		'dataset': { 'ID': bid, 'Type': 'bloghead' },
-		'onSuccess': ()=> location.reload()
+		'conf': '/api/file/upload',
+		'dataset': { 'BlogID': bid, 'Type': 'blog-img-header' },
+		'onSuccess': 'reload'
 	});
 
 	new UploadButton('#BlogSettingsUploadIcon', {
-		'url': '/api/blog/entity/icon',
-		'dataset': { 'ID': bid, 'Type': 'blogicon' },
-		'onSuccess': ()=> location.reload()
+		'conf': '/api/file/upload',
+		'dataset': { 'BlogID': bid, 'Type': 'blog-img-icon' },
+		'onSuccess': 'reload'
 	});
 
 	jQuery('#BlogSettings')
