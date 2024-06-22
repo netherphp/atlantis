@@ -77,6 +77,10 @@ $Surface
 	<?php foreach($Surface->Get('Theme.Page.Scripts') as $ScriptURL): ?><script type="text/javascript" src="<?php $Printer($ScriptURL) ?>"></script>
 	<?php endforeach; unset($ScriptURL); ?>
 
+	<!-- Additional Script Modules -->
+	<?php foreach($Surface->Get('Theme.Page.Modules') as $ScriptURL): ?><script type="module" src="<?php $Printer($ScriptURL) ?>"></script>
+	<?php endforeach; unset($ScriptURL); ?>
+
 </head>
 <body>
 

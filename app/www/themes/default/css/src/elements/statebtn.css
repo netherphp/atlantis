@@ -1,0 +1,41 @@
+.atl-statebtn {
+	display: grid;
+	background: transparent !important;
+	border: 0px !important;
+	padding: 0px !important;
+	text-align: center !important;
+	opacity: 1.0;
+	transition: opacity 300ms;
+}
+
+.atl-statebtn[disabled] {
+	opacity: 0.75;
+}
+
+.atl-statebtn .btn {
+	grid-column-start: 0;
+	grid-column-end: 1;
+	grid-row-start: 0;
+	grid-row-end: 1;
+
+	opacity: 0.0;
+	width: 100%;
+
+	transition: opacity 150ms;
+}
+
+.atl-statebtn.atl-state-default .default {
+	opacity: 1.0;
+}
+
+.atl-statebtn.atl-state-success .success {
+	opacity: 1.0;
+}
+
+.atl-statebtn.atl-state-error .error {
+	opacity: 1.0;
+}
+
+.atl-statebtn.atl-state-processing .processing {
+	opacity: 1.0;
+}

@@ -1,0 +1,58 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var iterable $Trail
+ */
+
+$Trail ??= [];
+
+$TrailStart = NULL;
+$TrailFull = NULL;
+$Navbar = NULL;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$TrailStart = [
+	Atlantis\Struct\Item::New(UUID: 'home', Title: '', Icon: 'mdi-home', URL: '/'),
+	Atlantis\Struct\Item::New(UUID: 'dash', Title: 'Dashboard', URL: '/dashboard')
+];
+
+$TrailFull = Common\Datastore::FromStackMerged($TrailStart, $Trail);
+
+$TrailFull->EachKeyValue(function(mixed $K, Atlantis\Struct\Item $I, Common\Datastore $T) {
+
+	if(!$T->IsLastKey($K))
+	$I->Classes->Push('fw-bold');
+
+	return;
+});
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$Navbar = Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
+	'Classes' => [ 'fs-smaller' ],
+	'Items'   => $TrailFull
+]);
+
+?>
+
+<div class="container pt-4 pb-4">
+	<div class="jumbotron rounded px-3 py-2">
+		<?php echo $Navbar ?>
+	</div>
+</div>

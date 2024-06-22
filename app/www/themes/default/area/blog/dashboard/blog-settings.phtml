@@ -1,109 +1,229 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
 /**
- * @var Nether\Atlantis\Engine $App
- * @var Nether\Surface\Engine $Surface
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Blog\Routes\BlogDashboard $Route
  * @var Nether\Blog\Blog $Blog
+ * @var Common\Datastore $Trail
  */
 
-//Nether\Common\Dump::Var($Blog, TRUE);
+$BlogAliasTemplate = Blog\Library::Get(Blog\Library::ConfBlogURL);
+$BlogAliasPrefix = str_replace(':BlogAlias:', '', $BlogAliasTemplate);
 
-$Surface
-->Set('Page.Title', sprintf('Blog Settings - %s', $Blog->Title))
-->Area('dashboard/nav', [ 'Trail' => [
-	'Blog'                      => NULL,
-	"Settings ({$Blog->Title})" => NULL
-]]);
+($Surface)
+->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 
 ?>
 
-<form id="BlogSettings" data-blog-id="<?php $Printer($Blog->ID) ?>">
+<div class="container-fluid gx-0">
+	<?php $Surface->Area('blog/widgets/blog-header', [ 'Blog'=> $Blog, 'CacheBust'=> TRUE ]) ?>
+</div>
 
-	<div class="mb-4">
-		<div class="mb-2">
-			<?php $Surface->Area('blog/widgets/blog-header', [ 'Blog'=> $Blog, 'CacheBust'=> TRUE ]) ?>
-		</div>
-		<div class="row tight justify-content-center">
-			<div class="col-12 col-md-auto mb-2 mb-md-0">
-				<button id="BlogSettingsUploadIcon" type="button" class="btn btn-block btn-outline-light">
-					Upload Icon
-				</button>
+<div class="container pt-4 pb-4">
+	<form id="BlogSettings" data-blog-id="<?php $Printer($Blog->ID) ?>">
+
+		<div class="mb-4">
+			<div class="row tight justify-content-center">
+				<div class="col-12 col-md-auto mb-2 mb-md-0">
+					<button name="BtnUploadBlogImgIcon" type="button" class="btn btn-block btn-outline-light">
+						Upload Icon
+					</button>
+				</div>
+				<div class="col-12 col-md-auto mb-0 mb-md-0">
+					<button name="BtnUploadBlogImgHeader" type="button" class="btn btn-block btn-outline-light">
+						Upload Header
+					</button>
+				</div>
 			</div>
-			<div class="col-12 col-md-auto mb-0 mb-md-0">
-				<button id="BlogSettingsUploadHeader" type="button" class="btn btn-block btn-outline-light">
-					Upload Header
-				</button>
+		</div>
+
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Title</div>
+			<div>
+				<input name="Title" type="text" class="form-control" value="<?php $Printer($Blog->Title) ?>" />
 			</div>
 		</div>
-	</div>
 
-	<div class="mb-4">
-		<div class="fw-bold text-uppercase">Title</div>
-		<div>
-			<input name="Title" type="text" class="form-control" value="<?php $Printer($Blog->Title) ?>" />
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">Tagline</div>
+			<div>
+				<input name="Tagline" type="text" class="form-control" value="<?php $Printer($Blog->Tagline) ?>" />
+			</div>
 		</div>
-	</div>
 
-	<div class="mb-4">
-		<div class="fw-bold text-uppercase">Tagline</div>
-		<div>
-			<input name="Tagline" type="text" class="form-control" value="<?php $Printer($Blog->Tagline) ?>" />
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">URL Alias</div>
+			<div class="input-group">
+				<span class="ff-mono input-group-text"><?php $Util->Print($BlogAliasPrefix) ?></span>
+				<input type="text" name="Alias" class="form-control ff-mono" value="<?php $Printer($Blog->Alias) ?>" />
+			</div>
 		</div>
-	</div>
 
-	<div class="mb-4">
-		<div class="fw-bold text-uppercase">About</div>
-		<div>
-			<textarea name="Details" class="form-control" rows="6"><?php $Printer($Blog->Details) ?></textarea>
+		<div class="mb-4">
+			<div class="fw-bold text-uppercase">About</div>
+			<div>
+				<textarea name="Details" class="form-control" rows="6"><?php $Printer($Blog->Details) ?></textarea>
+			</div>
 		</div>
-	</div>
 
-	<div class="mb-4">
-		<input type="hidden" name="ID" value="<?php $Printer($Blog->ID) ?>" />
-		<button type="submit" class="btn btn-primary">
-			<i class="mdi mdi-fw mdi-content-save"></i>
-			Save
-		</button>
-	</div>
-</form>
+		<div class="mb-4">
+			<input type="hidden" name="ID" value="<?php $Printer($Blog->ID) ?>" />
+			<div class="row justify-content-end">
+				<div class="col-auto">
+					<button type="submit" class="atl-statebtn atl-state-default">
+						<section class="btn btn-primary fs-large default">
+							<i class="mdi mdi-fw mdi-content-save"></i>
+							Save
+						</section>
+						<section class="btn btn-primary fs-large processing">
+							<i class="mdi mdi-fw mdi-loading mdi-spin-fast"></i>
+							Saving...
+						</section>
+						<section class="btn btn-success fs-large success">
+							<i class="mdi mdi-fw mdi-check"></i>
+							Success
+						</section>
+					</button>
+				</div>
+			</div>
+		</div>
+
+	</form>
+</div>
 
 <script type="module">
-import API from '/share/nui/api/json.js';
-import FormUtil from '/share/nui/util/form.js';
-import UploadButton from '/share/nui/modules/uploader/uploader.js';
+import Blog from '/share/atlantis/js/ents/blog.js';
+import Uploader from '/share/nui/modules/uploader/uploader.js';
+
+class BlogSettingsDashboard {
+
+	constructor(selector='#BlogSettings') {
+
+		this.element = jQuery(selector);
+		this.id = this.element.attr('data-blog-id');
+
+		this.timerReset = null;
+
+		////////
+
+		this.findElements();
+		this.bindElements();
+
+		return;
+	};
+
+	findElements() {
+
+		this.inTitle = this.element.find('[name="Title"]');
+		this.inAlias = this.element.find('[name="Alias"]');
+		this.inTagline = this.element.find('[name="Tagline"]');
+		this.inDetails = this.element.find('[name="Details"]');
+
+		this.btnUpIcon = this.element.find('[name=BtnUploadBlogImgIcon]');
+		this.btnUpHeader = this.element.find('[name=BtnUploadBlogImgHeader]');
+		this.btnSubmit = this.element.find('.atl-statebtn');
+
+		return;
+	};
+
+	bindElements() {
+
+		this.element.on('submit', this.onSubmitForm.bind(this));
+
+		new Uploader(this.btnUpIcon, {
+			'conf': '/api/file/upload',
+			'dataset': { 'BlogID': this.id, 'Type': 'blog-img-icon' },
+			'onSuccess': 'reload'
+		});
+
+		new Uploader(this.btnUpHeader, {
+			'conf': '/api/file/upload',
+			'dataset': { 'BlogID': this.id, 'Type': 'blog-img-header' },
+			'onSuccess': 'reload'
+		});
+
+		return;
+	};
+
+	onSubmitForm() {
+
+		this.submit();
+		return false;
+	};
+
+	onSubmitDone() {
+
+		this.btnSubmit
+		.removeAttr('disabled')
+		.prop('disabled', false)
+		.removeClass('atl-state-default atl-state-processing atl-state-error')
+		.addClass('atl-state-success');
+
+		if(self.timerReset)
+		clearInterval(self.timerReset);
+
+		self.timerReset = setTimeout(this.onResetTimer.bind(this), 3000);
+
+		return;
+	};
+
+	onResetTimer() {
+
+		self.timerReset = null;
+
+		this.btnSubmit
+		.removeAttr('disabled')
+		.prop('disabled', false)
+		.removeClass('atl-state-success atl-state-processing atl-state-error')
+		.addClass('atl-state-default');
+
+		return;
+	};
+
+	async submit() {
+
+		let self = this;
+
+		this.btnSubmit
+		.attr('disabled', 'disabled')
+		.prop('disabled', true)
+		.removeClass('atl-state-default atl-state-success atl-state-error')
+		.addClass('atl-state-processing');
+
+		setTimeout(async function(){
+
+			(await Blog.FromAPI(self.id))
+			.update({
+				Title: self.inTitle.val(),
+				Alias: self.inAlias.val(),
+				Tagline: self.inTagline.val(),
+				Details: self.inDetails.val()
+			})
+			.then(self.onSubmitDone.bind(self));
+
+			return
+
+		}, 250);
+
+		return;
+	};
+
+};
 
 jQuery(function() {
-
-	let root = jQuery('#BlogSettings');
-	let bid = root.attr('data-blog-id');
-
-	new UploadButton('#BlogSettingsUploadHeader', {
-		'conf': '/api/file/upload',
-		'dataset': { 'BlogID': bid, 'Type': 'blog-img-header' },
-		'onSuccess': 'reload'
-	});
-
-	new UploadButton('#BlogSettingsUploadIcon', {
-		'conf': '/api/file/upload',
-		'dataset': { 'BlogID': bid, 'Type': 'blog-img-icon' },
-		'onSuccess': 'reload'
-	});
-
-	jQuery('#BlogSettings')
-	.on('submit', function() {
-
-		let form = new FormUtil(this);
-		let api = new API.Request('PATCH', '/api/blog/entity');
-
-		form.read();
-
-		(api.send(form))
-		.then(api.goto)
-		.catch(api.catch);
-
-		return false;
-	});
-
+	new BlogSettingsDashboard;
 	return;
 });
 </script>

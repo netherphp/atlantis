@@ -1,11 +1,16 @@
 .mdi {
 	display: inline-block;
-	vertical-align: middle;
+	-vertical-align: middle;
 	width: 1.0em;
 }
 
 .btn > .mdi:first-child {
 	margin-right: 0.25em;
+}
+
+.mdi-spin::before {
+	-webkit-animation: mdi-spin 1s infinite linear;
+	animation: mdi-spin 2s infinite linear;
 }
 
 .mdi-spin-fast::before {
