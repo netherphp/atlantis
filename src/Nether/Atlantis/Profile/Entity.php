@@ -11,6 +11,7 @@ use ArrayAccess;
 use Exception;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindOptionsInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindFiltersInterface;
+use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindSortsInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
@@ -201,6 +202,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		$Slug = NULL;
 		$URL = NULL;
+		$App ??= static::$AppInstance;
 
 		// give plugins a chance to determine the url.
 
@@ -208,7 +210,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			$URL = static::ExtendGetPageURL($App, $this);
 
 			if($URL !== NULL)
-			return $URL;
+			return Atlantis\Util::RewriteURL($URL);
 		}
 
 		// otherwise fall back to default behaviour.
@@ -884,10 +886,30 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 				break;
 		}
 
-		//file_put_contents('/opt/ss-dev/temp/ok.txt', (string)$SQL . PHP_EOL . json_encode($Input));
+		static::FindExtendSortsFromPlugins($SQL, $Input);
 
-		//echo $SQL;
-		//print_r($Input);
+		return;
+	}
+
+	static protected function
+	FindExtendSortsFromPlugins(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		/** @var ?Engine $App */
+
+		$App = defined('Atlantis') ? constant('Atlantis') : NULL;
+
+		if(!$App)
+		throw new Common\Error\RequiredDataMissing('Magic Atlantis');
+
+		////////
+
+		($App->Plugins)
+		->GetInstanced(ExtendFindSortsInterface::class)
+		->Each(
+			fn(ExtendFindSortsInterface $P)
+			=> $P->AddFindSorts($SQL, $Input)
+		);
 
 		return;
 	}

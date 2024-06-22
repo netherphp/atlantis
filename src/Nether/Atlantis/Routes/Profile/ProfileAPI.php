@@ -152,6 +152,8 @@ extends Atlantis\ProtectedAPI {
 
 		$Patchset = $Ent->Patch($this->Data);
 
+		//var_dump($Patchset);
+
 		if(count($Patchset))
 		$Ent->Update($Patchset);
 

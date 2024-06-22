@@ -94,6 +94,8 @@ implements
 
 		$Output = [];
 
+		//var_dump($Input);
+
 		$Has = match(TRUE) {
 			$Input instanceof ArrayAccess
 			=> $Input->OffsetExists('ExtraData'),
