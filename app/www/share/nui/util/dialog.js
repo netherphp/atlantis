@@ -16,7 +16,7 @@ constructor dumped in object form.
 	constructor({
 		title, fields=[], body=null,
 		labelAccept='OK', labelCancel='Cancel',
-		onAccept=null, onReady=null,
+		onAccept=null, onReady=null, onCancel=null,
 		show=false, maximise=false, width=null
 	}) {
 
@@ -26,6 +26,7 @@ constructor dumped in object form.
 		this.labelAccept = labelAccept;
 		this.labelCancel = labelCancel;
 		this.onAccept = onAccept;
+		this.onCancel = onCancel;
 		this.onReady = onReady;
 		this.show = show;
 		this.maximise = maximise;
@@ -82,6 +83,7 @@ in-page dialog windows.
 		this.addButton(this.config.labelAccept, 'btn-primary', 'accept');
 
 		this.onAcceptFunc = this.config.onAccept;
+		this.onCancelFunc = this.config.onCancel;
 
 		if(this.config.width !== null)
 		this.element.find('.modal-dialog').css({
@@ -182,9 +184,17 @@ in-page dialog windows.
 	onAccept() {
 
 		if(typeof this.onAcceptFunc === 'function')
-		return this.onAcceptFunc.call(this);
+		return this.onAcceptFunc.call(this, this);
 
 		return super.onAccept();
+	};
+
+	onCancel() {
+
+		if(typeof this.onCancelFunc === 'function')
+		return this.onCancelFunc.call(this, this);
+
+		return super.onCancel();
 	};
 
 	////////////////

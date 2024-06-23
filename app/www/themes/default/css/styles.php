@@ -17,6 +17,7 @@ new Nether\Common\Library;
 ->AddFile('src/ext-simpleicons.css')
 ->AddFile('src/ext-litepicker.css')
 ->AddFile('src/ext-grecaptcha.css')
+->AddFile('src/ext-editorjs.css')
 ->AddFile('src/fx-text.css')
 ->AddDir('src/design')
 ->AddDir('src/elements')

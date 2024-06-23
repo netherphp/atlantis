@@ -1,0 +1,37 @@
+.ce-toolbar__content,
+.ce-block__content {
+	max-width: 100%;
+	width: 100%;
+}
+
+.codex-editor__redactor > .ce-block {
+	border-bottom: 2px dashed #FFFFFF22;
+	margin-bottom: 0px;
+	padding: 0.2rem 1rem 0.6rem 1rem;
+}
+
+.ce-toolbar__plus {
+	background-color: var(--theme-form-fg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-bg);
+}
+
+.ce-toolbar__plus:hover {
+	background-color: #FFFFFF !important;
+	color: #000000;
+}
+
+.ce-block--selected {
+	background: var(--theme-primary);
+}
+
+.ce-block--selected .ce-block__content {
+	background: transparent;
+}
+
+.atl-editorjs {
+	background-color: var(--theme-form-bg);
+	border: 1px solid var(--theme-form-border);
+	border-radius: 4px;
+	color: var(--theme-form-fg);
+}

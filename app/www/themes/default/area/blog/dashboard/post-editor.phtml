@@ -1,0 +1,372 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Blog\Routes\BlogEditorWeb $Route
+ * @var Common\Datastore $Trail
+ * @var Blog\Blog $Blog
+ * @var Blog\BlogUser $BlogUser,
+ * @var Blog\Post $Post
+ */
+
+$GetPostValue = function(string $What) use($Post) {
+
+	if(!$Post)
+	return '';
+
+	// handle SourceURL and SourceDate
+
+	if(!property_exists($Post, $What))
+	return '';
+
+	return $Post->{$What};
+};
+
+$CheckSortPostBySort = function() use($Post) {
+
+	if(!$Post)
+	return FALSE;
+
+	if($Post->TimeCreated === $Post->TimeSorted)
+	return FALSE;
+
+	return TRUE;
+};
+
+$Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
+
+?>
+
+<style type="text/css">
+
+</style>
+
+<div class="container pt-6 pb-6">
+
+	<!-- POST TITLE -->
+	<div class="mb-4">
+		<div class="fw-bold tt-upper">Title</div>
+		<div>
+			<input type="text" name="Title" class="form-control" placeholder="Title..." value="<?php $Util->Print($GetPostValue('Title')) ?>" />
+		</div>
+	</div>
+
+	<!-- POST CONTENT -->
+	<div class="mb-4">
+		<div class="fw-bold tt-upper">Content</div>
+		<div id="PostEditor" class="atl-editorjs" data-blog-id="<?php $Util->Print($Blog->ID) ?>" data-post-id="<?php $Util->Print($GetPostValue('ID')) ?>">
+			<div class="atl-editorjs-source d-none"><?php $Util->Print($GetPostValue('Content')) ?></div>
+			<div id="<?php $Util->Print(sprintf('atl-ejsm-%s', Common\UUID::V7())) ?>" class="atl-editorjs-mount"></div>
+		</div>
+	</div>
+	<hr />
+
+	<!-- POST ADMIN NOTES -->
+	<div class="mb-4">
+		<div class="fw-bold tt-upper">Admin Notes</div>
+		<div>
+			<textarea name="ExtraData[AdminNotes]" class="form-control" rows="4" placeholder="Admin Notes..."><?php $Util->Print($GetPostValue('AdminNotes')) ?></textarea>
+		</div>
+	</div>
+	<hr />
+
+	<!-- POST TAGS -->
+	<div class="mb-4">
+		<div class="fw-bold tt-upper">Tags</div>
+		<div>
+			<input type="text" name="Tags" class="form-control" placeholder="Tags..." value="<?php $Util->Print($GetPostValue('Tags')) ?>" />
+		</div>
+	</div>
+	<hr />
+
+	<!-- SOURCE INFO -->
+	<div class="row gap-4 mb-4">
+		<div class="col-12">
+			<div class="fw-bold tt-upper">Source URL</div>
+			<div>
+				<input type="text" name="SourceURL" class="form-control" placeholder="Source URL..." value="<?php $Util->Print($GetPostValue('SourceURL')) ?>" />
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="fw-bold tt-upper">Source Date</div>
+			<div>
+				<input type="date" name="SourceDate" class="form-control" placeholder="Source Date..." value="<?php $Util->Print($GetPostValue('SourceDate')) ?>" />
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="form-check form-switch">
+				<label class="d-flex gap-2 align-items-center form-check-label cursor-pointer">
+					<input class="form-check-input" type="checkbox" role="switch" style="height:20px;width:40px;" <?php $Util->Print($Util->GetCheckedHTML($CheckSortPostBySort())) ?>>
+					<span class="fw-bold tt-upper" style="user-select:none;">Sort By Source Date?</span>
+				</label>
+			</div>
+
+		</div>
+	</div>
+	<hr />
+
+	<!-- POST VISIBLITY -->
+	<div class="row gap-4 mb-4">
+		<div class="col-12">
+			<div class="fw-bold tt-upper">Post Status</div>
+			<div>
+				<select name="Enabled" class="form-select">
+					<option value="0" <?php $Util->Print($Util->GetSelectedHTML($Post->Enabled === 0)) ?>>Draft</option>
+					<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post->Enabled === 1)) ?>>Published</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<hr />
+
+	<!-- SAVE BUTTON -->
+	<div class="mb-4">
+		<div class="row justify-content-end">
+			<div class="col-auto">
+				<button type="submit" class="atl-statebtn atl-state-default">
+					<section class="btn btn-primary fs-large default">
+						<i class="mdi mdi-fw mdi-content-save"></i>
+						Save
+					</section>
+					<section class="btn btn-primary fs-large processing">
+						<i class="mdi mdi-fw mdi-loading mdi-spin-fast"></i>
+						Saving...
+					</section>
+					<section class="btn btn-success fs-large success">
+						<i class="mdi mdi-fw mdi-check"></i>
+						Success
+					</section>
+					<section class="btn btn-danger fs-large error">
+						<i class="mdi mdi-fw mdi-close"></i>
+						Error
+					</section>
+				</button>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import DialogUtil from '/share/nui/util/dialog.js';
+import FieldTagSearch from '/share/atlantis/js/field-tag-search.js';
+
+import EditorJS from '/share/atlantis/lib/editorjs/editorjs.js';
+import EJSHeader from '/share/atlantis/lib/editorjs/tools/header.js';
+import EJSLink from '/share/atlantis/lib/editorjs/tools/link.js';
+import EJSList from '/share/atlantis/lib/editorjs/tools/list.js';
+import EJSQuote from '/share/atlantis/lib/editorjs/tools/quote.js';
+
+class PostEditor {
+
+	constructor(selector='#PostEditor') {
+
+		this.element = jQuery(selector);
+		this.bid = parseInt(this.element.attr('data-blog-id'));
+		this.pid = parseInt(this.element.attr('data-post-id'));
+		this.mount = this.element.find('.atl-editorjs-mount');
+		this.source = this.element.find('.atl-editorjs-source');
+
+		this.eid = null;
+		this.ejs = null;
+
+		this.inTitle = null;
+		this.inTagSearch = null;
+		this.btnSave = null;
+
+		////////
+
+		this._prepareBlockEditor();
+		this._prepareUI();
+
+		return;
+	};
+
+	_prepareBlockEditor() {
+
+		let data = JSON.parse(this.source.text());
+
+		this.eid = this.mount.attr('id');
+
+		this.ejs = new EditorJS({
+			holder: this.eid,
+			tools: {
+				header: EJSHeader,
+				link: EJSLink,
+				list: EJSList,
+				quote: EJSQuote
+			},
+			data: data
+		});
+
+		return;
+	};
+
+	_prepareUI() {
+
+		let p = this.element.parent().parent();
+
+		this.inTitle = p.find('[name="Title"]');
+		this.inTagSearch = new FieldTagSearch(p.find('[name="Tags"]'));
+		this.btnSave = p.find('button[type="submit"]');
+
+		this.btnSave.on('click', this.onClickSave.bind(this));
+
+
+
+		return;
+	};
+
+	setSaveBtnDefault() {
+
+		(this.btnSave)
+		.removeClass('atl-state-processing atl-state-success atl-state-error')
+		.addClass('atl-state-default');
+
+		return;
+	};
+
+	setSaveBtnError() {
+
+		(this.btnSave)
+		.removeClass('atl-state-processing atl-state-success atl-state-default')
+		.addClass('atl-state-error');
+
+		return;
+	};
+
+	setSaveBtnProcessing() {
+
+		(this.btnSave)
+		.removeClass('atl-state-default atl-state-success atl-state-error')
+		.addClass('atl-state-processing');
+
+		return;
+	};
+
+	setSaveBtnSuccess() {
+
+		(this.btnSave)
+		.removeClass('atl-state-processing atl-state-default atl-state-error')
+		.addClass('atl-state-sucess');
+
+		return;
+	};
+
+	displayErrorMessage(title, content, resetSaveBtn=false) {
+
+		let self = this;
+		let funcResetSaveBtn = null;
+		let dialog = null;
+
+		////////
+
+		if(resetSaveBtn)
+		funcResetSaveBtn = (function(d) {
+			d.destroy();
+			self.setSaveBtnDefault();
+			return;
+		});
+
+		////////
+
+		dialog = new DialogUtil.Window(new DialogUtil.WindowConfig({
+			title: title,
+			body: content,
+			show: true,
+			labelAccept: null,
+			labelCancel: null,
+			onAccept: funcResetSaveBtn,
+			onCancel: funcResetSaveBtn
+		}));
+
+		dialog.addButton('OK', 'btn-danger', 'accept');
+
+		return;
+	};
+
+	async save() {
+
+		let chain = (
+			(this.ejs.save())
+			.then(this.send.bind(this))
+			.catch((error)=> console.log(error))
+		);
+
+		return chain;
+	};
+
+	async send(jsonobj) {
+
+		let self = this;
+		let verb = 'POST';
+		let api = null;
+		let chain = null;
+
+		let dataset = {
+			BlogID: this.bid,
+			PostID: this.pid,
+			Editor: 'editorjs',
+			Title: jQuery.trim(this.inTitle.val()),
+			Content: JSON.stringify(jsonobj)
+		};
+
+		////////
+
+		if(this.pid)
+		verb = 'PATCH';
+
+		////////
+
+		api = new API.Request(verb, '/api/blog/post');
+
+		chain = (
+			(api.send(dataset))
+			.then(this.onSave.bind(this))
+			.catch(function(e){
+				self.setSaveBtnError();
+				self.displayErrorMessage('Post Editor Error', e.message, true);
+				return;
+			})
+		);
+
+		return chain;
+	};
+
+	onClickSave() {
+
+		this.setSaveBtnProcessing();
+		this.save();
+
+		return;
+	};
+
+	onSave(result) {
+
+		console.log(result);
+
+		return;
+	};
+
+};
+
+jQuery(function() {
+
+	console.log(new PostEditor);
+
+	return;
+});
+</script>

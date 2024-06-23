@@ -15,7 +15,7 @@ use Nether\User;
  * @var Surface\Engine $Surface
  * @var User\EntitySession $User
  *
- * @var Atlantis\PublicWeb $Route
+ * @var Blog\Routes\BlogHandler $Route
  * @var Blog\Blog $Blog
  * @var Blog\BlogUser $BlogUser
  * @var Database\ResultSet $BlogTags
@@ -28,6 +28,16 @@ $UserCanWrite = $BlogUser && $BlogUser->CanWrite();
 $UserCanAdmin = $BlogUser && $BlogUser->CanAdmin();
 $PostListArea = $App->Config[Blog\Key::ConfBlogIndexArea] ?? 'blog/widgets/post-list';
 
+$GetWriteURL = function(Blog\Blog $B): string {
+	return match(TRUE) {
+		(Blog\Library::Get(Blog\Key::ConfEditorDefault) === 'block')
+		=> $B->GetBlockEditorURL(),
+
+		default
+		=> $B->GetWriteURL()
+	};
+};
+
 ?>
 
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
@@ -35,7 +45,10 @@ $PostListArea = $App->Config[Blog\Key::ConfBlogIndexArea] ?? 'blog/widgets/post-
 <div class="container pt-4 pb-4">
 	<div class="row align-items-center">
 		<div class="col">
-			<h2 class="text-uppercase"><a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a></h2>
+			<h2 class="text-uppercase">
+				Posts
+				<span class="fw-normal o-30">(<?php $Util->Print($Posts->Total) ?>)</span>
+			</h2>
 		</div>
 
 		<?php if($UserCanWrite): ?>
@@ -76,7 +89,7 @@ $PostListArea = $App->Config[Blog\Key::ConfBlogIndexArea] ?? 'blog/widgets/post-
 				<div class="dropdown-menu dropdown-menu-end">
 					<?php if($BlogUser && $BlogUser->CanWrite()): ?>
 					<div class="dropdown-div">
-						<a class="btn btn-outline-dark" href="<?php $Printer($Blog->GetWriteURL()) ?>">
+						<a class="btn btn-outline-dark" href="<?php $Printer($GetWriteURL($Blog)) ?>">
 							<i class="mdi mdi-fw mdi-plus-thick"></i>
 							New Post
 						</a>
