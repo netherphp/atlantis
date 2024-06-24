@@ -67,3 +67,7 @@
 .atl-editorjs-hr.empty {
 	border-color: transparent !important;
 }
+
+.atl-editorjs-imgupl {
+	padding: 1.5rem 0px 1.20rem 0px;
+}
