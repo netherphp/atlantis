@@ -149,6 +149,7 @@ application instance.
 		$IgnoreUA = Library::Get(Key::ConfAccessIgnoreAgentHard);
 		$InputUA = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
 		$Meh = NULL;
+		$Err = NULL;
 
 		////////
 
@@ -168,9 +169,15 @@ application instance.
 
 		////////
 
-		$this->Router->Run(new Avenue\Struct\ExtraData([
-			'App'=> $this
-		]));
+		try {
+			$this->Router->Run(new Avenue\Struct\ExtraData([
+				'App'=> $this
+			]));
+		}
+
+		catch(Error\Quit $Err) {
+			$this->Router->Render();
+		}
 
 		return $this;
 	}

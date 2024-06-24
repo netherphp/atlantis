@@ -128,11 +128,13 @@ implements
 
 		$Scan = new Atlantis\Util\LibraryRouteScanner($App);
 
-		$Scan->AddPath(
-			Common\Filesystem\Util::Pathify(dirname(__FILE__), 'Routes')
-		);
+		$Scan->AddPath(Common\Filesystem\Util::Pathify(
+			dirname(__FILE__), 'Routes'
+		));
 
 		$Scan->Commit();
+
+		////////
 
 		$this->OnReadyPluginAppInstanceStatic($App);
 
@@ -206,7 +208,10 @@ implements
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Deprecated('2024-06-24', 'migrate to FileUploadAPI.')]
 	public function
 	OnUploadFinalise(Engine $App, string $UUID, string $Name, string $Type, Storage\File $File):
 	void {
@@ -220,7 +225,7 @@ implements
 			case 'tagphoto':
 				$this->OnUploadFinaliseTagPhoto($App, $UUID, $Name, $File);
 			break;
-			default:
+			case 'default':
 				$this->OnUploadFinaliseDefault($App, $UUID, $Name, $File);
 			break;
 		}
@@ -228,6 +233,7 @@ implements
 		return;
 	}
 
+	#[Common\Meta\Deprecated('2024-06-24', 'migrate to FileUploadAPI.')]
 	protected function
 	OnUploadFinaliseDefault(Engine $App, string $UUID, string $Name, Storage\File $File):
 	void {
@@ -263,6 +269,7 @@ implements
 		return;
 	}
 
+	#[Common\Meta\Deprecated('2024-06-24', 'migrate to FileUploadAPI.')]
 	protected function
 	OnUploadFinaliseTagCover(Engine $App, string $UUID, string $Name, Storage\File $File):
 	void {
@@ -299,6 +306,7 @@ implements
 		return;
 	}
 
+	#[Common\Meta\Deprecated('2024-06-24', 'migrate to FileUploadAPI.')]
 	protected function
 	OnUploadFinaliseTagPhoto(Engine $App, string $UUID, string $Name, Storage\File $File):
 	void {

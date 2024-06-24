@@ -1,4 +1,4 @@
-class PluginHR {
+class AtlTeletype {
 /*//
 @date 2020-10-11
 provides a custom block plugin for editor.js for writing blocks of code into
@@ -45,4 +45,4 @@ a piece of content using codemirror as the code syntax magic thing.
 
 };
 
-export default PluginHR;
+export default AtlTeletype;

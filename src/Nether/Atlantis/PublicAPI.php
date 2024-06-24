@@ -236,7 +236,7 @@ does not do any additional access checking.
 		->SetError($Err)
 		->SetMessage($Msg);
 
-		exit($Err);
+		throw new Error\Quit($Err, $Msg);
 		return;
 	}
 

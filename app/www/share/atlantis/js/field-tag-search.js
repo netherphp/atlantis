@@ -69,8 +69,8 @@ class FieldTagSearch {
 			this.element.attr('data-subtag-parent')
 		);
 
-		console.log(this.element.attr('data-subtag-parent'));
-		console.log(this.elSubtagParent);
+		//console.log(this.element.attr('data-subtag-parent'));
+		//console.log(this.elSubtagParent);
 
 		if(this.elSubtagParent.length === 0)
 		this.elSubtagParent = null;
@@ -439,6 +439,11 @@ class FieldTagSearch {
 		out += '</select>';
 
 		return out;
+	};
+
+	static Boot(which) {
+
+		return new this.prototype.constructor(which);
 	};
 
 };

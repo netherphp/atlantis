@@ -115,7 +115,7 @@ implements
 		$ExtraData = (
 			Common\Datastore::FromArray($this->ExtraData->GetData())
 			->MergeRight($Input['ExtraData'])
-			->Filter(fn(mixed $D)=> !!$D)
+			//->Filter(fn(mixed $D)=> !!$D)
 		);
 
 		// if the result has data then turn it to json otherwise null the

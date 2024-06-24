@@ -26,34 +26,25 @@ $GetPostValue = function(string $What) use($Post) {
 	if(!$Post)
 	return '';
 
-	// handle SourceURL and SourceDate
-
 	if(!property_exists($Post, $What))
 	return '';
 
 	return $Post->{$What};
 };
 
-$CheckSortPostBySort = function() use($Post) {
+$GetPostExtraData = function(string $What) use($Post) {
 
 	if(!$Post)
-	return FALSE;
+	return '';
 
-	if($Post->TimeCreated === $Post->TimeSorted)
-	return FALSE;
-
-	return TRUE;
+	return $Post->GetExtraData($What);
 };
 
 $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 
 ?>
 
-<style type="text/css">
-
-</style>
-
-<div class="container pt-6 pb-6">
+<div id="PostEditor" class="container pt-6 pb-6" data-blog-id="<?php $Util->Print($Blog->ID) ?>" data-post-id="<?php $Util->Print($GetPostValue('ID')) ?>">
 
 	<!-- POST TITLE -->
 	<div class="mb-4">
@@ -66,7 +57,7 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 	<!-- POST CONTENT -->
 	<div class="mb-4">
 		<div class="fw-bold tt-upper">Content</div>
-		<div id="PostEditor" class="atl-editorjs" data-blog-id="<?php $Util->Print($Blog->ID) ?>" data-post-id="<?php $Util->Print($GetPostValue('ID')) ?>">
+		<div class="atl-editorjs" data-blog-id="<?php $Util->Print($Blog->ID) ?>" data-post-id="<?php $Util->Print($GetPostValue('ID')) ?>">
 			<div class="atl-editorjs-source d-none"><?php $Util->Print($GetPostValue('Content')) ?></div>
 			<div id="<?php $Util->Print(sprintf('atl-ejsm-%s', Common\UUID::V7())) ?>" class="atl-editorjs-mount"></div>
 		</div>
@@ -77,7 +68,7 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 	<div class="mb-4">
 		<div class="fw-bold tt-upper">Admin Notes</div>
 		<div>
-			<textarea name="ExtraData[AdminNotes]" class="form-control" rows="4" placeholder="Admin Notes..."><?php $Util->Print($GetPostValue('AdminNotes')) ?></textarea>
+			<textarea name="ExtraData[AdminNotes]" class="form-control" rows="4" placeholder="Admin Notes..."><?php $Util->Print($GetPostExtraData('AdminNotes')) ?></textarea>
 		</div>
 	</div>
 	<hr />
@@ -96,19 +87,19 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 		<div class="col-12">
 			<div class="fw-bold tt-upper">Source URL</div>
 			<div>
-				<input type="text" name="SourceURL" class="form-control" placeholder="Source URL..." value="<?php $Util->Print($GetPostValue('SourceURL')) ?>" />
+				<input type="text" name="ExtraData[SourceURL]" class="form-control" placeholder="Source URL..." value="<?php $Util->Print($GetPostExtraData('SourceURL')) ?>" />
 			</div>
 		</div>
 		<div class="col-12">
 			<div class="fw-bold tt-upper">Source Date</div>
 			<div>
-				<input type="date" name="SourceDate" class="form-control" placeholder="Source Date..." value="<?php $Util->Print($GetPostValue('SourceDate')) ?>" />
+				<input type="date" name="ExtraData[SourceDate]" class="form-control" placeholder="Source Date..." value="<?php $Util->Print($GetPostExtraData('SourceDate')) ?>" />
 			</div>
 		</div>
 		<div class="col-12">
 			<div class="form-check form-switch">
 				<label class="d-flex gap-2 align-items-center form-check-label cursor-pointer">
-					<input class="form-check-input" type="checkbox" role="switch" style="height:20px;width:40px;" <?php $Util->Print($Util->GetCheckedHTML($CheckSortPostBySort())) ?>>
+					<input type="checkbox" name="ExtraData[SourceDateSort]" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($GetPostExtraData('SourceDateSort') === 'y')) ?>>
 					<span class="fw-bold tt-upper" style="user-select:none;">Sort By Source Date?</span>
 				</label>
 			</div>
@@ -160,116 +151,160 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 </div>
 
 <script type="module">
-import API from '/share/nui/api/json.js';
-import DialogUtil from '/share/nui/util/dialog.js';
-import FieldTagSearch from '/share/atlantis/js/field-tag-search.js';
-
-import EditorJS from '/share/atlantis/lib/editorjs/editorjs.js';
-import EJSHeader from '/share/atlantis/lib/editorjs/tools/header.js';
-import EJSList from '/share/atlantis/lib/editorjs/tools/list.js';
-import EJSQuote from '/share/atlantis/lib/editorjs/tools/quote.js';
-import EJSBreak from '/share/atlantis/lib/editorjs/tools/atl-hr.js';
-import EJSTeletype from '/share/atlantis/lib/editorjs/tools/atl-tt.js';
-import EJSImage from '/share/atlantis/lib/editorjs/tools/atl-image.js';
+import API         from '/share/nui/api/json.js';
+import Util        from '/share/nui/util.js';
+import EditorBlock from '/share/atlantis/js/editor-block.js';
+import TagSearch   from '/share/atlantis/js/field-tag-search.js';
+import BlogPost    from '/share/atlantis/js/ents/blogpost.js';
 
 class PostEditor {
 
-	constructor(selector='#PostEditor') {
+	constructor(selector) {
 
-		this.element = jQuery(selector);
-		this.bid = parseInt(this.element.attr('data-blog-id'));
-		this.pid = parseInt(this.element.attr('data-post-id'));
-		this.mount = this.element.find('.atl-editorjs-mount');
-		this.source = this.element.find('.atl-editorjs-source');
+		this.apiPostMethod = 'POST';
+		this.apiPostURL = '/api/blogpost/entity';
 
-		this.eid = null;
-		this.ejs = null;
-
-		this.inTitle = null;
-		this.inTagSearch = null;
-		this.btnSave = null;
+		this.apiPatchMethod = 'PATCH';
+		this.apiPatchURL = '/api/blogpost/entity';
 
 		////////
 
-		this._prepareBlockEditor();
-		this._prepareUI();
+		this.element = jQuery(selector);
+		this.blogID = parseInt(this.element.attr('data-blog-id'));
+		this.postID = parseInt(this.element.attr('data-post-id'));
+
+		this.editor = EditorBlock.Boot(this.element.find('.atl-editorjs:nth(0)'));
+		this.tagSearch = TagSearch.Boot(this.element.find('[name="Tags"]'));
+
+		this.inTitle = this.element.find('[name="Title"]');
+
+		this.inAdminNotes = this.element.find('[name="ExtraData[AdminNotes]"]');
+		this.inSourceURL = this.element.find('[name="ExtraData[SourceURL]"]');
+		this.inSourceDate = this.element.find('[name="ExtraData[SourceDate]"]');
+		this.inSourceDateSort = this.element.find('[name="ExtraData[SourceDateSort]"]');
+
+		this.inEnabled = this.element.find('[name="Enabled"]');
+		this.btnSubmit = this.element.find('button[type=submit]');
+
+		////////
+
+		this.init();
 
 		return;
 	};
 
-	_prepareBlockEditor() {
+	init() {
 
-		let data = JSON.parse(this.source.text());
+		if(this.blogID === 0)
+		this.blogID = null;
 
-		this.eid = this.mount.attr('id');
+		if(this.postID === 0)
+		this.postID = null;
 
-		this.ejs = new EditorJS({
-			holder: this.eid,
-			inlineToolbar: [ 'link', 'bold', 'italic', 'tele' ],
-			tools: {
-				header: EJSHeader,
-				bulletList: EJSList,
-				quote: EJSQuote,
-				breakHr: EJSBreak,
-				tele: EJSTeletype,
-				image: EJSImage
-			},
-			data: data
-		});
+		////////
+
+		this.btnSubmit.on('click', this.onSave.bind(this));
 
 		return;
 	};
 
-	_prepareUI() {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		let p = this.element.parent().parent();
+	async onSave() {
 
-		this.inTitle = p.find('[name="Title"]');
-		this.inTagSearch = new FieldTagSearch(p.find('[name="Tags"]'));
-		this.btnSave = p.find('button[type="submit"]');
+		this.setStateProcessing();
 
-		this.btnSave.on('click', this.onClickSave.bind(this));
+		////////
 
+		let post = new BlogPost;
+		let content = await this.editor.save();
+		let tagsFound = this.tagSearch.getSelectedTags();
+		let tagsFresh = this.tagSearch.getNewTags();
 
+		////////
+
+		post.id = this.postID;
+		post.blogID = this.blogID;
+		post.title = jQuery.trim(this.inTitle.val());
+		post.content = JSON.stringify(content);
+		post.enabled = parseInt(this.inEnabled.val());
+
+		post.extraData.AdminNotes = jQuery.trim(this.inAdminNotes.val());
+		post.extraData.SourceURL = jQuery.trim(this.inSourceURL.val());
+		post.extraData.SourceDate = jQuery.trim(this.inSourceDate.val());
+		post.extraData.SourceDateSort = (
+			this.inSourceDateSort.is(':checked')
+			? 'y' : 'n'
+		);
+
+		////////
+
+		let api = this.startNewRequestForPost(post);
+
+		(api.send(post.toFormData()))
+		.then((result)=> console.log(result))
+		.catch(api.catch);
 
 		return;
 	};
 
-	setSaveBtnDefault() {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		(this.btnSave)
+	startNewRequestForPost(post) {
+
+		let api = new API.Request(
+			this.apiPostMethod,
+			this.apiPostURL
+		);
+
+		if(post.ID !== null) {
+			api.method = this.apiPatchMethod;
+			api.url = this.apiPatchURL;
+		}
+
+		return api;
+	};
+
+	setStateDefault() {
+
+		(this.btnSubmit)
 		.removeClass('atl-state-processing atl-state-success atl-state-error')
 		.addClass('atl-state-default');
 
 		return;
 	};
 
-	setSaveBtnError() {
+	setStateError() {
 
-		(this.btnSave)
+		(this.btnSubmit)
 		.removeClass('atl-state-processing atl-state-success atl-state-default')
 		.addClass('atl-state-error');
 
 		return;
 	};
 
-	setSaveBtnProcessing() {
+	setStateProcessing() {
 
-		(this.btnSave)
+		(this.btnSubmit)
 		.removeClass('atl-state-default atl-state-success atl-state-error')
 		.addClass('atl-state-processing');
 
 		return;
 	};
 
-	setSaveBtnSuccess() {
+	setStateSuccess() {
 
-		(this.btnSave)
+		(this.btnSubmit)
 		.removeClass('atl-state-processing atl-state-default atl-state-error')
 		.addClass('atl-state-success');
 
 		return;
 	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	displayErrorMessage(title, content, resetSaveBtn=false) {
 
@@ -303,76 +338,31 @@ class PostEditor {
 		return;
 	};
 
-	async save() {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		let chain = (
-			(this.ejs.save())
-			.then(this.send.bind(this))
-			.catch((error)=> console.log(error))
-		);
+	static Multiboot(mass) {
 
-		return chain;
-	};
+		let ctype = this;
 
-	async send(jsonobj) {
-
-		let self = this;
-		let verb = 'POST';
-		let api = null;
-		let chain = null;
-
-		let dataset = {
-			BlogID: this.bid,
-			ID: this.pid,
-			Editor: 'editorjs',
-			Title: jQuery.trim(this.inTitle.val()),
-			Content: JSON.stringify(jsonobj)
-		};
-
-		////////
-
-		if(this.pid)
-		verb = 'PATCH';
-
-		////////
-
-		api = new API.Request(verb, '/api/blog/post');
-
-		chain = (
-			(api.send(dataset))
-			.then(this.onSave.bind(this))
-			.catch(function(e){
-				self.setSaveBtnError();
-				self.displayErrorMessage('Post Editor Error', e.message, true);
-				return;
-			})
-		);
-
-		return chain;
-	};
-
-	onClickSave() {
-
-		this.setSaveBtnProcessing();
-		this.save();
+		jQuery(mass)
+		.each(function() {
+			ctype.Boot(this);
+			return;
+		});
 
 		return;
 	};
 
-	onSave(result) {
+	static Boot(which='#PostEditor') {
 
-		console.log(result);
-		this.setSaveBtnSuccess();
-
-		return;
+		return new this.prototype.constructor(which);
 	};
 
 };
 
 jQuery(function() {
-
-	console.log(new PostEditor);
-
+	PostEditor.Boot();
 	return;
 });
 </script>
