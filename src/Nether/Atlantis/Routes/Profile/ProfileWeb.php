@@ -28,6 +28,7 @@ extends Atlantis\PublicWeb {
 
 	#[Avenue\Meta\RouteHandler('/profile/::Alias::', Verb: 'GET')]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Avenue\Meta\ExtraDataArgs]
 	public function
 	View(string $Alias, Atlantis\Profile\Entity $Profile):
 	void {
@@ -126,6 +127,7 @@ extends Atlantis\PublicWeb {
 
 	#[Common\Meta\Date('2023-12-26')]
 	#[Common\Meta\Info('Allow plugins add things to the Profile Admin Menu.')]
+	#[Avenue\Meta\ExtraDataArgs]
 	static public function
 	ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Atlantis\Struct\DropdownMenu {
