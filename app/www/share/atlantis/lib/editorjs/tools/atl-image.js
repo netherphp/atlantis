@@ -35,6 +35,14 @@ a piece of content using codemirror as the code syntax magic thing.
 		this.btnChoose = null;
 		this.inURL = null;
 
+		////////
+
+		if(typeof this.data.id === 'undefined')
+		this.data.id = 0;
+
+		if(typeof this.data.url === 'undefined')
+		this.data.url = '';
+
 		return;
 	};
 
@@ -102,7 +110,8 @@ a piece of content using codemirror as the code syntax magic thing.
 	save(data) {
 
 		return {
-
+			id: this.data.id,
+			url: this.data.url
 		};
 	};
 

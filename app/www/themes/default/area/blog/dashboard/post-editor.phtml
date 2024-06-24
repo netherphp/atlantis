@@ -266,7 +266,7 @@ class PostEditor {
 
 		(this.btnSave)
 		.removeClass('atl-state-processing atl-state-default atl-state-error')
-		.addClass('atl-state-sucess');
+		.addClass('atl-state-success');
 
 		return;
 	};
@@ -362,6 +362,7 @@ class PostEditor {
 	onSave(result) {
 
 		console.log(result);
+		this.setSaveBtnSuccess();
 
 		return;
 	};
