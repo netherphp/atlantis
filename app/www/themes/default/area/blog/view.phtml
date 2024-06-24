@@ -10,16 +10,20 @@ use Nether\Surface;
 use Nether\User;
 
 /**
- * @var Atlantis\Engine $App
+ * @var Atlantis\Engine                $App
  * @var Atlantis\Struct\TemplateHelper $Util
- * @var Avenue\Router $Router
- * @var Surface\Engine $Surface
- * @var User\EntitySession $User
+ * @var Avenue\Router                  $Router
+ * @var Surface\Engine                 $Surface
+ * @var User\EntitySession             $User
  *
- * @var Atlantis\PublicWeb $Route
- * @var Blog\BlogUser $BlogUser
- * @var Blog\Blog $Blog
- * @var Blog\Post $Post
+ * @var Blog\Routes\BlogHandler        $Route
+ * @var Blog\Blog                      $Blog
+ * @var Blog\BlogUser                  $BUsr
+ * @var Blog\Post                      $Post
+ *
+ * @deprecated 2024-06-23
+ * @var Blog\BlogUser                  $BlogUser (use $BUsr)
+ * @var Database\ResultSet             $Profiles (use $Related)
  */
 
 ?>
@@ -38,17 +42,17 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 
 		<!-- POST TITLE -->
 		<div class="col">
-			<h2 class="text-uppercase">
-				<a href="<?php $Util->Print($Blog->GetURL()) ?>"><?php $Util->Print($Blog->Title) ?></a>
-			</h2>
+			<h1>
+				<a class="td-none" href="<?php $Util->Print($Post->GetURL()) ?>"><?php $Util->Print($Post->Title) ?></a>
+			</h1>
 		</div>
 
 		<?php if($Route->IsUserAdmin()): ?>
 		<div class="col-auto">
 			<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [
 				'Menu'              => $AdminMenu,
-				'MenuBtnStyleClass' => 'btn-outline-dark',
-				'ItemBtnStyleClass' => 'btn-outline-dark'
+				'MenuBtnStyleClass' => 'btn-secondary',
+				'ItemBtnStyleClass' => 'btn-secondary'
 			]) ?>
 		</div>
 		<?php endif; ?>
@@ -68,6 +72,9 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 
 		<?php
 		match($Post->Editor) {
+			'editorjs'
+			=> $Surface->Area('blog/views/editorjs', $__SCOPE),
+
 			'link'
 			=> $Surface->Area('blog/views/link', $__SCOPE),
 

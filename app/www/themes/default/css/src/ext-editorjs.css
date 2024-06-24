@@ -16,6 +16,29 @@
 	color: var(--theme-form-bg);
 }
 
+.ce-inline-toolbar {
+	background-color: var(--theme-form-fg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-bg);
+}
+
+.ce-inline-toolbar svg {
+	height: 32px;
+	width: 32px;
+}
+
+.ce-inline-toolbar .mdi {
+	height: 32px;
+	width: 32px;
+	font-size: 22px;
+}
+
+.ce-inline-tool-input {
+	background-color: var(--theme-form-bg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-fg);
+}
+
 .ce-toolbar__plus:hover {
 	background-color: #FFFFFF !important;
 	color: #000000;
@@ -34,4 +57,13 @@
 	border: 1px solid var(--theme-form-border);
 	border-radius: 4px;
 	color: var(--theme-form-fg);
+}
+
+.atl-editorjs-hr {
+	margin-top: 2rem;
+	margin-bottom: 4rem;
+}
+
+.atl-editorjs-hr.empty {
+	border-color: transparent !important;
 }

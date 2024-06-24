@@ -166,9 +166,10 @@ import FieldTagSearch from '/share/atlantis/js/field-tag-search.js';
 
 import EditorJS from '/share/atlantis/lib/editorjs/editorjs.js';
 import EJSHeader from '/share/atlantis/lib/editorjs/tools/header.js';
-import EJSLink from '/share/atlantis/lib/editorjs/tools/link.js';
 import EJSList from '/share/atlantis/lib/editorjs/tools/list.js';
 import EJSQuote from '/share/atlantis/lib/editorjs/tools/quote.js';
+import EJSBreak from '/share/atlantis/lib/editorjs/tools/atl-hr.js';
+import EJSTeletype from '/share/atlantis/lib/editorjs/tools/atl-tt.js';
 
 class PostEditor {
 
@@ -203,11 +204,13 @@ class PostEditor {
 
 		this.ejs = new EditorJS({
 			holder: this.eid,
+			inlineToolbar: [ 'link', 'bold', 'italic', 'tele' ],
 			tools: {
 				header: EJSHeader,
-				link: EJSLink,
 				list: EJSList,
-				quote: EJSQuote
+				quote: EJSQuote,
+				breakHr: EJSBreak,
+				tele: EJSTeletype
 			},
 			data: data
 		});
@@ -318,7 +321,7 @@ class PostEditor {
 
 		let dataset = {
 			BlogID: this.bid,
-			PostID: this.pid,
+			ID: this.pid,
 			Editor: 'editorjs',
 			Title: jQuery.trim(this.inTitle.val()),
 			Content: JSON.stringify(jsonobj)
