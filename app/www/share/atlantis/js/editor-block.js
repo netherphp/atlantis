@@ -39,13 +39,13 @@ class EditorBlock {
 			holder: this.eid,
 			inlineToolbar: [ 'link', 'bold', 'italic', 'teletype' ],
 			tools: {
-				header: EJSHeader,
-				bulletList: EJSList,
-				quote: EJSQuote,
+				header: { class: EJSHeader },
+				bulletList: { class: EJSList, inlineToolbar: true },
+				quote: { class: EJSQuote },
 
-				breakHr: AtlBreak,
-				image: AtlImage,
-				teletype: AtlTeletype
+				breakHr: { class: AtlBreak },
+				image: { class: AtlImage },
+				teletype: { class: AtlTeletype }
 			},
 			data: data
 		});

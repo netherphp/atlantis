@@ -4,3 +4,19 @@
 	opacity: 0.5;
 	text-transform: uppercase;
 }
+
+.atl-blog-img {
+	margin-bottom: 2rem;
+}
+
+.atl-blog-img img {
+	border-radius: 6px;
+}
+
+.atl-blog-img figcaption {
+	font-size: 0.8em;
+	font-style: italic;
+	opacity: 0.65;
+	padding-top: 0.5rem;
+	text-align: left;
+}

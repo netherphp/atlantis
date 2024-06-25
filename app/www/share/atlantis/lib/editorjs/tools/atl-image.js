@@ -29,8 +29,10 @@ a piece of content using codemirror as the code syntax magic thing.
 	constructor(data) {
 
 		this.element = null;
-		this.data = data;
+		this.data = data.data;
+		this.upload = null;
 
+		this.imgPreview = null;
 		this.btnUpload = null;
 		this.btnChoose = null;
 		this.inURL = null;
@@ -39,10 +41,10 @@ a piece of content using codemirror as the code syntax magic thing.
 
 		////////
 
-		if(typeof this.data.id === 'undefined')
+		if(typeof this.data.imageID === 'undefined')
 		this.data.imageID = null;
 
-		if(typeof this.data.url === 'undefined')
+		if(typeof this.data.imageURL === 'undefined')
 		this.data.imageURL = null;
 
 		if(typeof this.data.caption === 'undefined')
@@ -57,10 +59,16 @@ a piece of content using codemirror as the code syntax magic thing.
 		if(typeof this.data.gallery === 'undefined')
 		this.data.gallery = false;
 
+		console.log(this.data);
+
 		return;
 	};
 
 	render() {
+
+		let self = this;
+
+		////////
 
 		this.btnUpload = (
 			jQuery('<button />')
@@ -68,6 +76,30 @@ a piece of content using codemirror as the code syntax magic thing.
 			.addClass('btn btn-primary btn-block')
 			.html('<i class="mdi mdi-cloud-upload"></i> Upload')
 		);
+
+		this.upload = new Uploader(this.btnUpload, {
+			conf: '/api/file/upload',
+			onSuccess: function(result) {
+
+				if(result.payload.Type !== 'img') {
+					alert('Upload was not an image?');
+					return;
+				}
+
+				let id = result.payload.ID;
+				let url = result.payload.URL.replace('original.', 'lg.');
+
+				self.data.imageID = id;
+				self.data.imageURL = url;
+
+				self.imgPreview.attr('src', url);
+				this.destroy();
+
+				return;
+			}
+		});
+
+		////////
 
 		this.btnChoose = (
 			jQuery('<button />')
@@ -88,12 +120,17 @@ a piece of content using codemirror as the code syntax magic thing.
 			.attr('type', 'text')
 			.attr('placeholder', 'Caption...')
 			.addClass('form-control w-100')
+			.val(this.data.caption)
 		);
 
 		this.imgPreview = (
-			jQuery('<div />')
-			.addClass("ratiobox ultrawide wallpapered rounded")
+			jQuery('<img />')
+			.attr('src', this.data.imageURL)
+			.addClass('d-none')
 		);
+
+		if(this.data.imageURL)
+		this.imgPreview.removeClass('d-none');
 
 		this.element = (
 			jQuery('<div />')
@@ -138,7 +175,7 @@ a piece of content using codemirror as the code syntax magic thing.
 		return {
 			imageID: this.data.imageID,
 			imageURL: this.data.imageURL,
-			caption: this.data.caption,
+			caption: this.inCaption.val(),
 			altText: this.data.altText,
 			gallery: this.data.gallery,
 			primary: this.data.primary

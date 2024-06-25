@@ -591,15 +591,12 @@ class UploadButton {
 	@date 2022-04-14
 	//*/
 
-		let conf = this.options.conf;
-
-		if(!conf)
-		conf = this.element.attr('data-conf');
+		let conf = this.options.conf || this.element.attr('data-conf');
 
 		////////
 
 		if(conf)
-		await this.getRemoteConfig(this.options.conf);
+		await this.getRemoteConfig(conf);
 
 		this.dialog = new UploadButtonDialog(this);
 

@@ -1,5 +1,5 @@
 /*//
-@date 2024-06-25 20:53:35 UTC
+@date 2024-06-25 21:41:37 UTC
 @files 38 [
     "src\/imports.css",
     "src\/main.css",
@@ -1571,6 +1571,10 @@ grouped are to be considered depreciated. */
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-editorjs.css ////////////////////////////////////////////////////*/
 
+.codex-editor__redactor {
+	padding-bottom: 100px !important;
+}
+
 .ce-toolbar__content,
 .ce-block__content {
 	max-width: 100%;
@@ -1653,6 +1657,22 @@ grouped are to be considered depreciated. */
 	font-weight: bold;
 	opacity: 0.5;
 	text-transform: uppercase;
+}
+
+.atl-blog-img {
+	margin-bottom: 2rem;
+}
+
+.atl-blog-img img {
+	border-radius: 6px;
+}
+
+.atl-blog-img figcaption {
+	font-size: 0.8em;
+	font-style: italic;
+	opacity: 0.65;
+	padding-top: 0.5rem;
+	text-align: left;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
