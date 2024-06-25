@@ -1744,16 +1744,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/avenue.git",
-                "reference": "1121600e7102bb1df237fba595f861a60c8f7262"
+                "reference": "ceb5a07dc8fd545608f45a14b54be801700f480e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/avenue/zipball/1121600e7102bb1df237fba595f861a60c8f7262",
-                "reference": "1121600e7102bb1df237fba595f861a60c8f7262",
+                "url": "https://api.github.com/repos/netherphp/avenue/zipball/ceb5a07dc8fd545608f45a14b54be801700f480e",
+                "reference": "ceb5a07dc8fd545608f45a14b54be801700f480e",
                 "shasum": ""
             },
             "require": {
-                "netherphp/common": "dev-master as 5.0.98",
+                "netherphp/common": "dev-master",
                 "netherphp/console": "dev-redux",
                 "php": "^8.1"
             },
@@ -1797,7 +1797,7 @@
                 "issues": "https://github.com/netherphp/avenue/issues",
                 "source": "https://github.com/netherphp/avenue/tree/redux"
             },
-            "time": "2024-06-21T17:33:01+00:00"
+            "time": "2024-06-24T06:08:19+00:00"
         },
         {
             "name": "netherphp/browser",
