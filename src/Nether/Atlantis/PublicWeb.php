@@ -307,8 +307,8 @@ as html pages. //*/
 		$InputUA = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
 
 		if($IgnoreUA && $InputUA) {
-			if(preg_match(sprintf('#\b(?:%s)\b#msi', $IgnoreUA), $InputUA));
-			return;
+			//if(preg_match(sprintf('#\b(?:%s)\b#msi', $IgnoreUA), $InputUA));
+			//return;
 		}
 
 		// @todo 2023-07-21

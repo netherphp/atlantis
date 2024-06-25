@@ -13,6 +13,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Avenue\Meta\RouteHandler('/video/:VideoID:')]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Avenue\Meta\ExtraDataArgs]
 	public function
 	View(int $VideoID, Atlantis\Media\VideoThirdParty $Video):
 	void {
