@@ -14,7 +14,14 @@ use Imagick;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-class Util {
+class Util
+implements Atlantis\Plugin\Interfaces\Engine\AppInstanceStaticInterface {
+
+	use
+	Atlantis\Packages\AppInstanceStatic;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	static public function
 	GetSelectedHTML(bool $Cond):
@@ -504,28 +511,20 @@ class Util {
 	}
 
 	static public function
-	RewriteURL(string $URL='', ?Common\Datastore $Tags=NULL):
+	RewriteURL(string $URL='', ?Common\Datastore $Tags=NULL, ?Atlantis\Engine $App=NULL):
 	string {
 
 		// i seriously need to work out a way for libraries to boil this
 		// down better. this is depending on the web route having made the
 		// global instance to just reach up and pull out of nowhere.
 
-		$App = match(TRUE) {
-			defined('Atlantis')
-			=> Atlantis,
-
-			default
-			=> throw new Common\Error\RequiredDataMissing(
-				'Atlantis', 'const Atlantis\Engine'
-			)
-		};
+		$App ??= static::$AppInstance;
 
 		// try to select one of the site tags from the input tags that is
 		// also a valid site tag for the domain we are sitting on.
 
 		if(str_starts_with($URL, '/') && $Tags && $Tags->Count()) {
-			$CTags = $App->Config[Atlantis\Key::ConfSiteTags];
+			$CTags = $App->Config[Atlantis\Key::ConfSiteTags] ?: [];
 			$STags = $Tags->Distill(fn(Atlantis\Tag\Entity $T)=> in_array($T->Alias, $CTags));
 
 			if($STags->Count()) {

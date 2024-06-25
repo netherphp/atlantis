@@ -118,7 +118,7 @@ class Post {
 
 	onEditTags(ev) {
 
-		let diag = new TagDialog(this.uuid, 'blogpost');
+		let diag = new TagDialog(this.uuid, 'Blog.Post');
 		diag.show();
 
 		return false;

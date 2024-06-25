@@ -47,7 +47,7 @@ extends ModalDialog {
 
 		this.query.on('keyup', this.onSearchKeyPress.bind(this));
 
-		let api = new API.Request('TAGSGET', '/api/media/entity');
+		let api = new API.Request('TAGSGET', '/api/prototype/entity');
 
 		(api.send({ EntityUUID: this.uuid, Type: this.type }))
 		.then(this.onTagFetch.bind(this))
@@ -222,7 +222,7 @@ extends ModalDialog {
 
 	onAccept() {
 
-		let api = new API.Request('TAGSPATCH', '/api/media/entity');
+		let api = new API.Request('TAGSPATCH', '/api/prototype/entity');
 
 		let output = {
 			EntityUUID: this.uuid,

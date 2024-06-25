@@ -86,15 +86,19 @@ implements
 
 		////////
 
+		// some standard plugins
+
 		($App->Plugins)
 		->Register(Atlantis\Plugins\User\AccessTypeDefault::class)
 		->Register(Atlantis\Plugins\Profile\AdminMenuDefault::class);
 
+		// register some classes for AppInstanceStatic
+
 		($App->Plugins)
-		->RegisterInterfacePlugin(
-			Atlantis\Plugin\Interfaces\Engine\AppInstanceStaticInterface::class,
-			Atlantis\Prototype::class
-		);
+		->Register(Atlantis\Prototype::class)
+		->Register(Atlantis\Util::class);
+
+		////////
 
 		return;
 	}

@@ -41,6 +41,9 @@ class FieldTagSearch {
 		this.searchURL = '/api/tag/entity';
 		this.searchDelayMS = 250;
 
+		this.tagsVerb = 'TAGSGET';
+		this.tagsURL = '/api/prototype/entity';
+
 		////////
 
 		if(typeof el === 'string')
@@ -266,6 +269,28 @@ class FieldTagSearch {
 		return;
 	};
 
+	onSelectItemsPrefillTag(tag) {
+
+		let self = this;
+		let row = jQuery(TemplateSelectItem);
+		console.log(tag);
+
+		row.find('button')
+		.attr('data-tag-id', tag.ID)
+		//.attr('data-tag-name', tag.Name)
+		.text(`${tag.Name}`)
+		.on('click', function() {
+			self.onSelectItemRemove(jQuery(this));
+			return false;
+		});
+
+		this.selectBin.find('.row').append(row);
+		this.toggleSelectBin();
+		this.toggleSearchBin();
+
+		return;
+	};
+
 	onSelectItemRemove(btn) {
 
 		// remove the parent holding the button.
@@ -390,6 +415,25 @@ class FieldTagSearch {
 		}
 
 		this.selectBin.removeClass('d-none');
+
+		return;
+	};
+
+	fetchCurrentTags(eUUID) {
+
+		let self = this;
+		let api = new API.Request(this.tagsVerb, this.tagsURL);
+		let data = { EntityUUID: eUUID };
+
+		(api.send(data))
+		.then(function(result) {
+
+			for(const t of result.payload.Tags)
+			self.onSelectItemsPrefillTag(t);
+
+			return;
+		})
+		.catch(api.catch);
 
 		return;
 	};

@@ -43,8 +43,12 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 		<!-- POST TITLE -->
 		<div class="col">
 			<h1>
-				<a class="td-none" href="<?php $Util->Print($Post->GetURL()) ?>"><?php $Util->Print($Post->Title) ?></a>
+				<a class="td-none" href="<?php $Util->Print($Post->GetPageURL()) ?>"><?php $Util->Print($Post->Title) ?></a>
 			</h1>
+
+			<div>
+				<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+			</div>
 		</div>
 
 		<?php if($Route->IsUserAdmin()): ?>

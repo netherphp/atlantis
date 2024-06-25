@@ -355,7 +355,7 @@ implements
 
 		$Slug = match($this->Type) {
 			'topic' => $this->Alias,
-			default => "tag/{$this->Alias}"
+			default => "/tag/{$this->Alias}"
 		};
 
 		$Tokens = [

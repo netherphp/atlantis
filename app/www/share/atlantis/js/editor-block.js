@@ -31,7 +31,7 @@ class EditorBlock {
 
 	init() {
 
-		let data = JSON.parse(this.source.text());
+		let data = JSON.parse(this.source.text() || '{}');
 
 		this.eid = this.mount.attr('id');
 

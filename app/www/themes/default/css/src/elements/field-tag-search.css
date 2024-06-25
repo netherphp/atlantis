@@ -1,16 +1,24 @@
+.atl-field-tag-search-results > div.position-absolute {
+	background: var(--theme-menu-bg);
+	border: 1px solid var(--theme-form-border);
+	box-shadow: 0px 0px 10px #000000;
+	border-radius: 4px;
+	padding: 0.5rem;
+	bottom: 4px;
+
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+[data-bs-theme="light"] .atl-field-tag-search-results > div.position-absolute {
+
+}
+
 .atl-field-tag-search-results {
 
 }
 
-.atl-field-tag-search-results > div.position-absolute {
-	background: #fffc;
-	border: 1px solid #0004;
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-	border-radius: 4px;
-	padding: 0.5rem;
-	bottom: 0.5rem;
-}
+
 
 .atl-field-tag-search-selected {
 

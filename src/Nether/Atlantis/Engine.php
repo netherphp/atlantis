@@ -291,60 +291,6 @@ application instance.
 		return $WebRoot;
 	}
 
-	public function
-	RewriteURL(string $URL, ?Common\Datastore $Tags=NULL):
-	string {
-
-		// try to select a site tag that is configured for any of the
-		// current site tags to select a domain.
-
-		if(str_starts_with($URL, '/') && $Tags && $Tags->Count()) {
-			$CTags = $this->Config[Atlantis\Key::ConfSiteTags];
-			$STags = $Tags->Distill(fn(Atlantis\Tag\Entity $T)=> in_array($T->Alias, $CTags));
-
-			if($STags->Count()) {
-				$STag = $STags->Current();
-
-				if($STag->ExtraData->HasKey('URL'))
-				$URL = sprintf('%s%s', $STags->Current()->ExtraData['URL'], $URL);
-			}
-
-			unset($CTags, $STags, $STag);
-		}
-
-		// select the first site tag we find and use that as the domain for
-		// this thing.
-
-		if(str_starts_with($URL, '/') && $Tags && $Tags->Count()) {
-			$CTags = $this->Config[Atlantis\Key::ConfSiteTags];
-			$STags = $Tags->Distill(fn(Atlantis\Tag\Entity $T)=> $T->Type === 'site');
-
-			if($STags->Count()) {
-				$STag = $STags->Current();
-
-				if($STag->ExtraData->HasKey('URL'))
-				$URL = sprintf('%s%s', $STag->ExtraData['URL'], $URL);
-			}
-
-			unset($CTags, $STags, $STag);
-		}
-
-		// transform the atl:// prefix into a full url. mainly for
-		// spitting out environment specific links.
-
-		if(str_starts_with($URL, 'atl://')) {
-			$URL = match(TRUE) {
-				$this->IsDev()
-				=> preg_replace('#^atl://(?:www\.)?#', 'https://dev.', $URL),
-
-				default
-				=> preg_replace('#^atl://#', 'https://', $URL)
-			};
-		}
-
-		return $URL;
-	}
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -743,6 +689,16 @@ application instance.
 	string {
 
 		return $this->FromConfEnv($File);
+	}
+
+	#[Common\Meta\Deprecated('2024-06-25', 'use Util::RewriteURL instead.')]
+	public function
+	RewriteURL(string $URL, ?Common\Datastore $Tags=NULL):
+	string {
+
+
+
+		return Util::RewriteURL($URL, $Tags, $this);
 	}
 
 	////////////////////////////////////////////////////////////////

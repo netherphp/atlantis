@@ -44,7 +44,16 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 
 ?>
 
-<div id="PostEditor" class="container pt-6 pb-6" data-blog-id="<?php $Util->Print($Blog->ID) ?>" data-post-id="<?php $Util->Print($GetPostValue('ID')) ?>">
+<div class="container-fluid gx-0 mb-4">
+	<?php $Surface->Area('blog/widgets/blog-header', [ 'Blog'=> $Blog ]) ?>
+</div>
+
+<div id="PostEditor" class="container"
+	data-blog-id="<?php $Util->Print($Blog->ID) ?>"
+	data-blog-uuid="<?php $Util->Print($Blog->UUID) ?>"
+	data-post-id="<?php $Util->Print($GetPostValue('ID')) ?>"
+	data-post-uuid="<?php $Util->Print($GetPostValue('UUID')) ?>"
+>
 
 	<!-- POST TITLE -->
 	<div class="mb-4">
@@ -114,8 +123,8 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 			<div class="fw-bold tt-upper">Post Status</div>
 			<div>
 				<select name="Enabled" class="form-select">
-					<option value="0" <?php $Util->Print($Util->GetSelectedHTML($Post->Enabled === 0)) ?>>Draft</option>
-					<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post->Enabled === 1)) ?>>Published</option>
+					<option value="0" <?php $Util->Print($Util->GetSelectedHTML($GetPostValue('Enabled') === 0)) ?>>Draft</option>
+					<option value="1" <?php $Util->Print($Util->GetSelectedHTML($GetPostValue('Enabled') === 1)) ?>>Published</option>
 				</select>
 			</div>
 		</div>
@@ -167,11 +176,19 @@ class PostEditor {
 		this.apiPatchMethod = 'PATCH';
 		this.apiPatchURL = '/api/blogpost/entity';
 
+		this.apiGetTagsMethod = 'TAGSGET';
+		this.apiGetTagsURL = '/api/prototype/entity';
+
+		this.apiPatchTagsMethod = 'TAGSPATCH';
+		this.apiPatchTagsURL = '/api/prototype/entity';
+
 		////////
 
 		this.element = jQuery(selector);
-		this.blogID = parseInt(this.element.attr('data-blog-id'));
-		this.postID = parseInt(this.element.attr('data-post-id'));
+		this.blogID = parseInt(this.element.attr('data-blog-id')) || null;
+		this.blogUUID = this.element.attr('data-blog-uuid');
+		this.postID = parseInt(this.element.attr('data-post-id')) || null;
+		this.postUUID = this.element.attr('data-post-uuid');
 
 		this.editor = EditorBlock.Boot(this.element.find('.atl-editorjs:nth(0)'));
 		this.tagSearch = TagSearch.Boot(this.element.find('[name="Tags"]'));
@@ -195,13 +212,8 @@ class PostEditor {
 
 	init() {
 
-		if(this.blogID === 0)
-		this.blogID = null;
-
-		if(this.postID === 0)
-		this.postID = null;
-
-		////////
+		if(this.postUUID);
+		this.tagSearch.fetchCurrentTags(this.postUUID);
 
 		this.btnSubmit.on('click', this.onSave.bind(this));
 
@@ -243,10 +255,29 @@ class PostEditor {
 		let api = this.startNewRequestForPost(post);
 
 		(api.send(post.toFormData()))
-		.then((result)=> console.log(result))
+		.then(this.onSaveApplyTags.bind(this))
+		.then((report)=> (location.href = report.post.payload.PageURL))
 		.catch(api.catch);
 
 		return;
+	};
+
+	async onSaveApplyTags(result) {
+
+		let api = this.startNewRequestForPostTags();
+		let data = new FormData;
+
+		data.append('EntityUUID', result.payload.UUID);
+		data.append('EntityType', 'Blog.Post');
+		data.append('TagID', this.tagSearch.getSelectedTags());
+		data.append('TagName', this.tagSearch.getNewTags());
+
+		let chain = (
+			(api.send(data))
+			.then((r)=> ({ post: result, tags: r }))
+		);
+
+		return chain;
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -259,10 +290,22 @@ class PostEditor {
 			this.apiPostURL
 		);
 
-		if(post.ID !== null) {
+		console.log(post);
+
+		if(post.id !== null) {
 			api.method = this.apiPatchMethod;
 			api.url = this.apiPatchURL;
 		}
+
+		return api;
+	};
+
+	startNewRequestForPostTags(post) {
+
+		let api = new API.Request(
+			this.apiPatchTagsMethod,
+			this.apiPatchTagsURL
+		);
 
 		return api;
 	};
