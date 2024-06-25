@@ -15,7 +15,7 @@ class BlogPost {
 		this.insertVerb = 'POST';
 		this.insertURL = '/api/blog/post';
 
-		this.taggingType = 'blogpost';
+		this.taggingType = 'Blog.Post';
 		this.taggingVerb = 'TAGSPATCH';
 		this.taggingURL = '/api/media/entity';
 

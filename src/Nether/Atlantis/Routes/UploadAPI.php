@@ -125,6 +125,7 @@ extends Atlantis\ProtectedAPI {
 		->SetPayload([
 			'UUID'        => $UUID,
 			'Name'        => $File['name'],
+			'Type'        => $Type,
 			'ChunkSize'   => $Size,
 			'Range'       => $Range
 		]);
