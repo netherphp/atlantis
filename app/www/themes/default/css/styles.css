@@ -1,6 +1,6 @@
 /*//
-@date 2024-05-09 22:50:42 UTC
-@files 35 [
+@date 2024-06-25 19:41:48 UTC
+@files 37 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -17,6 +17,7 @@
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
     "src\/ext-grecaptcha.css",
+    "src\/ext-editorjs.css",
     "src\/fx-text.css",
     "src\/design\/footer.css",
     "src\/design\/header.css",
@@ -35,6 +36,7 @@
     "src\/elements\/pretty-modern-box.css",
     "src\/elements\/pretty-modern-navbar.css",
     "src\/elements\/sitemenu.css",
+    "src\/elements\/statebtn.css",
     "src\/elements\/swiper.css"
 ]
 //*/
@@ -95,6 +97,9 @@
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt1: #17181f;
 	--theme-body-bg-alt3: #1d1e29;
+
+	--theme-menu-bg: #111111AA;
+	--theme-menu-border: #141414;
 
 	/* styles for glass panels of various opacity and filters. opacity is
 	chosen via a bg class so that backdrop-filter can then apply the glass
@@ -178,6 +183,8 @@
 	--theme-body-bg-alt1: #eaebf7;
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt3: #e2e3f1;
+
+	--theme-menu-bg: #FFFFFF;
 
 	--theme-dark-bg: #5a5a5a;
 	--theme-dark-glass: #09090988;
@@ -368,7 +375,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-body-bg);
+	background-color: var(--theme-menu-bg);
 	border-radius: 6px;
 	box-shadow: 0px 0px 72px #0004;
 	font-size: 0.9em;
@@ -916,6 +923,31 @@ grouped are to be considered depreciated. */
 .form-check-input:focus {
 	outline: none !important;
 	box-shadow: none !important;
+}
+
+.blockquote-supercontainer {
+	margin-bottom: 1.75rem;
+}
+
+.blockquote-supercontainer .blockquote {
+	font-size: 1.2rem;
+	border-left: 4px solid;
+	border-left-color: var(--ColourTextAccent);
+	padding-left: 1.0rem;
+	font-style: italic;
+	font-weight: light;
+	letter-spacing: 0.05rem;
+}
+
+.blockquote-supercontainer .blockquote-footer {
+	font-size: 1.2rem;
+	color: var(--bs-body-fg);
+	font-style: italic;
+	font-weight: bold;
+	letter-spacing: 0.07rem;
+	padding: 0.5rem 0px 0.5rem 0.0rem;
+	opacity: 0.5;
+	text-align: left;
 }
 
 .blockquote-edged,
@@ -1470,12 +1502,17 @@ grouped are to be considered depreciated. */
 
 .mdi {
 	display: inline-block;
-	vertical-align: middle;
+	-vertical-align: middle;
 	width: 1.0em;
 }
 
 .btn > .mdi:first-child {
 	margin-right: 0.25em;
+}
+
+.mdi-spin::before {
+	-webkit-animation: mdi-spin 1s infinite linear;
+	animation: mdi-spin 2s infinite linear;
 }
 
 .mdi-spin-fast::before {
@@ -1526,6 +1563,83 @@ grouped are to be considered depreciated. */
 	border-color: transparent !important;
 	border-radius: 4px;
 
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-editorjs.css ////////////////////////////////////////////////////*/
+
+.ce-toolbar__content,
+.ce-block__content {
+	max-width: 100%;
+	width: 100%;
+}
+
+.codex-editor__redactor > .ce-block {
+	border-bottom: 2px dashed #FFFFFF22;
+	margin-bottom: 0px;
+	padding: 0.2rem 1rem 0.6rem 1rem;
+}
+
+.ce-toolbar__plus {
+	background-color: var(--theme-form-fg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-bg);
+}
+
+.ce-inline-toolbar {
+	background-color: var(--theme-form-fg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-bg);
+}
+
+.ce-inline-toolbar svg {
+	height: 32px;
+	width: 32px;
+}
+
+.ce-inline-toolbar .mdi {
+	height: 32px;
+	width: 32px;
+	font-size: 22px;
+}
+
+.ce-inline-tool-input {
+	background-color: var(--theme-form-bg);
+	border-color: var(--theme-form-border);
+	color: var(--theme-form-fg);
+}
+
+.ce-toolbar__plus:hover {
+	background-color: #FFFFFF !important;
+	color: #000000;
+}
+
+.ce-block--selected {
+	background: var(--theme-primary);
+}
+
+.ce-block--selected .ce-block__content {
+	background: transparent;
+}
+
+.atl-editorjs {
+	background-color: var(--theme-form-bg);
+	border: 1px solid var(--theme-form-border);
+	border-radius: 4px;
+	color: var(--theme-form-fg);
+}
+
+.atl-editorjs-hr {
+	margin-top: 2rem;
+	margin-bottom: 4rem;
+}
+
+.atl-editorjs-hr.empty {
+	border-color: transparent !important;
+}
+
+.atl-editorjs-imgupl {
+	padding: 1.5rem 0px 1.20rem 0px;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -1980,18 +2094,24 @@ is being used and then prefixing all these with that theme name, if i recall. */
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/field-tag-search.css ///////////////////////////////////////*/
 
-.atl-field-tag-search-results {
-
-}
-
 .atl-field-tag-search-results > div.position-absolute {
-	background: #fffc;
-	border: 1px solid #0004;
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
+	background: var(--theme-menu-bg);
+	border: 1px solid var(--theme-form-border);
+	box-shadow: 0px 0px 10px #000000;
 	border-radius: 4px;
 	padding: 0.5rem;
-	bottom: 0.5rem;
+	bottom: 4px;
+
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+[data-bs-theme="light"] .atl-field-tag-search-results > div.position-absolute {
+	box-shadow: 0px 0px 10px #00000066;
+}
+
+.atl-field-tag-search-results {
+
 }
 
 .atl-field-tag-search-selected {
@@ -2410,6 +2530,51 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	overflow-y: hidden;
 	scrollbar-gutter: stable;
 	width: 100%;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/statebtn.css ///////////////////////////////////////////////*/
+
+.atl-statebtn {
+	display: grid;
+	background: transparent !important;
+	border: 0px !important;
+	padding: 0px !important;
+	text-align: center !important;
+	opacity: 1.0;
+	transition: opacity 300ms;
+}
+
+.atl-statebtn[disabled] {
+	opacity: 0.75;
+}
+
+.atl-statebtn .btn {
+	grid-column-start: 0;
+	grid-column-end: 1;
+	grid-row-start: 0;
+	grid-row-end: 1;
+
+	opacity: 0.0;
+	width: 100%;
+
+	transition: opacity 150ms;
+}
+
+.atl-statebtn.atl-state-default .default {
+	opacity: 1.0;
+}
+
+.atl-statebtn.atl-state-success .success {
+	opacity: 1.0;
+}
+
+.atl-statebtn.atl-state-error .error {
+	opacity: 1.0;
+}
+
+.atl-statebtn.atl-state-processing .processing {
+	opacity: 1.0;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
