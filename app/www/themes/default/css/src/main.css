@@ -133,7 +133,8 @@
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt3: #e2e3f1;
 
-	--theme-menu-bg: #FFFFFF;
+	--theme-menu-bg: #FFFFFFAA;
+	--theme-menu-border: #DDDDDD;
 
 	--theme-dark-bg: #5a5a5a;
 	--theme-dark-glass: #09090988;

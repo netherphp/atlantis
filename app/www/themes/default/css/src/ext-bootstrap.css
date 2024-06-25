@@ -159,6 +159,7 @@ grouped are to be considered depreciated. */
 
 .dropdown-menu {
 	z-index: 9011;
+	backdrop-filter: blur(6px);
 }
 
 .dropdown-menu > hr:first-child,

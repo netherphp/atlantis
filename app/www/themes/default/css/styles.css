@@ -1,5 +1,5 @@
 /*//
-@date 2024-06-25 19:41:48 UTC
+@date 2024-06-25 20:09:55 UTC
 @files 37 [
     "src\/imports.css",
     "src\/main.css",
@@ -184,7 +184,8 @@
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt3: #e2e3f1;
 
-	--theme-menu-bg: #FFFFFF;
+	--theme-menu-bg: #FFFFFFAA;
+	--theme-menu-border: #DDDDDD;
 
 	--theme-dark-bg: #5a5a5a;
 	--theme-dark-glass: #09090988;
@@ -650,6 +651,7 @@ grouped are to be considered depreciated. */
 
 .dropdown-menu {
 	z-index: 9011;
+	backdrop-filter: blur(6px);
 }
 
 .dropdown-menu > hr:first-child,
