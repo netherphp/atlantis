@@ -13,6 +13,7 @@ use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindOptionsInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindFiltersInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindSortsInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
+use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetTitleInterface;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
 class Entity
@@ -161,7 +162,8 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	array {
 
 		$Output = array_merge(parent::DescribeForPublicAPI(), [
-			'PageURL'    => $this->GetPageURL()
+			'TitleFull' => $this->GetTitle(),
+			'PageURL'   => $this->GetPageURL()
 		]);
 
 		return $Output;
@@ -182,7 +184,6 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		return $Output;
 	}
 
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -191,6 +192,44 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	string {
 
 		return $this->Details;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetTitle():
+	string {
+
+		$Title = (NULL
+			?? static::ExtendGetTitle($this)
+			?? $this->Title
+		);
+
+		return $Title;
+	}
+
+	static public function
+	ExtendGetTitle(self $Profile):
+	?string {
+
+		$Plugins = static::$AppInstance->Plugins->GetInstanced(
+			ExtendGetTitleInterface::class
+		);
+
+		$Title = NULL;
+		$Plug = NULL;
+
+		if($Plugins->Count())
+		foreach($Plugins as $Plug) {
+			/** @var ExtendGetTitleInterface $Plug */
+			$Title = $Plug->GetTitle($Profile);
+
+			if($Title)
+			return $Title;
+		}
+
+		return NULL;
 	}
 
 	////////////////////////////////////////////////////////////////

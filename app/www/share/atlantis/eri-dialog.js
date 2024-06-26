@@ -238,8 +238,8 @@ extends ModalDialog {
 				.addClass('btn btn-dark btn-block ta-left tt-none mb-1')
 				.attr('data-id', tag.ID)
 				.attr('data-uuid', tag.UUID)
-				.attr('data-title', tag.Title)
-				.html(`<i class="mdi mdi-minus"></i> ${tag.Title}`)
+				.attr('data-title', tag.TitleFull)
+				.html(`<i class="mdi mdi-minus"></i> ${tag.TitleFull}`)
 				.on('click.tagdiag', function() {
 					self.onTagClick(jQuery(this));
 					return;
@@ -287,7 +287,7 @@ extends ModalDialog {
 		////////
 
 		for(let item of result.payload) {
-			let title = item.Title;
+			let title = item.TitleFull;
 
 			if(item.AddressState && item.AddressCity)
 			title = `${title} (${item.AddressCity}, ${item.AddressState})`;
