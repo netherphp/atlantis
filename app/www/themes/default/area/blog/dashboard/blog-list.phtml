@@ -1,50 +1,57 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
 /**
- * @var Nether\Atlantis\Engine $App
- * @var Nether\Surface\Engine $Surface
- * @var Nether\Database\ResultSet $BlogUsers
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Blog\Routes\PostEditorWeb $Route
+ * @var Common\Datastore $Blogs
+ * @var Common\Datastore $Trail
  */
 
-($Surface)
-->Set('Page.Title', 'Manage Blogs - Dashboard')
-->Area('dashboard/nav', [ 'Trail' => [
-	'Blog'           => '/dashboard/blog/list',
-	'Manage Blogs'   => '/dashboard/blog/list'
-]]);
+$Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 
 ?>
 
-<?php foreach($BlogUsers as $Blog): /** @var Nether\Blog\BlogUser $Blog */ ?>
-<div class="row tight align-items-center mb-4">
-	<div class="col-auto">
-		<div class="font-size-largerer">
-			<?php if($Blog->CanAdmin()): ?>
-			<i class="mdi mdi-fw mdi-account-cog"></i>
-			<?php elseif($Blog->CanEdit()): ?>
-			<i class="mdi mdi-fw mdi-account-wrench"></i>
-			<?php elseif($Blog->CanWrite()): ?>
-			<i class="mdi mdi-fw mdi-account-edit"></i>
-			<?php endif; ?>
+<div class="container mb-6">
+
+	<hr class="mt-0 mb-4" />
+	<?php foreach($Blogs as $Blog): /** @var Blog\Blog $Blog */ ?>
+	<div class="row tight align-items-center">
+		<div class="col-2 d-none d-md-block">
+			<div class="ratiobox wallpapered widescreen rounded" style="background-image:url(<?php $Util->Print($Blog->GetHeaderURL()) ?>);">
+				<a href="<?php $Util->Print($Blog->GetPageURL()) ?>" class="td-none pos-absolutely"></a>
+			</div>
+		</div>
+		<div class="col">
+			<a href="<?php $Util->Print($Blog->GetPageURL()) ?>"><?php $Util->Print($Blog->Title) ?></a>
+		</div>
+		<div class="col-auto">
+			<?php
+
+			echo Atlantis\UI\Dropdown::FromSurfaceWithMenu(
+				$Surface,
+				Atlantis\Struct\DropdownMenu::New(Icon: 'mdi mdi-cog')
+				->ItemNew('View', 'mdi mdi-open-in-new', $Blog->GetPageURL())
+				->ItemNew('-')
+				->ItemNew('Write', 'mdi mdi-pencil', $Blog->GetWriteURL())
+				->ItemNew('Settings', 'mdi mdi-cog', $Blog->GetSettingsURL())
+				->ItemNew('Users', 'mdi mdi-account-group', $Blog->GetManageUsersURL())
+			);
+
+			?>
 		</div>
 	</div>
-	<div class="col">
-		<a href="<?php $Printer($Blog->Blog->GetURL()) ?>"><?php $Printer($Blog->Blog->Title) ?></a>
-	</div>
-	<div class="col-auto">
-		<a href="<?php $Printer($Blog->Blog->GetURL()) ?>" class="btn btn-primary">View</a>
-	</div>
-	<?php if($Blog->CanWrite()): ?>
-	<div class="col-auto">
-		<a href="<?php $Printer($Blog->Blog->GetWriteURL()) ?>" class="btn btn-primary">Write</a>
-	</div>
-	<?php endif; ?>
-	<?php if($Blog->CanAdmin()): ?>
-	<div class="col-auto">
-		<a href="<?php $Printer($Blog->Blog->GetSettingsURL()) ?>" class="btn btn-primary">Settings</a>
-	</div>
-	<?php endif; ?>
+	<hr class="mt-4 mb-4" />
+	<?php endforeach; ?>
 </div>
-<hr class="mt-0 mb-4" />
-<?php endforeach; ?>
-

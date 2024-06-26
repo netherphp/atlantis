@@ -1,0 +1,65 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Blog;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Blog\Routes\PostEditorWeb $Route
+ * @var Common\Datastore $Blogs
+ * @var Common\Datastore $Trail
+ */
+
+$GetStatusIcon = function(bool $Value) {
+	return $Value ? 'mdi mdi-check text-success' : 'mdi mdi-close text-danger';
+};
+
+$Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
+
+?>
+
+<div class="container mb-6">
+
+	<div class="row tight align-items-center">
+		<div class="col">
+			User
+		</div>
+		<div class="col-1 ta-center">
+			Write
+		</div>
+		<div class="col-1 ta-center">
+			Edit
+		</div>
+		<div class="col-1 ta-center">
+			Admin
+		</div>
+	</div>
+	<hr class="mt-0 mb-4" />
+
+	<?php foreach($Users as $User): /** @var Blog\BlogUser $User */ ?>
+	<div class="row tight align-items-center">
+		<div class="col">
+			<?php $Util->Print($User->User->GetAlias(TRUE)) ?>
+		</div>
+		<div class="col-1 ta-center">
+			<i class="<?php $Util->Print($GetStatusIcon($User->CanWrite())) ?>"></i>
+		</div>
+		<div class="col-1 ta-center">
+			<i class="<?php $Util->Print($GetStatusIcon($User->CanEdit())) ?>"></i>
+		</div>
+		<div class="col-1 ta-center">
+			<i class="<?php $Util->Print($GetStatusIcon($User->CanAdmin())) ?>"></i>
+		</div>
+	</div>
+	<hr class="mt-4 mb-4" />
+	<?php endforeach; ?>
+</div>

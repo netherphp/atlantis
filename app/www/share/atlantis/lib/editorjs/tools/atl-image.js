@@ -41,6 +41,13 @@ a piece of content using codemirror as the code syntax magic thing.
 
 		////////
 
+		this.init();
+
+		return;
+	};
+
+	init() {
+
 		if(typeof this.data.imageID === 'undefined')
 		this.data.imageID = null;
 
@@ -59,8 +66,6 @@ a piece of content using codemirror as the code syntax magic thing.
 		if(typeof this.data.gallery === 'undefined')
 		this.data.gallery = false;
 
-		console.log(this.data);
-
 		return;
 	};
 
@@ -77,30 +82,6 @@ a piece of content using codemirror as the code syntax magic thing.
 			.html('<i class="mdi mdi-cloud-upload"></i> Upload')
 		);
 
-		this.upload = new Uploader(this.btnUpload, {
-			conf: '/api/file/upload',
-			onSuccess: function(result) {
-
-				if(result.payload.Type !== 'img') {
-					alert('Upload was not an image?');
-					return;
-				}
-
-				let id = result.payload.ID;
-				let url = result.payload.URL.replace('original.', 'lg.');
-
-				self.data.imageID = id;
-				self.data.imageURL = url;
-
-				self.imgPreview.attr('src', url);
-				this.destroy();
-
-				return;
-			}
-		});
-
-		////////
-
 		this.btnChoose = (
 			jQuery('<button />')
 			.attr('type', 'button')
@@ -112,7 +93,7 @@ a piece of content using codemirror as the code syntax magic thing.
 			jQuery('<input />')
 			.attr('type', 'text')
 			.attr('readonly', 'readonly')
-			.addClass('form-control w-100')
+			.addClass('form-control o-50 w-100')
 		);
 
 		this.inCaption = (
@@ -120,17 +101,35 @@ a piece of content using codemirror as the code syntax magic thing.
 			.attr('type', 'text')
 			.attr('placeholder', 'Caption...')
 			.addClass('form-control w-100')
-			.val(this.data.caption)
 		);
+
+		////////
 
 		this.imgPreview = (
 			jQuery('<img />')
-			.attr('src', this.data.imageURL)
 			.addClass('d-none')
 		);
 
-		if(this.data.imageURL)
-		this.imgPreview.removeClass('d-none');
+		////////
+
+		this.upload = new Uploader(this.btnUpload, {
+			conf: '/api/file/upload',
+			onSuccess: this.onUpload.bind(this)
+		});
+
+		if(this.data.imageURL) {
+			this.inURL.val(this.data.imageURL);
+			this.imgPreview.attr('src', this.data.imageURL);
+			this.imgPreview.removeClass('d-none');
+		}
+
+		if(this.data.caption) {
+			this.inCaption.val(this.data.caption);
+		}
+
+		if(this.data.altText) {
+			this.inAltText.val(this.data.altText);
+		}
 
 		this.element = (
 			jQuery('<div />')
@@ -184,6 +183,25 @@ a piece of content using codemirror as the code syntax magic thing.
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	onUpload(result) {
+
+		if(result.payload.Type !== 'img') {
+			alert('Upload was not an image?');
+			return;
+		}
+
+		let id = result.payload.ID;
+		let url = result.payload.URL.replace('original.', 'lg.');
+
+		self.data.imageID = id;
+		self.data.imageURL = url;
+
+		self.imgPreview.attr('src', url);
+		this.destroy();
+
+		return;
+	}
 
 };
 
