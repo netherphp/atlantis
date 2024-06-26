@@ -21,15 +21,17 @@ use Nether\Atlantis\Dashboard\SidebarGroupItem;
  */
 
 
-$Surface->Area('dashboard/nav');
+$Surface->Area('dashboard/__header');
 
 ?>
 
 
-<div class="row mb-8">
-	<?php foreach($MainItems as $Element): /** @var Atlantis\Dashboard\Element $Element */ ?>
-	<div class="<?php $Util->Print($Element->GetBootstrapColumnClasses()) ?> mb-4">
-		<?php $Surface->Area($Element->Area, array_merge($__SCOPE, [ 'Element'=> $Element ])) ?>
+<div class="container">
+	<div class="row mb-8">
+		<?php foreach($MainItems as $Element): /** @var Atlantis\Dashboard\Element $Element */ ?>
+		<div class="<?php $Util->Print($Element->GetBootstrapColumnClasses()) ?> mb-4">
+			<?php $Surface->Area($Element->Area, array_merge($__SCOPE, [ 'Element'=> $Element ])) ?>
+		</div>
+		<?php endforeach; ?>
 	</div>
-	<?php endforeach; ?>
 </div>
