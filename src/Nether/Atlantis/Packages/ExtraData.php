@@ -19,10 +19,16 @@ trait ExtraData {
 	$ExtraData;
 
 	public function
-	HasExtraData(string $Key):
+	HasExtraData(string $Key, bool $AndNotEmpty=FALSE):
 	bool {
 
+		if(!$AndNotEmpty)
 		return $this->ExtraData->HasKey($Key);
+
+		return (TRUE
+			&& $this->ExtraData->HasKey($Key)
+			&& !!$this->ExtraData->Get($Key)
+		);
 	}
 
 	public function

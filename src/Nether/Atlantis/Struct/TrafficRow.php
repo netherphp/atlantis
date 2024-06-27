@@ -148,6 +148,12 @@ extends Atlantis\Prototype {
 			if($Input['Group'] === 'domain')
 			$SQL->Group('Main.Domain');
 
+			if($Input['Group'] === 'useragent')
+			$SQL->Group('Main.UserAgent');
+
+			if($Input['Group'] === 'page')
+			$SQL->Group([ 'Main.Domain', 'Main.Path' ]);
+
 			$SQL->Fields([ 'GroupCount'=> 'COUNT(*) AS GroupCount' ]);
 		}
 
