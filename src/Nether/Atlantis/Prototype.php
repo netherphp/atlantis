@@ -20,7 +20,8 @@ implements
 	Plugin\Interfaces\Engine\AppInstanceStaticInterface {
 
 	use
-	Packages\AppInstanceStatic;
+	Packages\AppInstanceStatic,
+	Packages\TempData;
 
 	////////////////////////////////////////////////////////////////
 	//// DATABASE FIELDS ///////////////////////////////////////////
