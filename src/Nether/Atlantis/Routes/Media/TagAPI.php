@@ -122,6 +122,7 @@ extends Atlantis\Routes\UploadAPI {
 		$Tag = $this->FetchTagByField();
 		$Tag->Update($Tag->Patch($this->Data));
 
+		$this->SetGoto($Tag->GetPageURL());
 		$this->SetPayload($Tag->DescribeForPublicAPI());
 
 		return;

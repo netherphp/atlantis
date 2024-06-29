@@ -104,6 +104,7 @@ implements
 	array {
 
 		$Data = parent::DescribeForPublicAPI();
+		$Data['PageURL'] = $this->GetPageURL();
 		$Data['CoverImageURL'] = $this->GetCoverImageURL();
 
 		return $Data;
