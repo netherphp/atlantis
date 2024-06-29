@@ -1,5 +1,5 @@
 /*//
-@date 2024-06-25 21:41:37 UTC
+@date 2024-06-29 02:01:25 UTC
 @files 38 [
     "src\/imports.css",
     "src\/main.css",
@@ -185,7 +185,7 @@
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt3: #e2e3f1;
 
-	--theme-menu-bg: #FFFFFFAA;
+	--theme-menu-bg: #FFFFFFDD;
 	--theme-menu-border: #DDDDDD;
 
 	--theme-dark-bg: #5a5a5a;
