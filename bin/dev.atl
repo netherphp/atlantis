@@ -630,6 +630,53 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('vendex', TRUE)]
+	public function
+	HandleVendexer():
+	int {
+
+		$Name = '.vendex';
+		$Vendex = $this->App->FromProjectRoot($Name);
+
+		$Dirs = new Common\Datastore([
+			'vendor/netherphp' => 'netherphp'
+		]);
+
+		////////
+
+		Common\Filesystem\Util::MkDir($Vendex);
+
+		foreach($Dirs as $Src => $Dst) {
+			$Tgt = realpath($Src);
+			$Lnk = sprintf('%s/%s', $Vendex, $Dst);
+
+			if(!$Tgt) {
+				$this->PrintStatusMuted(sprintf(
+					'skipping %s (not found)',
+					$Src
+				));
+
+				continue;
+			}
+
+			if(file_exists($Lnk)) {
+				$this->PrintStatusMuted(sprintf(
+					'skipping %s (exists)',
+					$Src
+				));
+
+				continue;
+			}
+
+			symlink($Tgt, $Lnk);
+		}
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Common\Meta\Date('2023-11-17')]
 	public function
 	DigestOptionExtensions():
