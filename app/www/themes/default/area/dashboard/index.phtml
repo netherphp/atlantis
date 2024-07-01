@@ -1,12 +1,14 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
 use Nether\Surface;
 use Nether\User;
 
-use Nether\Atlantis\Dashboard\SidebarGroup;
-use Nether\Atlantis\Dashboard\SidebarGroupItem;
+use Nether\Atlantis\Plugin\Interfaces\Dashboard\InfoWidgetInterface;
 
 /**
  * @var Atlantis\Engine $App
@@ -16,22 +18,29 @@ use Nether\Atlantis\Dashboard\SidebarGroupItem;
  * @var User\EntitySession $User
  *
  * @var Atlantis\Routes\User\UserSessionWeb $Route
- * @var Nether\Common\Datastore $SidebarItems
- * @var Nether\Common\Datastore $MainItems
+ * @var Common\Datastore $InfoWidgets
  */
 
+################################################################################
+################################################################################
 
 $Surface->Area('dashboard/__header');
 
 ?>
 
-
-<div class="container">
-	<div class="row mb-8">
-		<?php foreach($MainItems as $Element): /** @var Atlantis\Dashboard\Element $Element */ ?>
-		<div class="<?php $Util->Print($Element->GetBootstrapColumnClasses()) ?> mb-4">
-			<?php $Surface->Area($Element->Area, array_merge($__SCOPE, [ 'Element'=> $Element ])) ?>
-		</div>
-		<?php endforeach; ?>
+<?php if($InfoWidgets->Count()): ?>
+<div class="container mb-6">
+	<div class="row">
+		<?php
+		$InfoWidgets->Each(
+			fn(InfoWidgetInterface $P)
+			=> printf(
+				'<div class="%s mb-4">%s</div>',
+				$P->GetColumnSizes(),
+				$P->Render()
+			)
+		)
+		?>
 	</div>
 </div>
+<?php endif; ?>

@@ -14,6 +14,7 @@ extends Atlantis\ProtectedWeb {
 	#[Atlantis\Meta\RouteHandler('/dashboard/page/list')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleList():
 	void {
@@ -47,6 +48,7 @@ extends Atlantis\ProtectedWeb {
 	#[Atlantis\Meta\RouteHandler('/dashboard/page/edit/:PageID:')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleEdit(int $PageID, Atlantis\Page\Entity $Page):
 	void {

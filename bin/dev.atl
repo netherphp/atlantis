@@ -631,16 +631,31 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('vendex', TRUE)]
+	#[Console\Meta\Toggle('--clean', 'Remove any old')]
 	public function
-	HandleVendexer():
+	HandleVendexing():
 	int {
 
 		$Name = '.vendex';
 		$Vendex = $this->App->FromProjectRoot($Name);
+		$OptClean = $this->GetOption('clean');
+		$Old = NULL;
 
 		$Dirs = new Common\Datastore([
 			'vendor/netherphp' => 'netherphp'
 		]);
+
+		////////
+
+		if($OptClean) {
+			$Old = $this->App->FromProjectRoot('vendex');
+
+			if(is_dir($Old))
+			Common\Filesystem\Util::RmDir($Old);
+
+			//if(is_dir($Vendex))
+			//Common\Filesystem\Util::RmDir($Old);
+		}
 
 		////////
 

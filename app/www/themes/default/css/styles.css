@@ -1,5 +1,5 @@
 /*//
-@date 2024-06-29 02:01:25 UTC
+@date 2024-07-01 07:03:46 UTC
 @files 38 [
     "src\/imports.css",
     "src\/main.css",
@@ -59,6 +59,13 @@
 
 	--theme-black: #141414;
 	--theme-white: #FDFDFD;
+
+	--min-xs: 0px;
+	--min-sm: 576px;
+	--min-md: 768px;
+	--min-lg: 992px;
+	--min-xl: 1200px;
+	--min-xxl: 1400px;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

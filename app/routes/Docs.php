@@ -44,6 +44,7 @@ extends Atlantis\PublicWeb {
 	#[Avenue\Meta\RouteHandler('/docs/:Sect:')]
 	#[Avenue\Meta\RouteHandler('/docs/:Sect:/:Page:')]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Avenue\Meta\ExtraDataArgs]
 	public function
 	SectionNew(?string $Sect=NULL, ?string $Page=NULL, ?string $Area=NULL):
 	void {

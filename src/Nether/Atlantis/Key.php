@@ -83,6 +83,8 @@ class Key {
 	WebCertTypeAcmePHP = 'acmephp';
 
 	const
+	AccessContentLog       = 'Nether.Atlantis.Access.ContentLog',
+	AccessTrafficLog       = 'Nether.Atlantis.Access.TrafficLog',
 	AccessContactLogManage = 'Nether.Atlantis.ContactLog.Manage',
 	AccessPageManage       = 'Nether.Atlantis.Page.Manage',
 	AccessDeveloper        = 'Nether.Atlantis.Developer',

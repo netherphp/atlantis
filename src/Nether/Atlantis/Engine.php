@@ -348,6 +348,13 @@ application instance.
 	////////////////////////////////////////////////////////////////
 
 	public function
+	HasUser():
+	bool {
+
+		return isset($this->User);
+	}
+
+	public function
 	HasLocalData(string $Key):
 	bool {
 

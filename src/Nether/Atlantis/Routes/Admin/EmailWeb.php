@@ -12,6 +12,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/email/config')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleConfigGet():
 	void {
@@ -32,6 +33,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/email/test')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleTestGet():
 	void {

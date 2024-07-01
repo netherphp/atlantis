@@ -11,6 +11,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/dashboard/traffic/view')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	ViewGet():
 	void {

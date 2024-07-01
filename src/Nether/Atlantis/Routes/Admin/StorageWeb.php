@@ -12,6 +12,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/storage/config')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleConfigGet():
 	void {

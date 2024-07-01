@@ -14,8 +14,6 @@ use Nether\Common\Datastore;
 class Library
 extends Common\Library
 implements
-	Atlantis\Plugins\DashboardSidebarInterface,
-	Atlantis\Plugins\DashboardElementInterface,
 	Atlantis\Plugins\UploadHandlerInterface {
 
 	////////////////////////////////////////////////////////////////
@@ -25,13 +23,43 @@ implements
 	OnLoad(...$Argv):
 	void {
 
-		if(!isset($Argv['App']))
+		/** @var Atlantis\Engine $App */
+		$App = $Argv['App'];
+
+		////////
+
+		($this)
+		->RegisterDefaultConfig($App)
+		->RegisterPlugins($App)
+		->RegisterForAppInst($App);
+
 		return;
+	}
+
+	public function
+	OnReady(... $Argv):
+	void {
 
 		/** @var Atlantis\Engine $App */
 		$App = $Argv['App'];
 
 		////////
+
+		($this)
+		->RegisterUserSession($App)
+		->RegisterEntityLinks($App)
+		->RegisterRoutes($App)
+		->OnReadyPluginAppInstanceStatic($App);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	private function
+	RegisterDefaultConfig(Engine $App):
+	static {
 
 		static::$Config->BlendRight([
 			Key::ConfLogFormat             => 'default',
@@ -84,39 +112,47 @@ implements
 			)
 		]);
 
-		////////
+		return $this;
+	}
 
-		// some standard plugins
+	private function
+	RegisterPlugins(Engine $App):
+	static {
 
 		($App->Plugins)
 		->Register(Atlantis\Plugins\User\AccessTypeDefault::class)
-		->Register(Atlantis\Plugins\Profile\AdminMenuDefault::class);
+		->Register(Atlantis\Plugins\Profile\AdminMenuDefault::class)
+		->Register(Atlantis\Plugins\Dashboard\ContentInfoWidget::class)
+		->Register(Atlantis\Plugins\Dashboard\TrafficInfoWidget::class)
+		->Register(Atlantis\Plugins\Dashboard\UserInfoWidget::class)
+		->Register(Atlantis\Plugins\Dashboard\SystemInfoWidget::class);
 
-		// register some classes for AppInstanceStatic
+		return $this;
+	}
+
+	private function
+	RegisterForAppInst(Engine $App):
+	static {
 
 		($App->Plugins)
 		->Register(Atlantis\Prototype::class)
 		->Register(Atlantis\Util::class);
 
-		////////
-
-		return;
+		return $this;
 	}
 
-	public function
-	OnReady(... $Argv):
-	void {
-
-		/** @var Atlantis\Engine $App */
-
-		$App = $Argv['App'];
-		$Scan = NULL;
-
-		////////
+	private function
+	RegisterUserSession(Engine $App):
+	static {
 
 		$App->User = User\EntitySession::Get();
 
-		////////
+		return $this;
+	}
+
+	private function
+	RegisterEntityLinks(Engine $App):
+	static {
 
 		Atlantis\Media\FileTagLink::Register();
 		Atlantis\Media\VideoThirdPartyTagLink::Register();
@@ -128,7 +164,12 @@ implements
 		Atlantis\Struct\EntityRelationship::Register('Media.Related.Link', Media\RelatedLink::class);
 		Atlantis\Struct\EntityRelationship::Register('Profile.Entity', Profile\Entity::class);
 
-		////////
+		return $this;
+	}
+
+	private function
+	RegisterRoutes(Engine $App):
+	static {
 
 		$Scan = new Atlantis\Util\LibraryRouteScanner($App);
 
@@ -138,74 +179,16 @@ implements
 
 		$Scan->Commit();
 
-		////////
-
-		$this->OnReadyPluginAppInstanceStatic($App);
-
-		return;
+		return $this;
 	}
 
-	protected function
+	private function
 	OnReadyPluginAppInstanceStatic(Atlantis\Engine $App):
 	void {
 
 		($App->Plugins)
 		->Get(Plugin\Interfaces\Engine\AppInstanceStaticInterface::class)
 		->Each(fn(string $Class)=> ($Class)::AppInstanceSet($App));
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	// DashboardSidebarInterface ///////////////////////////////////
-
-	public function
-	OnDashboardSidebar(Atlantis\Engine $App, Datastore $Sidebar):
-	void {
-
-		if(!$App->User)
-		return;
-
-		$Sidebar->Push(new Atlantis\Dashboard\AtlantisAccountSidebar);
-
-		if($App->User->HasAccessTypeOrAdmin(Key::AccessContactLogManage))
-		$Sidebar->Push(new Atlantis\Dashboard\AtlantisContactLogSidebar);
-
-		////////
-
-		if($App->Config[Key::ConfPageEnableDB]) {
-			if($App->User->HasAccessTypeOrAdmin(Key::AccessPageManage))
-			$Sidebar->Push(new Atlantis\Dashboard\AtlantisPageSidebar);
-		}
-
-		////////
-
-		if($App->User->IsAdmin())
-		$Sidebar
-		->Push(new Atlantis\Dashboard\AtlantisAdminSidebar)
-		->Push(new Atlantis\Dashboard\AtlantisMediaSidebar);
-
-		return;
-	}
-
-	public function
-	OnDashboardElement(Atlantis\Engine $App, Datastore $Elements):
-	void {
-
-		if(!$App->User)
-		return;
-
-		if($App->User->IsAdmin()) {
-
-			if(!$App->Config->Get('TempDashboardNoTraffic'))
-			$Elements
-			->Push(new Atlantis\Dashboard\AtlantisTagsElement($App))
-			->Push(new Atlantis\Dashboard\AtlantisTrafficElement($App));
-
-		}
-
-		$Elements
-		->Push(new Atlantis\Dashboard\AtlantisAccountElement($App));
 
 		return;
 	}

@@ -194,11 +194,11 @@ a piece of content using codemirror as the code syntax magic thing.
 		let id = result.payload.ID;
 		let url = result.payload.URL.replace('original.', 'lg.');
 
-		self.data.imageID = id;
-		self.data.imageURL = url;
+		this.data.imageID = id;
+		this.data.imageURL = url;
 
-		self.imgPreview.attr('src', url);
-		this.destroy();
+		this.imgPreview.attr('src', url);
+		this.upload.dialog.destroy();
 
 		return;
 	}

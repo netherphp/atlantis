@@ -10,6 +10,7 @@ class TagWeb
 extends Atlantis\ProtectedWeb {
 
 	#[Avenue\Meta\RouteHandler('/ops/tag/view/:TagID:')]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleView(string $TagID):
 	void {

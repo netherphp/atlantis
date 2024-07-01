@@ -1,0 +1,88 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Common;
+
+$Today = Common\Date::FromDateString('today', 'UTC', TRUE);
+
+$Items = Common\Datastore::FromArray([
+	Atlantis\Struct\Item::New(
+		Title: 'Hits',
+		Info: number_format($Element->Hits)
+	),
+	Atlantis\Struct\Item::New(
+		Title: 'Visitors',
+		Info: number_format($Element->Visitors)
+	),
+	Atlantis\Struct\Item::New(
+		Title: 'Pages',
+		Info: number_format($Element->Pages)
+	)
+]);
+
+################################################################################
+################################################################################
+
+?>
+
+<div class="jumbotron rounded p-3">
+	<div class="tt-upper fs-small fw-bold">
+		Traffic Past 24HR
+		<hr class="mt-1 mb-3" />
+	</div>
+	<div class="row g-3 mb-4">
+		<?php foreach($Items as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
+		<div class="col-6 col-md ta-left">
+			<div class="fw-bold tt-upper fs-largest"><?php $Util->Print($Item->GetInfo()) ?></div>
+			<div class="fw-normal tt-upper fs-smallest o-50"><?php $Util->Print($Item->GetTitle()) ?></div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+	<div class="row g-3">
+		<div class="col-4">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=24hr">
+				<i class="mdi mdi-clock"></i>
+				24 HR
+			</a>
+		</div>
+		<div class="col-4">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=48hr">
+				<i class="mdi mdi-clock"></i>
+				48 HR
+			</a>
+		</div>
+		<div class="col-4">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=1wk">
+				<i class="mdi mdi-clock"></i>
+				1 WK
+			</a>
+		</div>
+
+		<div class="col-6">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get(Common\Values::DateFormatYMD)) ?>">
+				<i class="mdi mdi-calendar"></i>
+				Today
+			</a>
+		</div>
+		<div class="col-6">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Modify('-1 day')->Get(Common\Values::DateFormatYMD)) ?>">
+				<i class="mdi mdi-calendar"></i>
+				Yesterday
+			</a>
+		</div>
+		<div class="col-6">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get('Y-m')) ?>">
+				<i class="mdi mdi-calendar"></i>
+				MTD
+			</a>
+		</div>
+		<div class="col-6">
+			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get('Y')) ?>">
+				<i class="mdi mdi-calendar"></i>
+				YTD
+			</a>
+		</div>
+
+	</div>
+</div>

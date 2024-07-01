@@ -6,6 +6,8 @@ use Nether\Atlantis;
 use Nether\Common;
 use Nether\User;
 
+use Nether\Atlantis\Plugin\Interfaces\Dashboard\InfoWidgetInterface;
+
 class UserDashboardWeb
 extends Atlantis\ProtectedWeb {
 
@@ -16,32 +18,20 @@ extends Atlantis\ProtectedWeb {
 	PageDashboard():
 	void {
 
-		$SidebarItems = $this->FetchSidebarItems();
-		$MainItems = $this->FetchMainItems();
-
-		$SidebarItems->Sort(
-			function(Atlantis\Dashboard\SidebarGroup $A, Atlantis\Dashboard\SidebarGroup $B) {
-				if($A->Priority !== $B->Priority)
-				return $B->Priority <=> $A->Priority;
-
-				return $A->Title <=> $B->Title;
-			}
-		);
-
-		$MainItems->Sort(
-			function(Atlantis\Dashboard\Element $A, Atlantis\Dashboard\Element $B) {
-				if($A->Priority !== $B->Priority)
-				return $B->Priority <=> $A->Priority;
-
-				return $A->Title <=> $B->Title;
-			}
+		$InfoWidgets = (
+			($this->App->Plugins)
+			->GetInstanced(InfoWidgetInterface::class)
+			->Filter(fn(InfoWidgetInterface $W)=> $W->Allow())
+			->Sort(
+				fn(InfoWidgetInterface $A, InfoWidgetInterface $B)
+				=> $A->GetSorting() <=> $B->GetSorting()
+			)
 		);
 
 		($this->App->Surface)
 		->Set('Page.Title', 'Dashboard')
 		->Area('dashboard/index', [
-			'SidebarItems' => $SidebarItems,
-			'MainItems'    => $MainItems
+			'InfoWidgets' => $InfoWidgets
 		]);
 
 		return;

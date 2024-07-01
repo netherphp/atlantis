@@ -1,0 +1,69 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ * @var Atlantis\PublicWeb $Route
+ *
+ * @var Atlantis\Plugins\Dashboard\ContentInfoWidget $Element
+ */
+
+################################################################################
+################################################################################
+
+$Items = Common\Datastore::FromArray([
+	Atlantis\Struct\Item::New(
+		Title: Common\Values::IfOneElse($Element->Tags, 'Tag', 'Tags'),
+		Info: $Element->Tags,
+		URL: '/dashboard/tags'
+	),
+	Atlantis\Struct\Item::New(
+		Title: Common\Values::IfOneElse($Element->Profiles, 'Profile', 'Profiles'),
+		Info: $Element->Profiles,
+		URL: '/dashboard/profiles'
+	),
+	Atlantis\Struct\Item::New(
+		Title: Common\Values::IfOneElse($Element->Photos, 'Image', 'Images'),
+		Info: $Element->Photos,
+		URL: '/dashboard/media/images'
+	),
+	Atlantis\Struct\Item::New(
+		Title: Common\Values::IfOneElse($Element->Videos, 'Video', 'Videos'),
+		Info: $Element->Videos,
+		URL: '/dashboard/media/videos'
+	)
+]);
+
+################################################################################
+################################################################################
+
+?>
+
+<div class="jumbotron rounded p-3">
+	<div class="tt-upper fs-small fw-bold">
+		CMS
+		<hr class="mt-1 mb-3" />
+	</div>
+	<div class="row g-3">
+		<?php foreach($Items as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
+		<div class="col-6 col-md pos-relative">
+			<div class="fw-bold tt-upper fs-largest">
+				<a class="td-none" href="<?php $Util->Print($Item->GetURL()) ?>"><?php $Util->Print($Item->GetInfo()) ?></a>
+			</div>
+			<div class="fw-normal tt-upper fs-smallest o-50">
+				<a href="<?php $Util->Print($Item->GetURL()) ?>"><?php $Util->Print($Item->GetTitle()) ?></a>
+			</div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+</div>

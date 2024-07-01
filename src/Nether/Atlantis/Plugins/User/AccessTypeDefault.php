@@ -22,16 +22,24 @@ implements AccessTypeDefineInterface {
 
 		$Output = [
 			new AccessTypeDef(
+				Atlantis\Key::AccessContentLog, 1,
+				'Access the basic CMS info.'
+			),
+			new AccessTypeDef(
+				Atlantis\Key::AccessTrafficLog, 1,
+				'Access the traffic log info.'
+			),
+			new AccessTypeDef(
 				Atlantis\Key::AccessContactLogManage, 1,
-				'Allow the user to view the Contact Us log.'
+				'Access the Contact Us log.'
 			),
 			new AccessTypeDef(
 				Atlantis\Key::AccessPageManage, 1,
-				'Allow the user to manage Pages on the site.'
+				'Manage Pages on the site.'
 			),
 			new AccessTypeDef(
 				Atlantis\Key::AccessTagAdmin, 1,
-				'Allow the user to use site administration tags.'
+				'Use site administration tags.'
 			)
 		];
 

@@ -12,6 +12,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	MainGet():
 	void {
@@ -28,6 +29,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/api')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	ApiGet():
 	void {

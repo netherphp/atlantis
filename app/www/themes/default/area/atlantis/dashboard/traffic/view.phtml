@@ -43,7 +43,7 @@ $GetDateFor = function(string $When) {
 //Common\Dump::Var($Next->Get(Common\Values::DateFormatYMDT12VO), TRUE);
 //Common\Dump::Var($Timeline, TRUE);
 
-$Domains = Common\Datastore::FromArray($App->Config['Network.Domains']);
+$Domains = Common\Datastore::FromArray($App->Config['Network.Domains'] ?: []);
 $Domains->Remap(function(string $D) use($Route) {
 	return Atlantis\Struct\Item::New(UUID: $D, Title: $D, URL: $Route->QueryCooker([ 'domain'=> $D ]));
 });
@@ -173,8 +173,8 @@ $Domains->HeadPush(Atlantis\Struct\Item::New(UUID: 'all', Title: 'All Sites', UR
 	</div>
 </div>
 
+<?php if($Domains->Count() === 1): ?>
 <div class="mb-4">
-
 	<select id="DomainSelect" class="form-select">
 		<?php foreach($Domains as $D): /** @var Atlantis\Struct\Item $D */ ?>
 		<option value="<?php $Util->Print($D->GetURL()) ?>" <?php $Util->Print($Util->GetSelectedHTML($D->GetUUID() === $Route->Data->Domain)) ?>><?php $Util->Print($D->GetTitle()) ?></option>
@@ -187,8 +187,8 @@ $Domains->HeadPush(Atlantis\Struct\Item::New(UUID: 'all', Title: 'All Sites', UR
 		return;
 	});
 	</script>
-
 </div>
+<?php endif; ?>
 
 <!-- TRAFFIC DATA -->
 <table class="table table-striped">

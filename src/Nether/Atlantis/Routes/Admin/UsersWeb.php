@@ -11,6 +11,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/users/list')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleList():
 	void {
@@ -65,6 +66,7 @@ extends Atlantis\ProtectedWeb {
 
 	#[Atlantis\Meta\RouteHandler('/ops/users/:UserID:')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleView(int $UserID):
 	void {

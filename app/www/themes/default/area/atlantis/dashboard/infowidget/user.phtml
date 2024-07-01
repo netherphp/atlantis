@@ -1,0 +1,56 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ */
+
+################################################################################
+################################################################################
+
+?>
+
+<div class="jumbotron rounded p-3">
+	<div class="tt-upper fs-small fw-bold">
+		My Account
+		<hr class="mt-1 mb-3" />
+	</div>
+	<div class="row g-3">
+		<div class="col-12 col-md-6">
+			<a href="/dashboard/settings/email" class="btn btn-dark btn-block ta-left">
+				<i class="mdi mdi-email"></i>
+				Update Email
+			</a>
+		</div>
+		<div class="col-12 col-md-6">
+			<a href="/dashboard/settings/auth" class="btn btn-dark btn-block ta-left">
+				<i class="mdi mdi-two-factor-authentication"></i>
+				Manage Auth
+			</a>
+		</div>
+		<div class="col-12 col-md-6">
+			<a href="/dashboard/settings/password" class="btn btn-dark btn-block ta-left">
+				<i class="mdi mdi-key"></i>
+				Change Password
+			</a>
+		</div>
+		<div class="col-12 col-md-6">
+			<a href="/logout" class="btn btn-dark btn-block ta-left">
+				<i class="mdi mdi-logout"></i>
+				Log Out
+			</a>
+		</div>
+	</div>
+</div>

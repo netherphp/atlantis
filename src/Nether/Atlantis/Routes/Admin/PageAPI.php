@@ -13,6 +13,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/entity')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleGet():
 	void {
@@ -39,6 +40,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/entity', Verb: 'POST')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandlePost():
 	void {
@@ -85,6 +87,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/entity', Verb: 'DELETE')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleDelete():
 	void {
@@ -108,6 +111,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/section')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleSectionGet():
 	void {
@@ -130,6 +134,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/section', Verb: 'POST')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleSectionPost():
 	void {
@@ -193,6 +198,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/section', Verb: 'PATCH')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleSectionPatch():
 	void {
@@ -233,6 +239,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/section', Verb: 'DELETE')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleSectionDelete():
 	void {
@@ -259,6 +266,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/section', Verb: 'MOVE')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleSectionSortingMove():
 	void {
@@ -312,6 +320,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/page/section', Verb: 'TYPES')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleSectionTypes():
 	void {

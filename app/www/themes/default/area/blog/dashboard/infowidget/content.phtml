@@ -1,0 +1,80 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Database;
+
+/**
+ * @var Database\ResultSet $Blogs
+ * @var int $PostCount
+ */
+
+$Items = Common\Datastore::FromArray([
+	Atlantis\Struct\Item::New(
+		Title: Common\Values::IfOneElse($Blogs->Total, 'Blog', 'Blogs'),
+		Info: number_format($Blogs->Total),
+		URL: '/dashboard/blog'
+	),
+	Atlantis\Struct\Item::New(
+		Title: 'Posts',
+		Info: number_format($PostCount)
+	)
+]);
+
+?>
+
+<div class="jumbotron rounded p-3">
+	<div class="fs-small fw-bold">
+		<a class="tt-upper td-none" href="/dashboard/blog">Blogs</a>
+		<hr class="mt-1 mb-3" />
+	</div>
+	<div class="row g-3">
+		<?php foreach($Items as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
+		<div class="col-6 col-md">
+			<div class="fw-bold tt-upper fs-largest">
+				<?php if($Item->HasURL()): ?><a class="td-none" href="<?php $Util->Print($Item->GetURL()) ?>">
+				<?php endif; ?>
+					<?php $Util->Print($Item->GetInfo()) ?>
+				<?php if($Item->HasURL()): ?></a>
+				<?php endif; ?>
+			</div>
+			<div class="fw-normal tt-upper fs-smallest o-50">
+				<?php if($Item->HasURL()): ?><a href="<?php $Util->Print($Item->GetURL()) ?>">
+				<?php endif; ?>
+					<?php $Util->Print($Item->GetTitle()) ?>
+				<?php if($Item->HasURL()): ?></a>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+	<hr />
+
+	<?php foreach($Blogs as $Blog): ?>
+	<div class="pos-relative p-3">
+		<div class="pos-absolutely wallpapered rounded-less o-50" style="background-image:url(<?php $Util->Print($Blog->GetHeaderURL()) ?>);"></div>
+		<div class="row align-items-center pos-relative">
+			<div class="col-2">
+				<div class="ratiobox square wallpapered rounded-less" style="background-image:url(<?php $Util->Print($Blog->GetIconURL()) ?>);"></div>
+			</div>
+			<div class="col">
+				<a href="<?php $Util->Print($Blog->GetPageURL()) ?>"><?php $Util->Print($Blog->Title) ?></a>
+			</div>
+			<div class="col-auto">
+				<?php
+				echo Atlantis\UI\Dropdown::FromSurfaceWithMenu(
+					$Surface,
+					Atlantis\Struct\DropdownMenu::New(Icon: 'mdi mdi-cog')
+					->ItemNew('View', 'mdi mdi-open-in-new', $Blog->GetPageURL())
+					->ItemNew('-')
+					->ItemNew('Write', 'mdi mdi-pencil', $Blog->GetWriteURL())
+					->ItemNew('Settings', 'mdi mdi-cog', $Blog->GetSettingsURL())
+					->ItemNew('Users', 'mdi mdi-account-group', $Blog->GetManageUsersURL())
+				);
+				?>
+			</div>
+		</div>
+	</div>
+	<?php endforeach; ?>
+
+</div>
