@@ -1,5 +1,5 @@
 /*//
-@date 2024-07-01 07:03:46 UTC
+@date 2024-07-01 21:26:26 UTC
 @files 38 [
     "src\/imports.css",
     "src\/main.css",
@@ -1308,9 +1308,11 @@ grouped are to be considered depreciated. */
 /*******************************************************************************
 ** text alignments ************************************************************/
 
+/* patched into bobmagicii/bootstrap5 with responsive stack
 .ta-right  { text-align: right; }
 .ta-left   { text-align: left; }
 .ta-center { text-align: center; }
+*/
 
 /*******************************************************************************
 ** text decorations ***********************************************************/

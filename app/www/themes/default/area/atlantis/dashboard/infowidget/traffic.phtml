@@ -33,7 +33,7 @@ $Items = Common\Datastore::FromArray([
 	</div>
 	<div class="row g-3 mb-4">
 		<?php foreach($Items as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
-		<div class="col-6 col-md ta-left">
+		<div class="col-6 col-md ta-left ta-md-center">
 			<div class="fw-bold tt-upper fs-largest"><?php $Util->Print($Item->GetInfo()) ?></div>
 			<div class="fw-normal tt-upper fs-smallest o-50"><?php $Util->Print($Item->GetTitle()) ?></div>
 		</div>

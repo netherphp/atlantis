@@ -56,7 +56,7 @@ $Items = Common\Datastore::FromArray([
 	</div>
 	<div class="row g-3">
 		<?php foreach($Items as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
-		<div class="col-6 col-md pos-relative">
+		<div class="col-6 col-md pos-relative ta-left ta-md-center">
 			<div class="fw-bold tt-upper fs-largest">
 				<a class="td-none" href="<?php $Util->Print($Item->GetURL()) ?>"><?php $Util->Print($Item->GetInfo()) ?></a>
 			</div>

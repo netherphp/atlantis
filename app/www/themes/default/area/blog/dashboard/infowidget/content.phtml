@@ -30,7 +30,7 @@ $Items = Common\Datastore::FromArray([
 	</div>
 	<div class="row g-3">
 		<?php foreach($Items as $Item): /** @var Atlantis\Struct\Item $Item */ ?>
-		<div class="col-6 col-md">
+		<div class="col-6 col-md ta-left ta-md-center">
 			<div class="fw-bold tt-upper fs-largest">
 				<?php if($Item->HasURL()): ?><a class="td-none" href="<?php $Util->Print($Item->GetURL()) ?>">
 				<?php endif; ?>
