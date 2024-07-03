@@ -10,6 +10,7 @@ import EJSQuote    from '/share/atlantis/lib/editorjs/tools/quote.js';
 import AtlBreak    from '/share/atlantis/lib/editorjs/tools/atl-break.js';
 import AtlImage    from '/share/atlantis/lib/editorjs/tools/atl-image.js';
 import AtlTeletype from '/share/atlantis/lib/editorjs/tools/atl-teletype.js';
+import AtlCode     from '/share/atlantis/lib/editorjs/tools/atl-code.js';
 
 class EditorBlock {
 
@@ -45,7 +46,8 @@ class EditorBlock {
 
 				breakHr: { class: AtlBreak },
 				image: { class: AtlImage },
-				teletype: { class: AtlTeletype }
+				teletype: { class: AtlTeletype },
+				code: { class: AtlCode }
 			},
 			data: data
 		});

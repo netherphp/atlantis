@@ -56,6 +56,9 @@
 	background: transparent;
 }
 
+/*******************************************************************************
+*******************************************************************************/
+
 .atl-editorjs {
 	background-color: var(--theme-form-bg);
 	border: 1px solid var(--theme-form-border);

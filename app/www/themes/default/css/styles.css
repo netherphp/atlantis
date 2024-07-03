@@ -1,5 +1,5 @@
 /*//
-@date 2024-07-01 21:26:26 UTC
+@date 2024-07-03 07:03:21 UTC
 @files 38 [
     "src\/imports.css",
     "src\/main.css",
@@ -1638,6 +1638,9 @@ grouped are to be considered depreciated. */
 	background: transparent;
 }
 
+/*******************************************************************************
+*******************************************************************************/
+
 .atl-editorjs {
 	background-color: var(--theme-form-bg);
 	border: 1px solid var(--theme-form-border);
@@ -1669,11 +1672,13 @@ grouped are to be considered depreciated. */
 }
 
 .atl-blog-img {
+	text-align: center;
 	margin-bottom: 2rem;
 }
 
 .atl-blog-img img {
 	border-radius: 6px;
+	max-width: 100%;
 }
 
 .atl-blog-img figcaption {
@@ -1681,7 +1686,6 @@ grouped are to be considered depreciated. */
 	font-style: italic;
 	opacity: 0.65;
 	padding-top: 0.5rem;
-	text-align: left;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

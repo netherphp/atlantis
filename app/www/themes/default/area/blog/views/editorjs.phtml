@@ -23,5 +23,5 @@ $Stack = Common\Struct\EditorJS\Content::FromString($Post->Content);
 
 foreach($Stack->Blocks as $Block) {
 	/** @var Common\Struct\EditorJS\Block $Block */
-	echo $Block;
+	echo $Block->SetSurface($Surface)->Render();
 }
