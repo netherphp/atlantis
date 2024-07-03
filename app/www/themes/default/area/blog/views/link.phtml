@@ -84,7 +84,7 @@ $Profiles = $Post->FetchRelatedProfiles();
 
 	<?php if($ShowTags): ?>
 	<div class="mb-1">
-		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> Common\Datastore::FromArray(array_merge($Post->GetTags()->GetData(), $Profiles->GetData())) ]) ?>
+		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> Common\Datastore::FromArray($Post->GetTags()->GetData()) ]) ?>
 	</div>
 	<?php endif; ?>
 
