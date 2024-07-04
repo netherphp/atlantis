@@ -1,3 +1,4 @@
+import API from '/share/nui/api/json.js';
 
 class AtlCode {
 /*//
@@ -53,17 +54,18 @@ a piece of content using codemirror as the code syntax magic thing.
 
 	render() {
 
-		let self = this;
-
-		////////
-
 		this.inLang = (
 			jQuery('<select />')
 			.attr('type', 'text')
 			.attr('readonly', 'readonly')
 			.addClass('form-select')
-			.append(`<option value="text">Plain Text</option>`)
-			.append(`<option value="php">PHP</option>`)
+		);
+
+		this.inTheme = (
+			jQuery('<select />')
+			.attr('type', 'text')
+			.attr('readonly', 'readonly')
+			.addClass('form-select')
 		);
 
 		this.inCode = (
@@ -80,13 +82,8 @@ a piece of content using codemirror as the code syntax magic thing.
 
 		////////
 
-		if(this.data.lang) {
-			this.inLang.val(this.data.lang);
-		}
-
-		if(this.data.code) {
-			this.inCode.text(this.data.code);
-		}
+		this.populateLang();
+		this.populateCode();
 
 		this.element = (
 			jQuery('<div />')
@@ -105,8 +102,6 @@ a piece of content using codemirror as the code syntax magic thing.
 			)
 		);
 
-		this.bootAceEditor();
-
 		return this.element.get()[0];
 	};
 
@@ -121,7 +116,31 @@ a piece of content using codemirror as the code syntax magic thing.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	bootAceEditor() {
+	async populateCode() {
+
+		if(this.data.code) {
+			this.inCode.text(this.data.code);
+		}
+
+		return;
+	};
+
+	async populateLang() {
+
+		let url = '/share/atlantis/lib/ace/ace.json';
+		let output = await fetch(url);
+		let data = await output.json();
+
+		for(const item in data.Modes)
+		this.inLang.append(
+			jQuery('<option />')
+			.attr('value', item)
+			.text(data.Modes[item])
+		);
+
+		if(this.data.lang) {
+			this.inLang.val(this.data.lang);
+		}
 
 		return;
 	};

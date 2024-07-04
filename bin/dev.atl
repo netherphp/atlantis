@@ -692,6 +692,100 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('ace')]
+	#[Console\Meta\Info('Generate an ace.json file listing the themes and modes.')]
+	public function
+	HandleAceEditorIndex():
+	int {
+
+		// ace editor has crappy archetecture. all the themes and modes
+		// are just piled into the same dir as the editor itself.
+
+		$Indir = 'www/share/atlantis/lib/ace';
+		$Inpath = $this->App->FromProjectRoot($Indir);
+
+		$Outfile = 'www/share/atlantis/lib/ace/ace.json';
+		$Outpath = $this->App->FromProjectRoot($Outfile);
+
+		$Indexer = new Common\Filesystem\Indexer($Inpath, FALSE);
+		$Modes = new Common\Datastore;
+		$Themes = new Common\Datastore;
+		$File = NULL;
+		$Base = NULL;
+		$Old = NULL;
+		$Err = NULL;
+
+		// make an index of all the modes and themes that are currently
+		// in this ace install.
+
+		foreach($Indexer as $File) {
+			/** @var SplFileInfo $File */
+			$Base = $File->GetBasename();
+
+			if(str_starts_with($Base, 'mode-')) {
+				$Modes->Push($Base);
+				continue;
+			}
+
+			if(str_starts_with($Base, 'theme-')) {
+				$Themes->Push($Base);
+				continue;
+			}
+
+			continue;
+		}
+
+		// if we have a data file its likely we already edited a bunch of
+		// them to make their names more friendly. reuse them when possible.
+
+		try { $Old = Common\Filesystem\Util::TryToReadFileJSON($Outpath); }
+		catch(Exception $Err) { $Old = [ 'Modes'=> [], 'Themes'=> [] ]; }
+
+		$RewriteModeNames = function(string $Key) use($Old) {
+			if(array_key_exists($Key, $Old['Modes']))
+			return $Old['Modes'][$Key];
+
+			$Name = ucwords(str_replace('_', ' ', $Key));
+			return $Name;
+		};
+
+		$RewriteThemeNames = function(string $Key) use($Old) {
+			if(array_key_exists($Key, $Old['Themes']))
+			return $Old['Themes'][$Key];
+
+			$Name = ucwords(str_replace('_', ' ', $Key));
+			return $Name;
+		};
+
+		// reformat and sort the datasets.
+
+		($Modes)
+		->Remap(fn(string $F)=> preg_replace('/mode-(.+?).js/', '$1', $F))
+		->Flip()
+		->RemapKeyValue(fn(string $K, string $V)=> $RewriteModeNames($K))
+		->Sort();
+
+		($Themes)
+		->Remap(fn(string $F)=> preg_replace('/theme-(.+?).js/', '$1', $F))
+		->Flip()
+		->RemapKeyValue(fn(string $K, string $V)=> $RewriteThemeNames($K))
+		->Sort();
+
+		////////
+
+		$JSON = Common\Filters\Text::ReadableJSON([
+			'Modes' => $Modes->Export(),
+			'Themes' => $Themes->Export()
+		]);
+
+		Common\Filesystem\Util::TryToWriteFile($Outpath, $JSON);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Common\Meta\Date('2023-11-17')]
 	public function
 	DigestOptionExtensions():

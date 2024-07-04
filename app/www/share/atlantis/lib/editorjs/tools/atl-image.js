@@ -156,7 +156,7 @@ a piece of content using codemirror as the code syntax magic thing.
 			)
 			.append(
 				jQuery('<div />')
-				.addClass('col-12 mb-2')
+				.addClass('col-12 mb-2 ta-center')
 				.append(this.imgPreview)
 			)
 			.append(
