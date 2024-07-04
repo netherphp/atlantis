@@ -36,6 +36,12 @@ $Scopeify = (
 	)
 );
 
+$PhotoItemClasses = 'col-12 col-md-3 mb-4';
+
+if($Photos->Count() >= 6) {
+	$PhotoItemClasses = 'col-6 col-md-3 mb-4';
+}
+
 ?>
 
 <?php if(!$Embed) $Surface->Area('design/subheader'); ?>
@@ -152,7 +158,7 @@ $Scopeify = (
 
 		<div class="row">
 			<?php foreach($Photos as $Photo): /** @var Atlantis\Media\File $Photo */ ?>
-			<div class="col-6 col-md-3 mb-4">
+			<div class="<?php $Util->Print($PhotoItemClasses) ?>">
 				<div class="cursor-pointer ratiobox widescreen wallpapered contained rounded bg-dark PhotoGalleryItem" style="background-image:url(<?php $Util->Print($Photo->GetPublicURL()) ?>);" data-url-lg="<?php $Util->Print($Photo->GetPublicURL()) ?>">
 					<div class="position-absolute position-bottom position-right p-1">
 						<?php if($Route->IsUserAdmin()): ?>
