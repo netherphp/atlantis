@@ -74,8 +74,21 @@ a piece of content using codemirror as the code syntax magic thing.
 			.attr('rows', 12)
 			.attr('spellcheck', 'false')
 			.addClass('form-control ff-mono')
-			.on('keydown', function(ev){
+			.on('keydown', function(ev) {
+				if(ev.originalEvent.key == 'Tab') {
+					ev.preventDefault();
+
+					this.setRangeText(
+						'\t',
+						(this.selectionStart),
+						(this.selectionEnd),
+						'end'
+					);
+				}
+
+				this.focus();
 				ev.stopPropagation();
+
 				return;
 			})
 		);
