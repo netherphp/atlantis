@@ -332,7 +332,10 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-menu-bg);
+	background-color: var(--theme-glass-bg-75);
+	backdrop-filter: var(--theme-glass-filter-thick);
+	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
+
 	border-radius: 6px;
 	box-shadow: 0px 0px 72px #0004;
 	font-size: 0.9em;

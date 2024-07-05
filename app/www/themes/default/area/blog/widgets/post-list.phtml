@@ -33,16 +33,37 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 	return $Output;
 };
 
+$ShowBlogIcon ??= $Surface->Get('Blog.PostList.ShowBlogIcon') ?? FALSE;
+$ShowDefaultImage ??= $Surface->Get('Blog.PostList.ShowDefaultImage') ?? TRUE;
+
+
 ?>
 
 <?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
-<div>
+<div class="atl-blog-post-row">
 	<div class="row <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
-		<div class="col-12 col-md-4 mb-4">
+		<?php if($Post->HasCoverImage() || $ShowDefaultImage): ?>
+		<div class="col-12 col-md-4 col-lg-3 mb-4">
 			<div class="ratiobox widescreen rounded wallpapered bg-dark" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
-				<a class="position-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
+
+				<?php if(!$Post->HasCoverImage()): ?>
+				<div class="pos-absolutely grad-focus-normal"></div>
+				<?php endif; ?>
+
+				<?php if($ShowBlogIcon): ?>
+				<div class="pos-absolute pos-top pos-left" style="width:25%;padding:0.25em;">
+					<div class="ratiobox square rounded wallpapered bg-dark" style="<?php $Util->Print($Post->Blog->GetIconStyleBG()) ?>">
+						<div class="pos-absolutely grad-focus-normal"></div>
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<a class="pos-absolutely" href="<?php $Printer($Post->GetURL()) ?>"></a>
+
 			</div>
 		</div>
+		<?php endif; ?>
+
 		<div class="col-12 col-md mb-4">
 
 			<?php match($Post->Editor) {

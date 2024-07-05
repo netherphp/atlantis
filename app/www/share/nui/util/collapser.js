@@ -51,6 +51,21 @@ class Collapser {
 		return;
 	};
 
+	static Boot(selector) {
+
+		let cdef = this.prototype;
+
+		console.log(selector);
+
+		jQuery(selector)
+		.each(function(){
+			new cdef.constructor(this);
+			return;
+		});
+
+		return;
+	};
+
 };
 
 export default Collapser;

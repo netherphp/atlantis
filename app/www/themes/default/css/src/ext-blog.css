@@ -22,3 +22,9 @@
 	opacity: 0.65;
 	padding-top: 0.5rem;
 }
+
+.atl-blog-post-row .ratiobox a {
+	border: 0px !important;
+}
+
+

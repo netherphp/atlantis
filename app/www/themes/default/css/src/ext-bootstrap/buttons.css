@@ -36,6 +36,31 @@
 	--bs-border-width: 2px;
 }
 
+.btn-outline-light:hover,
+.btn-outline-light:active,
+.btn-outline-light.show,
+[data-bs-theme="light"] .btn-outline-dark:hover,
+[data-bs-theme="light"] .btn-outline-dark:active,
+[data-bs-theme="light"] .btn-outline-dark.show {
+	background-color: var(--theme-black) !important;
+	border-color: var(--theme-black) !important;
+	color: var(--theme-white) !important;
+}
+
+.btn-outline-dark:hover,
+.btn-outline-dark:active,
+.btn-outline-dark.show,
+[data-bs-theme="light"] .btn-outline-light:hover,
+[data-bs-theme="light"] .btn-outline-light:active,
+[data-bs-theme="light"] .btn-outline-light.show {
+	background-color: var(--theme-white) !important;
+	border-color: var(--theme-white) !important;
+	color: var(--theme-black) !important;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
 .atl-btn-flip-save-check i:nth-of-type(1) {
 	display: inline;
 }

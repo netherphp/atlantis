@@ -26,6 +26,12 @@ $GetPostValue = function(string $What) use($Post) {
 	if(!$Post)
 	return '';
 
+	if($What === 'DateTimeCreated')
+	return (
+		($Post->DateCreated)
+		->Get(DateTime::RFC2822)
+	);
+
 	if(!property_exists($Post, $What))
 	return '';
 
@@ -41,6 +47,8 @@ $GetPostExtraData = function(string $What) use($Post) {
 };
 
 $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
+
+$OpenAdminNotes ??= $Surface->Get('Blog.PostEditor.OpenAdminNotes') ?? FALSE;
 
 ?>
 
@@ -73,46 +81,13 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 	</div>
 	<hr />
 
-	<!-- POST ADMIN NOTES -->
-	<div class="mb-4">
-		<div class="fw-bold tt-upper">Admin Notes</div>
-		<div>
-			<textarea name="ExtraData[AdminNotes]" class="form-control" rows="4" placeholder="Admin Notes..."><?php $Util->Print($GetPostExtraData('AdminNotes')) ?></textarea>
-		</div>
-	</div>
-	<hr />
-
-	<!-- POST TAGS -->
-	<div class="mb-4">
-		<div class="fw-bold tt-upper">Tags</div>
-		<div>
-			<input type="text" name="Tags" class="form-control" placeholder="Tags..." value="<?php $Util->Print($GetPostValue('Tags')) ?>" />
-		</div>
-	</div>
-	<hr />
-
-	<!-- SOURCE INFO -->
+	<!-- POST IMAGE -->
 	<div class="row gap-4 mb-4">
 		<div class="col-12">
-			<div class="fw-bold tt-upper">Source URL</div>
+			<div class="fw-bold tt-upper">Post Image</div>
 			<div>
-				<input type="text" name="ExtraData[SourceURL]" class="form-control" placeholder="Source URL..." value="<?php $Util->Print($GetPostExtraData('SourceURL')) ?>" />
+				[upload button]
 			</div>
-		</div>
-		<div class="col-12">
-			<div class="fw-bold tt-upper">Source Date</div>
-			<div>
-				<input type="date" name="ExtraData[SourceDate]" class="form-control" placeholder="Source Date..." value="<?php $Util->Print($GetPostExtraData('SourceDate')) ?>" />
-			</div>
-		</div>
-		<div class="col-12">
-			<div class="form-check form-switch">
-				<label class="d-flex gap-2 align-items-center form-check-label cursor-pointer">
-					<input type="checkbox" name="ExtraData[SourceDateSort]" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($GetPostExtraData('SourceDateSort') === 'y')) ?>>
-					<span class="fw-bold tt-upper" style="user-select:none;">Sort By Source Date?</span>
-				</label>
-			</div>
-
 		</div>
 	</div>
 	<hr />
@@ -120,7 +95,7 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 	<!-- POST VISIBLITY -->
 	<div class="row gap-4 mb-4">
 		<div class="col-12">
-			<div class="fw-bold tt-upper">Post Status</div>
+			<div class="fw-bold tt-upper">Publish Status</div>
 			<div>
 				<select name="Enabled" class="form-select">
 					<option value="0" <?php $Util->Print($Util->GetSelectedHTML($GetPostValue('Enabled') === 0)) ?>>Draft</option>
@@ -128,6 +103,98 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 				</select>
 			</div>
 		</div>
+		<div class="col-12">
+			<div class="fw-bold tt-upper">Publish Date</div>
+			<div class="fs-small o-50 mb-2">Setting the status to Published and this for the future will schedule this post for that date/time.</div>
+			<div class="row g-3">
+				<div class="col"><input name="DateCreated" type="datetime-local" class="form-control" data-value="<?php $Util->Print($GetPostValue('DateTimeCreated')) ?>" /></div>
+				<div class="col-auto">
+					<button class="btn btn-dark CmdRefreshPublishDate">
+						<i class="mdi mdi-clock"></i>
+						Now
+					</button>
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-dark CmdResetPublishDate">
+						<i class="mdi mdi-skip-previous"></i>
+						Reset
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr />
+
+	<!-- POST ADMIN NOTES -->
+	<div class="Collapser <?php $Util->Print($OpenAdminNotes ? 'Open' : '') ?>">
+		<header>
+			<div>
+				Admin Notes
+			</div>
+			<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+		</header>
+		<section>
+			<div class="mb-4">
+				<div>
+					<textarea name="ExtraData[AdminNotes]" class="form-control" rows="10" placeholder="Admin Notes..."><?php $Util->Print($GetPostExtraData('AdminNotes')) ?></textarea>
+				</div>
+			</div>
+		</section>
+	</div>
+	<hr />
+
+	<!-- POST TAGS -->
+	<div class="Collapser">
+		<header>
+			<div>
+				Tags
+			</div>
+			<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+		</header>
+		<section>
+			<div class="mb-4">
+				<div>
+					<input type="text" name="Tags" class="form-control" placeholder="Search..." value="<?php $Util->Print($GetPostValue('Tags')) ?>" />
+				</div>
+			</div>
+		</section>
+	</div>
+	<hr />
+
+	<!-- POST SOURCE INFO -->
+	<div class="Collapser">
+		<header>
+			<div>
+				Source Information
+			</div>
+			<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+		</header>
+		<section>
+			<!-- SOURCE INFO -->
+			<div class="row gap-4 mb-4">
+				<div class="col-12">
+					<div class="fw-bold tt-upper">Source URL</div>
+					<div>
+						<input type="text" name="ExtraData[SourceURL]" class="form-control" placeholder="Source URL..." value="<?php $Util->Print($GetPostExtraData('SourceURL')) ?>" />
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="fw-bold tt-upper">Source Date</div>
+					<div>
+						<input type="date" name="ExtraData[SourceDate]" class="form-control" placeholder="Source Date..." value="<?php $Util->Print($GetPostExtraData('SourceDate')) ?>" />
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="form-check form-switch">
+						<label class="d-flex gap-2 align-items-center form-check-label cursor-pointer">
+							<input type="checkbox" name="ExtraData[SourceDateSort]" class="form-check-input" <?php $Util->Print($Util->GetCheckedHTML($GetPostExtraData('SourceDateSort') === 'y')) ?>>
+							<span class="fw-bold tt-upper" style="user-select:none;">Sort By Source Date?</span>
+						</label>
+					</div>
+
+				</div>
+			</div>
+		</section>
 	</div>
 	<hr />
 
@@ -162,9 +229,11 @@ $Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 <script type="module">
 import API         from '/share/nui/api/json.js';
 import Util        from '/share/nui/util.js';
+import Collapser   from '/share/nui/util/collapser.js';
 import EditorBlock from '/share/atlantis/js/editor-block.js';
 import TagSearch   from '/share/atlantis/js/field-tag-search.js';
 import BlogPost    from '/share/atlantis/js/ents/blogpost.js';
+import { DateTime } from '/share/atlantis/lib/date/luxon.js';
 
 class PostEditor {
 
@@ -194,6 +263,7 @@ class PostEditor {
 		this.tagSearch = TagSearch.Boot(this.element.find('[name="Tags"]'));
 
 		this.inTitle = this.element.find('[name="Title"]');
+		this.inDateCreated = this.element.find('[name="DateCreated"]');
 
 		this.inAdminNotes = this.element.find('[name="ExtraData[AdminNotes]"]');
 		this.inSourceURL = this.element.find('[name="ExtraData[SourceURL]"]');
@@ -202,6 +272,8 @@ class PostEditor {
 
 		this.inEnabled = this.element.find('[name="Enabled"]');
 		this.btnSubmit = this.element.find('button[type=submit]');
+		this.btnRefreshPublishDate = this.element.find('.CmdRefreshPublishDate');
+		this.btnResetPublishDate = this.element.find('.CmdResetPublishDate');
 
 		////////
 
@@ -216,6 +288,18 @@ class PostEditor {
 		this.tagSearch.fetchCurrentTags(this.postUUID);
 
 		this.btnSubmit.on('click', this.onSave.bind(this));
+		this.btnRefreshPublishDate.on('click', this.refreshPublishDate.bind(this));
+		this.btnResetPublishDate.on('click', this.resetPublishDate.bind(this));
+
+		if(!this.inDateCreated.attr('data-value'))
+		this.btnResetPublishDate.parent().addClass('d-none');
+
+		////////
+
+		this.resetPublishDate();
+
+		if(!this.inDateCreated.val())
+		this.refreshPublishDate();
 
 		return;
 	};
@@ -238,9 +322,15 @@ class PostEditor {
 
 		post.id = this.postID;
 		post.blogID = this.blogID;
+		post.editor = 'editorjs';
 		post.title = jQuery.trim(this.inTitle.val());
 		post.content = JSON.stringify(content);
 		post.enabled = parseInt(this.inEnabled.val());
+
+		if(Util.VON(this.inDateCreated.val()) !== null)
+		post.dateCreated = DateTime.fromISO(this.inDateCreated.val());
+		else
+		post.dateCreated = DateTime.now();
 
 		post.extraData.AdminNotes = jQuery.trim(this.inAdminNotes.val());
 		post.extraData.SourceURL = jQuery.trim(this.inSourceURL.val());
@@ -290,7 +380,7 @@ class PostEditor {
 			this.apiPostURL
 		);
 
-		console.log(post);
+		//console.log(post);
 
 		if(post.id !== null) {
 			api.method = this.apiPatchMethod;
@@ -342,6 +432,45 @@ class PostEditor {
 		(this.btnSubmit)
 		.removeClass('atl-state-processing atl-state-default atl-state-error')
 		.addClass('atl-state-success');
+
+		return;
+	};
+
+	refreshPublishDate() {
+
+		let ldate = DateTime.now().set({ second: 0, millisecond: 0 });
+
+		this.inDateCreated.val(ldate.toISO({
+			includeOffset: false,
+			suppressSeconds: true,
+			suppressMilliseconds: true
+		}));
+
+		return;
+	};
+
+	resetPublishDate() {
+
+		let vdate = this.inDateCreated.attr('data-value');
+
+		if(typeof vdate === 'undefined')
+		return;
+
+		if(vdate === '')
+		return;
+
+		let ldate = (
+			DateTime
+			.fromRFC2822(vdate)
+			.toLocal()
+			.set({ second: 0, millisecond: 0 })
+		);
+
+		this.inDateCreated.val(ldate.toISO({
+			includeOffset: false,
+			suppressSeconds: true,
+			suppressMilliseconds: true
+		}));
 
 		return;
 	};
@@ -406,6 +535,8 @@ class PostEditor {
 
 jQuery(function() {
 	PostEditor.Boot();
+	Collapser.Boot('#PostEditor .Collapser');
 	return;
 });
+
 </script>

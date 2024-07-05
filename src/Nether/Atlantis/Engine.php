@@ -120,15 +120,19 @@ application instance.
 		$this->Storage = new Storage\Manager($this->Config);
 		$this->Database = new Database\Manager($this->Config);
 
-		$Data = [
-			'App'    => $this,
-			'Config' => $this->Config,
-			'Path'   => $this->ProjectRoot,
-			'Env'    => $this->ProjectEnv
-		];
+		$this->Flow(
+			'Atlantis.Prepare',
+			[
+				'App'    => $this,
+				'Config' => $this->Config,
+				'Path'   => $this->ProjectRoot,
+				'Env'    => $this->ProjectEnv
+			],
+			FALSE
+		);
 
-		$this->Flow('Atlantis.Prepare', $Data, FALSE);
-		$this->Flow('Atlantis.Ready', $Data, FALSE);
+		$this->Flow('Atlantis.Config', [ 'App'=> $this ], FALSE);
+		$this->Flow('Atlantis.Ready', [ 'App'=> $this ], FALSE);
 		return;
 	}
 

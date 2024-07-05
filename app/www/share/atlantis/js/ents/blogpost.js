@@ -1,4 +1,5 @@
 import API from '/share/nui/api/json.js';
+import { DateTime } from '/share/atlantis/lib/date/luxon.js';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,6 +12,7 @@ class BlogPost {
 		this.blogID = null;
 		this.uuid = null;
 		this.enabled = null;
+		this.editor = null;
 		this.title = null;
 		this.alias = null;
 		this.content = null;
@@ -25,6 +27,7 @@ class BlogPost {
 		this.blogID = payload.BlogID;
 		this.uuid = payload.UUID;
 		this.enabled = payload.Enabled;
+		this.editor = payload.Editor;
 		this.title = payload.Title;
 		this.alias = payload.Alias;
 		this.content = payload.Content;
@@ -42,8 +45,10 @@ class BlogPost {
 		data.append('ID', this.id);
 		data.append('BlogID', this.blogID);
 		data.append('Enabled', this.enabled);
+		data.append('Editor', this.editor);
 		data.append('Title', this.title);
 		data.append('Content', this.content);
+		data.append('DateCreated', this.dateCreated.toRFC2822());
 
 		if(typeof this.extraData === 'object') {
 			for(let k of Object.keys(this.extraData))
