@@ -35,7 +35,7 @@ trait CoverImage {
 	}
 
 	public function
-	GetCoverImageURL(string $Size='md'):
+	GetCoverImageURL(string $Size='lg'):
 	?string {
 
 		if(!$this->HasCoverImage())
@@ -43,10 +43,10 @@ trait CoverImage {
 
 		////////
 
-		$URL = $this->CoverImage->GetPublicURL();
-
-		if($URL)
-		return $URL;
+		$URL = str_replace(
+			'original.', "{$Size}.",
+			$this->ImageHeader->GetPublicURL()
+		);
 
 		if(isset($this->CoverImage->ExtraFiles))
 		$URL = $this->GetCoverImageSizeURL($Size, $URL);
