@@ -1,20 +1,20 @@
 :root {
-	--theme-light: #FDFDFD;
-	--theme-light-fg: var(--theme-dark);
-	--theme-light-alt: #FFFFFF;
-	--theme-light-alt-fg: var(--theme-dark);
-	--theme-dark: #141414;
-	--theme-dark-fg: var(--theme-light);
-	--theme-dark-alt: #1A1A1A;
-	--theme-dark-alt-fg: var(--theme-light);
-	--theme-white: #FDFDFD;
-	--theme-white-fg: var(--theme-dark);
-	--theme-white-alt: #FFFFFF;
-	--theme-white-alt-fg: var(--theme-dark);
 	--theme-black: #141414;
 	--theme-black-fg: var(--theme-light);
 	--theme-black-alt: #1A1A1A;
 	--theme-black-alt-fg: var(--theme-light);
+	--theme-white: #FDFDFD;
+	--theme-white-fg: var(--theme-dark);
+	--theme-white-alt: #FFFFFF;
+	--theme-white-alt-fg: var(--theme-dark);
+	--theme-dark: #141414;
+	--theme-dark-fg: var(--theme-light);
+	--theme-dark-alt: #1A1A1A;
+	--theme-dark-alt-fg: var(--theme-light);
+	--theme-light: #FDFDFD;
+	--theme-light-fg: var(--theme-dark);
+	--theme-light-alt: #FFFFFF;
+	--theme-light-alt-fg: var(--theme-dark);
 	--theme-red: #AE2525;
 	--theme-red-fg: var(--theme-light);
 	--theme-red-alt: #CF4545;
@@ -42,22 +42,22 @@
 }
 
 [data-bs-theme="light"] {
-	--theme-dark: #FDFDFD;
-	--theme-dark-fg: var(--theme-light);
-	--theme-dark-alt: #FFFFFF;
-	--theme-dark-alt-fg: var(--theme-light);
-	--theme-light: #141414;
-	--theme-light-fg: var(--theme-dark);
-	--theme-light-alt: #1A1A1A;
-	--theme-light-alt-fg: var(--theme-dark);
-	--theme-white: #FDFDFD;
-	--theme-white-fg: var(--theme-light);
-	--theme-white-alt: #FFFFFF;
-	--theme-white-alt-fg: var(--theme-light);
 	--theme-black: #141414;
 	--theme-black-fg: var(--theme-dark);
 	--theme-black-alt: #1A1A1A;
 	--theme-black-alt-fg: var(--theme-dark);
+	--theme-white: #FDFDFD;
+	--theme-white-fg: var(--theme-light);
+	--theme-white-alt: #FFFFFF;
+	--theme-white-alt-fg: var(--theme-light);
+	--theme-light: #141414;
+	--theme-light-fg: var(--theme-dark);
+	--theme-light-alt: #1A1A1A;
+	--theme-light-alt-fg: var(--theme-dark);
+	--theme-dark: #FDFDFD;
+	--theme-dark-fg: var(--theme-light);
+	--theme-dark-alt: #FFFFFF;
+	--theme-dark-alt-fg: var(--theme-light);
 	--theme-red: #AE2525;
 	--theme-red-fg: var(--theme-dark);
 	--theme-red-alt: #CF4545;
@@ -84,52 +84,28 @@
 	--theme-purple-alt-fg: var(--theme-light);
 }
 
-.btn-light {
-	background: var(--theme-light);
-	border-color: var(--theme-light);
-	color: var(--theme-light-fg);
+.btn-black {
+	background: var(--theme-black);
+	border-color: var(--theme-black);
+	color: var(--theme-black-fg);
 }
 
-.btn-outline-light {
+.btn-outline-black {
 	background: transparent;
-	border-color: var(--theme-light);
-	color: var(--theme-light);
+	border-color: var(--theme-black);
+	color: var(--theme-black);
 }
 
-.btn-light:active, .btn-light:hover, .btn-light:focus .btn-light.show {
-	background: var(--theme-light-alt);
-	border-color: var(--theme-light-alt);
-	color: var(--theme-light-alt-fg);
+.btn-black:active, .btn-black:hover, .btn-black:focus .btn-black.show {
+	background: var(--theme-black-alt);
+	border-color: var(--theme-black-alt);
+	color: var(--theme-black-alt-fg);
 }
 
-.btn-outline-light:active, .btn-outline-light:hover, .btn-outline-light:focus .btn-outline-light.show {
-	background: var(--theme-light-alt);
-	border-color: var(--theme-light-alt);
-	color: var(--theme-light-alt-fg);
-}
-
-.btn-dark {
-	background: var(--theme-dark);
-	border-color: var(--theme-dark);
-	color: var(--theme-dark-fg);
-}
-
-.btn-outline-dark {
-	background: transparent;
-	border-color: var(--theme-dark);
-	color: var(--theme-dark);
-}
-
-.btn-dark:active, .btn-dark:hover, .btn-dark:focus .btn-dark.show {
-	background: var(--theme-dark-alt);
-	border-color: var(--theme-dark-alt);
-	color: var(--theme-dark-alt-fg);
-}
-
-.btn-outline-dark:active, .btn-outline-dark:hover, .btn-outline-dark:focus .btn-outline-dark.show {
-	background: var(--theme-dark-alt);
-	border-color: var(--theme-dark-alt);
-	color: var(--theme-dark-alt-fg);
+.btn-outline-black:active, .btn-outline-black:hover, .btn-outline-black:focus .btn-outline-black.show {
+	background: var(--theme-black-alt);
+	border-color: var(--theme-black-alt);
+	color: var(--theme-black-alt-fg);
 }
 
 .btn-white {
@@ -156,28 +132,52 @@
 	color: var(--theme-white-alt-fg);
 }
 
-.btn-black {
-	background: var(--theme-black);
-	border-color: var(--theme-black);
-	color: var(--theme-black-fg);
+.btn-dark {
+	background: var(--theme-dark);
+	border-color: var(--theme-dark);
+	color: var(--theme-dark-fg);
 }
 
-.btn-outline-black {
+.btn-outline-dark {
 	background: transparent;
-	border-color: var(--theme-black);
-	color: var(--theme-black);
+	border-color: var(--theme-dark);
+	color: var(--theme-dark);
 }
 
-.btn-black:active, .btn-black:hover, .btn-black:focus .btn-black.show {
-	background: var(--theme-black-alt);
-	border-color: var(--theme-black-alt);
-	color: var(--theme-black-alt-fg);
+.btn-dark:active, .btn-dark:hover, .btn-dark:focus .btn-dark.show {
+	background: var(--theme-dark-alt);
+	border-color: var(--theme-dark-alt);
+	color: var(--theme-dark-alt-fg);
 }
 
-.btn-outline-black:active, .btn-outline-black:hover, .btn-outline-black:focus .btn-outline-black.show {
-	background: var(--theme-black-alt);
-	border-color: var(--theme-black-alt);
-	color: var(--theme-black-alt-fg);
+.btn-outline-dark:active, .btn-outline-dark:hover, .btn-outline-dark:focus .btn-outline-dark.show {
+	background: var(--theme-dark-alt);
+	border-color: var(--theme-dark-alt);
+	color: var(--theme-dark-alt-fg);
+}
+
+.btn-light {
+	background: var(--theme-light);
+	border-color: var(--theme-light);
+	color: var(--theme-light-fg);
+}
+
+.btn-outline-light {
+	background: transparent;
+	border-color: var(--theme-light);
+	color: var(--theme-light);
+}
+
+.btn-light:active, .btn-light:hover, .btn-light:focus .btn-light.show {
+	background: var(--theme-light-alt);
+	border-color: var(--theme-light-alt);
+	color: var(--theme-light-alt-fg);
+}
+
+.btn-outline-light:active, .btn-outline-light:hover, .btn-outline-light:focus .btn-outline-light.show {
+	background: var(--theme-light-alt);
+	border-color: var(--theme-light-alt);
+	color: var(--theme-light-alt-fg);
 }
 
 .btn-red {

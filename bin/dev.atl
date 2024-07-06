@@ -789,27 +789,16 @@ extends Atlantis\TerminalApp {
 	HandleBootstrapColourExt():
 	int {
 
+		$DyeFile = $this->App->FromProjectRoot('www/themes/default/dyes.json');
+		$Outfile = $this->App->FromProjectRoot('www/themes/default/css/src/ext-bootstrap/dyes.css');
+		$NewLine = "\n";
+
+		$Colours = Common\Filesystem\Util::TryToReadFileJSON($DyeFile);
 		$Defines = new Common\Datastore;
 		$Styles = new Common\Datastore;
 		$Output = new Common\Datastore;
-		$Outfile = $this->App->FromProjectRoot('www/themes/default/css/src/ext-bootstrap/dyes.css');
 
 		////////
-
-		$Colours = [
-			'light'  => '#FDFDFD',
-			'dark'   => '#141414',
-
-			'white'  => '#FDFDFD',
-			'black'  => '#141414',
-
-			'red'    => '#AE2525',
-			'orange' => '#EA7222',
-			'yellow' => '#EECB10',
-			'green'  => '#3BB33B',
-			'blue'   => '#3B5DE3',
-			'purple' => '#8750FF'
-		];
 
 		$BtnPropsNormal = new Common\Datastore([
 			'background: var(--theme-{%C%});',
@@ -841,8 +830,6 @@ extends Atlantis\TerminalApp {
 		$Hex = NULL;
 		$Tokens = NULL;
 		$Dye = NULL;
-		$NL = "\n";
-		$NLT = "\n\t";
 
 		////////
 
@@ -949,7 +936,7 @@ extends Atlantis\TerminalApp {
 
 		Common\Filesystem\Util::TryToWriteFile(
 			$Outfile,
-			$Output->Join($NL)
+			$Output->Join($NewLine)
 		);
 
 		return 0;

@@ -1,0 +1,14 @@
+{
+	"black"  : "#141414",
+	"white"  : "#FDFDFD",
+
+	"dark"   : "#141414",
+	"light"  : "#FDFDFD",
+
+	"red"    : "#AE2525",
+	"orange" : "#EA7222",
+	"yellow" : "#EECB10",
+	"green"  : "#3BB33B",
+	"blue"   : "#3B5DE3",
+	"purple" : "#8750FF"
+}
