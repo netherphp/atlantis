@@ -1,5 +1,5 @@
 /*//
-@date 2024-07-03 07:03:21 UTC
+@date 2024-07-06 01:30:44 UTC
 @files 38 [
     "src\/imports.css",
     "src\/main.css",
@@ -384,7 +384,10 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-menu-bg);
+	background-color: var(--theme-glass-bg-75);
+	backdrop-filter: var(--theme-glass-filter-thick);
+	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
+
 	border-radius: 6px;
 	box-shadow: 0px 0px 72px #0004;
 	font-size: 0.9em;
@@ -803,12 +806,16 @@ grouped are to be considered depreciated. */
 
 .ratiobox.two-x-one,
 .ratiobox.univisium {
-	padding-top: 50%;
+	padding-top: 50.00%;
 }
 
 .ratiobox.twentyone-x-nine,
 .ratiobox.ultrawide {
 	padding-top: 42.85%;
+}
+
+.ratiobox.four-x-one {
+	padding-top: 25.00%;
 }
 
 .ratiobox.one-x-two
@@ -1088,7 +1095,7 @@ grouped are to be considered depreciated. */
 **** offcanvas tweaks *********************************************************/
 
 .offcanvas {
-	box-shadow: 0px 0px 24px var(--theme-glass-bg-50);
+	box-shadow: 0px 0px 24px var(--theme-glass-bg-75);
 	z-index: 9101;
 	scrollbar-gutter: auto;
 
@@ -1096,7 +1103,7 @@ grouped are to be considered depreciated. */
 }
 
 .offcanvas.offcanvas-glass {
-	background-color: var(--theme-glass-bg-50);
+	background-color: var(--theme-glass-bg-75);
 	backdrop-filter: var(--theme-glass-filter-thick);
 	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
 }
@@ -1163,6 +1170,31 @@ grouped are to be considered depreciated. */
 	--bs-border-width: 2px;
 }
 
+.btn-outline-light:hover,
+.btn-outline-light:active,
+.btn-outline-light.show,
+[data-bs-theme="light"] .btn-outline-dark:hover,
+[data-bs-theme="light"] .btn-outline-dark:active,
+[data-bs-theme="light"] .btn-outline-dark.show {
+	background-color: var(--theme-black) !important;
+	border-color: var(--theme-black) !important;
+	color: var(--theme-white) !important;
+}
+
+.btn-outline-dark:hover,
+.btn-outline-dark:active,
+.btn-outline-dark.show,
+[data-bs-theme="light"] .btn-outline-light:hover,
+[data-bs-theme="light"] .btn-outline-light:active,
+[data-bs-theme="light"] .btn-outline-light.show {
+	background-color: var(--theme-white) !important;
+	border-color: var(--theme-white) !important;
+	color: var(--theme-black) !important;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
 .atl-btn-flip-save-check i:nth-of-type(1) {
 	display: inline;
 }
@@ -1184,7 +1216,7 @@ grouped are to be considered depreciated. */
 
 :root {
 	--atl-cargobay-container-spacing: 1.5rem;
-	--atl-cargobay-section-padding: 2.0rem;
+	--atl-cargobay-section-padding: 4.0rem;
 
 	--atl-cargobay-s1-bg-colour: var(--theme-body-bg-alt0);
 	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
@@ -1677,6 +1709,7 @@ grouped are to be considered depreciated. */
 }
 
 .atl-blog-img img {
+	background: var(--theme-form-bg);
 	border-radius: 6px;
 	max-width: 100%;
 }
@@ -1686,6 +1719,10 @@ grouped are to be considered depreciated. */
 	font-style: italic;
 	opacity: 0.65;
 	padding-top: 0.5rem;
+}
+
+.atl-blog-post-row .ratiobox a {
+	border: 0px !important;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
