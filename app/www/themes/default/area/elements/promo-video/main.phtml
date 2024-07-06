@@ -18,12 +18,17 @@ use Nether\Surface;
  */
 
 $UUID ??= Common\UUID::ForElementHTML();
-$Ratio ??= 'ultrawide';
+$Ratio ??= $Element->Ratio;
 $VideoURL ??= $Element->VideoURL;
 $Overlay ??= $Element->Overlay ?? '';
 $Title ??= $Element->Title ?? '';
 $Subline ??= $Element->Subline ?? '';
 $Typeify ??= $Element->Typeify;
+
+$SizeTitle ??= $Element->SizeTitle;
+$SizeSubline ??= $Element->SizeSubline;
+$Presize ??= $Element->Presize;
+$Justify ??= $Element->Justify;
 
 ?>
 
@@ -34,17 +39,34 @@ $Typeify ??= $Element->Typeify;
 	<div class="position-absolutely <?php $Util->Print($Overlay) ?>"></div>
 	<div class="position-absolutely">
 		<div class="container h-100">
-			<div class="row h-100 justify-content-center align-items-center">
-				<div class="col-auto font-size-mostest-large line-height-normal">
-					<?php if($Title): ?>
-					<div class="fw-bold" data-typeify="true" data-title="<?php $Util->Print($Title) ?>">
-						<?php if(!$Typeify) $Util->Print($Title) ?>
-					</div>
-					<?php endif; ?>
-					<?php if($Subline): ?>
-					<div class="fw-light" data-typeify="true" data-title="<?php $Util->Print($Subline) ?>">
-						<?php if(!$Typeify) $Util->Print($Subline) ?>
-					</div>
+			<div class="row h-100 <?php $Util->Print($Justify) ?> align-items-center">
+				<div class="col-auto">
+					<?php if($Typeify): ?>
+						<?php if($Title): ?>
+						<div class="<?php $Util->Print($SizeTitle) ?> line-height-normal fw-bold" data-typeify="true" data-title="<?php $Util->Print($Title) ?>">
+							<?php if(!$Typeify) $Util->Print($Title) ?>
+						</div>
+						<?php endif; ?>
+						<?php if($Subline): ?>
+						<div class="<?php $Util->Print($SizeSubline) ?> line-height-normal fw-light" data-typeify="true" data-title="<?php $Util->Print($Subline) ?>">
+							<?php if(!$Typeify) $Util->Print($Subline) ?>
+						</div>
+						<?php endif; ?>
+						<?php if($Presize): ?>
+						<div class="<?php $Util->Print($SizeTitle) ?> line-height-normal fw-bold" style="height:0px;overflow:hidden;opacity:0.0;"><?php $Util->Print($Title) ?></div>
+						<div class="<?php $Util->Print($SizeSubline) ?> line-height-normal fw-light" style="height:0px;overflow:hidden;opacity:0.0;"><?php $Util->Print($Subline) ?></div>
+						<?php endif; ?>
+					<?php else: ?>
+						<?php if($Title): ?>
+						<div class="<?php $Util->Print($SizeTitle) ?> line-height-normal fw-bold">
+							<?php $Util->Print($Title) ?>
+						</div>
+						<?php endif; ?>
+						<?php if($Subline): ?>
+						<div class="<?php $Util->Print($SizeSubline) ?> line-height-normal fw-light">
+							<?php $Util->Print($Subline) ?>
+						</div>
+						<?php endif; ?>
 					<?php endif; ?>
 				</div>
 			</div>

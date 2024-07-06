@@ -1,6 +1,6 @@
 :root {
 	--atl-cargobay-container-spacing: 1.5rem;
-	--atl-cargobay-section-padding: 2.0rem;
+	--atl-cargobay-section-padding: 4.0rem;
 
 	--atl-cargobay-s1-bg-colour: var(--theme-body-bg-alt0);
 	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);

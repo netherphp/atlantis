@@ -9,29 +9,40 @@
 $Surface
 ->Set('Page.Title', 'Manage Media - Dashboard')
 ->Area('media/dashboard/scripts', $__SCOPE)
-->Area('dashboard/nav', [ 'Trail' => [
-	'Browse Images' => '/dashboard/media/images'
+->Area('dashboard/__header', [ 'Trail' => [
+	Nether\Atlantis\Struct\Item::New(Title: 'Files', URL: '/dashboard/media/images'),
+	Nether\Atlantis\Struct\Item::New(Title: 'Images', URL: '/dashboard/media/images')
 ]]);
 
 ?>
+<div class="container">
 
-<div class="row mb-4">
-	<div class="col-12 col-md-auto mb-2 mb-md-0">
-		<button id="UploadMedia" type="button" class="btn btn-block btn-outline-light">Upload</button>
-	</div>
-</div>
-
-<div class="row">
-	<?php foreach($Items as $Item): /** @var Nether\Atlantis\Media\File $Item */ ?>
-	<div class="col-6 col-sm-4 col-md-2 mb-4">
-		<div class="ratiobox square wallpapered rounded GalleryItem" style="background-image:url(<?php $Printer($Item->GetPreviewURL('sm.')) ?>);">
-			<a class="position-absolutely" href="/dashboard/media/view/<?php $Printer($Item->ID) ?>"></a>
-			<div class="position-absolute position-bottom position-h-center box-shadow-wofty GalleryHoverTools">
-				<button class="btn btn-danger p-1" data-media-delete="<?php $Printer($Item->ID) ?>"><i class="mdi mdi-fw mdi-trash-can"></i></button>
-			</div>
+	<div class="row mb-4">
+		<div class="col-12 col-md-auto mb-2 mb-md-0">
+			<button id="UploadMedia" type="button" class="btn btn-block btn-outline-light">Upload</button>
 		</div>
 	</div>
-	<?php endforeach; ?>
+
+	<div class="row">
+		<?php foreach($Items as $Item): /** @var Nether\Atlantis\Media\File $Item */ ?>
+		<div class="col-6 col-sm-4 col-md-2 mb-4">
+			<div class="ratiobox square wallpapered rounded GalleryItem">
+				<div class="pos-absolutely row g-0 align-items-center">
+					<div class="col">
+						<img src="<?php $Util->Print($Item->GetPublicURL('sm')) ?>" />
+					</div>
+				</div>
+
+				<a class="position-absolutely" href="/dashboard/media/view/<?php $Printer($Item->ID) ?>">
+				</a>
+
+				<div class="position-absolute position-bottom position-h-center box-shadow-wofty GalleryHoverTools">
+					<button class="btn btn-danger p-1" data-media-delete="<?php $Printer($Item->ID) ?>"><i class="mdi mdi-fw mdi-trash-can"></i></button>
+				</div>
+			</div>
+		</div>
+		<?php endforeach; ?>
+	</div>
 </div>
 
 <script type="module">

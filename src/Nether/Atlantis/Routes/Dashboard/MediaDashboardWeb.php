@@ -21,7 +21,7 @@ extends Atlantis\ProtectedWeb {
 		]);
 
 		($this->Surface)
-		->Wrap('media/dashboard/browse', [
+		->Area('media/dashboard/browse', [
 			'Items' => $Items
 		]);
 

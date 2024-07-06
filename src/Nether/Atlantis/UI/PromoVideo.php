@@ -19,6 +19,21 @@ extends Surface\Element {
 	public ?string
 	$Overlay = NULL;
 
+	public string
+	$Ratio = 'ultrawide';
+
+	public string
+	$SizeTitle = 'fs-largerer';
+
+	public string
+	$SizeSubline = 'fs-largerer';
+
+	public string
+	$Justify = 'justify-content-center';
+
+	public bool
+	$Presize = TRUE;
+
 	public ?string
 	$VideoURL = NULL;
 

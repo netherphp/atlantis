@@ -57,10 +57,6 @@ $Tags = $Tags->Distill(function($T) {
 	<?php
 
 	if($Tags) {
-		//$Tags->Sort(Atlantis\Tag\Entity::SortByType(...));
-		// need to do a sort that is more generic since we throw profiles
-		// in here sometimes.
-
 		foreach($Tags as $Tag) {
 			if($Tag instanceof Atlantis\Tag\Entity)
 			if($Tag->Type !== 'admin' || $Route->IsUserAdmin())
@@ -69,14 +65,6 @@ $Tags = $Tags->Distill(function($T) {
 				$Util->RewriteURL($Tag->GetPageURL($App)),
 				$TagClasses($Tag),
 				$Util->Encode($Tag->Name)
-			);
-
-			if($Tag instanceof Atlantis\Profile\Entity)
-			printf(
-				'<a href="%s" class="text-transform-none btn %s p-1 pl-2 pr-2 mb-2">%s</a> ',
-				$Util->RewriteURL($Tag->GetPageURL($App)),
-				'btn-outline-primary',
-				$Util->Encode($Tag->Title)
 			);
 		}
 	}

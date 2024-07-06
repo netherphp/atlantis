@@ -27,10 +27,10 @@ $GetPostValue = function(string $What) use($Post) {
 	return '';
 
 	if($What === 'DateTimeCreated')
-	return (
-		($Post->DateCreated)
-		->Get(DateTime::RFC2822)
-	);
+	return $Post->DateCreated->Get(DateTime::RFC2822);
+
+	if($What === 'PostImageURL')
+	return $Post->GetPostImageURL();
 
 	if(!property_exists($Post, $What))
 	return '';
@@ -85,8 +85,19 @@ $OpenAdminNotes ??= $Surface->Get('Blog.PostEditor.OpenAdminNotes') ?? FALSE;
 	<div class="row gap-4 mb-4">
 		<div class="col-12">
 			<div class="fw-bold tt-upper">Post Image</div>
-			<div>
-				[upload button]
+			<div class="row g-3">
+				<div class="col-12 col-sm-4 col-md-3">
+					<img class="rounded PreviewCoverImage" src="<?php $Util->Print($GetPostValue('PostImageURL')) ?>" alt="" />
+				</div>
+				<div class="col">
+				</div>
+				<div class="col-12 col-sm-auto">
+					<input type="hidden" name="CoverImageID" value="<?php $Util->Print($GetPostValue('CoverImageID')) ?>" />
+					<button class="btn btn-block btn-outline-dark CmdCoverImageUpl">
+						<i class="mdi mdi-cloud-upload"></i>
+						Upload Image...
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -109,13 +120,13 @@ $OpenAdminNotes ??= $Surface->Get('Blog.PostEditor.OpenAdminNotes') ?? FALSE;
 			<div class="row g-3">
 				<div class="col"><input name="DateCreated" type="datetime-local" class="form-control" data-value="<?php $Util->Print($GetPostValue('DateTimeCreated')) ?>" /></div>
 				<div class="col-auto">
-					<button class="btn btn-dark CmdRefreshPublishDate">
+					<button class="btn btn-outline-dark CmdRefreshPublishDate">
 						<i class="mdi mdi-clock"></i>
 						Now
 					</button>
 				</div>
 				<div class="col-auto">
-					<button class="btn btn-dark CmdResetPublishDate">
+					<button class="btn btn-outline-dark CmdResetPublishDate">
 						<i class="mdi mdi-skip-previous"></i>
 						Reset
 					</button>
@@ -230,6 +241,7 @@ $OpenAdminNotes ??= $Surface->Get('Blog.PostEditor.OpenAdminNotes') ?? FALSE;
 import API         from '/share/nui/api/json.js';
 import Util        from '/share/nui/util.js';
 import Collapser   from '/share/nui/util/collapser.js';
+import Uploader    from '/share/nui/modules/uploader/uploader.js';
 import EditorBlock from '/share/atlantis/js/editor-block.js';
 import TagSearch   from '/share/atlantis/js/field-tag-search.js';
 import BlogPost    from '/share/atlantis/js/ents/blogpost.js';
@@ -254,6 +266,7 @@ class PostEditor {
 		////////
 
 		this.element = jQuery(selector);
+		this.uploader = null;
 		this.blogID = parseInt(this.element.attr('data-blog-id')) || null;
 		this.blogUUID = this.element.attr('data-blog-uuid');
 		this.postID = parseInt(this.element.attr('data-post-id')) || null;
@@ -261,9 +274,11 @@ class PostEditor {
 
 		this.editor = EditorBlock.Boot(this.element.find('.atl-editorjs:nth(0)'));
 		this.tagSearch = TagSearch.Boot(this.element.find('[name="Tags"]'));
+		this.imgPreviewCover = this.element.find('.PreviewCoverImage');
 
 		this.inTitle = this.element.find('[name="Title"]');
 		this.inDateCreated = this.element.find('[name="DateCreated"]');
+		this.inCoverImageID = this.element.find('[name="CoverImageID"]');
 
 		this.inAdminNotes = this.element.find('[name="ExtraData[AdminNotes]"]');
 		this.inSourceURL = this.element.find('[name="ExtraData[SourceURL]"]');
@@ -274,6 +289,7 @@ class PostEditor {
 		this.btnSubmit = this.element.find('button[type=submit]');
 		this.btnRefreshPublishDate = this.element.find('.CmdRefreshPublishDate');
 		this.btnResetPublishDate = this.element.find('.CmdResetPublishDate');
+		this.btnCoverImageUpl = this.element.find('.CmdCoverImageUpl');
 
 		////////
 
@@ -301,6 +317,12 @@ class PostEditor {
 		if(!this.inDateCreated.val())
 		this.refreshPublishDate();
 
+		////////
+
+		this.uploader = new Uploader(this.btnCoverImageUpl, {
+			onSuccess: this.onCoverUpload.bind(this)
+		});
+
 		return;
 	};
 
@@ -326,6 +348,7 @@ class PostEditor {
 		post.title = jQuery.trim(this.inTitle.val());
 		post.content = JSON.stringify(content);
 		post.enabled = parseInt(this.inEnabled.val());
+		post.coverImageID = parseInt(this.inCoverImageID.val());
 
 		if(Util.VON(this.inDateCreated.val()) !== null)
 		post.dateCreated = DateTime.fromISO(this.inDateCreated.val());
@@ -368,6 +391,19 @@ class PostEditor {
 		);
 
 		return chain;
+	};
+
+	async onCoverUpload(result) {
+
+		this.inCoverImageID.val(result.payload.ID);
+		this.imgPreviewCover.attr(
+			'src',
+			result.payload.URL.replace('original.', 'md.')
+		);
+
+		this.uploader.dialog.destroy();
+
+		return;
 	};
 
 	////////////////////////////////////////////////////////////////

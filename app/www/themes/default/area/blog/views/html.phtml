@@ -27,7 +27,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 	if(!$Post->Enabled)
 	$Output->Push(Atlantis\Tag\Entity::New(
 		Name: 'DRAFT',
-		Type: 'btn-primary'
+		Type: 'btn-warning'
 	));
 
 	return $Output;

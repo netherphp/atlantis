@@ -303,12 +303,16 @@ grouped are to be considered depreciated. */
 
 .ratiobox.two-x-one,
 .ratiobox.univisium {
-	padding-top: 50%;
+	padding-top: 50.00%;
 }
 
 .ratiobox.twentyone-x-nine,
 .ratiobox.ultrawide {
 	padding-top: 42.85%;
+}
+
+.ratiobox.four-x-one {
+	padding-top: 25.00%;
 }
 
 .ratiobox.one-x-two

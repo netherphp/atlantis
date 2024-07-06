@@ -45,7 +45,7 @@ trait CoverImage {
 
 		$URL = str_replace(
 			'original.', "{$Size}.",
-			$this->ImageHeader->GetPublicURL()
+			$this->CoverImage->GetPublicURL()
 		);
 
 		if(isset($this->CoverImage->ExtraFiles))

@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\UI\Slider $Element
+ * @var Nether\Atlantis\UI\SliderItem $Item
+ * @var Nether\Blog\Post $Post
+ */
+
+$Post = $Item->GetItem();
+
+?>
+
+<div class="swiper-slide">
+	<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($Post->GetPostImageURL()) ?>);">
+		<div class="position-absolutely grad-bottom-normal"></div>
+		<div class="position-absolute position-bottom w-100 text-align-center">
+			<span class="fw-bold -text-uppercase"><?php $Util->Print($Post->Title) ?></span>
+		</div>
+		<a href="<?php $Util->Print($Post->GetPageURL()) ?>" class="position-absolutely"></a>
+	</div>
+</div>

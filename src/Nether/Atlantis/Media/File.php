@@ -218,13 +218,22 @@ extends Atlantis\Prototype {
 	}
 
 	public function
-	GetPublicURL():
+	GetPublicURL(?string $Size=NULL):
 	?string {
 
-		if(str_starts_with($this->URL, 'storage://'))
-		return $this->GetFromStorageURL();
+		$URL = NULL;
 
-		return NULL;
+		////////
+
+		if(str_starts_with($this->URL, 'storage://'))
+		$URL = $this->GetFromStorageURL();
+
+		if($URL && $Size)
+		$URL = str_replace('original.', "{$Size}.", $URL);
+
+		////////
+
+		return $URL;
 	}
 
 	public function

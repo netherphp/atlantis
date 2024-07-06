@@ -38,6 +38,7 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 <?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
 <div class="container pt-4 ">
+
 	<div class="row">
 
 		<!-- POST TITLE -->
@@ -73,6 +74,14 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 		<?php if(!$Post->Enabled): ?>
 		<div class="alert alert-primary text-center p-2 mb-4">
 			This post is in DRAFT mode.
+		</div>
+		<?php endif; ?>
+
+		<?php if($Post->HasPostImage()): ?>
+		<div class="row justify-content-center mb-4">
+			<div class="col-auto">
+				<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
+			</div>
 		</div>
 		<?php endif; ?>
 

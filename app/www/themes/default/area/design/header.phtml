@@ -1,10 +1,17 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Common;
+
 /**
- * @var Nether\Atlantis\Engine $App
+ * @var Atlantis\Engine $App
  */
 
+$ProjectName = $App->Config->Get(Atlantis\Key::ConfProjectName);
+$LogoImageURL = $Surface->Get('Theme.Header.Logo.ImageURL');
+
 $Contain = $Surface->Get('Theme.Header.Contain');
+$ShowMenuLabel = $Surface->Get('Theme.Header.ShowMenuLabel') ?? TRUE;
 
 ?>
 
@@ -15,7 +22,11 @@ $Contain = $Surface->Get('Theme.Header.Contain');
 			<!-- LOGO -->
 			<div class="col-auto">
 				<a href="/">
-					<img src="/themes/default/gfx/atlantis-word.png" alt="Atlantis" class="on-light-invert" style="max-height:20px;" />
+					<?php if($LogoImageURL): ?>
+					<img src="<?php $Util->Print($LogoImageURL) ?>" class="on-light-invert" style="max-height:20px;" />
+					<?php else: ?>
+					<span class="fw-bold"><?php $Util->Print($ProjectName) ?></span>
+					<?php endif; ?>
 				</a>
 			</div>
 
@@ -23,10 +34,14 @@ $Contain = $Surface->Get('Theme.Header.Contain');
 			<div class="col"><hr class="opacity-10" /></div>
 
 			<div class="col-auto">
-				<span class="d-flex align-items-center cursor-pointer text-uppercase" data-sitemenu="SiteMenuMain">
-					<span class="text-muted">Menu</span>
-					<i class="mdi mdi-menu font-size-most-large lh-1 mr-0"></i>
-				</span>
+				<button class="btn btn-dark d-flex align-items-center px-2 py-0 gap-2" data-sitemenu="SiteMenuMain">
+					<span>
+						<span class="o-70">Menu</span>
+					</span>
+					<span>
+						<i class="mdi mdi-menu fs-largerest mr-0"></i>
+					</span>
+				</button>
 			</div>
 
 		</div>

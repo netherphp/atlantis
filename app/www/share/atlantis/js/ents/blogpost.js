@@ -12,6 +12,7 @@ class BlogPost {
 		this.blogID = null;
 		this.uuid = null;
 		this.enabled = null;
+		this.coverImageID = null;
 		this.editor = null;
 		this.title = null;
 		this.alias = null;
@@ -27,6 +28,7 @@ class BlogPost {
 		this.blogID = payload.BlogID;
 		this.uuid = payload.UUID;
 		this.enabled = payload.Enabled;
+		this.coverImageID = payload.CoverImageID;
 		this.editor = payload.Editor;
 		this.title = payload.Title;
 		this.alias = payload.Alias;
@@ -45,6 +47,7 @@ class BlogPost {
 		data.append('ID', this.id);
 		data.append('BlogID', this.blogID);
 		data.append('Enabled', this.enabled);
+		data.append('CoverImageID', this.coverImageID);
 		data.append('Editor', this.editor);
 		data.append('Title', this.title);
 		data.append('Content', this.content);

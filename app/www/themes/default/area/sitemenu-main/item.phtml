@@ -14,6 +14,14 @@ $NextIcon = $Surface->Get('Theme.SiteMenu.Icons.Next');
 
 ?>
 
+<?php if($Item->Title === '==='): ?>
+<div class="row justify-content-center border-0 pt-3 pb-3" <?php echo $Item->GetAttrForHTML() ?>>
+	<div class="col-4">
+		<hr class="o-10 my-2 m-0" />
+	</div>
+</div>
+<hr class="mt-0 mb-0" />
+<?php else: ?>
 <a href="<?php $Util->Print($Item->URL) ?>" class="row border-0 pt-3 pb-3" <?php echo $Item->GetAttrForHTML() ?>>
 	<span class="col">
 		<?php
@@ -30,3 +38,4 @@ $NextIcon = $Surface->Get('Theme.SiteMenu.Icons.Next');
 	<?php endif; ?>
 </a>
 <hr class="mt-0 mb-0" />
+<?php endif ?>
