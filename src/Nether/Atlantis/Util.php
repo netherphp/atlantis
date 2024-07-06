@@ -554,6 +554,16 @@ implements Atlantis\Plugin\Interfaces\Engine\AppInstanceStaticInterface {
 			unset($CTags, $STags, $STag);
 		}
 
+		// if we're still passing off an incomplete url...
+
+		if(str_starts_with($URL, '/'))
+		$URL = sprintf(
+			'%s://%s%s',
+			$App->Router->Request->Protocol,
+			$App->Config->Get(Atlantis\Key::ConfProjectDomain),
+			$URL
+		);
+
 		// transform the atl:// prefix into a full url. mainly for
 		// spitting out environment specific links.
 

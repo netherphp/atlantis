@@ -1,0 +1,36 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+($Router->Response)
+->SetContentType('application/rss+xml');
+
+?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<atom:link href="<?php $Util->Print($Router->Request->GetURL()) ?>" rel="self" type="application/rss+xml" />
+		<title><?php $Util->Print($Surface->Get('Page.Title')) ?></title>
+		<link><?php $Util->Print($Router->Request->GetURL()) ?></link>
+		<description><?php $Util->Print($App->Config->Get(Atlantis\Key::ConfProjectDescShort)) ?></description>
+
+<?php echo $Output ?>
+
+	</channel>
+</rss>

@@ -93,7 +93,7 @@ $OpenAdminNotes ??= $Surface->Get('Blog.PostEditor.OpenAdminNotes') ?? FALSE;
 				</div>
 				<div class="col-12 col-sm-auto">
 					<input type="hidden" name="CoverImageID" value="<?php $Util->Print($GetPostValue('CoverImageID')) ?>" />
-					<button class="btn btn-block btn-outline-dark CmdCoverImageUpl">
+					<button class="btn btn-block btn-outline-light CmdCoverImageUpl">
 						<i class="mdi mdi-cloud-upload"></i>
 						Upload Image...
 					</button>
@@ -120,13 +120,13 @@ $OpenAdminNotes ??= $Surface->Get('Blog.PostEditor.OpenAdminNotes') ?? FALSE;
 			<div class="row g-3">
 				<div class="col"><input name="DateCreated" type="datetime-local" class="form-control" data-value="<?php $Util->Print($GetPostValue('DateTimeCreated')) ?>" /></div>
 				<div class="col-auto">
-					<button class="btn btn-outline-dark CmdRefreshPublishDate">
+					<button class="btn btn-outline-light CmdRefreshPublishDate">
 						<i class="mdi mdi-clock"></i>
 						Now
 					</button>
 				</div>
 				<div class="col-auto">
-					<button class="btn btn-outline-dark CmdResetPublishDate">
+					<button class="btn btn-outline-light CmdResetPublishDate">
 						<i class="mdi mdi-skip-previous"></i>
 						Reset
 					</button>

@@ -74,12 +74,18 @@ $PostListArea = $App->Config[Blog\Key::ConfBlogIndexArea] ?? 'blog/widgets/post-
 
 		<!-- WRITE NEW POST -->
 		<div class="col-auto">
-			<a href="<?php $Util->Print($Blog->GetWriteURL()) ?>" class="btn btn-outline-dark">
+			<a href="<?php $Util->Print($Blog->GetWriteURL()) ?>" class="btn btn-outline-light">
 				<i class="mdi mdi-plus mr-0"></i>
 				New Post
 			</a>
 		</div>
 		<?php endif; ?>
+
+		<div class="col-auto">
+			<a class="btn btn-orange" href="?format=rss" title="RSS Feed" data-bs-toggle="tooltip">
+				<i class="mdi mdi-rss mr-0"></i>
+			</a>
+		</div>
 
 	</div>
 	<hr class="mt-1" />

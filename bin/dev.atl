@@ -3,6 +3,7 @@
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;
+use Nether\Dye;
 use Nether\Storage;
 use Nether\User;
 
@@ -779,6 +780,177 @@ extends Atlantis\TerminalApp {
 		]);
 
 		Common\Filesystem\Util::TryToWriteFile($Outpath, $JSON);
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('dyes')]
+	public function
+	HandleBootstrapColourExt():
+	int {
+
+		$Defines = new Common\Datastore;
+		$Styles = new Common\Datastore;
+		$Output = new Common\Datastore;
+		$Outfile = $this->App->FromProjectRoot('www/themes/default/css/src/ext-bootstrap/dyes.css');
+
+		////////
+
+		$Colours = [
+			'light'  => '#FDFDFD',
+			'dark'   => '#141414',
+
+			'white'  => '#FDFDFD',
+			'black'  => '#141414',
+
+			'red'    => '#AE2525',
+			'orange' => '#EA7222',
+			'yellow' => '#EECB10',
+			'green'  => '#3BB33B',
+			'blue'   => '#3B5DE3',
+			'purple' => '#8750FF'
+		];
+
+		$BtnPropsNormal = new Common\Datastore([
+			'background: var(--theme-{%C%});',
+			'border-color: var(--theme-{%C%});',
+			'color: var(--theme-{%C%}-fg);'
+		]);
+
+		$BtnPropsHover = new Common\Datastore([
+			'background: var(--theme-{%C%}-alt);',
+			'border-color: var(--theme-{%C%}-alt);',
+			'color: var(--theme-{%C%}-alt-fg);'
+		]);
+
+		$BtnPropsNormalOutline = new Common\Datastore([
+			'background: transparent;',
+			'border-color: var(--theme-{%C%});',
+			'color: var(--theme-{%C%});'
+		]);
+
+		$BtnPropsHoverOutline = new Common\Datastore([
+			'background: var(--theme-{%C%}-alt);',
+			'border-color: var(--theme-{%C%}-alt);',
+			'color: var(--theme-{%C%}-alt-fg);'
+		]);
+
+		$BtnKeyNormal = NULL;
+		$BtnKeyHover = NULL;
+		$Colour = NULL;
+		$Hex = NULL;
+		$Tokens = NULL;
+		$Dye = NULL;
+		$NL = "\n";
+		$NLT = "\n\t";
+
+		////////
+
+		foreach($Colours as $Colour => $Hex) {
+			$Dye = Dye\Colour::From($Hex);
+			$DyeAlt = Dye\Colour::From($Hex)->Lighten(0.30)->Desaturate(0.10);
+
+			////////
+
+			$BtnKeyNormal = sprintf(
+				'.btn-%1$s',
+				$Colour
+			);
+
+			$BtnKeyNormalOutline = sprintf(
+				'.btn-outline-%1$s',
+				$Colour
+			);
+
+			$BtnKeyHover = sprintf(
+				'.btn-%1$s:active, .btn-%1$s:hover, .btn-%1$s:focus .btn-%1$s.show',
+				$Colour
+			);
+
+			$BtnKeyHoverOutline = sprintf(
+				'.btn-outline-%1$s:active, .btn-outline-%1$s:hover, .btn-outline-%1$s:focus .btn-outline-%1$s.show',
+				$Colour
+			);
+
+			$Tokens = [ 'C'=> $Colour ];
+
+			////////
+
+			$Defines[sprintf('--theme-%s', $Colour)] = $Dye->ToHexRGB();
+			$Defines[sprintf('--theme-%s-fg', $Colour)] = $Dye->IsDark() ? 'var(--theme-light)' : 'var(--theme-dark)';
+
+			$Defines[sprintf('--theme-%s-alt', $Colour)] = $DyeAlt->ToHexRGB();
+			$Defines[sprintf('--theme-%s-alt-fg', $Colour)] = $DyeAlt->IsDark() ? 'var(--theme-light)' : 'var(--theme-dark)';
+
+			$Styles[$BtnKeyNormal] = $BtnPropsNormal->Map(
+				fn(string $T)
+				=> Common\Text::TemplateReplaceTokens($T, $Tokens)
+			);
+
+			$Styles[$BtnKeyNormalOutline] = $BtnPropsNormalOutline->Map(
+				fn(string $T)
+				=> Common\Text::TemplateReplaceTokens($T, $Tokens)
+			);
+
+			$Styles[$BtnKeyHover] = $BtnPropsHover->Map(
+				fn(string $T)
+				=> Common\Text::TemplateReplaceTokens($T, $Tokens)
+			);
+
+			$Styles[$BtnKeyHoverOutline] = $BtnPropsHoverOutline->Map(
+				fn(string $T)
+				=> Common\Text::TemplateReplaceTokens($T, $Tokens)
+			);
+
+			continue;
+		}
+
+		////////
+
+		$Output->Push(':root {');
+		$Defines->EachKeyValue(function(string $K, string $V) use($Output) {
+			$Output->Push("\t{$K}: {$V};");
+			return;
+		});
+		$Output->Push('}');
+		$Output->Push('');
+
+		////////
+
+		$Output->Push('[data-bs-theme="light"] {');
+		$Defines->EachKeyValue(function(string $K, string $V) use($Output) {
+			if(str_contains($K, 'light'))
+			$K = str_replace('light', 'dark', $K);
+			else
+			$K = str_replace('dark', 'light', $K);
+
+			if(str_contains($V, 'light'))
+			$V = str_replace('light', 'dark', $V);
+			else
+			$V = str_replace('dark', 'light', $V);
+
+			$Output->Push("\t{$K}: {$V};");
+			return;
+		});
+		$Output->Push('}');
+		$Output->Push('');
+
+		////////
+
+		$Styles->EachKeyValue(function(string $K, Common\Datastore $V) use($Output) {
+			$Output->Push("{$K} {");
+			$V->Each(fn(string $P)=> $Output->Push("\t{$P}"));
+			$Output->Push('}');
+			$Output->Push('');
+			return;
+		});
+
+		////////
+
+		Common\Filesystem\Util::TryToWriteFile(
+			$Outfile,
+			$Output->Join($NL)
+		);
 
 		return 0;
 	}

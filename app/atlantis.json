@@ -60,6 +60,11 @@
 			"Mode": "0o777"
 		},
 		{
+			"Path": "www\/themes\/rss",
+			"Source": "vendor\/netherphp\/atlantis\/app\/www\/themes\/rss",
+			"Mode": "0o777"
+		},
+		{
 			"Path": "www\/themes\/soon",
 			"Source": "vendor\/netherphp\/atlantis\/app\/www\/themes\/soon",
 			"Mode": "0o777"

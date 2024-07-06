@@ -54,10 +54,10 @@ extends Surface\Element {
 	////////////////////////////////////////////////////////////////
 
 	public string
-	$MenuBtnStyleClass = 'btn-dark';
+	$MenuBtnStyleClass = 'btn-outline-light';
 
 	public string
-	$ItemBtnStyleClass = 'btn-dark';
+	$ItemBtnStyleClass = 'btn-outline-light';
 
 	////////////////////////////////////////////////////////////////
 	// LOCAL: Factory API //////////////////////////////////////////

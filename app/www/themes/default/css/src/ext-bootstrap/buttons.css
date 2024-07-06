@@ -36,6 +36,7 @@
 	--bs-border-width: 2px;
 }
 
+/*
 .btn-outline-light:hover,
 .btn-outline-light:active,
 .btn-outline-light.show,
@@ -56,6 +57,25 @@
 	background-color: var(--theme-white) !important;
 	border-color: var(--theme-white) !important;
 	color: var(--theme-black) !important;
+}
+*/
+
+/*******************************************************************************
+*******************************************************************************/
+
+.btn-orange {
+	background: var(--theme-orange);
+	border-color: var(--theme-orange);
+	color: var(--theme-white);
+}
+
+.btn-orange:active,
+.btn-orange:hover,
+.btn-orange:focus
+.btn-orange.show {
+	background: var(--theme-orange-alt);
+	border-color: var(--theme-orange-alt);
+	color: var(--theme-white);
 }
 
 /*******************************************************************************
