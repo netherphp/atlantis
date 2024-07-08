@@ -17,10 +17,13 @@ extends Common\Prototype {
 	$Title;
 
 	public ?string
-	$Icon;
+	$Subtitle = NULL;
 
 	public ?string
-	$URL;
+	$Icon = NULL;
+
+	public ?string
+	$URL = NULL;
 
 	public int
 	$Warn = 0;
@@ -54,6 +57,13 @@ extends Common\Prototype {
 	string {
 
 		return $this->Title;
+	}
+
+	public function
+	GetSubtitle():
+	string {
+
+		return $this->Subtitle;
 	}
 
 	public function
@@ -94,7 +104,7 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $Title='Item', ?string $Icon='mdi-edit', ?string $URL=NULL, ?iterable $Attr=[], ?int $Warn=0):
+	New(?string $Title='Item', ?string $Icon='mdi-edit', ?string $URL=NULL, ?iterable $Attr=[], ?int $Warn=0, ?string $Subtitle=NULL):
 	static {
 
 		$Output = new static([
@@ -104,6 +114,7 @@ extends Common\Prototype {
 		////////
 
 		$Output->Title = $Title;
+		$Output->Subtitle = $Subtitle;
 		$Output->Icon = $Icon;
 		$Output->URL = $URL;
 		$Output->Warn = $Warn;

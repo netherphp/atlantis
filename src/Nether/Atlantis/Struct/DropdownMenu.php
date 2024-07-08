@@ -67,12 +67,13 @@ extends Common\Prototype {
 	}
 
 	public function
-	ItemNew(?string $Title=NULL, ?string $Icon=NULL, ?string $URL=NULL, iterable $Attr=[], int $Warn=0, bool $If=TRUE):
+	ItemNew(?string $Title=NULL, ?string $Icon=NULL, ?string $URL=NULL, iterable $Attr=[], ?string $Subtitle=NULL, int $Warn=0, bool $If=TRUE):
 	static {
 
 		if($If)
 		$this->ItemPush(DropdownItem::New(
 			Title: $Title,
+			Subtitle: $Subtitle,
 			Icon: $Icon,
 			URL: $URL,
 			Attr: $Attr,

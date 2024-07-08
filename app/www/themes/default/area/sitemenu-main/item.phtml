@@ -23,16 +23,27 @@ $NextIcon = $Surface->Get('Theme.SiteMenu.Icons.Next');
 <hr class="mt-0 mb-0" />
 <?php else: ?>
 <a href="<?php $Util->Print($Item->URL) ?>" class="row border-0 pt-3 pb-3" <?php echo $Item->GetAttrForHTML() ?>>
-	<span class="col">
-		<?php
+	<div class="col">
+		<div>
+			<?php if($UseIcons && $Item->Icon): ?>
+			<i class="<?php $Util->Print($Item->GetIcon() ?: $NoIconIcon) ?> mr-1"></i>
+			<?php endif; ?>
 
-		if($UseIcons)
-		printf('<i class="%s mr-1"></i> ', $Item->GetIcon() ?: $NoIconIcon);
+			<span class="fw-bold"><?php $Util->Print($Item->Title); ?></span>
+		</div>
 
-		$Util->Print($Item->Title);
+		<?php if($Item->Subtitle): ?>
+		<div>
+			<?php if($UseIcons && $Item->Icon): ?>
+			<i class="mdi mdi-blank mr-1"></i>
+			<?php endif; ?>
 
-		?>
-	</span>
+			<span class="fs-smaller o-50">
+				<?php $Util->Print($Item->Subtitle); ?>
+			</span>
+		</div>
+		<?php endif; ?>
+	</div>
 	<?php if($Item->Attr->HasKey('data-sitemenu')): ?>
 	<span class="col-auto"><i class="<?php echo $NextIcon ?>"></i></span>
 	<?php endif; ?>
