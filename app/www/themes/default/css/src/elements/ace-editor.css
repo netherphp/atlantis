@@ -29,6 +29,10 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	margin-left: 4px;
 }
 
+.ace_bracket {
+	border: 0px !important;
+}
+
 /*******************************************************************************
 *******************************************************************************/
 

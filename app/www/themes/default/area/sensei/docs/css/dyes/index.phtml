@@ -28,43 +28,157 @@ $Surface->Set([
 ################################################################################
 
 $Colours = new Common\Datastore([
-	'black', 'white',
-	'dark', 'light',
-	'red', 'orange', 'yellow', 'green', 'blue', 'purple'
+	'light', 'black', 'white',
+	'pink', 'red', 'orange', 'gold', 'yellow' ,
+	'lime', 'green', 'seafoam',
+	'cyan', 'blue',
+	'violet', 'purple',
+	'grey-lt', 'grey-md', 'grey-dk'
 ]);
 
 ?>
 
-<div class="container">
-	<div class="mb-8">
-		<h2 class="tt-upper">Solid Buttons</h2>
-		<hr />
-		<div class="row g-4">
-			<?php foreach($Colours as $C): ?>
-			<div class="col-12 col-md-3">
-				<button class="btn btn-block <?php $Util->Print("btn-{$C}") ?> ta-left">
-					<i class="mdi mdi-circle"></i>
-					<?php $Util->Print($C) ?>
-				</button>
-			</div>
-			<?php endforeach; ?>
-		</div>
-	</div>
+<div class="cargobay">
 
-	<div class="mb-8">
-		<h2 class="tt-upper">Outline Buttons</h2>
-		<hr />
-		<div class="row g-4">
-			<?php foreach($Colours as $C): ?>
-			<div class="col-12 col-md-3">
-				<button class="btn btn-block <?php $Util->Print("btn-outline-{$C}") ?> ta-left">
-					<i class="mdi mdi-circle"></i>
-					<?php $Util->Print($C) ?>
-				</button>
+	<!-- dyes.json -->
+	<section>
+		<div class="container">
+			<h3>Define the DyeSet</h3>
+			<hr class="mt-1 mb-3" />
+			<p>Defines a set of colours that can be tweaked so that they still represent what they are but are shades that may look better with the theme. Dyes are defined in the <code>dyes.json</code> file.</p>
+			<p>The after tweaking the dye file the CSS must be recompiled with <code>$ dev.atl dyes</code>.</p>
+			<div class="jumbotron rounded p-4 mb-4">
+				<dl class="mb-0">
+					<dt>@alias</dt>
+					<dd>Refer to Bg of another row.</dd>
+					<dt>&alias</dt>
+					<dd>Refer to the Fg of another row.</dd>
+					<dt>%auto</dt>
+					<dd>Check the other component of the colour and set to be either dark or light.</dd>
+				</dl>
 			</div>
-			<?php endforeach; ?>
+
+			<?php
+
+			echo Atlantis\UI\AceEditor::FromSurfaceWith($Surface,[
+				'ReadOnly' => TRUE,
+				'Lang'    => 'json',
+				'Content' => Common\Filesystem\Util::TryToReadFile($App->FromProjectRoot('www/themes/default/dyes.json'))
+			]);
+
+			?>
+
 		</div>
-	</div>
+	</section>
+
+	<!-- css classes -->
+	<section>
+
+		<div class="container">
+			<h3>CSS Classes</h3>
+			<hr />
+
+			<p>The <code>dark</code> and <code>light</code> keywords automatically switch their colours based on if the current theme is set to be dark or light.
+			The trick is to think <em>Dark Mode First</em> as things like <code>btn-light</code> will be dark on light themes and I am in too deep to reconsider the naming.</p>
+
+			<div class="row align-items-center g-4 mb-6">
+				<div class="col-12 col-md-auto">
+					<button class="btn btn-light">btn-light</button>
+				</div>
+				<div class="col-12 col-md-auto">
+					<button class="btn btn-outline-light">btn-light</button>
+				</div>
+				<div class="col-12">
+					<?php $Surface->Area('widgets/theme-switcher') ?>
+				</div>
+			</div>
+
+			<div class="row g-6 mb-6">
+
+				<div class="col-12 col-md-6">
+					<div class="fw-bold tt-upper">// Solid Buttons</div>
+					<hr class="mt-1 mb-4" />
+
+					<div class="row g-2">
+						<?php foreach($Colours as $C): $Cll = "btn-{$C}"; ?>
+						<div class="col-12">
+							<button class="btn btn-block ta-left <?php $Util->Print($Cll) ?>">
+								<i class="mdi mdi-circle"></i>
+								<?php $Util->Print($Cll) ?>
+							</button>
+						</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6">
+					<div class="fw-bold tt-upper">// Outlined Buttons</div>
+					<hr class="mt-1 mb-4" />
+
+					<div class="row g-2">
+						<?php foreach($Colours as $C): $Cll = "btn-outline-{$C}"; ?>
+						<div class="col-12">
+							<button class="btn btn-block ta-left <?php $Util->Print($Cll) ?>">
+								<i class="mdi mdi-circle"></i>
+								<?php $Util->Print($Cll) ?>
+							</button>
+						</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<div class="col-12">
+					<?php $Surface->Area('widgets/theme-switcher') ?>
+				</div>
+
+				<div class="col-6 col-lg-6">
+					<div class="fw-bold tt-upper">// Progress 1</div>
+					<hr class="mt-1 mb-4" />
+
+					<div class="row g-3">
+						<?php foreach($Colours as $C): $Rng1 = (random_int(2500, 8500) / 100); $Cll = "btn-outline-{$C} tc-light"; ?>
+						<div class="col-12">
+							<div class="progress pos-relative <?php $Util->Print("bg-{$C} fg-{$C}") ?>" style="height:2em;">
+								<div class="progress-dimmer pos-absolutely bg-black o-60"></div>
+								<div class="progress-bar progress-bar-striped progress-bar-animated pl-2 ta-left pos-relative fw-bold <?php $Util->Print("bg-{$C} fg-{$C}") ?>" style="width: <?php $Util->Print($Rng1) ?>%;">
+									<?php $Util->Print($Rng1) ?>%
+								</div>
+							</div>
+						</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<div class="col-6 col-lg-6">
+					<div class="fw-bold tt-upper">// Progress 2</div>
+					<hr class="mt-1 mb-4" />
+
+					<div class="row g-4">
+						<?php foreach($Colours as $C): $Rng1 = (random_int(2500, 8500) / 100); $Cll = "btn-outline-{$C} tc-light"; ?>
+						<div class="col-12">
+							<div class="fs-smaller mb-2 o-anim-pulse-slow text-ellipsis tw-none">
+								<span class="tt-upper fw-bolder <?php $Util->Print("tc-{$C}-alt") ?>"><i class="mdi mdi-cloud-upload"></i></span>
+								<span><?php echo Common\UUID::V7() ?>.png</span>
+								<span>...</span>
+							</div>
+							<div class="progress rounded-0 pos-relative h-auto <?php $Util->Print("bg-{$C}") ?>">
+								<div class="progress-dimmer pos-absolutely bg-black o-60"></div>
+								<div class="progress-bar progress-bar-striped progress-bar-animated pos-relative fw-bold <?php $Util->Print("bg-{$C} fg-{$C}") ?>" style="height: 3px; width: <?php $Util->Print($Rng1) ?>%;">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-auto">
+									<span class="fs-smaller ff-reading fw-bold"><?php $Util->Print($Rng1) ?>%</span>
+								</div>
+							</div>
+						</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</section>
 </div>
-
-

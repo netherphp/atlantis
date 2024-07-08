@@ -242,6 +242,10 @@ strong {
 /*******************************************************************************
 **** button stuff *************************************************************/
 
+.btn {
+	--bs-btn-border-width: 2px;
+}
+
 .btn-primary {
 	--bs-btn-bg: var(--theme-primary);
 	--bs-btn-hover-bg: var(--theme-primary-alt);
