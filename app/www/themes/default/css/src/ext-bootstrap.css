@@ -311,6 +311,10 @@ grouped are to be considered depreciated. */
 	padding-top: 42.85%;
 }
 
+.ratiobox.three-x-one {
+	padding-top: 33.00%;
+}
+
 .ratiobox.four-x-one {
 	padding-top: 25.00%;
 }
