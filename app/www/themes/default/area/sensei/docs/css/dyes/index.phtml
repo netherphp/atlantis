@@ -20,7 +20,7 @@ use Nether\User;
 
 $Surface->Set([
 	'Page.Section.Title' => 'CSS Reference',
-	'Page.Title'         => 'Dyes',
+	'Page.Title'         => 'Dyes & Colours',
 	'Page.Info'          => NULL
 ]);
 
@@ -38,10 +38,14 @@ $Colours = new Common\Datastore([
 
 ?>
 
+<div class="mb-6">
+	<?php $Surface->Area('sensei/docs/css/__nav', [ 'Section'=> 'dyes' ]) ?>
+</div>
+
 <div class="cargobay">
 
 	<!-- dyes.json -->
-	<section>
+	<section class="pt-0">
 		<div class="container">
 			<h3>Define the DyeSet</h3>
 			<hr class="mt-1 mb-3" />
@@ -131,7 +135,7 @@ $Colours = new Common\Datastore([
 					<?php $Surface->Area('widgets/theme-switcher') ?>
 				</div>
 
-				<div class="col-6 col-lg-6">
+				<div class="col-12 col-sm-12 col-lg-6">
 					<div class="fw-bold tt-upper">// Progress 1</div>
 					<hr class="mt-1 mb-4" />
 
@@ -149,7 +153,7 @@ $Colours = new Common\Datastore([
 					</div>
 				</div>
 
-				<div class="col-6 col-lg-6">
+				<div class="col-12  col-lg-6">
 					<div class="fw-bold tt-upper">// Progress 2</div>
 					<hr class="mt-1 mb-4" />
 

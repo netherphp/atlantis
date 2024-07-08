@@ -1,0 +1,21 @@
+<?php
+
+use Nether\Atlantis;
+
+$Section ??= 'home';
+
+?>
+
+<div class="container mb-4">
+	<?php
+	echo Atlantis\UI\Pillbox::FromSurfaceWith($Surface, [
+		'Section' => $Section,
+		'Area'    => 'elements/pillbox/moredown',
+		'Items'   => [
+			Atlantis\Struct\Item::new(UUID: 'home', Title: 'Basic', URL: '/docs/css'),
+			Atlantis\Struct\Item::new(UUID: 'dyes', Title: 'Dyes', URL: '/docs/css/dyes'),
+			Atlantis\Struct\Item::new(UUID: 'cargobay', Title: 'Cargobay', URL: '/docs/css/cargobay')
+		]
+	]);
+	?>
+</div>

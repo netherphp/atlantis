@@ -93,7 +93,7 @@ $RenderItem = function(Atlantis\Struct\Item $Item) use($Element): string {
 				<div class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 					<span>More</span>
 				</div>
-				<div class="dropdown-menu w-100">
+				<div class="dropdown-menu p-2">
 					<?php foreach($ItemsToMore as $Item): ?>
 					<div class="dropdown-menu-item">
 						<?php echo $RenderItem($Item) ?>
