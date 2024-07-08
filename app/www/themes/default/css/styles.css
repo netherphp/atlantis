@@ -1,5 +1,5 @@
 /*//
-@date 2024-07-08 19:50:50 UTC
+@date 2024-07-08 20:56:23 UTC
 @files 40 [
     "src\/imports.css",
     "src\/main.css",
@@ -832,6 +832,10 @@ grouped are to be considered depreciated. */
 .ratiobox.twentyone-x-nine,
 .ratiobox.ultrawide {
 	padding-top: 42.85%;
+}
+
+.ratiobox.three-x-one {
+	padding-top: 33.00%;
 }
 
 .ratiobox.four-x-one {
