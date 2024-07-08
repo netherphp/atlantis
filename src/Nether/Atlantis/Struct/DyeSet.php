@@ -132,7 +132,7 @@ extends Common\Prototype {
 			->Push(".btn-{$K}:active, .btn-{$K}:hover, .btn-{$K}:focus .btn-{$K}.Show {")
 			->Push("	background-color: var(--theme-{$K}-alt);")
 			->Push("	border: var(--bs-btn-border-width) solid var(--theme-{$K}-alt);")
-			->Push("	color: var(--theme-light-fg);")
+			->Push("	color: var(--theme-{$K}-fg);")
 			->Push("}")
 			->Push("")
 			->Push(".btn-outline-{$K} {")
