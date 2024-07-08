@@ -16,8 +16,8 @@ class Item {
 		this.cursor = cursor;
 		this.cursorKeep = cursorKeep;
 
-		this.firstWait = 2000;
-		this.typeWait = 100;
+		this.firstWait = 750;
+		this.typeWait = 75;
 		this.afterWait = 750;
 
 		////////
