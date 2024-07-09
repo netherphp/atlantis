@@ -1,7 +1,18 @@
 .atl-ui-pillbox-item a:link,
-.atl-ui-pillbox-item a:visited,
-.atl-ui-pillbox-moredown-dropdown .dropdown-toggle {
+.atl-ui-pillbox-item a:visited {
 	-background: var(--theme-body-bg) !important;
+	-color: var(--theme-body-fg) !important;
+
+	border-bottom: 0px;
+	display: block;
+	font-weight: bold !important;
+	padding: 6px 10px 5px 10px;
+	border-radius: 4px;
+	white-space: nowrap;
+}
+
+.atl-ui-pillbox-moredown-dropdown .dropdown-toggle {
+	background: var(--theme-body-bg) !important;
 	color: var(--theme-body-fg) !important;
 
 	border-bottom: 0px;
