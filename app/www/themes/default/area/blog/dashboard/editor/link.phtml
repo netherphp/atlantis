@@ -169,7 +169,6 @@ jQuery(function(){
 
 	new UploadButton('.CmdPhotoUpload', {
 		'title': 'Upload Photo...',
-		'dataset': { 'ID': pid, 'Type': 'posthead' },
 		'onSuccess': function(result) {
 			cover
 			.css('background-image', `url(${result.payload.URL})`)
