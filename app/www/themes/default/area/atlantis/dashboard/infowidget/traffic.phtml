@@ -41,44 +41,44 @@ $Items = Common\Datastore::FromArray([
 	</div>
 	<div class="row g-3">
 		<div class="col-4">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=24hr">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=24hr">
 				<i class="mdi mdi-clock"></i>
 				24 HR
 			</a>
 		</div>
 		<div class="col-4">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=48hr">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=48hr">
 				<i class="mdi mdi-clock"></i>
 				48 HR
 			</a>
 		</div>
 		<div class="col-4">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=1wk">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=1wk">
 				<i class="mdi mdi-clock"></i>
 				1 WK
 			</a>
 		</div>
 
 		<div class="col-6">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get(Common\Values::DateFormatYMD)) ?>">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get(Common\Values::DateFormatYMD)) ?>">
 				<i class="mdi mdi-calendar"></i>
 				Today
 			</a>
 		</div>
 		<div class="col-6">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Modify('-1 day')->Get(Common\Values::DateFormatYMD)) ?>">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Modify('-1 day')->Get(Common\Values::DateFormatYMD)) ?>">
 				<i class="mdi mdi-calendar"></i>
 				Yesterday
 			</a>
 		</div>
 		<div class="col-6">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get('Y-m')) ?>">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get('Y-m')) ?>">
 				<i class="mdi mdi-calendar"></i>
 				MTD
 			</a>
 		</div>
 		<div class="col-6">
-			<a class="btn btn-dark btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get('Y')) ?>">
+			<a class="btn btn-light btn-block ta-left" href="/dashboard/traffic/view?when=<?php $Util->Print($Today->Get('Y')) ?>">
 				<i class="mdi mdi-calendar"></i>
 				YTD
 			</a>

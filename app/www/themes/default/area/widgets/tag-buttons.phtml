@@ -28,12 +28,12 @@ $TagClasses = function(Atlantis\Tag\Entity $T): string {
 	return '';
 
 	if($T->Type === 'site')
-	return 'btn-dark opacity-50';
+	return 'btn-light border-less opacity-50';
 
 	if($T->Type === 'admin')
 	return 'btn-outline-danger opacity-50';
 
-	return 'btn-outline-dark';
+	return 'btn-outline-light border-less';
 };
 
 /*

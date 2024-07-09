@@ -42,6 +42,11 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 			</div>
 		</div>
 		<div class="col-12 col-md mb-0 mb-md-0">
+
+			<h3 class="mb-3">
+				<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
+			</h3>
+
 			<div class="mb-2">
 				<?php match($Post->Editor) {
 					'link'

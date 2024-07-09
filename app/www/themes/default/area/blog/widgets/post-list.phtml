@@ -50,6 +50,10 @@ $ShowDefaultImage ??= $Surface->Get('Blog.PostList.ShowDefaultImage') ?? TRUE;
 
 		<div class="col-12 col-md mb-4">
 
+			<h3 class="mb-3">
+				<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
+			</h3>
+
 			<?php match($Post->Editor) {
 				'link'
 				=> $Surface->Area('blog/views/link', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post, 'Full'=> FALSE ]),

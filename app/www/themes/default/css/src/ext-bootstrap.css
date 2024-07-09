@@ -82,6 +82,8 @@ grouped are to be considered depreciated. */
 
 .text-primary { color: var(--theme-primary) !important; }
 
+.border-less { border-width: 1px !important; }
+
 .white-space-nowrap { white-space: nowrap; }
 .white-space-lines { white-space: pre-line; }
 

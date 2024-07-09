@@ -55,7 +55,7 @@ $Profiles = $Post->FetchRelatedProfiles();
 
 	<!-- POST IMAGE -->
 	<?php if($Full && $Post->CoverImageID): ?>
-	<div class="position-relative bg-light rounded mb-4">
+	<div class="d-none position-relative bg-light rounded mb-4">
 		<div class="ratiobox widescreen bg-light rounded" style="overflow:hidden;">
 			<div class="position-absolutely wallpapered covered opacity-50" style="background-color:#c0c0c0;background-image:url(<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>); filter: blur(10px); transform: scale(1.1);">
 			</div>
@@ -65,7 +65,7 @@ $Profiles = $Post->FetchRelatedProfiles();
 	</div>
 	<?php endif; ?>
 
-	<h3 class="mb-3">
+	<h3 class="d-none mb-3">
 		<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
 	</h3>
 

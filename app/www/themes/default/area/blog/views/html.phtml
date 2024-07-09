@@ -40,7 +40,7 @@ $ShowTags ??= TRUE;
 ?>
 
 <!-- POST HEADING -->
-<div class="mb-4">
+<div class="d-none mb-4">
 	<div class="atl-blog-dateline">
 		<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
 	</div>
@@ -57,7 +57,7 @@ $ShowTags ??= TRUE;
 
 <!-- POST IMAGE -->
 <?php if($Full && $Post->CoverImageID): ?>
-<div class="position-relative bg-light rounded mb-4">
+<div class="d-none position-relative bg-light rounded mb-4">
 	<div class="ratiobox widescreen bg-light rounded" style="overflow:hidden;">
 		<div class="position-absolutely wallpapered covered opacity-50" style="background-color:#c0c0c0;background-image:url(<?php $Util->Print($Post->GetCoverImageURL('lg')) ?>); filter: blur(10px); transform: scale(1.1);">
 		</div>

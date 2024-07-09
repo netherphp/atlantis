@@ -79,8 +79,8 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 
 		<?php if($Post->HasPostImage()): ?>
 		<div class="row justify-content-center mb-4">
-			<div class="col-auto">
-				<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" />
+			<div class="col-12">
+				<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" style="width:100%;" />
 			</div>
 		</div>
 		<?php endif; ?>
