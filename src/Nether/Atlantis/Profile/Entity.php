@@ -453,6 +453,13 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		return (string)(new Atlantis\WebURL($URL ?? '/share/atlantis/gfx/misc/no-image.png'));
 	}
 
+	public function
+	HasCoverImage():
+	bool {
+
+		return isset($this->CoverImageID);
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -1056,6 +1063,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			'ChildType'  => 'Media.Image',
 			'Remappers'  => fn(Atlantis\Struct\EntityRelationship $P)=> $P->ChildUUID
 		]);
+
+		if($this->HasCoverImage())
+		$Index->Filter(fn(string $U)=> $U !== $this->CoverImage->UUID);
 
 		if(!$Index->Count())
 		$Index->Push('null-null-null');

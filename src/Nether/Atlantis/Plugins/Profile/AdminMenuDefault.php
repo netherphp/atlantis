@@ -198,7 +198,8 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 		->Shove('ProfileStateDelete', Atlantis\Struct\DropdownItem::New(
 			Title: 'Delete',
 			Icon: 'mdi-trash-can',
-			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE)
+			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'delete' ], TRUE),
+			Warn: Atlantis\Struct\DropdownItem::Danger
 		));
 
 		////////

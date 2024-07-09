@@ -35,7 +35,7 @@ $MapURL = $Profile->GetMapURL();
 
 			<?php if($Route->IsUserAdmin()): ?>
 			<div class="col-auto">
-				<?php echo Dropdown::FromSurfaceWith($Surface, [ 'Menu' => $AdminMenu, 'MenuBtnStyleClass'=> 'btn-outline-light', 'ItemBtnStyleClass'=> 'btn-light' ]) ?>
+				<?php echo Dropdown::FromSurfaceWith($Surface, [ 'Menu' => $AdminMenu ]) ?>
 			</div>
 			<?php endif; ?>
 
