@@ -18,7 +18,7 @@ let DialogTemplate = `
 	<div class="col-12">
 		<div class="fw-bold text-uppercase">Currently Selected</div>
 		<div class="TagsCurrent">
-			<span class="btn btn-block btn-dark clickthru opacity-75 mb-2">
+			<span class="btn btn-block btn-light clickthru opacity-75 mb-2">
 				<i class="mdi mdi-fw mdi-loading mdi-spin mr-2"></i>
 				Loading
 			</span>
@@ -203,7 +203,7 @@ extends ModalDialog {
 		(btn)
 		.remove()
 		.removeClass('btn-primary')
-		.addClass('btn-dark mb-1')
+		.addClass('btn-light mb-1')
 		.off('click.tagdiag')
 		.on('click.tagdiag', ()=> self.onTagClick(btn));
 
@@ -235,11 +235,11 @@ extends ModalDialog {
 		for(let tag of result.payload) {
 			output.append(
 				jQuery('<button />')
-				.addClass('btn btn-dark btn-block ta-left tt-none mb-1')
+				.addClass('btn btn-light btn-block ta-left tt-none mb-1')
 				.attr('data-id', tag.ID)
 				.attr('data-uuid', tag.UUID)
-				.attr('data-title', tag.TitleFull)
-				.html(`<i class="mdi mdi-minus"></i> ${tag.TitleFull}`)
+				.attr('data-title', tag.Title)
+				.html(`<i class="mdi mdi-minus"></i> ${tag.Title}`)
 				.on('click.tagdiag', function() {
 					self.onTagClick(jQuery(this));
 					return;
@@ -287,7 +287,7 @@ extends ModalDialog {
 		////////
 
 		for(let item of result.payload) {
-			let title = item.TitleFull;
+			let title = item.Title;
 
 			if(item.AddressState && item.AddressCity)
 			title = `${title} (${item.AddressCity}, ${item.AddressState})`;
@@ -343,7 +343,7 @@ extends ModalDialog {
 		.empty()
 		.append(
 			jQuery('<span />')
-			.addClass('btn btn-dark btn-block opacity-30 clickthru mb-2')
+			.addClass('btn btn-light btn-block opacity-30 clickthru mb-2')
 			.html('No profiles found')
 		);
 

@@ -32,7 +32,7 @@ extends ModalDialog {
 		super(TagDialogTemplate);
 
 		this.setTitle('Tags');
-		this.addButton('Cancel', 'btn-dark', 'cancel');
+		this.addButton('Cancel', 'btn-light', 'cancel');
 		this.addButton('Save', 'btn-primary', 'accept');
 
 		this.uuid = entityUUID;
@@ -117,7 +117,7 @@ extends ModalDialog {
 		for(let tag of result.payload.Tags) {
 			output.append(
 				jQuery('<button />')
-				.addClass('btn btn-dark text-transform-none mb-2 mr-2')
+				.addClass('btn btn-light text-transform-none mb-2 mr-2')
 				.attr('data-tag-id', tag.ID)
 				.attr('data-tag-key', tag.Name.toLowerCase())
 				.attr('data-tag-name', tag.Name)
