@@ -348,7 +348,7 @@ class PostEditor {
 		post.title = jQuery.trim(this.inTitle.val());
 		post.content = JSON.stringify(content);
 		post.enabled = parseInt(this.inEnabled.val());
-		post.coverImageID = parseInt(this.inCoverImageID.val());
+		post.coverImageID = parseInt(this.inCoverImageID.val()) || 0;
 
 		if(Util.VON(this.inDateCreated.val()) !== null)
 		post.dateCreated = DateTime.fromISO(this.inDateCreated.val());
