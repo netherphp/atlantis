@@ -57,9 +57,7 @@ data-post-uuid="<?php $Util->Print($Post->UUID) ?>"
 		<?php if($Route->IsUserAdmin()): ?>
 		<div class="col-auto">
 			<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [
-				'Menu'              => $AdminMenu,
-				'MenuBtnStyleClass' => 'btn-outline-light',
-				'ItemBtnStyleClass' => 'btn-light'
+				'Menu' => $AdminMenu
 			]) ?>
 		</div>
 		<?php endif; ?>

@@ -350,7 +350,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-glass-bg-75);
+	background-color: var(--theme-dark);
 	backdrop-filter: var(--theme-glass-filter-thick);
 	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
 
@@ -363,6 +363,7 @@ strong {
 
 .dropdown-menu .btn {
 	white-space: nowrap;
+	min-width: 256px;
 }
 
 .dropdown-menu li {
