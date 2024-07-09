@@ -29,6 +29,12 @@ extends Surface\Element {
 	$SizeSubline = 'fs-largerer';
 
 	public string
+	$ClassTitle = 'tc-light';
+
+	public string
+	$ClassSubline = 'tc-white';
+
+	public string
 	$Justify = 'justify-content-center';
 
 	public bool

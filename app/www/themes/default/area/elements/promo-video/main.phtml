@@ -26,7 +26,9 @@ $Subline ??= $Element->Subline ?? '';
 $Typeify ??= $Element->Typeify;
 
 $SizeTitle ??= $Element->SizeTitle;
+$ClassTitle ??= $Element->ClassTitle;
 $SizeSubline ??= $Element->SizeSubline;
+$ClassSubline ??= $Element->ClassSubline;
 $Presize ??= $Element->Presize;
 $Justify ??= $Element->Justify;
 
@@ -43,12 +45,12 @@ $Justify ??= $Element->Justify;
 				<div class="col-auto">
 					<?php if($Typeify): ?>
 						<?php if($Title): ?>
-						<div class="<?php $Util->Print($SizeTitle) ?> line-height-normal fw-bold" data-typeify="true" data-title="<?php $Util->Print($Title) ?>">
+						<div class="<?php $Util->Print($SizeTitle) ?> <?php $Util->Print($ClassTitle) ?> line-height-normal fw-bold" data-typeify="true" data-title="<?php $Util->Print($Title) ?>">
 							<?php if(!$Typeify) $Util->Print($Title) ?>
 						</div>
 						<?php endif; ?>
 						<?php if($Subline): ?>
-						<div class="<?php $Util->Print($SizeSubline) ?> line-height-normal fw-light" data-typeify="true" data-title="<?php $Util->Print($Subline) ?>">
+						<div class="<?php $Util->Print($SizeSubline) ?> <?php $Util->Print($ClassSubline) ?> line-height-normal fw-light" data-typeify="true" data-title="<?php $Util->Print($Subline) ?>">
 							<?php if(!$Typeify) $Util->Print($Subline) ?>
 						</div>
 						<?php endif; ?>
