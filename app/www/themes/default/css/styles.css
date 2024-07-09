@@ -1,5 +1,5 @@
 /*//
-@date 2024-07-09 01:08:28 UTC
+@date 2024-07-09 20:44:58 UTC
 @files 40 [
     "src\/imports.css",
     "src\/main.css",
@@ -404,7 +404,7 @@ strong {
 }
 
 .dropdown-menu {
-	background-color: var(--theme-glass-bg-75);
+	background-color: var(--theme-dark);
 	backdrop-filter: var(--theme-glass-filter-thick);
 	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
 
@@ -417,6 +417,7 @@ strong {
 
 .dropdown-menu .btn {
 	white-space: nowrap;
+	min-width: 256px;
 }
 
 .dropdown-menu li {
@@ -1121,9 +1122,10 @@ grouped are to be considered depreciated. */
 **** offcanvas tweaks *********************************************************/
 
 .offcanvas {
-	box-shadow: 0px 0px 24px var(--theme-glass-bg-75);
+	box-shadow: 0px 0px 24px var(--theme-black);
 	z-index: 9101;
 	scrollbar-gutter: auto;
+	border: 0px !important;
 
 	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast), opacity var(--theme-anim-ease-fast), filter var(--theme-anim-ease-fast);
 }
@@ -1432,7 +1434,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-black-fg);
 }
 
-.btn-black:active, .btn-black:hover, .btn-black:focus .btn-black.Show {
+.btn-black:active, .btn-black:hover, .btn-black:focus .btn-black.show {
 	background-color: var(--theme-black-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-black-alt);
 	color: var(--theme-black-fg);
@@ -1456,7 +1458,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-white-fg);
 }
 
-.btn-white:active, .btn-white:hover, .btn-white:focus .btn-white.Show {
+.btn-white:active, .btn-white:hover, .btn-white:focus .btn-white.show {
 	background-color: var(--theme-white-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-white-alt);
 	color: var(--theme-white-fg);
@@ -1480,7 +1482,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-dark-fg);
 }
 
-.btn-dark:active, .btn-dark:hover, .btn-dark:focus .btn-dark.Show {
+.btn-dark:active, .btn-dark:hover, .btn-dark:focus .btn-dark.show {
 	background-color: var(--theme-dark-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-dark-alt);
 	color: var(--theme-dark-fg);
@@ -1504,7 +1506,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-light-fg);
 }
 
-.btn-light:active, .btn-light:hover, .btn-light:focus .btn-light.Show {
+.btn-light:active, .btn-light:hover, .btn-light:focus .btn-light.show {
 	background-color: var(--theme-light-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-light-alt);
 	color: var(--theme-light-fg);
@@ -1528,7 +1530,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-red-fg);
 }
 
-.btn-red:active, .btn-red:hover, .btn-red:focus .btn-red.Show {
+.btn-red:active, .btn-red:hover, .btn-red:focus .btn-red.show {
 	background-color: var(--theme-red-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-red-alt);
 	color: var(--theme-red-fg);
@@ -1552,7 +1554,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-gold-fg);
 }
 
-.btn-gold:active, .btn-gold:hover, .btn-gold:focus .btn-gold.Show {
+.btn-gold:active, .btn-gold:hover, .btn-gold:focus .btn-gold.show {
 	background-color: var(--theme-gold-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-gold-alt);
 	color: var(--theme-gold-fg);
@@ -1576,7 +1578,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-orange-fg);
 }
 
-.btn-orange:active, .btn-orange:hover, .btn-orange:focus .btn-orange.Show {
+.btn-orange:active, .btn-orange:hover, .btn-orange:focus .btn-orange.show {
 	background-color: var(--theme-orange-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-orange-alt);
 	color: var(--theme-orange-fg);
@@ -1600,7 +1602,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-yellow-fg);
 }
 
-.btn-yellow:active, .btn-yellow:hover, .btn-yellow:focus .btn-yellow.Show {
+.btn-yellow:active, .btn-yellow:hover, .btn-yellow:focus .btn-yellow.show {
 	background-color: var(--theme-yellow-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-yellow-alt);
 	color: var(--theme-yellow-fg);
@@ -1624,7 +1626,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-lime-fg);
 }
 
-.btn-lime:active, .btn-lime:hover, .btn-lime:focus .btn-lime.Show {
+.btn-lime:active, .btn-lime:hover, .btn-lime:focus .btn-lime.show {
 	background-color: var(--theme-lime-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-lime-alt);
 	color: var(--theme-lime-fg);
@@ -1648,7 +1650,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-green-fg);
 }
 
-.btn-green:active, .btn-green:hover, .btn-green:focus .btn-green.Show {
+.btn-green:active, .btn-green:hover, .btn-green:focus .btn-green.show {
 	background-color: var(--theme-green-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-green-alt);
 	color: var(--theme-green-fg);
@@ -1672,7 +1674,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-seafoam-fg);
 }
 
-.btn-seafoam:active, .btn-seafoam:hover, .btn-seafoam:focus .btn-seafoam.Show {
+.btn-seafoam:active, .btn-seafoam:hover, .btn-seafoam:focus .btn-seafoam.show {
 	background-color: var(--theme-seafoam-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-seafoam-alt);
 	color: var(--theme-seafoam-fg);
@@ -1696,7 +1698,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-cyan-fg);
 }
 
-.btn-cyan:active, .btn-cyan:hover, .btn-cyan:focus .btn-cyan.Show {
+.btn-cyan:active, .btn-cyan:hover, .btn-cyan:focus .btn-cyan.show {
 	background-color: var(--theme-cyan-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-cyan-alt);
 	color: var(--theme-cyan-fg);
@@ -1720,7 +1722,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-blue-fg);
 }
 
-.btn-blue:active, .btn-blue:hover, .btn-blue:focus .btn-blue.Show {
+.btn-blue:active, .btn-blue:hover, .btn-blue:focus .btn-blue.show {
 	background-color: var(--theme-blue-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-blue-alt);
 	color: var(--theme-blue-fg);
@@ -1744,7 +1746,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-violet-fg);
 }
 
-.btn-violet:active, .btn-violet:hover, .btn-violet:focus .btn-violet.Show {
+.btn-violet:active, .btn-violet:hover, .btn-violet:focus .btn-violet.show {
 	background-color: var(--theme-violet-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-violet-alt);
 	color: var(--theme-violet-fg);
@@ -1768,7 +1770,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-purple-fg);
 }
 
-.btn-purple:active, .btn-purple:hover, .btn-purple:focus .btn-purple.Show {
+.btn-purple:active, .btn-purple:hover, .btn-purple:focus .btn-purple.show {
 	background-color: var(--theme-purple-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-purple-alt);
 	color: var(--theme-purple-fg);
@@ -1792,7 +1794,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-magenta-fg);
 }
 
-.btn-magenta:active, .btn-magenta:hover, .btn-magenta:focus .btn-magenta.Show {
+.btn-magenta:active, .btn-magenta:hover, .btn-magenta:focus .btn-magenta.show {
 	background-color: var(--theme-magenta-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-magenta-alt);
 	color: var(--theme-magenta-fg);
@@ -1816,7 +1818,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-pink-fg);
 }
 
-.btn-pink:active, .btn-pink:hover, .btn-pink:focus .btn-pink.Show {
+.btn-pink:active, .btn-pink:hover, .btn-pink:focus .btn-pink.show {
 	background-color: var(--theme-pink-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-pink-alt);
 	color: var(--theme-pink-fg);
@@ -1840,7 +1842,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-grey-lt-fg);
 }
 
-.btn-grey-lt:active, .btn-grey-lt:hover, .btn-grey-lt:focus .btn-grey-lt.Show {
+.btn-grey-lt:active, .btn-grey-lt:hover, .btn-grey-lt:focus .btn-grey-lt.show {
 	background-color: var(--theme-grey-lt-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-grey-lt-alt);
 	color: var(--theme-grey-lt-fg);
@@ -1864,7 +1866,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-grey-md-fg);
 }
 
-.btn-grey-md:active, .btn-grey-md:hover, .btn-grey-md:focus .btn-grey-md.Show {
+.btn-grey-md:active, .btn-grey-md:hover, .btn-grey-md:focus .btn-grey-md.show {
 	background-color: var(--theme-grey-md-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-grey-md-alt);
 	color: var(--theme-grey-md-fg);
@@ -1888,7 +1890,7 @@ grouped are to be considered depreciated. */
 	color: var(--theme-grey-dk-fg);
 }
 
-.btn-grey-dk:active, .btn-grey-dk:hover, .btn-grey-dk:focus .btn-grey-dk.Show {
+.btn-grey-dk:active, .btn-grey-dk:hover, .btn-grey-dk:focus .btn-grey-dk.show {
 	background-color: var(--theme-grey-dk-alt);
 	border: var(--bs-btn-border-width) solid var(--theme-grey-dk-alt);
 	color: var(--theme-grey-dk-fg);
