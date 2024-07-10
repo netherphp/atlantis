@@ -8,4 +8,4 @@ export ACMESH="/opt/acmesh/acme.sh"
 export DOMAIN=""
 export DO_API_KEY=""
 
-$ACMESH --issue --dns dns_dgon --server letsencrypt -d $DOMAIN
+$ACMESH --issue --server letsencrypt --dns dns_dgon -d $DOMAIN

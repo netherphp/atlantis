@@ -146,28 +146,28 @@ $Surface->Set([
 		</div>
 	</section>
 
-	<!-- SSL CERT -->
 	<section>
 		<div class="container">
-			<h2>SSL Certificate (HTTPS)</h2>
+			<h2>SSL Certificate (acme.sh + DNS API)</h2>
 			<hr />
 
-			<dl class="mb-6">
-				<dt>Configure SSL</dt>
-				<dd>Configure and fetch a certificate from LetEncrypt automatically.</dd>
-				<dd><code>$ ssl.atl config</code></dd>
-				<dd class="mb-4"><code>$ ssl.atl renew</code></dd>
-
-				<dd>Update the web server to use the SSL.</dd>
-				<dd><code>$ web.atl config</code></dd>
-				<dd><code>$ web.atl reload</code></dd>
+			<dl class="mb-4">
+				<dt>Setup ACME.SH</dt>
+				<dd>There is an install script that will install and configure <tt>acme.sh</tt>.</dd>
+				<dd class="pl-4"> &bull; Installs to <tt>/opt/acmesh</tt>.</dd>
+				<dd class="pl-4"> &bull; Confs located at <tt>/opt/acmesh/local/confs</tt>.</dd>
+				<dd class="pl-4"> &bull; Certs located at <tt>/opt/acmesh/local/certs</tt>.</dd>
 			</dl>
 
-			<div>
-				The web server should now be redirecting to serve the
-				application over encrypted HTTPS. Add the renew command
-				to crontab to automatically renew the certificate.
-			</div>
+			<p>Atlantis comes with scripts already for DigitalOcean and Porkbun. Copy the ones you need out and edit them to fill in the required information for that host.</p>
+			<ul>
+				<li><code>cp vendor/netherphp/atlantis/templates/acmesh-issue-docean.txt bin/ssl.sh</code></li>
+				<li><code>cp vendor/netherphp/atlantis/templates/acmesh-issue-porkbun.txt bin/ssl.sh</code></li>
+			</ul>
+
+			<p>A list of DNS hosts supported by <tt>acme.sh</tt> and how to configure them can be found <a href="https://github.com/acmesh-official/acme.sh/wiki/dnsapi">here</a>.</p>
+
+			<p>Other modes of fetching certs with <tt>acme.sh</tt> can be found <a href="https://github.com/acmesh-official/acme.sh">here</a>.</p>
 
 		</div>
 	</section>
