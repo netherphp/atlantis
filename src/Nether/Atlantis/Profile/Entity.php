@@ -379,14 +379,25 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		if(!$this->HasExtraData('AdminNotes'))
 		return FALSE;
 
+		////////
+
+		$Notes = $this->GetExtraData('AdminNotes');
+
+		// this is to handle the front end sending us a text null when it
+		// was holding a real null. TrimmedNullable was updated to consider
+		// that so there must be another.
+
+		if(strip_tags($Notes) === 'null')
+		return FALSE;
+
 		// this is to handle the cases where you blank out the description
 		// editor but it still is <div><br></div> which is common for those
 		// html editors.
 
-		$Notes = $this->GetExtraData('AdminNotes');
-
 		if(strlen($Notes) < 32)
 		return trim(strip_tags($Notes)) !== '';
+
+		////////
 
 		return TRUE;
 	}
