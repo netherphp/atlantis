@@ -63,8 +63,6 @@ extends Console\Client {
 	GenerateShareImage():
 	int {
 
-		$Colour1 = 'Khaki';
-
 		$Width = Common\Filters\Numbers::IntNullable($this->GetOption('Width')) ?? 1920;
 		$Height = Common\Filters\Numbers::IntNullable($this->GetOption('Height')) ?? 1080;
 		$Scale = Common\Filters\Numbers::FloatNullable($this->GetOption('Scale')) ?? 64.0;
