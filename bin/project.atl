@@ -119,6 +119,19 @@ extends Atlantis\TerminalApp {
 			}
 		);
 
+		// reinforce project chmods
+
+		($Confs)
+		->Distill(fn(ProjectJSON $P)=> $P->Symlinks->Count())
+		->EachKeyValue(
+			function(string $K, ProjectJSON $P)
+			use($OptFix) {
+				$this->PrintH2("{$K} Permissions ({$P->Filename})");
+				$this->SetupProjectPerms($P, $OptFix);
+				return;
+			}
+		);
+
 		////////
 
 		return 0;
@@ -610,6 +623,39 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2024-07-10')]
+	#[Console\Meta\Command('perms', TRUE)]
+	public function
+	HandleProjectPerms():
+	int {
+
+		$this->PrintAppHeader('Setup Project Permissions');
+
+		$Confs = ProjectJSON::FromApp($this->App);
+		$OptFix = $this->GetOption('fix') ?? FALSE;
+
+		// first set up all the directories so that mounting points exist
+		// for any symlinks later.
+
+		($Confs)
+		->Distill(fn(ProjectJSON $P)=> $P->Perms->Count())
+		->EachKeyValue(
+			function(string $K, ProjectJSON $P)
+			use($OptFix) {
+				$this->PrintH2("{$K} ({$P->Filename})");
+				$this->SetupProjectPerms($P, $OptFix);
+				return;
+			}
+		);
+
+		////////
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Console\Meta\Command('db')]
 	#[Console\Meta\Info('Manage the project database connection info.')]
 	#[Console\Meta\Value('--info', 'Specify the connection name to display the connection info.')]
@@ -1031,6 +1077,108 @@ extends Atlantis\TerminalApp {
 		}
 
 		////////
+
+		return $this;
+	}
+
+	#[Common\Meta\Date('2024-07-10')]
+	public function
+	SetupProjectPerms(ProjectJSON $Project, bool $OptFix=FALSE):
+	static {
+
+		$Report = new Common\Datastore;
+
+		////////
+
+		foreach($Project->Perms as $P) {
+			/** @var ProjectJSON\PermJSON\PathModeJSON $P */
+
+			// handle if the file does not exist.
+
+			if(!file_exists($P->Path)) {
+				$Report->Push([ $P, 0, -1, 'Not Found' ]);
+				continue;
+			}
+
+			// handle if the mode is already correct.
+
+			$Cur = Common\Filesystem\Util::ChmodOctal($P->Path);
+
+			if($Cur === $P->Mode) {
+				$Report->Push([ $P, $Cur, 0, 'OK' ]);
+				continue;
+			}
+
+			// handle updating the mode as well as if the final result
+			// did not end up being what was expected.
+
+			if(file_exists($P->Path)) {
+				Common\Filesystem\Util::Chmod(
+					$P->Path,
+					$P->GetChmodOctal()
+				);
+
+				$Chm = Common\Filesystem\Util::ChmodOctal($P->Path);
+
+				if($Chm !== $P->GetChmodOctal()) {
+					$Report->Push([ $P, $Chm, -2, 'Unexpected' ]);
+					continue;
+				}
+			}
+
+			// handle a job well done.
+
+			$Report->Push([ $P, $Cur, 1, 'DONE' ]);
+
+			continue;
+		}
+
+		////////
+
+		$ErrCount = $Report->Accumulate(
+			Common\Values::Zero,
+			fn(int $C, array $R)=> $R[2] < 0 ? $C + 1 : $C
+		);
+
+		$Report->EachKeyValue(function(string $K, array $V) {
+
+			list($P, $Org, $Status, $Msg) = $V;
+			$Label = 'PRM';
+
+			$Label = match(TRUE) {
+				($Status === 0)
+				=> $this->Format($Label, $this->Theme::OK),
+
+				($Status === 1)
+				=> $this->Format($Label, $this->Theme::OK),
+
+				default
+				=> $this->Format($Label, $this->Theme::Error)
+			};
+
+			$this->PrintLn(sprintf(
+				'[%s] %s (%s: %s => %s)',
+				$Label, $P->Path, $Msg, $Org, $P->Mode
+			));
+
+			return;
+		});
+
+		$this->PrintLn();
+
+		if($ErrCount > 0) {
+			$this->PrintError(sprintf(
+				'%d %s',
+				$ErrCount,
+				Common\Values::IfOneElse($ErrCount, 'error', 'errors')
+			));
+
+			return $this;
+		}
+
+		////////
+
+		$this->PrintOK();
 
 		return $this;
 	}

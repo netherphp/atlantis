@@ -23,6 +23,9 @@ implements
 	public int
 	$Mode;
 
+	public string
+	$Comment = '';
+
 	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Common\Prototype /////////////////////////////////
 
@@ -41,11 +44,24 @@ implements
 	array {
 
 		$Out = [
-			'Path' => $this->Path,
-			'Mode' => $this->Mode
+			'Path'    => $this->Path,
+			'Mode'    => $this->Mode
 		];
 
+		if($this->Comment)
+		$Out['Comment'] = $this->Comment;
+
 		return $Out;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetChmodOctal():
+	int {
+
+		return octdec("0{$this->Mode}");
 	}
 
 };

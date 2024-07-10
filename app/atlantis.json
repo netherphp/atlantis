@@ -1,6 +1,10 @@
 {
 	"Dirs": [
 		{
+			"Path": "temp",
+			"Mode": "0o777"
+		},
+		{
 			"Path": "data\/qr",
 			"Mode": "0o777"
 		},
@@ -68,6 +72,18 @@
 			"Path": "www\/themes\/soon",
 			"Source": "vendor\/netherphp\/atlantis\/app\/www\/themes\/soon",
 			"Mode": "0o777"
+		}
+	],
+	"Perms": [
+		{
+			"Path": "temp",
+			"Mode": 777,
+			"Comment": "Temp Dir (uploads, etc.)"
+		},
+		{
+			"Path": "www\/themes\/default\/css\/styles.css",
+			"Mode": 666,
+			"Comment": "Automatically recompiled by styles.php in DEV mode."
 		}
 	]
 }
