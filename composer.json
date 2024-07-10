@@ -25,8 +25,8 @@
 	"prefer-stable": true,
 	"require": {
 		"php": ">=8.1",
-		"netherphp/avenue": "dev-redux as 5.0.98",
-		"netherphp/common": "dev-master as 5.0.98",
+		"netherphp/avenue": "dev-redux",
+		"netherphp/common": "dev-master",
 		"netherphp/ki": "dev-redux",
 		"netherphp/surface": "dev-redux",
 		"netherphp/console": "dev-redux",
