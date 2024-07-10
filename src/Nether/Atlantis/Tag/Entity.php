@@ -306,7 +306,8 @@ implements
 
 		return EntityPhoto::Find([
 			'EntityID' => $this->ID,
-			'Limit'    => 0
+			'Limit'    => 0,
+			'ExceptID' => $this->HasCoverImage() ? $this->CoverImageID : NULL
 		]);
 	}
 

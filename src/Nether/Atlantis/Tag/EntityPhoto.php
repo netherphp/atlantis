@@ -84,6 +84,7 @@ extends Atlantis\Prototype {
 
 		$Input['EntityID'] ??= NULL;
 		$Input['PhotoID'] ??= NULL;
+		$Input['ExceptID'] ??= NULL;
 
 		return;
 	}
@@ -97,6 +98,9 @@ extends Atlantis\Prototype {
 
 		if($Input['PhotoID'] !== NULL)
 		$SQL->Where('Main.PhotoID=:PhotoID');
+
+		if($Input['ExceptID'] !== NULL)
+		$SQL->Where('Main.PhotoID!=:ExceptID');
 
 		return;
 	}

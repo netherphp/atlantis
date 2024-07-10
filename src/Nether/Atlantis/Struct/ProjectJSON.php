@@ -62,6 +62,12 @@ implements
 	public array|ProjectJSON\DatabaseJSON
 	$DB = [];
 
+	#[Common\Meta\Date('2024-06-09')]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyFactory('FromArray')]
+	public array|ProjectJSON\PermJSON
+	$Perms = [];
+
 	////////////////////////////////////////////////////////////////
 	// IMPLEMENTS Common\Interfaces\ToArray ////////////////////////
 
@@ -80,7 +86,7 @@ implements
 			$Out[$Prop] = $this->{$Prop}->GetData();
 		}
 
-		foreach(['Web', 'Cert', 'Dev', 'DB'] as $Prop) {
+		foreach(['Perms', 'Web', 'Cert', 'Dev', 'DB'] as $Prop) {
 			if($this->{$Prop}->HasAnything())
 			$Out[$Prop] = $this->{$Prop}->ToArray();
 		}
