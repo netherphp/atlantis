@@ -10,9 +10,11 @@ use Nether\Surface;
  * @var Surface\Engine $Surface
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'Install & Setup',
-	'Page.Title'         => 'Atlantis From Scratch'
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Atlantis From Scratch',
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'Install & Setup')
+	]
 ]);
 
 ?>

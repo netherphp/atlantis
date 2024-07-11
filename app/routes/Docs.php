@@ -15,6 +15,60 @@ extends Atlantis\PublicWeb {
 	Index():
 	void {
 
+		$Scope = [];
+
+		////////
+
+		($this->Surface)
+		->Area('sensei/docs/index', $Scope);
+
+		return;
+	}
+
+	#[Avenue\Meta\RouteHandler('/docs/::Path::')]
+	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Avenue\Meta\ExtraDataArgs]
+	public function
+	Section(string $Path, Avenue\Struct\ExtraData $ExtraData):
+	void {
+
+		$Scope = [];
+
+		////////
+
+		($this->Surface)
+		->Area($ExtraData['Area'], $Scope);
+
+		return;
+	}
+
+	public function
+	SectionWillAnswerRequest(string $Path, ?Avenue\Struct\ExtraData $ExtraData):
+	int {
+
+		$Area = sprintf('sensei/docs/%s', $Path);
+
+		////////
+
+		if(!$this->Surface->HasArea($Area))
+		$Area = sprintf('%s/index', $Area);
+
+		if(!$this->Surface->HasArea($Area))
+		return Avenue\Response::CodeNope;
+
+		////////
+
+		$ExtraData['Area'] = $Area;
+
+		return Avenue\Response::CodeOK;
+	}
+
+	/*
+	#[Avenue\Meta\RouteHandler('/docs')]
+	public function
+	Index():
+	void {
+
 		$PTitle = 'Framework Overview';
 		$Pathbar = Atlantis\UI\Pathbar::FromSurface($this->Surface);
 
@@ -130,5 +184,6 @@ extends Atlantis\PublicWeb {
 
 		return Avenue\Response::CodeOK;
 	}
+	*/
 
 };

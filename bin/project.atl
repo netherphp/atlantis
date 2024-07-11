@@ -623,8 +623,12 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Console\Meta\Command('perms')]
+	#[Console\Meta\Toggle('--add', 'Add the specified path+mode to the config.')]
+	#[Console\Meta\Toggle('--del', 'Remove the specified path from the config.')]
+	#[Console\Meta\Value('--path', 'The path to manage.')]
+	#[Console\Meta\Value('--mode', 'The mode to chmod the path.')]
 	#[Common\Meta\Date('2024-07-10')]
-	#[Console\Meta\Command('perms', TRUE)]
 	public function
 	HandleProjectPerms():
 	int {
@@ -635,13 +639,17 @@ extends Atlantis\TerminalApp {
 		$OptAdd = $this->GetOption('add') ?? NULL;
 		$OptDel = $this->GetOption('del') ?? NULL;
 
-		// first set up all the directories so that mounting points exist
-		// for any symlinks later.
-
 		////////
 
-		if($OptAdd !== NULL)
-		$this->HandleProjectPermsAdd();
+		if($OptAdd !== NULL) {
+			$this->HandleProjectPermsAdd();
+			return 0;
+		}
+
+		if($OptDel !== NULL) {
+			$this->HandleProjectPermsDel();
+			return 0;
+		}
 
 		////////
 
@@ -703,6 +711,13 @@ extends Atlantis\TerminalApp {
 		////////
 
 		$this->WriteProjectConfig($Project);
+
+		return TRUE;
+	}
+
+	protected function
+	HandleProjectPermsDel():
+	bool {
 
 		return TRUE;
 	}
