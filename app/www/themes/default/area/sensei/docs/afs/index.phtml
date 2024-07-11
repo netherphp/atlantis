@@ -166,6 +166,24 @@ $Surface->Area('sensei/docs/__header', [
 				</code>
 			</div>
 
+			<h3>Use Simple Parking Page</h3>
+			<div>
+				<p>
+					The framework comes with a theme called <code class="var">soon</code> that will display a simple coming soon page to quickly park a project.
+					Within <code class="file">conf/config.php</code> set <code class="var">Surface\Library::ConfThemes</code> to <code>[ 'local', 'soon', 'default' ]</code>.
+					The Themes work together as a stack. If you want to customise the parking page the version in <code class="var">soon</code> can be copied into <code class="path">local</code>, edited, and it will be loaded instead due to the order of the themes set.
+				</p>
+
+				<pre>
+($Config)
+->Set(Atlantis\Key::ConfLibraries, [ ])
+->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
+->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))
+->Set(Surface\Library::ConfThemes, [ 'local', 'soon', 'default' ]);
+				</pre>
+
+			</div>
+
 		</div>
 	</section>
 
