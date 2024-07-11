@@ -65,9 +65,6 @@ $Profiles = $Post->FetchRelatedProfiles();
 	</div>
 	<?php endif; ?>
 
-	<h3 class="d-none mb-3">
-		<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
-	</h3>
 
 	<div class="mb-0">
 		<span class="fw-bold text-uppercase">Date Shared:</span>
@@ -81,12 +78,6 @@ $Profiles = $Post->FetchRelatedProfiles();
 		<span class="fw-bold text-uppercase">Source:</span>
 		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($OutboundDomain) ?></a>
 	</div>
-
-	<?php if($ShowTags): ?>
-	<div class="mb-1">
-		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> Common\Datastore::FromArray($Post->GetTags()->GetData()) ]) ?>
-	</div>
-	<?php endif; ?>
 
 	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
 

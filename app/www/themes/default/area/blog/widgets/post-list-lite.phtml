@@ -47,6 +47,10 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 				<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
 			</h3>
 
+			<div class="mb-1">
+				<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> Common\Datastore::FromArray($Post->GetTags()->GetData()) ]) ?>
+			</div>
+
 			<div class="mb-2">
 				<?php match($Post->Editor) {
 					'link'
