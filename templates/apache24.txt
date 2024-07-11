@@ -63,9 +63,16 @@
 		SSLHonorCipherOrder   on
 		SSLCompression        off
 		SSLOptions            +StrictRequire
+
+		# old acmephp install structure
 		SSLCertificateFile    "/opt/ssl/certs/$SSLDomain/public/cert.pem"
 		SSLCertificateKeyFile "/opt/ssl/certs/$SSLDomain/private/key.private.pem"
 		SSLCACertificateFile  "/opt/ssl/certs/$SSLDomain/public/fullchain.pem"
+
+		# acme.sh install structure
+		#SSLCertificateFile    "/opt/acmesh/local/certs/$SSLDomain_ecc/$SSLDomain.cer"
+		#SSLCertificateKeyFile "/opt/acmesh/local/certs/$SSLDomain_ecc/$SSLDomain.key"
+		#SSLCACertificateFile  "/opt/acmesh/local/certs/$SSLDomain_ecc/ca.cer"
 
 		<Directory $WebRoot>
 			RewriteEngine On

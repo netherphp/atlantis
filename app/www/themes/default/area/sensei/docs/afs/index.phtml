@@ -155,6 +155,7 @@ $Surface->Area('sensei/docs/__header', [
 		</div>
 	</section>
 
+	<!-- SSL CERTS -->
 	<section>
 		<div class="container">
 			<h2>SSL Certificates from acme.sh</h2>
@@ -181,7 +182,11 @@ $Surface->Area('sensei/docs/__header', [
 				<li class="mb-2"><code class="cli d-block">$ cp vendor/netherphp/atlantis/templates/acmesh-issue-docean.txt bin/ssl.sh</code></li>
 				<li class="mb-0"><code class="cli d-block">$ cp vendor/netherphp/atlantis/templates/acmesh-issue-porkbun.txt bin/ssl.sh</code></li>
 			</ul>
-			<p>Any SSL issue done in this method will only ever actually be used once. After the initial issue <code>acme.sh</code> will track what is needed to perform future renewals.</p>
+			<p>
+				Any SSL issue done in this method will only ever actually be used once.
+				After the initial issue <code>acme.sh</code> will track what is needed to perform future renewals.
+				It is however advisable to keep your issue script laying around in the event you need to expand upon it, such as adding alternate domains your project might want to answer for.
+			</p>
 			<p>Other modes of fetching certs with <tt>acme.sh</tt> can be found <a href="https://github.com/acmesh-official/acme.sh">here</a>.</p>
 			<hr />
 
