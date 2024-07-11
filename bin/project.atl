@@ -631,13 +631,21 @@ extends Atlantis\TerminalApp {
 
 		$this->PrintAppHeader('Setup Project Permissions');
 
-		$Confs = ProjectJSON::FromApp($this->App);
 		$OptFix = $this->GetOption('fix') ?? FALSE;
+		$OptAdd = $this->GetOption('add') ?? NULL;
+		$OptDel = $this->GetOption('del') ?? NULL;
 
 		// first set up all the directories so that mounting points exist
 		// for any symlinks later.
 
-		($Confs)
+		////////
+
+		if($OptAdd !== NULL)
+		$this->HandleProjectPermsAdd();
+
+		////////
+
+		(ProjectJSON::FromApp($this->App))
 		->Distill(fn(ProjectJSON $P)=> $P->Perms->Count())
 		->EachKeyValue(
 			function(string $K, ProjectJSON $P)
@@ -651,6 +659,52 @@ extends Atlantis\TerminalApp {
 		////////
 
 		return 0;
+	}
+
+	protected function
+	HandleProjectPermsAdd():
+	bool {
+
+		$Project = $this->QuerySelectProjectConfig();
+		$OptPath = $this->GetOption('path') ?? NULL;
+		$OptMode = $this->GetOption('mode') ?? NULL;
+		$OptComm = $this->GetOption('comment') ?? NULL;
+
+		////////
+
+		if(!$Project)
+		return FALSE;
+
+		if(!file_exists($OptPath)) {
+			$this->PrintError("Not Found: {$OptPath}");
+			return FALSE;
+		}
+
+		if(!str_starts_with('0o', $OptMode))
+		$OptMode = "0o{$OptMode}";
+
+		////////
+
+		// delete the old one if it exists.
+
+		$Project->Perms->Filter(
+			fn(Atlantis\Struct\ProjectJSON\PermJSON\PathModeJSON $P)
+			=> $P->Path !== $OptPath
+		);
+
+		// append the new one.
+
+		$Project->Perms->Push(new Atlantis\Struct\ProjectJSON\PermJSON\PathModeJSON([
+			'Path'    => $OptPath,
+			'Mode'    => $OptMode,
+			'Comment' => $OptComm
+		]));
+
+		////////
+
+		$this->WriteProjectConfig($Project);
+
+		return TRUE;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -763,7 +817,6 @@ extends Atlantis\TerminalApp {
 
 		return;
 	}
-
 
 	protected function
 	HandleDatabaseTryDel(Atlantis\Struct\ProjectJSON $Project):
@@ -1112,23 +1165,21 @@ extends Atlantis\TerminalApp {
 			// handle updating the mode as well as if the final result
 			// did not end up being what was expected.
 
-			if(file_exists($P->Path)) {
-				Common\Filesystem\Util::Chmod(
-					$P->Path,
-					$P->GetChmodOctal()
-				);
+			Common\Filesystem\Util::Chmod(
+				$P->Path,
+				$P->GetNumericOctal()
+			);
 
-				$Chm = Common\Filesystem\Util::ChmodOctal($P->Path);
+			$Chm = Common\Filesystem\Util::ChmodOctal($P->Path);
 
-				if($Chm !== $P->GetChmodOctal()) {
-					$Report->Push([ $P, $Chm, -2, 'Unexpected' ]);
-					continue;
-				}
+			if($Chm !== $P->Mode) {
+				$Report->Push([ $P, $Chm, -2, 'Unexpected' ]);
+				continue;
 			}
 
 			// handle a job well done.
 
-			$Report->Push([ $P, $Cur, 1, 'DONE' ]);
+			$Report->Push([ $P, $Cur, 1, 'Changed' ]);
 
 			continue;
 		}

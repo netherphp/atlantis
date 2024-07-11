@@ -20,7 +20,7 @@ implements
 	public string
 	$Path;
 
-	public int
+	public string
 	$Mode;
 
 	public string
@@ -44,8 +44,8 @@ implements
 	array {
 
 		$Out = [
-			'Path'    => $this->Path,
-			'Mode'    => $this->Mode
+			'Path' => $this->Path,
+			'Mode' => $this->Mode
 		];
 
 		if($this->Comment)
@@ -58,10 +58,10 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	public function
-	GetChmodOctal():
+	GetNumericOctal():
 	int {
 
-		return octdec("0{$this->Mode}");
+		return octdec($this->Mode);
 	}
 
 };

@@ -17,29 +17,26 @@ implements
 	OnReady():
 	void {
 
-		$this->Remap(fn($D)=> new PermJSON\PathModeJSON($D));
+		$this->Remap(
+			fn(array|PermJSON\PathModeJSON $D)=>
+			is_array($D) ? new PermJSON\PathModeJSON($D) : $D
+		);
 
 		return;
 	}
 
-	////////////////////////////////////////////////////////////////
-	// IMPLEMENTS Common\Interfaces\ToArray ////////////////////////
+	public function
+	ToArray():
+	array {
 
-	//public function
-	//ToArray():
-	//array {
-
-	//	return $this->ToArray();
-	//}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+		return $this->Values()->Export();
+	}
 
 	public function
 	HasAnything():
 	bool {
 
-		return (FALSE || ($this->Count() > 0));
+		return ($this->Count() > 0);
 	}
 
 };
