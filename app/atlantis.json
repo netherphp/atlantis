@@ -77,12 +77,12 @@
 	"Perms": [
 		{
 			"Path": "temp",
-			"Mode": 777,
+			"Mode": "0o777",
 			"Comment": "Temp Dir (uploads, etc.)"
 		},
 		{
 			"Path": "www\/themes\/default\/css\/styles.css",
-			"Mode": 666,
+			"Mode": "0o666",
 			"Comment": "Automatically recompiled by styles.php in DEV mode."
 		}
 	]
