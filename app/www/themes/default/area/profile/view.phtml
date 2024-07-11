@@ -38,7 +38,7 @@ $Scopeify = (
 
 $PhotoItemClasses = 'col-12 col-md-3 mb-4';
 
-if($Photos->Count() >= 6) {
+if(isset($Photos) && $Photos->Count() >= 6) {
 	$PhotoItemClasses = 'col-6 col-md-3 mb-4';
 }
 
