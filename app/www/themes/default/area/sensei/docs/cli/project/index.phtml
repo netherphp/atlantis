@@ -37,11 +37,11 @@ $Surface->Area('sensei/docs/__header', [
 			</div>
 
 			<ul class="mb-0">
-				<li><a href="#db">Databases</a></li>
-				<li><a href="#dirs">Directories</a></li>
-				<li><a href="#symlinks">Symlinks</a></li>
-				<li><a href="#perms">File Permissions</a></li>
-				<li><a href="#setup">Setup &amp; Sanity Checking</a></li>
+				<li class="mb-2"><a href="#db">Databases</a></li>
+				<li class="mb-2"><a href="#dirs">Directories</a></li>
+				<li class="mb-2"><a href="#symlinks">Symlinks</a></li>
+				<li class="mb-2"><a href="#perms">File Permissions</a></li>
+				<li class="mb-0"><a href="#setup">Setup &amp; Sanity Checking</a></li>
 			</ul>
 
 		</div>
@@ -60,7 +60,7 @@ $Surface->Area('sensei/docs/__header', [
 				<div class="mb-2">Set the <code>Default</code> database connection.</div>
 				<code class="d-block mb-4">$ project.atl --set --type=... --host=... --user=... --pass=... --db=...</code>
 				<ul class="o-50 mb-0">
-					<li>Supported Types: <code>mysql</code>, <code>sqlite3</code>.</li>
+					<li>Supported Types: <code>mysql</code>, <code>sqlite</code>. Technically it supports anything PDO supports, but most of the queries are written with MySQL/MariaDB features in mind.</li>
 				</ul>
 			</div>
 
