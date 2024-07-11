@@ -157,26 +157,49 @@ $Surface->Area('sensei/docs/__header', [
 
 	<section>
 		<div class="container">
-			<h2>SSL Certificate (acme.sh + DNS API)</h2>
+			<h2>SSL Certificates from acme.sh</h2>
 			<hr />
 
-			<dl class="mb-4">
-				<dt>Setup ACME.SH</dt>
-				<dd>There is an install script that will install and configure <tt>acme.sh</tt>.</dd>
-				<dd class="pl-4"> &bull; Installs to <tt>/opt/acmesh</tt>.</dd>
-				<dd class="pl-4"> &bull; Confs located at <tt>/opt/acmesh/local/confs</tt>.</dd>
-				<dd class="pl-4"> &bull; Certs located at <tt>/opt/acmesh/local/certs</tt>.</dd>
-			</dl>
-
-			<p>Atlantis comes with scripts already for DigitalOcean and Porkbun. Copy the ones you need out and edit them to fill in the required information for that host.</p>
+			<h4>Install acme.sh</h4>
+			<p>There is an opinionated install script to get <code>acme.sh</code> installed.</p>
+			<code class="d-block cli mb-4">$ sh vendor/netherphp/atlantis/tools/acmesh-install-linux.sh email@for-ssl.notifications</code>
 			<ul>
-				<li><code>cp vendor/netherphp/atlantis/templates/acmesh-issue-docean.txt bin/ssl.sh</code></li>
-				<li><code>cp vendor/netherphp/atlantis/templates/acmesh-issue-porkbun.txt bin/ssl.sh</code></li>
+				<li>Installs to <code class="path">/opt/acmesh</code>.</li>
+				<li>Confs located at <code class="path">/opt/acmesh/local/confs</code>.</li>
+				<li>Certs located at <code class="path">/opt/acmesh/local/certs</code>.</li>
+				<li>The email address provided to the installer script will be sent to your SSL provider, which they will use to warn you about expiry issues.</li>
 			</ul>
+			<hr />
 
-			<p>A list of DNS hosts supported by <tt>acme.sh</tt> and how to configure them can be found <a href="https://github.com/acmesh-official/acme.sh/wiki/dnsapi">here</a>.</p>
-
+			<h4>Issue SSL Certificate (via Magic DNS API)</h4>
+			<p>
+				A list of the DNS hosts supported by <code>acme.sh</code> via DNS API and how to configure them can be found <a href="https://github.com/acmesh-official/acme.sh/wiki/dnsapi">here</a>.
+				Atlantis comes with DNS scripts for DigitalOcean and Porkbun.
+				Copy the ones you need out and edit them to fill in the required information for that host.
+			</p>
+			<ul>
+				<li class="mb-2"><code class="cli d-block">$ cp vendor/netherphp/atlantis/templates/acmesh-issue-docean.txt bin/ssl.sh</code></li>
+				<li class="mb-0"><code class="cli d-block">$ cp vendor/netherphp/atlantis/templates/acmesh-issue-porkbun.txt bin/ssl.sh</code></li>
+			</ul>
+			<p>Any SSL issue done in this method will only ever actually be used once. After the initial issue <code>acme.sh</code> will track what is needed to perform future renewals.</p>
 			<p>Other modes of fetching certs with <tt>acme.sh</tt> can be found <a href="https://github.com/acmesh-official/acme.sh">here</a>.</p>
+			<hr />
+
+			<h4>Renew SSL Certificate</h4>
+			<p>
+				<code>acme.sh</code> should have automatically added a cron job for handling renewals.
+				This can be checked with <code class="cli">$ crontab -l</code>.
+				It should look simliar to this:
+			</p>
+			<div class="jumbotron rounded p-4 mb-4">
+				<code class="d-block">
+					20 4 * * * "/opt/acmesh"/acme.sh --cron --home "/opt/acmesh" --config-home "/opt/acmesh/local/confs" > /dev/null
+				</code>
+			</div>
+			<p>
+				The cron can be reinstalled with <code class="cli">$ acme.sh --install-cronjob</code>.
+			</p>
+
 
 		</div>
 	</section>
