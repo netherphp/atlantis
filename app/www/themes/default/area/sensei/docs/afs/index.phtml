@@ -24,55 +24,73 @@ $Surface->Area('sensei/docs/__header', [
 	<!-- INTRO -->
 	<section class="pt-0">
 		<div class="container">
+			<h2>System Overview</h2>
+			<hr />
+
+			<p>
+				Most of these are not hard requirements.
+				Deviations will require adjustments be made to work with whatever you prefer to use instead.
+				The project itself and all documentation is written expecting an environment that smells simliar to this.
+				This is due to how Linux distros tend to compile their own opinions into things, such as where services should look for config files.
+			</p>
+			<dl class="fs-large mb-4">
+				<dd class="pl-2">
+					<i class="mdi mdi-desktop-classic"></i>
+					Ubuntu (20+)
+					<ul class="text-muted fs-small fst-italic">
+						<li>This distro tends to stay current enough with PHP these days. The most important thing was it has packages for all the modules needed.</li>
+					</ul>
+				</dd>
+				<dd class="pl-2">
+					<i class="mdi mdi-horse-variant"></i>
+					Apache 2.4
+					<ul class="text-muted fs-small fst-italic">
+						<li>Ubuntu symlinks Apache configs into <code class="path">/etc/apache2/sites-enabled</code>.</li>
+					</ul>
+				</dd>
+				<dd class="pl-2">
+					<i class="mdi mdi-elephant"></i>
+					PHP 8.1+
+					<ul class="text-muted fs-small fst-italic">
+						<li class="mb-2">
+							<span class="fw-bold">Required Modules:</span>
+							cli, common, curl, imagick, mbstring,
+							memcache, mysql, opcache, xml, zip.
+						</li>
+						<li class="mb-2">
+							Ubuntu compiles almost all PHP features as separate packages.
+							This is where you will see the most variation between Linux distros.
+							Some will compile everything into fewer larger packages, some compile it all into many small packages.
+						</li>
+						<li class="mb-0">
+							Ubuntu stores PHP configurations in <code class="path">/etc/php/&lt;major&gt;.&ltminor&gt;/apache2</code>.
+							They contain a <code class="file">php.ini</code> file and <code class="var">conf.d</code> directory you can drop additional ini files into.
+						</li>
+					</ul>
+				</dd>
+				<dd class="pl-2">
+					<i class="mdi mdi-database"></i>
+					MariaDB or MySQL 5.x (optional)
+					<ul class="text-muted fs-small fst-italic">
+						<li>Database is completely optional if you need one or not.</li>
+					</ul>
+				</dd>
+			</dl>
+
 			<blockquote class="jumbotron rounded p-4">
-				<dl class="mb-4">
-					<dt class="mb-0">System:</dt>
-					<dd class="fs-smaller fst-italic text-muted mb-2">
-						These are not hard requirements but adjustments
-						will need to be made.
-					</dd>
-					<dd class="pl-2">
-						<i class="mdi mdi-desktop-classic"></i>
-						Ubuntu (20+)
-					</dd>
-					<dd class="pl-2">
-						<i class="mdi mdi-horse-variant"></i>
-						Apache 2.4
-					</dd>
-					<dd class="pl-2">
-						<i class="mdi mdi-elephant"></i>
-						PHP 8.1+
-					</dd>
-					<dd class="pl-2">
-						<i class="mdi mdi-database"></i>
-						MariaDB or MySQL 5.x
-						(optional)
-					</dd>
-					<dd class="pl-2">
-						<i class="mdi mdi-file-certificate-outline"></i>
-						<a href="https://github.com/acmesh-official/acme.sh">acme.sh</a>
-						(optional, install script included)
-					</dd>
-
-				</dl>
-
 				<dl class="mb-4">
 					<dt class="mb-2">Tips:</dt>
 					<dd class="mb-4">
 						<i class="mdi mdi-chevron-right"></i>
-						Add <code>./vendor/bin</code> to your <code>PATH</code>
-						to gain access to vendor scripts like <code>project.atl</code>,
-						<code>dev.atl</code>, etc, without typing the full path to
-						it. All examples will be making use of this.
+						Add <code class="path">./vendor/bin</code> to your <code class="var">PATH</code> to gain easy access to vendor scripts
+						<code class="cli">$ project.atl</code>, <code class="cli">$ dev.atl</code>,
+						etc, without typing the full path to it.
+						All examples will be making use of this.
 					</dd>
 					<dd class="mb-0">
 						<i class="mdi mdi-chevron-right"></i>
-						The <code>.atl</code> commands have help to see more
-						info by prefixing the command.
-
-						Example: <code>$ project.atl db</code> lists the configured
-						databse connections while <code>$ project.atl help db</code>
-						will show all the possible db command arguments.
+						The <code class="var">.atl</code> commands have help to see more info.
+						Example: <code class="cli">$ project.atl help db</code> will show all the possible db command arguments.
 					</dd>
 				</dl>
 
@@ -86,30 +104,62 @@ $Surface->Area('sensei/docs/__header', [
 			<h2>Installation and Setup</h2>
 			<hr />
 
-			<dl class="mb-6">
-				<dt>Prepare Project Directory</dt>
-				<dd><code>$ git clone git@github.com:netherphp/project app</code></dd>
-				<dd><code>$ cd app</code></dd>
-				<dd><code>$ rm -rf .git</code></dd>
-			</dl>
-
-			<dl class="mb-6">
-				<dt>Install Framework</dt>
-				<dd><code>$ composer require netherphp/atlantis dev-master</code></dd>
-				<dd><code>$ project.atl init -y</code></dd>
-				<dd><code>$ project.atl setup</code></dd>
-				<dd><code>$ composer update</code></dd>
-			</dl>
-
-			<dl class="mb-6">
-				<dt>Edit <span class="ff-mono">conf/config.php</span></dt>
-				<dd>Specifically the Project ID, Name, and Domain as a minimum.</dd>
-			</dl>
-
 			<div class="mb-6">
-				At this point PHP's built-in web server should be able
-				to serve the application over basic HTTP. That can be
-				tested with the following command:
+				<p>
+					This project is under active development and is still depending on rolling source repository checkouts.
+					The following <code class="file">composer.json</code> settings are required to install and update.
+					They will be set automatically via the project bootstrapping.
+				</p>
+				<div><code class="var">"minimum-stability: "dev",</code></div>
+				<div><code class="var">"prefer-stable": true</code></div>
+			</div>
+
+			<h3>Bootstrap Project Directory</h3>
+			<div class="mb-6">
+				<p>This will fetch some basic structure including a pre-configured <code class="file">composer.json</code>.</p>
+				<div class="mb-2"><code class="cli">$ git clone https://github.com/netherphp/project app</code></div>
+				<div class="mb-2"><code class="cli">$ cd app</code></div>
+				<div class="mb-0"><code class="cli">$ rm -rf .git</code></div>
+			</div>
+
+			<h3>Install Framework</h3>
+			<div class="mb-6">
+				<div class="mb-4">
+					<p>Download the framework and dependencies.</p>
+					<code class="cli">$ composer require netherphp/atlantis dev-master</code>
+				</div>
+				<div class="mb-4">
+					<p>Set everything up. This will bootstrap a bare bones project to build upon in the project directory.</p>
+					<code class="cli">$ project.atl init -y</code>
+				</div>
+				<div class="mb-0">
+					<p>Update the autoloader, grabbing any last second updates along the way.</p>
+					<code class="cli">$ composer update</code>
+				</div>
+			</div>
+
+			<h3>Edit Config</h3>
+			<div class="mb-6">
+				<div class="mb-4">
+					The primary configuration is found in the <code class="file">conf/config.php</code> file.
+					Update the <code class="var">ConfProjectID</code>, <code class="var">ConfProjectName</code>, and <code class="var">ConfProjectDomain</code> as a minimum.
+					Additionally there are environment specific config <code class="file">config/env/dev/config.php</code> for settings that may need to be specific to your local environment, for example a test domain or API keys.
+				</div>
+				<div class="mb-4">
+					To make a new configuration environment, for example a <code class="var">prod</code> environment, copy the <code class="var">dev</code> environment and make any required changes.
+					<code class="cli">$ cp -r conf/env/dev conf/env/prod</code>
+				</div>
+				<div class="mb-0">
+					To set the current environment name, for example to <code class="var">prod</code>: <code class="cli">$ echo "prod" > env.lock</code>
+				</div>
+			</div>
+
+			<h3>Run Demo</h3>
+			<div class="mb-6">
+				<p>
+					At this point PHP's built-in web server should be able to serve the application over basic HTTP.
+					That can be tested with the following command:
+				</p>
 
 				<code class="d-block mt-4">
 					$ php -S localhost:8080 -t www
@@ -204,8 +254,6 @@ $Surface->Area('sensei/docs/__header', [
 			<p>
 				The cron can be reinstalled with <code class="cli">$ acme.sh --install-cronjob</code>.
 			</p>
-
-
 		</div>
 	</section>
 
