@@ -17,30 +17,150 @@ use Nether\User;
  * ...
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'CLI Reference',
-	'Page.Title'         => '$ project.atl',
-	'Page.Info'          => 'vendor/bin/project.atl'
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'project.atl',
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'CLI', URL: '/docs/cli')
+	]
 ]);
-
-$Files = Nether\Common\Filesystem\Indexer::DatastoreFromPath(dirname(__FILE__), $Page);
-
-$Files
-->Remap(fn(string $F)=> str_replace('.phtml', '', basename($F)))
-->Filter(fn(string $F)=> str_starts_with($F, 'help'))
-->Sort();
 
 ?>
 
 <div class="cargobay">
 	<section class="pt-0">
 		<div class="container">
+			<div class="mb-4">
+				This application is used to initialise, configure, and check the application configuration.
+				Most of the settings it deals with will be stored in the <code>atlantis.json</code> files.
+				The <code>atlantis.json</code> files define the filesystem structure the application depends on and this utility can check for inconsistencies and try to fix them.
+				This is used both for project initialisation and future sanity checking.
+			</div>
 
-<?php foreach($Files as $File): ?>
-<div class="jumbotron rounded mb-4">
-	<pre><?php $Surface->Area("sensei/docs/cli/{$Page}/{$File}") ?></pre>
-</div>
-<?php endforeach; ?>
+			<ul class="mb-0">
+				<li><a href="#db">Databases</a></li>
+				<li><a href="#dirs">Directories</a></li>
+				<li><a href="#symlinks">Symlinks</a></li>
+				<li><a href="#perms">File Permissions</a></li>
+				<li><a href="#setup">Setup &amp; Sanity Checking</a></li>
+			</ul>
+
+		</div>
+	</section>
+	<section id="db">
+		<div class="container">
+			<h3>Databases</h3>
+			<div class="mb-4">Manage the database configurations.</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">List the databases.</div>
+				<code>$ project.atl db</code>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Set the <code>Default</code> database connection.</div>
+				<code class="d-block mb-4">$ project.atl --set --type=... --host=... --user=... --pass=... --db=...</code>
+				<ul class="o-50 mb-0">
+					<li>Supported Types: <code>mysql</code>, <code>sqlite3</code>.</li>
+				</ul>
+			</div>
+
+			<div class="jumbotron rounded mb-0">
+				<div class="mb-2">Set a custom database connection.</div>
+				<code class="d-block mb-4">$ project.atl --set=... --type=... --host=... --user=... --pass=... --db=...</code>
+				<ul class="o-50 mb-0">
+					<li>The value given to <code>set</code> should be the alias used to fetch the connection from the DB manager.</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section id="dirs">
+		<div class="container">
+			<h3>Directories</h3>
+			<div class="mb-4">The <code>Dirs</code> section manages a set of paths to create as directories.</div>
+
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Check and fix project directories.</div>
+				<code>$ project.atl dirs --fix</code>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Add a path to the configuration.</div>
+				<code class="d-block mb-4">$ project.atl dirs --add --path=...</code>
+				<ul class="o-50 mb-0">
+					<li>Path should be relative to the project root. (Ex: "<code>temp</code>")</li>
+				</ul>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Remove a path from the configuration.</div>
+				<code class="d-block mb-0">$ project.atl dirs --del --path=...</code>
+			</div>
+
+		</div>
+	</section>
+	<section id="symlinks">
+		<div class="container">
+			<h3>Symlinks</h3>
+			<div class="mb-4">The <code>Symlinks</code> section manages a set of paths to create as symlinks to other files.</div>
+
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Check and fix project directories.</div>
+				<code>$ project.atl symlinks --fix</code>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Add a path to the configuration.</div>
+				<code class="d-block mb-4">$ project.atl symlinks --add --path=... --source=...</code>
+				<ul class="o-50 mb-0">
+					<li>The path of the symlink you want to create. It should be relative to the project root. (Ex: "<code>temp</code>")</li>
+					<li>The path to the source file that already exists. It is preferred to use full paths.</li>
+				</ul>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Remove a path from the configuration.</div>
+				<code class="d-block mb-0">$ project.atl symlinks --del --path=...</code>
+			</div>
+
+		</div>
+	</section>
+	<section id="perms">
+		<div class="container">
+			<h3>File Permissions</h3>
+			<div class="mb-4">The <code>Perms</code> section manages a set of paths to reinforce chmod modes for.</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Check and fix file permissions.</div>
+				<code>$ project.atl perms</code>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Add a path to the configuration.</div>
+				<code class="d-block mb-4">$ project.atl perms --add --path=... --mode=...</code>
+				<ul class="o-50 mb-0">
+					<li>Path should be relative to the project root. (Ex: "<code>temp</code>")</li>
+					<li>Mode should be the numeric octal that <code>chmod()</code> expects.</li>
+					<li>Modes are stored in the JSON as a string in <code>0o</code> notation. (Ex: "<code>0o777</code>")</li>
+				</ul>
+			</div>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Remove a path from the configuration.</div>
+				<code class="d-block mb-0">$ project.atl perms --del --path=...</code>
+			</div>
+
+		</div>
+	</section>
+	<section id="setup">
+		<div class="container">
+			<h3>Setup &amp; Sanity Checking</h3>
+
+			<div class="jumbotron rounded mb-4">
+				<div class="mb-2">Runs all the checks for directories, symlinks, and permissions, in one go.</div>
+				<code>$ project.atl setup</code>
+			</div>
 
 		</div>
 	</section>

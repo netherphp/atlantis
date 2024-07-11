@@ -1,6 +1,8 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 use Nether\Atlantis;
+use Nether\Common;
 use Nether\Surface;
 
 /**
@@ -15,10 +17,24 @@ $Info ??= NULL;
 $Classes ??= NULL;
 $Container ??= TRUE;
 $Boxify ??= TRUE;
+$Trail ??= NULL;
+
+if(!is_array($Trail))
+$Trail = [];
+
+################################################################################
+################################################################################
+
+$Pathbar = Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
+	'Items' => Common\Datastore::FromStackMerged(
+		[ Atlantis\Struct\Item::New(Title: 'Docs', URL: '/docs/', Classes: [ 'tag' ]) ],
+		$Trail
+	)
+]);
 
 $Intro = Atlantis\UI\Article::FromSurfaceWith($Surface, [
 	'Title'   => $Title,
-	'Section' => $Section,
+	'Section' => $Pathbar,
 	'Content' => $Info,
 	'Classes' => $Classes ?? []
 ]);
