@@ -222,7 +222,15 @@ extends Atlantis\TerminalApp {
 	RehashWebServerApache24(Atlantis\Struct\ProjectJSON $Project):
 	void {
 
-		$Result = $this->ExecuteCommandLine('apachectl graceful', TRUE);
+		// i have had servers suffering at midnight after systemd does
+		// shit with unattended-upgrade where it will restart apache but
+		// it wont be running. the closest i have found to others
+		// complaining about it suggested that it might be my fault for
+		// using apachectl directly like an old person. so we will try
+		// this for a while.
+
+		//$Result = $this->ExecuteCommandLine('apachectl graceful', TRUE);
+		$Result = $this->ExecuteCommandLine('systemctl restart apache2');
 
 		if($Result->HasError()) {
 			$this->PrintLn($this->FormatHeaderPoint('ERROR', Console\Theme::Error), 2);

@@ -175,12 +175,13 @@ $Surface->Area('sensei/docs/__header', [
 					Here is an example of adding that line after the Avenue configuration settings.
 				</p>
 
-				<pre class="quotron quotron-primary">
-($Config)
-->Set(Atlantis\Key::ConfLibraries, [ ])
-->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))
-->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))
-->Set(Surface\Library::ConfThemes, [ 'local', 'soon', 'default' ]);</pre>
+				<code class="quotron quotron-primary d-block">
+				($Config)<br />
+				->Set(Atlantis\Key::ConfLibraries, [ ])<br />
+				->Set(Avenue\Library::ConfRouteFile, $App->FromProjectRoot('routes.phson'))<br />
+				->Set(Avenue\Library::ConfRouteRoot, $App->FromProjectRoot('routes'))<br />
+				->Set(Surface\Library::ConfThemes, [ 'local', 'soon', 'default' ]);
+				</code>
 
 			</div>
 
@@ -194,8 +195,8 @@ $Surface->Area('sensei/docs/__header', [
 			<hr />
 
 			<dl class="mb-0">
-				<dt>Configure the Default connection.</dt>
-				<dd><code>$ project.atl db --set --host=localhost --db=dbname --user=dbuser --pass=dbpass</code></dd>
+				<dt class="mb-2">Configure the Default connection.</dt>
+				<dd><code class="cli">$ project.atl db --set --host=localhost --db=dbname --user=dbuser --pass=dbpass</code></dd>
 			</dl>
 
 		</div>
@@ -204,15 +205,15 @@ $Surface->Area('sensei/docs/__header', [
 	<!-- WEB SERVER -->
 	<section>
 		<div class="container">
-			<h2>Web Server (HTTP)</h2>
+			<h2>Web Server (Apache2)</h2>
 			<hr />
 
 			<dl class="mb-6">
 				<dt>Configure Web Server (Apache)</dt>
 				<dd>If this is the initial setup, it will be easier to say no to SSL to start with.</dd>
-				<dd><code>$ web.atl config</code></dd>
-				<dd><code>$ web.atl setup</code></dd>
-				<dd><code>$ web.atl reload</code></dd>
+				<dd><code class="cli">$ web.atl config</code></dd>
+				<dd><code class="cli">$ web.atl setup</code></dd>
+				<dd><code class="cli">$ web.atl reload</code></dd>
 			</dl>
 
 			<div>
