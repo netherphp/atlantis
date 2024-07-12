@@ -2,12 +2,10 @@
 
 use Nether\Atlantis;
 
-$Surface->Set([
-	'Page.Section.Title' => 'UI Elements',
-	'Page.Title'         => 'Article',
-	'Page.Info'          => NULL
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Article',
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'UI', URL: '/docs/ui') ]
 ]);
-
 $Surface->Area('sensei/docs/__example-via-area', [
 	'Areas' => [
 		'Basic Article View'

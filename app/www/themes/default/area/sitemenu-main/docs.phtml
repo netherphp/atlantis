@@ -16,9 +16,10 @@ $ItemArea = $Surface->Get('Theme.SiteMenu.ItemArea');
 $Menu = (
 	Atlantis\Struct\DropdownMenu::New()
 	->ItemNew('Overview', 'mdi-file-document', '/docs')
-	->ItemNew('Install & Setup', '', '/docs/afs')
-	->ItemNew('CSS Reference', '', '/docs/css')
-	->ItemNew('UI Element Reference', '', '/docs/ui')
+	->ItemNew('Install & Setup', 'mdi-cog-play', '/docs/afs')
+	->ItemNew('CLI Reference', 'mdi-console-line', '/docs/cli')
+	->ItemNew('CSS Reference', 'mdi-palette-swatch-outline', '/docs/css')
+	->ItemNew('Element Reference', 'mdi-widgets', '/docs/ui')
 );
 
 $Menu->Items->Each(

@@ -6,10 +6,9 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'UI Elements',
-	'Page.Title'         => 'Slider',
-	'Page.Info'          => NULL
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Slider',
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'UI', URL: '/docs/ui') ]
 ]);
 
 $Surface->Area('sensei/docs/__example-via-area', [

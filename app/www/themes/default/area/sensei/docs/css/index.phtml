@@ -8,10 +8,9 @@ use Nether\Common;
  * @var Common\Datastore $Pages
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'CSS Reference',
-	'Page.Title'         => 'Basic Page',
-	'Page.Info'          => NULL
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'CSS Reference',
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'CSS', URL: '/docs/css') ]
 ]);
 
 $FontSizes = [

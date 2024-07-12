@@ -39,6 +39,9 @@ $Intro = Atlantis\UI\Article::FromSurfaceWith($Surface, [
 	'Classes' => $Classes ?? []
 ]);
 
+if($Title)
+$Surface->Set('Page.Title', $Title);
+
 ?>
 
 <?php if($Container): ?><div class="container pt-6 pb-6">

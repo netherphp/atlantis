@@ -8,10 +8,9 @@ use Nether\Common;
  * @var Common\Datastore $Pages
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'UI Elements',
-	'Page.Title'         => 'Surface Element Based Widgets',
-	'Page.Info'          => NULL
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Element Reference',
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'UI', URL: '/docs/ui') ]
 ]);
 
 $Sections = Common\Datastore::FromArray([
@@ -39,6 +38,11 @@ $Sections = Common\Datastore::FromArray([
 ?>
 
 <div class="container pb-6">
+
+	<div class="mb-6">
+		Surface Elements are server side UI widgets that can be rendered out easily.
+		Some of them have helper methods for consuming common inputs such as database results.
+	</div>
 
 	<?php foreach($Sections as $Section => $Pages): ?>
 	<h2><?php $Util->Print($Section) ?></h2>

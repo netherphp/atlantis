@@ -24,7 +24,10 @@ $ReadTestFile = function(string $Area) use($Surface) {
 		</div>
 		<div class="o-50 fw-bold tt-upper fs-smaller">Code[<span class="ff-mono fw-normal tt-none"><span class="o-50">area://</span><?php $Util->Print($Area) ?></span>]</div>
 		<div class="jumbotron rounded mb-4">
-			<?php echo Nether\Atlantis\UI\AceEditor::FromSurfaceWithContent($Surface, $ReadTestFile($Area)); ?>
+			<?php echo Nether\Atlantis\UI\AceEditor::FromSurfaceWith($Surface, [
+				'Lang'    => 'php',
+				'Content' => $ReadTestFile($Area)
+			]); ?>
 		</div>
 		<hr class="mt-6 mb-6" />
 		<?php endforeach; ?>

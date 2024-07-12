@@ -18,10 +18,9 @@ use Nether\User;
  * ...
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'CSS Reference',
-	'Page.Title'         => 'Dyes & Colours',
-	'Page.Info'          => NULL
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Dyes & Colours',
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'CSS', URL: '/docs/css/dyes') ]
 ]);
 
 ################################################################################

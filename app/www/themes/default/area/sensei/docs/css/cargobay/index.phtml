@@ -6,10 +6,9 @@ use Nether\Atlantis;
  * @var Routes\Docs $Route
  */
 
-$Surface->Set([
-	'Page.Section.Title' => 'CSS Reference',
-	'Page.Title'         => 'Container Cargo Bay',
-	'Page.Info'          => NULL
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Cargobay',
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'CSS', URL: '/docs/css') ]
 ]);
 
 ?>
