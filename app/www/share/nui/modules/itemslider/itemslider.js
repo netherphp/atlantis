@@ -76,6 +76,11 @@ class Slider {
 
 		this.element = jQuery(selector).find('.swiper');
 
+		if(this.element.attr('data-navigation') === '0') {
+			this.setup.navigation = false;
+			this.setup.pagination = false;
+		}
+
 		// make sure we have markup for nav if enabled.
 
 		if(typeof this.setup.navigation === 'object') {
@@ -91,6 +96,19 @@ class Slider {
 
 			this.setup.setPagerBulletFunc(this.onRenderBullet.bind(this));
 		}
+
+		if(this.element.attr('data-autoscroll') === '1') {
+			this.setup.loop = true;
+			this.setup.speed = 3000;
+			this.setup.centeredSlides = true;
+			this.setup.autoplay = {
+				delay: 1,
+				enabled: true,
+				pauseOnMouseEnter: true
+			};
+		}
+
+
 
 		return;
 	};
@@ -207,7 +225,7 @@ class SliderConfig {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	setSlideCount(max=3, min=1.5, mid=null) {
+	setSlideCount(max=3.5, min=1.5, mid=null) {
 
 		if(min > max)
 		[ min, max ] = [ max, min ];
