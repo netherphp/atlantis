@@ -55,7 +55,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	#[Database\Meta\ForeignKey('Uploads', 'ID')]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
-	public int
+	public ?int
 	$CoverImageID;
 
 	#[Database\Meta\TypeVarChar(Size: 100)]
@@ -153,6 +153,10 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		if($Args->InputHas('UP_ID'))
 		$this->CoverImage = Atlantis\Media\File::FromPrefixedDataset($Args->Input, 'UP_');
+
+		//if(!isset($this->CoverImage))
+		//if($this->CoverImageID)
+		//$this->CoverImage = Atlantis\Media\File::GetByID($this->CoverImageID);
 
 		return;
 	}
@@ -468,7 +472,12 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	HasCoverImage():
 	bool {
 
-		return isset($this->CoverImageID);
+
+		//if(!isset($this->CoverImage))
+		//if($this->CoverImageID)
+		//$this->CoverImage = Atlantis\Media\File::GetByID($this->CoverImageID);
+
+		return isset($this->CoverImage);
 	}
 
 	////////////////////////////////////////////////////////////////
