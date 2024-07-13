@@ -1,12 +1,13 @@
 /*//
-@date 2024-07-09 20:19:13 UTC
-@files 40 [
+@date 2024-07-12 02:34:51 UTC
+@files 41 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
     "src\/ext-bootstrap\/anim.css",
     "src\/ext-bootstrap\/buttons.css",
     "src\/ext-bootstrap\/cargobay.css",
+    "src\/ext-bootstrap\/code.css",
     "src\/ext-bootstrap\/dyes.css",
     "src\/ext-bootstrap\/filters.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
@@ -1122,9 +1123,10 @@ grouped are to be considered depreciated. */
 **** offcanvas tweaks *********************************************************/
 
 .offcanvas {
-	box-shadow: 0px 0px 24px var(--theme-glass-bg-75);
+	box-shadow: 0px 0px 24px var(--theme-black);
 	z-index: 9101;
 	scrollbar-gutter: auto;
+	border: 0px !important;
 
 	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast), opacity var(--theme-anim-ease-fast), filter var(--theme-anim-ease-fast);
 }
@@ -1328,6 +1330,21 @@ grouped are to be considered depreciated. */
 
 .cargobay > section:nth-of-type(4n+4) {
 	background-color: var(--atl-cargobay-s4-bg-colour);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/code.css //////////////////////////////////////////////*/
+
+code.cli {
+	background-color: var(--theme-black);
+	border-radius: 4px;
+	border-left: 2px solid var(--theme-primary);
+	border-right: 2px solid var(--theme-primary);
+	color: var(--theme-primary-alt);
+	display: inline-block;
+	padding: 0.1rem 0.55rem;
+	margin: 0px 0.25rem;
+	vertical-align: middle;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

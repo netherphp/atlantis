@@ -18,6 +18,16 @@
 </div>
 */
 
+// optional .swiper html data attributes:
+// * data-autoscroll="<0/1>"
+// * data-autoscroll-speed="5000"
+// * data-autoscroll-centered="<1/0>"
+// * data-autoscroll-loop="<1/0>"
+// * data-autoscroll-ease="<0/1>"
+// * data-navigation="<1/0>"
+// * data-start-on="0"
+
+
 let TemplateSliderButtons = `
 <div class="swiper-buttons">
 	<div class="swiper-button-prev"></div>
@@ -76,6 +86,8 @@ class Slider {
 
 		this.element = jQuery(selector).find('.swiper');
 
+		// disable navigation if attribute asked.
+
 		if(this.element.attr('data-navigation') === '0') {
 			this.setup.navigation = false;
 			this.setup.pagination = false;
@@ -97,18 +109,38 @@ class Slider {
 			this.setup.setPagerBulletFunc(this.onRenderBullet.bind(this));
 		}
 
+		// perform some reconfiguring for infinite auto scroll.
+
 		if(this.element.attr('data-autoscroll') === '1') {
-			this.setup.loop = true;
-			this.setup.speed = 3000;
-			this.setup.centeredSlides = true;
+			let aLoop = !!parseInt(this.element.attr('data-autoscroll-loop') || 1);
+			let aCenter = !!parseInt(this.element.attr('data-autoscroll-centered') || 1);
+			let aEase = !!parseInt(this.element.attr('data-autoscroll-ease') || 0);
+			let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || 5000);
+			let aPause = parseInt(this.element.attr('data-autoscroll-pause') || 0);
+
+			this.setup.loop = aLoop;
+			this.setup.centeredSlides = aCenter;
+			this.setup.speed = aSpeed;
 			this.setup.autoplay = {
-				delay: 1,
+				delay: aPause,
 				enabled: true,
 				pauseOnMouseEnter: true
 			};
+
+			// removes the easing which makes it slow and pause on
+			// each of the slides for a bit.
+
+			if(!aEase)
+			this.element.find('.swiper-wrapper').css({
+				'transition-timing-function': 'linear'
+			});
 		}
 
+		if(typeof this.element.attr('data-start-on') !== 'undefined') {
+			let aStart = parseInt(this.element.attr('data-start-on') || 0);
 
+			this.setup.initialSlide = aStart;
+		}
 
 		return;
 	};
