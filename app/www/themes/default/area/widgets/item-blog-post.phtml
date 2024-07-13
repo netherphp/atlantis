@@ -46,7 +46,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 			<div class="mb-2">
 				<?php match($Post->Editor) {
 					'link'
-					=> $Surface->Area('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE, 'Excerpt'=> FALSE, 'ShowTags'=> $ShowTags ]),
+					=> $Surface->Area('blog/views/link', [ 'Post'=> $Post, 'Full'=> FALSE, 'Excerpt'=> FALSE, 'ShowTags'=> $ShowTags, 'Title'=> TRUE ]),
 
 					default
 					=> $Surface->Area('blog/views/html', [ 'Post'=> $Post, 'Full'=> FALSE, 'Excerpt'=> FALSE, 'ShowTags'=> $ShowTags ])

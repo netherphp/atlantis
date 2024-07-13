@@ -65,6 +65,11 @@ $Profiles = $Post->FetchRelatedProfiles();
 	</div>
 	<?php endif; ?>
 
+	<?php if(isset($Title)):?>
+	<h4>
+		<a href="<?php $Util->Print($Post->GetURL()) ?>"><?php $Util->Print($Post->Title) ?></a>
+	</h4>
+	<?php endif; ?>
 
 	<div class="mb-0">
 		<span class="fw-bold text-uppercase">Date Shared:</span>
