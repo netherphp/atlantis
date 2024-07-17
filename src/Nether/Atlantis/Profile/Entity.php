@@ -487,7 +487,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['ParentUUID'] ??= FALSE;
+		//$Input['ParentUUID'] ??= FALSE;
+
+		$Input->Define('ParentUUID', FALSE);
 
 		$Input['UseSiteTags'] ??= TRUE;
 		$Input['TagsAll'] ??= NULL;
