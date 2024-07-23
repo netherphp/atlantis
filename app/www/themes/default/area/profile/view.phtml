@@ -191,15 +191,24 @@ if(isset($Photos) && $Photos->Count() >= 6) {
 		<hr class="mt-1 mb-3" />
 
 		<?php foreach($Links as $Rel): ?>
-		<div class="row align-items-center">
+		<div class="row tight align-items-center">
 			<div class="col">
 				<div class="fst-italic">
+					<?php $Util->Print($Rel->DateCreated->Get('Y-m-d')) ?> -
 					<?php $Util->Print(Atlantis\Util::DomainFromURL($Rel->URL)) ?>
 				</div>
 				<div>
 					<a href="<?php $Util->Print($Rel->URL) ?>" target="_blank" class="fw-bold"><?php $Util->Print($Rel->Title) ?></a>
 				</div>
 			</div>
+			<?php if($Route->IsUserAdmin()): ?>
+			<div class="col-auto">
+				<button class="btn btn-outline-light" data-link-cmd="edit" data-id="<?php $Util->Print($Rel->ID) ?>" data-uuid="<?php $Util->Print($Rel->UUID) ?>">Edit</button>
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-danger" data-link-cmd="delete" data-id="<?php $Util->Print($Rel->ID) ?>" data-uuid="<?php $Util->Print($Rel->UUID) ?>"><i class="mdi mdi-delete"></i></button>
+			</div>
+			<?php endif; ?>
 		</div>
 		<hr />
 		<?php endforeach; unset($Rel); ?>
