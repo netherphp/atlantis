@@ -35,6 +35,14 @@ $PMenu = Atlantis\Routes\Profile\ProfileWeb::ProfileViewAdminMenu(
 
 $PMenu = (function(Atlantis\Struct\DropdownMenu $PMenu, Atlantis\Media\VideoThirdParty $Video) {
 	foreach($PMenu->Items as $MK => $MI) {
+		if($MK === 'ProfileEditItemTitleAlias') {
+			unset($MI->Attr['data-profile-cmd']);
+			$MI->Title = 'Edit Video Info';
+			$MI->Attr['data-videotp-cmd'] = 'edit';
+			$MI->Attr['data-id'] = $Video->ID;
+			$MI->Attr['data-uuid'] = $Video->UUID;
+		}
+
 		if($MK === 'ProfileTaggingEdit') {
 			unset($MI->Attr['data-profile-cmd']);
 			$MI->Attr['data-videotp-cmd'] = 'tags';
