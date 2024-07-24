@@ -231,6 +231,7 @@ extends Atlantis\ProtectedAPI {
 		$Filters = [
 			'EntityType' => $this->Data->Type,
 			'EntityUUID' => $this->Data->UUID,
+			'Enabled'    => NULL,
 			'Page'       => 1,
 			'Limit'      => 0,
 			'Remappers'  => (
@@ -242,6 +243,7 @@ extends Atlantis\ProtectedAPI {
 		$UUIDS = Atlantis\Struct\EntityRelationship::Find($Filters);
 
 		$Results = $Class::Find([
+			'Enabled'     => NULL,
 			'UseSiteTags' => FALSE,
 			'UUID'        => $UUIDS->GetData(),
 			//'Limit'       => 4,
