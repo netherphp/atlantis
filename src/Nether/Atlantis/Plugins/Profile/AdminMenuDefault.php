@@ -88,7 +88,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE)
 		))
 		->Shove(static::EditItemSocial, Atlantis\Struct\DropdownItem::New(
-			Title: 'Social Media',
+			Title: 'Web Links',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'links' ], TRUE)
 		));

@@ -21,6 +21,7 @@ implements
 		'Website'   => 'mdi-web',
 		'Facebook'  => 'si-facebook',
 		'Instagram' => 'si-instagram',
+		'LinkedIn'  => 'si-linkedin',
 		'Threads'   => 'si-threads',
 		'TikTok'    => 'si-tiktok',
 		'Twitter'   => 'si-twitter',

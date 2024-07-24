@@ -267,17 +267,18 @@ class Profile {
 		let self = this;
 
 		let diag = new DialogUtil.Window({
-			title: 'Edit Profile Social Links',
+			title: 'Edit Profile Web Links',
 			labelAccept: 'Save',
 			fields: [
 				new DialogUtil.Field('hidden', 'ID', null, self.id),
-				new DialogUtil.Field('text', 'SocialDataWebsite', 'Website'),
-				new DialogUtil.Field('text', 'SocialDataFacebook', 'Facebook'),
-				new DialogUtil.Field('text', 'SocialDataInstagram', 'Instagram'),
-				new DialogUtil.Field('text', 'SocialDataTikTok', 'TikTok'),
-				new DialogUtil.Field('text', 'SocialDataThreads', 'Threads'),
-				new DialogUtil.Field('text', 'SocialDataTwitter', 'Twitter/X'),
-				new DialogUtil.Field('text', 'SocialDataYouTube', 'YouTube')
+				new DialogUtil.Field('text2', 'SocialDataWebsite', 'Website'),
+				new DialogUtil.Field('text2', 'SocialDataFacebook', 'Facebook'),
+				new DialogUtil.Field('text2', 'SocialDataInstagram', 'Instagram'),
+				new DialogUtil.Field('text2', 'SocialDataLinkedIn', 'LinkedIn'),
+				new DialogUtil.Field('text2', 'SocialDataTikTok', 'TikTok'),
+				new DialogUtil.Field('text2', 'SocialDataThreads', 'Threads'),
+				new DialogUtil.Field('text2', 'SocialDataTwitter', 'Twitter/X'),
+				new DialogUtil.Field('text2', 'SocialDataYouTube', 'YouTube')
 			],
 			onAccept: function() {
 

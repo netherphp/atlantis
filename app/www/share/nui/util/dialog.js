@@ -279,6 +279,9 @@ inside the dialog window.
 
 	build() {
 
+		if(this.type === 'text2')
+		return this.buildText2Field();
+
 		if(this.type === 'text')
 		return this.buildTextField();
 
@@ -343,6 +346,35 @@ inside the dialog window.
 	};
 
 	buildTextField() {
+
+		let output = jQuery('<div />');
+		let field = null;
+
+		output.append(
+			jQuery('<div />')
+			.addClass('fw-bold')
+			.text(this.title)
+		);
+
+		output.append(
+			field = jQuery('<input />')
+			.addClass('form-control')
+			.attr('type', 'text')
+			.attr('name', this.name)
+			.attr('title', this.title)
+			.attr('data-fieldtype', this.type)
+		);
+
+		if(this.value)
+		field.val(this.value);
+
+		return output;
+	};
+
+	buildText2Field() {
+
+		// this should turned into one of those prefixed fields
+		// [[label] ____________ ]
 
 		let output = jQuery('<div />');
 		let field = null;
