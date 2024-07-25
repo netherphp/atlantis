@@ -375,9 +375,24 @@ extends Atlantis\ProtectedAPI {
 			);
 		}
 
+		////////
+
+		// if there are no more links it is likely they want to delete the
+		// video completely.
+
+		$Links = Atlantis\Struct\EntityRelationship::Find([
+			'EntityUUID' => $Video->UUID
+		]);
+
+		if($Links->Count() === 0)
+		$Video->Drop();
+
+		$this->SetPayload([
+			'Links' => $Links
+		]);
+
 		return;
 	}
-
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
