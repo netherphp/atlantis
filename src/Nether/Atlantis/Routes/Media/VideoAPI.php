@@ -384,12 +384,12 @@ extends Atlantis\ProtectedAPI {
 			'EntityUUID' => $Video->UUID
 		]);
 
-		if($Links->Count() === 0)
-		$Video->Drop();
+		if($Links->Count() !== 0)
+		$this->Quit(4321, 'This video is still attached to some profiles though.');
 
-		$this->SetPayload([
-			'Links' => $Links
-		]);
+		////////
+
+		$Video->Drop();
 
 		return;
 	}
