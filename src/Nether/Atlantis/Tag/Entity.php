@@ -110,6 +110,16 @@ implements
 		return $Data;
 	}
 
+	public function
+	GetProfileLabel():
+	string {
+
+		if($this->HasExtraData('TagPageForProfileLabel', TRUE))
+		return $this->GetExtraData('TagPageForProfileLabel');
+
+		return $this->Name;
+	}
+
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Database\Prototype Finds /////////////////////////
 
