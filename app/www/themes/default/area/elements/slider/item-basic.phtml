@@ -1,19 +1,28 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Common;
+
 /**
- * @var Nether\Atlantis\UI\Slider $Element
- * @var Nether\Atlantis\UI\SliderItem $Item
- * @var Nether\Atlantis\Tag\Entity $Tag
+ * @var Atlantis\UI\Slider $Element
+ * @var Atlantis\UI\SliderItem $Item
+ * @var Atlantis\Tag\Entity $Tag
  */
 
 $Title ??= $Item->GetItemTitle();
 $URL ??= $Item->GetItemURL();
 $ImageURL ??= $Item->GetItemImageURL();
+$ExtraData ??= $Item->GetItemExtraData();
+$StyleTile = NULL;
+
+if($ExtraData instanceof Common\Datastore) {
+	$StyleTile = $ExtraData->Get('StyleTile');
+}
 
 ?>
 
 <div class="swiper-slide">
-	<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($ImageURL) ?>);">
+	<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($ImageURL) ?>); <?php $Util->Print($StyleTile) ?>">
 		<div class="position-absolutely grad-bottom-normal"></div>
 		<div class="position-absolute position-bottom w-100 text-align-center">
 			<span class="fw-bold"><?php $Util->Print($Title) ?></span>

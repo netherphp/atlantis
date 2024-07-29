@@ -78,6 +78,29 @@ class SliderItem {
 		return $Output;
 	}
 
+	public function
+	GetItemExtraData():
+	Common\Datastore {
+
+		$Output = NULL;
+
+		////////
+
+		if(is_object($this->Item)) {
+			if(property_exists($this->Item, 'ExtraData'))
+			$Output = $this->Item->ExtraData;
+		}
+
+		////////
+
+		if(!$Output)
+		$Output = new Common\Datastore;
+
+		////////
+
+		return $Output;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

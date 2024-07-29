@@ -46,7 +46,7 @@ extends Surface\Element {
 	public ?string
 	$SectionURL = NULL;
 
-	public ?string
+	public Surface\Element|string|NULL
 	$Content = NULL;
 
 	public ?string
