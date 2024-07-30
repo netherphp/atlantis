@@ -188,6 +188,16 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		return $Output;
 	}
 
+	public function
+	GetCoverImageStyleBG():
+	string {
+
+		return sprintf(
+			'background-image: url(%s);',
+			$this->GetCoverImageURL('md')
+		);
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
