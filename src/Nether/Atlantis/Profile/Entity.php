@@ -499,7 +499,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		//$Input['ParentUUID'] ??= FALSE;
 
-		$Input->Define('ParentUUID', FALSE);
+		($Input)
+		->Define('ParentUUID', FALSE)
+		->Define('AliasPrefix', NULL);
 
 		$Input['UseSiteTags'] ??= TRUE;
 		$Input['TagsAll'] ??= NULL;
@@ -592,6 +594,11 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			if(is_array($Input['Alias'])) {
 				$SQL->Where('Main.Alias IN(:Alias)');
 			}
+		}
+
+		if($Input['AliasPrefix'] !== NULL) {
+			$Input[':AliasPrefixLike'] = sprintf('%s%%', $Input['AliasPrefix']);
+			$SQL->Where('Main.Alias LIKE :AliasPrefixLike');
 		}
 
 		////////
