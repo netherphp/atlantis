@@ -1,0 +1,85 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\UI\Alphabar $Element
+ */
+
+$Field ??= $Element->Field;
+$BaseURL ??= $Element->BaseURL;
+$Items ??= $Element->Items;
+
+$ClassItemNormal ??= 'btn-outline-light';
+$ClassItemSelect ??= 'btn-light';
+
+$GetLetterURL = (fn(string $Val)=> sprintf(
+	'%s%s',
+	$BaseURL,
+	$Route->QueryCooker(array_merge(
+		$Element->GetQueryBroth($Val),
+		[ 'page'=> NULL ]
+	))
+));
+
+?>
+
+<style type="text/css">
+	.atl-ui-alphabar { justify-content: center; }
+	.atl-ui-alphabar-item { width: 3.846% !important; }
+
+	.atl-ui-alphabar-item .btn {
+		border: 2px solid var(--theme-light);
+		background-color: var(--theme-light-fg);
+		color: var(--theme-light);
+	}
+
+	.atl-ui-alphabar-item.selected {
+		color: var(--theme-light);
+	}
+
+	.atl-ui-alphabar-item.selected .btn {
+		border: 2px solid var(--theme-light);
+		background-color: var(--theme-light);
+		color: var(--theme-light-fg);
+	}
+
+	.atl-ui-alphabar-filters {
+		margin-bottom: 1rem;
+	}
+
+	.atl-ui-alphabar-filter-item.selected {
+		font-weight: bold;
+		border-bottom: 3px solid var(--theme-primary) !important;
+	}
+
+	@media(max-width: 1199.99px) {
+		.atl-ui-alphabar-item { width: 7.692% !important; }
+	}
+
+	@media(max-width: 767.99px) {
+		.atl-ui-alphabar-item { width: 7.692% !important; }
+	}
+</style>
+
+<div id="<?php $Util->Print($Element->GetID()) ?>" class="row gx-1 gy-2 atl-ui-alphabar" data-field="<?php $Util->Print($Element->Field) ?>">
+	<?php foreach($Items as $L): ?>
+	<div class="atl-ui-alphabar-item <?php $Util->Print($Element->IsSelected($L) ? 'selected' : '') ?>">
+		<a class="btn btn-block px-1" href="<?php $Util->Print($GetLetterURL($L)) ?>">
+			<?php $Util->Print($L) ?>
+		</a>
+	</div>
+	<?php endforeach; unset($L); ?>
+</div>
