@@ -48,7 +48,7 @@ class Collapser {
 
 		this.element.toggleClass('Open');
 
-		return;
+		return false;
 	};
 
 	static Boot(selector) {

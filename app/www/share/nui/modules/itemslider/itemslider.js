@@ -85,6 +85,7 @@ class Slider {
 	prepareElement(selector) {
 
 		this.element = jQuery(selector).find('.swiper');
+		this.outer = this.element.parent().parent();
 
 		// disable navigation if attribute asked.
 
@@ -111,12 +112,18 @@ class Slider {
 
 		// perform some reconfiguring for infinite auto scroll.
 
-		if(this.element.attr('data-autoscroll') === '1') {
-			let aLoop = !!parseInt(this.element.attr('data-autoscroll-loop') || 1);
-			let aCenter = !!parseInt(this.element.attr('data-autoscroll-centered') || 1);
-			let aEase = !!parseInt(this.element.attr('data-autoscroll-ease') || 0);
-			let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || 5000);
-			let aPause = parseInt(this.element.attr('data-autoscroll-pause') || 0);
+		let shouldAutoscroll = (
+			false
+			|| this.element.attr('data-autoscroll')
+			|| this.outer.attr('data-autoscroll')
+		)
+
+		if(shouldAutoscroll === '1') {
+			let aLoop = !!parseInt(this.element.attr('data-autoscroll-loop') || this.outer.attr('data-autoscroll-loop') || 1);
+			let aCenter = !!parseInt(this.element.attr('data-autoscroll-centered') || this.outer.attr('data-autoscroll-centered') || 1);
+			let aEase = !!parseInt(this.element.attr('data-autoscroll-ease') || this.outer.attr('data-autoscroll-ease') || 0);
+			let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || this.outer.attr('data-autoscroll-speed') || 5000);
+			let aPause = parseInt(this.element.attr('data-autoscroll-pause') || this.outer.attr('data-autoscroll-pause') || 0);
 
 			this.setup.loop = aLoop;
 			this.setup.centeredSlides = aCenter;
@@ -124,7 +131,8 @@ class Slider {
 			this.setup.autoplay = {
 				delay: aPause,
 				enabled: true,
-				pauseOnMouseEnter: true
+				pauseOnMouseEnter: false,
+				disableOnInteraction: true
 			};
 
 			// removes the easing which makes it slow and pause on
@@ -275,10 +283,11 @@ class SliderConfig {
 		////////
 
 		this.slidesPerView = min;
+		this.slidesPerGroup = 1;
 
 		this.breakpoints = {
-			576: { slidesPerView: mid },
-			768: { slidesPerView: max }
+			576: { slidesPerView: mid, slidesPerGroup: mid },
+			768: { slidesPerView: max, slidesPerGroup: max }
 		};
 
 		return this;
@@ -332,7 +341,7 @@ class SliderConfig {
 
 		////////
 
-		let slideCount = parseInt(el.attr('data-slide-count'));
+		let slideCount = parseFloat(el.attr('data-slide-count'));
 		let pagerShow = parseInt(el.attr('data-pager-show'));
 
 		////////

@@ -65,7 +65,7 @@ class AcmeSh {
 		////////
 
 		$Cmd = sprintf(
-			'%s %s %s -w %s',
+			'%s %s %s --server letsencrypt -w %s',
 			$Base, $Mode, $Domains, $Webroot
 		);
 

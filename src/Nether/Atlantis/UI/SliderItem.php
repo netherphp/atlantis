@@ -79,6 +79,15 @@ class SliderItem {
 	}
 
 	public function
+	GetItemInfo():
+	?string {
+
+		$Output = $this->FetchItemProperty('Info');
+
+		return $Output;
+	}
+
+	public function
 	GetItemExtraData():
 	Common\Datastore {
 
