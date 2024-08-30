@@ -87,6 +87,14 @@ class Slider {
 		this.element = jQuery(selector).find('.swiper');
 		this.outer = this.element.parent().parent();
 
+		////////
+
+		let aSlidesMin = parseFloat(this.element.attr('data-slides-min') || this.outer.attr('data-slides-min') || 1.5);
+		let aSlidesMax = parseFloat(this.element.attr('data-slides-max') || this.outer.attr('data-slides-max') || 3.5);
+		let aSlidesMid = aSlidesMax - ((aSlidesMax - aSlidesMin) / 2);
+
+		////////
+
 		// disable navigation if attribute asked.
 
 		if(this.element.attr('data-navigation') === '0') {
@@ -122,7 +130,7 @@ class Slider {
 			let aLoop = !!parseInt(this.element.attr('data-autoscroll-loop') || this.outer.attr('data-autoscroll-loop') || 1);
 			let aCenter = !!parseInt(this.element.attr('data-autoscroll-centered') || this.outer.attr('data-autoscroll-centered') || 1);
 			let aEase = !!parseInt(this.element.attr('data-autoscroll-ease') || this.outer.attr('data-autoscroll-ease') || 0);
-			let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || this.outer.attr('data-autoscroll-speed') || 5000);
+			let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || this.outer.attr('data-autoscroll-speed') || 9000);
 			let aPause = parseInt(this.element.attr('data-autoscroll-pause') || this.outer.attr('data-autoscroll-pause') || 0);
 
 			this.setup.loop = aLoop;
@@ -134,6 +142,14 @@ class Slider {
 				pauseOnMouseEnter: false,
 				disableOnInteraction: true
 			};
+
+			// the autoscrolling mechanic does not work with fractional
+			// slides which is the trick normally used to suggest there
+			// is more to hscroll.
+
+			aSlidesMin = parseInt(aSlidesMin);
+			aSlidesMax = parseInt(aSlidesMax);
+			aSlidesMid = parseInt(aSlidesMid);
 
 			// removes the easing which makes it slow and pause on
 			// each of the slides for a bit.
@@ -149,6 +165,9 @@ class Slider {
 
 			this.setup.initialSlide = aStart;
 		}
+
+		this.setup.setSlideCount(aSlidesMax, aSlidesMin, aSlidesMid);
+		console.log(this.setup);
 
 		return;
 	};
