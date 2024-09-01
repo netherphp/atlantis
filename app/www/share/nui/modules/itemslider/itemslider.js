@@ -89,6 +89,11 @@ class Slider {
 
 		////////
 
+		let aLoop = !!parseInt(this.element.attr('data-autoscroll-loop') || this.outer.attr('data-autoscroll-loop') || 1);
+		let aCenter = !!parseInt(this.element.attr('data-autoscroll-centered') || this.outer.attr('data-autoscroll-centered') || 1);
+		let aEase = !!parseInt(this.element.attr('data-autoscroll-ease') || this.outer.attr('data-autoscroll-ease') || 0);
+		let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || this.outer.attr('data-autoscroll-speed') || 9000);
+		let aPause = parseInt(this.element.attr('data-autoscroll-pause') || this.outer.attr('data-autoscroll-pause') || 0);
 		let aSlidesMin = parseFloat(this.element.attr('data-slides-min') || this.outer.attr('data-slides-min') || 1.5);
 		let aSlidesMax = parseFloat(this.element.attr('data-slides-max') || this.outer.attr('data-slides-max') || 3.5);
 		let aSlidesMid = aSlidesMax - ((aSlidesMax - aSlidesMin) / 2);
@@ -127,12 +132,6 @@ class Slider {
 		)
 
 		if(shouldAutoscroll === '1') {
-			let aLoop = !!parseInt(this.element.attr('data-autoscroll-loop') || this.outer.attr('data-autoscroll-loop') || 1);
-			let aCenter = !!parseInt(this.element.attr('data-autoscroll-centered') || this.outer.attr('data-autoscroll-centered') || 1);
-			let aEase = !!parseInt(this.element.attr('data-autoscroll-ease') || this.outer.attr('data-autoscroll-ease') || 0);
-			let aSpeed = parseInt(this.element.attr('data-autoscroll-speed') || this.outer.attr('data-autoscroll-speed') || 9000);
-			let aPause = parseInt(this.element.attr('data-autoscroll-pause') || this.outer.attr('data-autoscroll-pause') || 0);
-
 			this.setup.loop = aLoop;
 			this.setup.centeredSlides = aCenter;
 			this.setup.speed = aSpeed;
@@ -167,6 +166,13 @@ class Slider {
 		}
 
 		this.setup.setSlideCount(aSlidesMax, aSlidesMin, aSlidesMid);
+
+		// in centered mode the groupings do not really make too much sense
+		// as it will "skip" right over things.
+
+		if(aCenter)
+		this.setup.setSlideGroup(1);
+
 		console.log(this.setup);
 
 		return;
@@ -315,6 +321,15 @@ class SliderConfig {
 	setSlideGap(dist=24) {
 
 		this.spaceBetween = dist;
+
+		return this;
+	};
+
+	setSlideGroup(numOfSlides) {
+
+		this.slidesPerGroup = numOfSlides;
+		this.breakpoints['576'].slidesPerGroup = 1;
+		this.breakpoints['768'].slidesPerGroup = 1;
 
 		return this;
 	};
