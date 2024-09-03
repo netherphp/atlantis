@@ -120,19 +120,31 @@ application instance.
 		$this->Storage = new Storage\Manager($this->Config);
 		$this->Database = new Database\Manager($this->Config);
 
-		$this->Flow(
-			'Atlantis.Prepare',
-			[
-				'App'    => $this,
-				'Config' => $this->Config,
-				'Path'   => $this->ProjectRoot,
-				'Env'    => $this->ProjectEnv
-			],
-			FALSE
-		);
+		////////
 
-		$this->Flow('Atlantis.Config', [ 'App'=> $this ], FALSE);
-		$this->Flow('Atlantis.Ready', [ 'App'=> $this ], FALSE);
+		// a little thing to bubble the atlantis events to the primary
+		// libraries with specific bubble sets for them.
+
+		$Bubbler = new Common\Datastore([
+			$this, $this->Surface
+		]);
+
+		$PrepBS = [
+			'App'    => $this,
+			'Config' => $this->Config,
+			'Path'   => $this->ProjectRoot,
+			'Env'    => $this->ProjectEnv
+		];
+
+		$OtherBS = [
+			'App'    => $this
+		];
+
+		$Bubbler
+		->Each(fn(object $K)=> $K->Flow('Atlantis.Prepare', $PrepBS))
+		->Each(fn(object $K)=> $K->Flow('Atlantis.Config', $OtherBS))
+		->Each(fn(object $K)=> $K->Flow('Atlantis.Ready', $OtherBS));
+
 		return;
 	}
 
@@ -293,6 +305,22 @@ application instance.
 		);
 
 		return $WebRoot;
+	}
+
+	public function
+	GetCacheBuster(string $Path='data/cache.bust'):
+	Util\CacheBuster {
+
+		$Buster = Util\CacheBuster::FromFile($this->FromProjectRoot(
+			$Path
+		));
+
+		// on dev instances it should be constantly rotating.
+
+		if($this->GetProjectEnvType('dev'))
+		$Buster->Generate();
+
+		return $Buster;
 	}
 
 	////////////////////////////////////////////////////////////////
