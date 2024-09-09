@@ -15,6 +15,18 @@ $ShowMenuLabel = $Surface->Get('Theme.Header.ShowMenuLabel') ?? TRUE;
 
 ?>
 
+<?php if($App->GetProjectEnvType('dev')): ?>
+<div class="PageDevNote">
+	<div class="bg-gold"></div>
+	<label class="tc-black">DEV</label>
+</div>
+<?php elseif($App->GetProjectEnvType('demo')): ?>
+<div class="PageDevNote">
+	<div class="bg-purple"></div>
+	<label class="tc-white">DEMO</label>
+</div>
+<?php endif; ?>
+
 <header class="PageHeader">
 	<div class="<?php $Util->Print($Contain ? 'container' : 'container-fluid') ?>">
 		<div class="row align-items-center justify-content-between">

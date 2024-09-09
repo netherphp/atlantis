@@ -24,6 +24,11 @@ such as Theme Engines and Routers where it only makes sense to have one per
 application instance.
 //*/
 
+	const
+	EvPrepare = 'Atlantis.Prepare',
+	EvConfig  = 'Atlantis.Config',
+	EvReady   = 'Atlantis.Ready';
+
 	public Common\Datastore
 	$Config;
 

@@ -19,4 +19,5 @@
 ->Set('Theme.SiteMenu.Icons.NoIcon', 'mdi mdi-circle-medium')
 ->Set('Theme.SiteMenu.Icons.Next', 'mdi mdi-chevron-double-right')
 ->Set('Theme.SiteMenu.ItemArea', 'sitemenu-main/item')
-->Set('Theme.Page.Wrapper', 'design/page-wrapper');
+->Set('Theme.Page.Wrapper', 'design/page-wrapper')
+->AddStyleURL('https://fonts.googleapis.com/css2?family=Beiruti:wght@200..900&display=swap');
