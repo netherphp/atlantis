@@ -3,6 +3,7 @@
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\Surface;
 
 /**
@@ -27,6 +28,13 @@ $ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
 
 $FavIconURL = $Surface->Get('Page.FavIconURL') ?? '/themes/default/gfx/favicon.ico';
 $DesignSubheader = $Surface->Get(Surface\Theme::KeyThemeSubheader);
+
+////////
+
+$PageBodyClasses = $Surface->Get('Page.Body.Classes');
+
+if(!is_a($PageBodyClasses, Common\Datastore::class))
+$PageBodyClasses = new Common\Datastore;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +90,7 @@ $Surface
 	<?php endforeach; unset($ScriptURL); ?>
 
 </head>
-<body>
+<body class="<?php $Util->Print($PageBodyClasses->Join(' ')) ?>">
 
 <?php
 

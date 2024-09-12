@@ -26,10 +26,13 @@ use Nether\Atlantis\Plugin\Interfaces\Dashboard\InfoWidgetInterface;
 
 $Surface->Area('dashboard/__header');
 
+($Surface->Get('Page.Body.Classes'))
+->Push('atl-page-dashboard');
+
 ?>
 
 <?php if($InfoWidgets->Count()): ?>
-<div class="atl-page-dashboard container mb-6">
+<div class="container mb-6">
 	<div class="row">
 		<?php
 		$InfoWidgets->Each(

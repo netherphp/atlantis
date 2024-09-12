@@ -13,6 +13,7 @@
 ->AddScriptURL('https://www.google.com/recaptcha/api.js')
 ->AddStyleURL('/themes/default/lib/css/swiper-bundle.min.css')
 ->AddScriptURL('/themes/default/lib/js/swiper-bundle.min.js')
+->Set('Page.Body.Classes', new Nether\Common\Datastore)
 ->Set('Theme.Header.Contain', FALSE)
 ->Set('Theme.Header.Logo.ImageURL', '/themes/default/gfx/atlantis-word.png')
 ->Set('Theme.SiteMenu.Icons', TRUE)
