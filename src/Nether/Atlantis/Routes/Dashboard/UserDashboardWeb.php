@@ -30,6 +30,7 @@ extends Atlantis\ProtectedWeb {
 
 		($this->App->Surface)
 		->Set('Page.Title', 'Dashboard')
+		->PushInto('Page.Body.Classes', 'atl-page-dashboard')
 		->Area('dashboard/index', [
 			'InfoWidgets' => $InfoWidgets
 		]);
@@ -52,6 +53,7 @@ extends Atlantis\ProtectedWeb {
 		->Updated(Common\Filters\Numbers::BoolType(...));
 
 		($this->App->Surface)
+		->PushInto('Page.Body.Classes', 'atl-page-dashboard')
 		->Wrap('dashboard/alias', [
 			'Updated' => $this->Data->Updated
 		]);
@@ -107,6 +109,7 @@ extends Atlantis\ProtectedWeb {
 		$Updated = $this->App->YoinkLocalData('EmailUpdated');
 
 		($this->App->Surface)
+		->PushInto('Page.Body.Classes', 'atl-page-dashboard')
 		->Wrap('dashboard/email', [
 			'ConfirmReq' => $this->App->Config[User\Library::ConfConfirmEmailChange],
 			'Updated'    => $Updated,
@@ -126,6 +129,7 @@ extends Atlantis\ProtectedWeb {
 		$Updated = $this->App->YoinkLocalData('PasswordUpdated');
 
 		($this->App->Surface)
+		->PushInto('Page.Body.Classes', 'atl-page-dashboard')
 		->Wrap('dashboard/password', [
 			'HasNoPassword' => ($this->User->PHash === NULL),
 			'Updated'       => $Updated
@@ -142,6 +146,7 @@ extends Atlantis\ProtectedWeb {
 	void {
 
 		($this->App->Surface)
+		->PushInto('Page.Body.Classes', 'atl-page-dashboard')
 		->Wrap('dashboard/auth', []);
 
 		return;
