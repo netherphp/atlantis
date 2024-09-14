@@ -1,5 +1,5 @@
 /*//
-@date 2024-09-09 21:30:15 UTC
+@date 2024-09-14 01:28:45 UTC
 @files 41 [
     "src\/imports.css",
     "src\/main.css",
@@ -418,7 +418,7 @@ strong {
 
 .dropdown-menu .btn {
 	white-space: nowrap;
-	min-width: 256px;
+	/* min-width: 256px; */
 }
 
 .dropdown-menu li {

@@ -363,7 +363,7 @@ strong {
 
 .dropdown-menu .btn {
 	white-space: nowrap;
-	min-width: 256px;
+	/* min-width: 256px; */
 }
 
 .dropdown-menu li {
