@@ -1,6 +1,6 @@
 /*//
-@date 2024-09-14 01:28:45 UTC
-@files 41 [
+@date 2024-09-17 01:20:26 UTC
+@files 42 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -29,6 +29,7 @@
     "src\/elements\/article.css",
     "src\/elements\/blog.css",
     "src\/elements\/collapser.css",
+    "src\/elements\/dropsort.css",
     "src\/elements\/editor-html.css",
     "src\/elements\/field-tag-search.css",
     "src\/elements\/gallery.css",
@@ -2968,6 +2969,36 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	.Collapser.Open > header .Indicator {
 		transform: rotate(225deg);
 	}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/dropsort.css ///////////////////////////////////////////////*/
+
+.atl-dropsort {
+
+}
+
+.atl-dropsort-item {
+	background-color: var(--theme-grey-lt);
+	color: var(--theme-black);
+	transition: opacity 200ms, background-color 200ms;
+}
+
+.atl-dropsort-item.droptarget {
+	background-color: var(--theme-red);
+}
+
+.atl-dropsort-item.droptarget a:link,
+.atl-dropsort-item.droptarget a:visited {
+	color: var(--theme-white) !important;
+}
+
+.atl-dropsort-item.moved {
+	color: var(--theme-red);
+}
+
+.atl-dropsort-item-handle {
+	cursor:grab
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/editor-html.css ////////////////////////////////////////////*/

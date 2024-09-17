@@ -1,0 +1,27 @@
+
+.atl-dropsort {
+
+}
+
+.atl-dropsort-item {
+	background-color: var(--theme-grey-lt);
+	color: var(--theme-black);
+	transition: opacity 200ms, background-color 200ms;
+}
+
+.atl-dropsort-item.droptarget {
+	background-color: var(--theme-red);
+}
+
+.atl-dropsort-item.droptarget a:link,
+.atl-dropsort-item.droptarget a:visited {
+	color: var(--theme-white) !important;
+}
+
+.atl-dropsort-item.moved {
+	color: var(--theme-red);
+}
+
+.atl-dropsort-item-handle {
+	cursor:grab
+}
