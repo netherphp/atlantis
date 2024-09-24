@@ -814,6 +814,17 @@ extends Atlantis\TerminalApp {
 		return 0;
 	}
 
+	#[Console\Meta\Command('uuid')]
+	public function
+	HandleUUIDGen():
+	int {
+
+		$UUID = Common\UUID::V7();
+		$this->PrintLn($UUID);
+
+		return 0;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
