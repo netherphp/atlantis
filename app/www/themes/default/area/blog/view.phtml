@@ -36,12 +36,13 @@ $PostDateFancy = Common\Date::FromDateString($Post->DateCreated)->Get(Common\Val
 // these should be set in then pulled from the blog settings.
 
 $CSSVars = new Common\Datastore([
-	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',    // graphic wash tone
-	'--atl-blog-bg1'   => 'var(--theme-orange)',     // titlebar bg colour
-	'--atl-blog-bg2'   => 'var(--theme-grey-lt)',    // titlebar bg colour2
-	'--atl-blog-fg1'   => 'var(--theme-black)',      // titlebar text colour
-	'--atl-blog-fg2'   => 'var(--theme-orange-alt)', // accent text colours
-	'--atl-blog-fgh4'  => 'var(--theme-orange-alt)'  // h4 text colour
+	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',    // header bg
+	'--atl-blog-bg1'   => 'var(--theme-orange)',     // primary gradient 1
+	'--atl-blog-bg2'   => 'var(--theme-grey-lt)',    // primary gradient 2
+	'--atl-blog-bg3'   => 'var(--theme-purple)',     // secondary gradient 1
+	'--atl-blog-bg4'   => 'var(--theme-grey-lt)',    // secondary gradient 2
+	'--atl-blog-fg1'   => 'var(--theme-black)',      // titlebar text
+	'--atl-blog-fg2'   => 'var(--theme-orange-alt)'  // accent texts
 ]);
 
 $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");

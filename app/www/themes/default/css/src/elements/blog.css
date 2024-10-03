@@ -1,16 +1,17 @@
 :root {
 
-	/* blog header washed out bg */
-	--atl-blog-bg0: var(--theme-black);
+	--atl-blog-bg0: var(--theme-black); /* blog header overall bg */
 
-	/* blog header title bar */
-	--atl-blog-fg1: var(--theme-white);
-	--atl-blog-bg1: var(--theme-black);
-	--atl-blog-bg2: var(--theme-white);
+	--atl-blog-bg1: var(--theme-black); /* primary gradient 1 */
+	--atl-blog-bg2: var(--theme-white); /* primary gradient 2 */
 
-	/* text accents like post date */
-	--atl-blog-fg2: var(--theme-black);
+	--atl-blog-bg3: var(--theme-black); /* secondary gradient 1 */
+	--atl-blog-bg4: var(--theme-white); /* secondary gradient 2 */
 
+	--atl-blog-fg1: var(--theme-white); /* titlebar */
+	--atl-blog-fg2: var(--theme-black); /* post date */
+
+	/* headings 1-6 */
 	--atl-blog-fgh1: var(--theme-white);
 	--atl-blog-fgh2: var(--theme-white);
 	--atl-blog-fgh3: var(--theme-white);
@@ -20,7 +21,7 @@
 
 }
 
-/* the widget in its entirety */
+/* the header widget in its entirety */
 
 .atl-blog-header {
 	position: relative;
@@ -113,10 +114,12 @@
 
 .atl-blog-post-container h1 { color: var(--atl-blog-fgh1); }
 .atl-blog-post-container h2 { color: var(--atl-blog-fgh2); }
-.atl-blog-post-container h3 { color: var(--atl-blog-fgh3); }
-.atl-blog-post-container h4 { color: var(--atl-blog-fgh4); }
-.atl-blog-post-container h5 { color: var(--atl-blog-fgh5); }
-.atl-blog-post-container h6 { color: var(--atl-blog-fgh6); }
+.atl-blog-post-container h3 { color: var(--atl-blog-fg2); }
+.atl-blog-post-container h4 { color: var(--atl-blog-fg2); }
+.atl-blog-post-container h5 { color: var(--atl-blog-fg2); }
+.atl-blog-post-container h6 { color: var(--atl-blog-fg2); }
+
+/* blog post content styling */
 
 .atl-blog-post-dateline {
 	color: var(--atl-blog-fg2);
@@ -132,3 +135,28 @@
 .atl-blog-post-tags .btn {
 	border-radius: 4px;
 }
+
+.atl-blog-post-img {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.atl-blog-post-img img {
+	background: linear-gradient(90deg, var(--atl-blog-bg3) 0%, var(--atl-blog-bg4) 100%) !important;
+	padding: 2px;
+
+	border-radius: 10px;
+	max-width: 100%;
+}
+
+.atl-blog-post-img figcaption {
+	font-size: 0.8em;
+	font-style: italic;
+	opacity: 0.65;
+	padding-top: 0.5rem;
+}
+
+.atl-blog-post-row .ratiobox a {
+	border: 0px !important;
+}
+
