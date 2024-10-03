@@ -19,10 +19,29 @@ if($CacheBust) {
 ?>
 
 <div class="BlogHeader">
-	<div class="BlogHeaderWash position-absolutely wallpapered" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);"></div>
-	<div class="BlogHeaderContainer container position-relative">
-		<div class="wallpapered bg-black p-4" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
-			<div class="row align-items-center">
+	<div class="BlogHeaderWash" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);"></div> 
+	<div class="BlogHeaderTitleBar" style="box-shadow: 0px 0px 10px #000;">
+		<div class="container fs-smaller">
+			<div class="row align-items-center gx-2 gy-1 py-1">
+				<div class="col-12 col-md-auto">
+					<span class="tc-black fw-bold">
+						<?php $Util->Print($Blog->Title) ?>
+					</span>
+				</div>
+				<?php if($Blog->Tagline): ?>
+				<div class="col-12 col-md-auto">
+					<span class="tc-black o-50">
+						<span class="d-none d-md-inline">// </span>
+						<?php $Util->Print($Blog->Tagline) ?>
+					</span>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+	<div class="BlogHeaderContainer container">
+		<div class="BlogHeaderGraphic wallpapered bg-black p-4" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
+			<div class="d-none row align-items-center">
 				<div class="col-4 col-sm-3 col-md-2">
 					<div class="ratiobox square rounded wallpapered bg-body-secondary" style="background-image:url(<?php $Printer($IconImageURL) ?>);">
 						<a href="<?php $Printer($Blog->GetURL()) ?>" class="position-absolutely text-decoration-none"></a>
@@ -37,5 +56,4 @@ if($CacheBust) {
 			</div>
 		</div>
 	</div>
-	<div class="position-absolutely box-shadow-inset clickthrough"></div>
 </div>

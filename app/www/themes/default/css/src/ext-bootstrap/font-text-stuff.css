@@ -83,6 +83,9 @@
 .tt-lower, .tt-lowercase { text-transform: lowercase !important; }
 .tt-title, .tt-titlecase { text-transform: capitalize !important; }
 
+.fv-small, .fv-small-caps { font-variant: small-caps; }
+.fv-petite, .fv-petite-caps { font-variant: petite-caps; }
+
 /*******************************************************************************
 ** text line wrapping *********************************************************/
 

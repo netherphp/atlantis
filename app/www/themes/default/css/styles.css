@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 01:01:35 UTC
+@date 2024-10-03 06:21:02 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -2208,6 +2208,9 @@ code.cli {
 .tt-lower, .tt-lowercase { text-transform: lowercase !important; }
 .tt-title, .tt-titlecase { text-transform: capitalize !important; }
 
+.fv-small, .fv-small-caps { font-variant: small-caps; }
+.fv-petite, .fv-petite-caps { font-variant: petite-caps; }
+
 /*******************************************************************************
 ** text line wrapping *********************************************************/
 
@@ -2941,14 +2944,38 @@ is being used and then prefixing all these with that theme name, if i recall. */
 
 .BlogHeader {
 	position: relative;
-
 	background: var(--theme-dark);
 	overflow: hidden;
 }
 
+.BlogHeaderTitleBar {
+	background-color: var(--theme-orange);
+	position: relative;
+}
+
+.BlogHeaderGraphic {
+	background-position: center center;
+	height: 200px;
+}
+
 .BlogHeaderWash {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	
+	background-position: center center;
 	filter: blur(30px) brightness(0.35);
 	transform: scale(1.1);
+}
+
+.BlogHeaderContainer {
+	position: relative;
+}
+
+@media(max-width: 767.99px) {
+	.BlogHeaderGraphic {
+		background-position: center right;
+	}
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
