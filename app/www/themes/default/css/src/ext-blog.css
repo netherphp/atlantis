@@ -18,7 +18,7 @@
 .atl-blog-img img {
 	background: linear-gradient(90deg, var(--theme-primary) 0%, var(--theme-grey-lt) 100%) !important;
 	padding: 1px;
-	
+
 	border-radius: 10px;
 	max-width: 100%;
 }
@@ -36,6 +36,11 @@
 
 .atl-blog-tags .btn {
 	border-radius: 3px;
+}
+
+
+h2.atl-editorjs-header hr {
+
 }
 
 

@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 19:42:50 UTC
+@date 2024-10-03 20:14:27 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -2582,7 +2582,7 @@ code.cli {
 .atl-blog-img img {
 	background: linear-gradient(90deg, var(--theme-primary) 0%, var(--theme-grey-lt) 100%) !important;
 	padding: 1px;
-	
+
 	border-radius: 10px;
 	max-width: 100%;
 }
@@ -2600,6 +2600,11 @@ code.cli {
 
 .atl-blog-tags .btn {
 	border-radius: 3px;
+}
+
+
+h2.atl-editorjs-header hr {
+
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -2940,66 +2945,100 @@ is being used and then prefixing all these with that theme name, if i recall. */
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/blog.css ///////////////////////////////////////////////////*/
 
-.atl-blog-header {
-	position: relative;
-	background: var(--atl-blog-bg0);
-	overflow: hidden;
+:root {
+
+	/* blog header washed out bg */
+	--atl-blog-bg0: var(--theme-black);
+
+	/* blog header title bar */
+	--atl-blog-bg1: var(--theme-black);
+	--atl-blog-fg1: var(--theme-white);
+
+	/* blog header title bar */
+	--atl-blog-bg2: var(--theme-white);
+	--atl-blog-fg2: var(--theme-black);
+
 }
 
-.atl-blog-header aside {
+/* the widget in its entirety */
+
+.atl-blog-header {
+	position: relative;
+	overflow: hidden;
+
+	background-color: var(--atl-blog-bg0);
+}
+
+/* undermost layer to add art. */
+
+.atl-blog-header-wash {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	opacity: 0.85;
 
+	background-image: var(--image);
 	background-position: center center;
-	filter: blur(30px) brightness(0.35);
+	filter: blur(30px) brightness(0.35) opacity(0.85);
 	transform: scale(1.25);
 }
 
-.atl-blog-header header {
-	background-color: var(--atl-blog-bg1);
+/* titlebar stripe above the blog graphic. */
+
+.atl-blog-header-titlebar {
 	position: relative;
+
+	background-color: var(--atl-blog-bg1);
 }
 
-.atl-blog-header header,
-.atl-blog-header header a:link,
-.atl-blog-header header a:visited {
+.atl-blog-header-titlebar,
+.atl-blog-header-titlebar a:link,
+.atl-blog-header-titlebar a:visited {
 	border: 0px;
 	color: var(--atl-blog-fg1);
 }
 
-.atl-blog-header section {
-	position: relative;
-}
-
-.atl-blog-header > section .wallpapered {
-	background-position: 50% 25%;
-	height: 250px;
-}
-
-.atl-blog-header-title {
+.atl-blog-header-titlebar-title {
 	font-weight: bold;
 }
 
-.atl-blog-header-tagline {
+.atl-blog-header-titlebar-tagline {
 	opacity: 0.64;
 }
 
 @media(max-width: 767.99px) {
-	.atl-blog-header-tagline {
+	.atl-blog-header-titlebar-tagline {
 		opacity: 0.75;
 		font-size: 0.75em;
 	}
+}
 
-	.atl-blog-header > section .wallpapered {
+/* artwork area of the header */
+
+.atl-blog-header-artwork {
+	position: relative;
+}
+
+.atl-blog-header-artwork .wallpapered {
+	background-position: 50% 25%;
+	height: 250px;
+}
+
+@media(max-width: 767.99px) {
+	.atl-blog-header-artwork .wallpapered {
 		background-position: 75% 50%;
 		height: 200px;
 	}
 }
 
-
 /***/
+
+.atl-blog-post-container hr {
+	background: linear-gradient(135deg, var(--atl-blog-bg1) 0%, var(--atl-blog-bg2) 100%);
+	border: 0px;
+	border-radius: 4px;
+	height: 4px;
+	opacity: 1.0;
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/collapser.css //////////////////////////////////////////////*/

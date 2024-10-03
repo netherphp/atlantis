@@ -28,183 +28,208 @@ $UserCanWrite = $BlogUser && $BlogUser->CanWrite();
 $UserCanAdmin = $BlogUser && $BlogUser->CanAdmin();
 $PostListArea = $App->Config[Blog\Key::ConfBlogIndexArea] ?? 'blog/widgets/post-list';
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// these should be set in then pulled from the blog settings.
+
+$CSSVars = new Common\Datastore([
+	'--atl-blog-bg0' => 'var(--theme-grey-lt)', // graphic wash tone
+	'--atl-blog-bg1' => 'var(--theme-orange)',  // titlebar bg colour
+	'--atl-blog-fg1' => 'var(--theme-black)',   // titlebar text colour
+	'--atl-blog-bg2' => 'var(--theme-grey-lt)', // hr bg colour2
+	'--atl-blog-fg2' => 'var(--theme-black)'    // ...
+]);
+
+$CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 ?>
 
-<?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
+<div class="atl-page-blog-index" style="<?php $Util->Print($CSSVars->Join(' ')) ?>">
 
-<div class="container pt-4 pb-4">
-	<div class="row align-items-center">
+	<!-- BLOG HEADER -->
+	<?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 
-		<!-- SECTION TITLE -->
-		<div class="col">
-			<h2 class="text-uppercase">
-				Posts
-				<sup class="fs-smallerest fw-normal o-30">(<?php $Util->Print($Posts->Total) ?>)</sup>
-			</h2>
-		</div>
+	<!-- POST BROWSER BAR -->
+	<div class="container pt-4 pb-4">
+		<div class="row align-items-center">
 
-		<?php if($UserCanWrite): ?>
-		<!-- DRAFT SELECTOR -->
-		<div class="col-auto">
-			<div class="form-check form-switch">
-				<label class="form-check-label fw-bold text-uppercase">
-					<input class="form-check-input OptShowDrafts" type="checkbox" <?php $Util->Print($Util->GetCheckedHTML($OptShowDrafts)) ?>>
-					Drafts
-				</label>
+			<!-- SECTION TITLE -->
+			<div class="col">
+				<h2 class="text-uppercase">
+					Posts
+					<sup class="fs-smallerest fw-normal o-30">(<?php $Util->Print($Posts->Total) ?>)</sup>
+				</h2>
 			</div>
-			<script type="module">
-			jQuery(function(){
-				jQuery('.OptShowDrafts')
-				.on('change', function() {
 
-					let url = new URL(location.href);
+			<?php if($UserCanWrite): ?>
+			<!-- DRAFT SELECTOR -->
+			<div class="col-auto">
+				<div class="form-check form-switch">
+					<label class="form-check-label fw-bold text-uppercase">
+						<input class="form-check-input OptShowDrafts" type="checkbox" <?php $Util->Print($Util->GetCheckedHTML($OptShowDrafts)) ?>>
+						Drafts
+					</label>
+				</div>
+				<script type="module">
+				jQuery(function(){
+					jQuery('.OptShowDrafts')
+					.on('change', function() {
 
-					if(this.checked)
-					url.searchParams.set('drafts', 'true');
-					else
-					url.searchParams.delete('drafts');
+						let url = new URL(location.href);
 
-					location.href = url.toString();
+						if(this.checked)
+						url.searchParams.set('drafts', 'true');
+						else
+						url.searchParams.delete('drafts');
+
+						location.href = url.toString();
+						return;
+					});
 					return;
 				});
-				return;
-			});
-			</script>
-		</div>
-
-		<!-- WRITE NEW POST -->
-		<div class="col-auto">
-			<a href="<?php $Util->Print($Blog->GetWriteURL()) ?>" class="btn btn-outline-light">
-				<i class="mdi mdi-plus mr-0"></i>
-				New Post
-			</a>
-		</div>
-		<?php endif; ?>
-
-		<div class="col-auto">
-			<a class="btn btn-orange" href="?format=rss" title="RSS Feed" data-bs-toggle="tooltip">
-				<i class="mdi mdi-rss mr-0"></i>
-			</a>
-		</div>
-
-	</div>
-	<hr class="mt-1" />
-</div>
-
-<div class="pt-0 pb-4">
-	<div class="container">
-		<div class="row">
-
-			<!-- THE ZONE -->
-			<div class="col-12 col-md mb-6 mb-md-0">
-
-				<?php $Surface->Area($PostListArea, [ 'BlogUser'=> $BlogUser, 'Posts'=> $Posts ]) ?>
-
-				<?php if(!$Posts->Total): ?>
-				<div class="jumbotron text-center rounded p-4">
-					<div class="fst-italic">There are no posts here yet.</div>
-				</div>
-				<?php else: ?>
-				<div class="text-center mb-4">
-					<?php $Surface->Area('widgets/pager', [ 'Results'=> $Posts, 'BaseURL'=> $Blog->GetURL() ]) ?>
-				</div>
-				<?php endif; ?>
+				</script>
 			</div>
 
-			<!-- SIDEBAR -->
-			<div class="d-none col-12 col-md-4">
+			<!-- WRITE NEW POST -->
+			<div class="col-auto">
+				<a href="<?php $Util->Print($Blog->GetWriteURL()) ?>" class="btn btn-outline-light">
+					<i class="mdi mdi-plus mr-0"></i>
+					New Post
+				</a>
+			</div>
+			<?php endif; ?>
 
-				<?php if($BlogUser): ?>
-				<!-- SIDEBAR: MANAGE -->
-				<div class="quotron mb-6">
-					<?php if($BlogUser->CanWrite()): ?>
-					<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light btn-block mb-2 text-align-left">
-						<i class="mdi mdi-fw mdi-plus-thick"></i>
-						New Post
-					</a>
-					<?php endif; ?>
+			<div class="col-auto">
+				<a class="btn btn-orange" href="?format=rss" title="RSS Feed" data-bs-toggle="tooltip">
+					<i class="mdi mdi-rss mr-0"></i>
+				</a>
+			</div>
 
-					<?php if($BlogUser->CanAdmin()): ?>
-					<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light btn-block mb-2 text-align-left">
-						<i class="mdi mdi-fw mdi-cog"></i>
-						Blog Settings
-					</a>
-					<?php endif; ?>
-				</div>
-				<?php endif; ?>
+		</div>
+		<hr class="mt-1" />
+	</div>
 
-				<!-- SIDEBAR: ABOUT -->
-				<?php if($Blog->Details): ?>
-				<div class="quotron mb-6">
-					<div class="fw-bold text-uppercase">About</div>
-					<hr class="mt-2 mb-2" />
-					<div><?php echo nl2br($Encoder($Blog->Details)) ?></div>
-				</div>
-				<?php endif; ?>
+	<!-- POST LIST -->
+	<div class="pt-0 pb-4">
+		<div class="container">
+			<div class="row">
 
-				<!-- SIDEBAR: TAGS -->
-				<?php if($BlogTags && $BlogTags->Count()): ?>
-				<div class="quotron mb-6">
-					<div class="fw-bold text-uppercase">Tags (<?php $Util->Print($BlogTags->Count()) ?>)</div>
-					<hr class="mt-2 mb-3" />
-					<div>
-						<?php foreach($BlogTags as $BlogTag): ?>
-						<a href="/tag/<?php $Util->Print($BlogTag->Alias) ?>" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2"><?php $Util->Print($BlogTag->Name) ?></a>
-						<?php endforeach; unset($BlogTag); ?>
+				<!-- THE ZONE -->
+				<div class="col-12 col-md mb-6 mb-md-0">
+
+					<?php $Surface->Area($PostListArea, [ 'BlogUser'=> $BlogUser, 'Posts'=> $Posts ]) ?>
+
+					<?php if(!$Posts->Total): ?>
+					<div class="jumbotron text-center rounded p-4">
+						<div class="fst-italic">There are no posts here yet.</div>
 					</div>
+					<?php else: ?>
+					<div class="text-center mb-4">
+						<?php $Surface->Area('widgets/pager', [ 'Results'=> $Posts, 'BaseURL'=> $Blog->GetURL() ]) ?>
+					</div>
+					<?php endif; ?>
 				</div>
-				<?php endif; ?>
 
-				<!-- SIDEBAR: POPULAR POSTS -->
-				<div class="quotron mb-6">
-					<div class="fw-bold text-uppercase">Popular Posts</div>
-					<hr class="mt-2 mb-2" />
-					<div class="hr-hide-last">
-						<?php foreach($Popular as $Post): /** @var Nether\Blog\Post $Post */ ?>
+				<!-- SIDEBAR -->
+				<div class="d-none col-12 col-md-4">
+
+					<?php if($BlogUser): ?>
+					<!-- SIDEBAR: MANAGE -->
+					<div class="quotron mb-6">
+						<?php if($BlogUser->CanWrite()): ?>
+						<a href="<?php $Printer($Blog->GetWriteURL()) ?>" class="btn btn-outline-light btn-block mb-2 text-align-left">
+							<i class="mdi mdi-fw mdi-plus-thick"></i>
+							New Post
+						</a>
+						<?php endif; ?>
+
+						<?php if($BlogUser->CanAdmin()): ?>
+						<a href="<?php $Printer($Blog->GetSettingsURL()) ?>" class="btn btn-outline-light btn-block mb-2 text-align-left">
+							<i class="mdi mdi-fw mdi-cog"></i>
+							Blog Settings
+						</a>
+						<?php endif; ?>
+					</div>
+					<?php endif; ?>
+
+					<!-- SIDEBAR: ABOUT -->
+					<?php if($Blog->Details): ?>
+					<div class="quotron mb-6">
+						<div class="fw-bold text-uppercase">About</div>
+						<hr class="mt-2 mb-2" />
+						<div><?php echo nl2br($Encoder($Blog->Details)) ?></div>
+					</div>
+					<?php endif; ?>
+
+					<!-- SIDEBAR: TAGS -->
+					<?php if($BlogTags && $BlogTags->Count()): ?>
+					<div class="quotron mb-6">
+						<div class="fw-bold text-uppercase">Tags (<?php $Util->Print($BlogTags->Count()) ?>)</div>
+						<hr class="mt-2 mb-3" />
 						<div>
-							<div class="font-size-smaller mb-1">
-								<a href=""><?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDateTime)) ?></a>
-							</div>
-							<div class="fw-bold pb-1"><a href=""><?php $Printer($Post->Title) ?></a></div>
+							<?php foreach($BlogTags as $BlogTag): ?>
+							<a href="/tag/<?php $Util->Print($BlogTag->Alias) ?>" class="btn btn-outline-light p-1 pl-2 pr-2 mb-2"><?php $Util->Print($BlogTag->Name) ?></a>
+							<?php endforeach; unset($BlogTag); ?>
 						</div>
-						<hr class="mt-3 mb-3" />
-						<?php endforeach; ?>
 					</div>
-				</div>
+					<?php endif; ?>
 
-				<!-- SIDEBAR: BLOG STATS -->
-				<div class="d-none quotron mb-6">
-					<div class="row tight align-items-center">
-						<div class="col-auto"><i class="mdi mdi-fw mdi-file-document font-size-larger"></i></div>
-						<div class="col fw-bold">Posts</div>
-						<div class="col-auto"><?php $Printer($Blog->CountPosts) ?></div>
-						<div class="col-12"><hr class="mt-2 mb-2" /></div>
-
-						<div class="col-auto"><i class="mdi mdi-fw mdi-comment-text font-size-larger"></i></div>
-						<div class="col fw-bold">Comments</div>
-						<div class="col-auto"><?php $Printer($Blog->CountComments) ?></div>
-						<div class="col-12"><hr class="mt-2 mb-2" /></div>
-
-						<div class="col-auto"><i class="mdi mdi-fw mdi-image font-size-larger"></i></div>
-						<div class="col fw-bold">Images</div>
-						<div class="col-auto"><?php $Printer($Blog->CountImages) ?></div>
-						<div class="col-12"><hr class="mt-2 mb-2" /></div>
-
-						<div class="col-auto"><i class="mdi mdi-fw mdi-xml font-size-larger"></i></div>
-						<div class="col fw-bold">Code Blocks</div>
-						<div class="col-auto"><?php $Printer($Blog->CountCodeBlocks) ?></div>
-						<div class="col-12"><hr class="mt-2 mb-2" /></div>
-
-						<div class="col-auto"><i class="mdi mdi-fw mdi-clock-time-four font-size-larger"></i></div>
-						<div class="col fw-bold">Reading Time</div>
-						<div class="col-auto"><?php $Printer($Blog->CountReadingTime) ?></div>
+					<!-- SIDEBAR: POPULAR POSTS -->
+					<div class="quotron mb-6">
+						<div class="fw-bold text-uppercase">Popular Posts</div>
+						<hr class="mt-2 mb-2" />
+						<div class="hr-hide-last">
+							<?php foreach($Popular as $Post): /** @var Nether\Blog\Post $Post */ ?>
+							<div>
+								<div class="font-size-smaller mb-1">
+									<a href=""><?php $Printer($Post->DateCreated->Get(Common\Values::DateFormatFancyDateTime)) ?></a>
+								</div>
+								<div class="fw-bold pb-1"><a href=""><?php $Printer($Post->Title) ?></a></div>
+							</div>
+							<hr class="mt-3 mb-3" />
+							<?php endforeach; ?>
+						</div>
 					</div>
+
+					<!-- SIDEBAR: BLOG STATS -->
+					<div class="d-none quotron mb-6">
+						<div class="row tight align-items-center">
+							<div class="col-auto"><i class="mdi mdi-fw mdi-file-document font-size-larger"></i></div>
+							<div class="col fw-bold">Posts</div>
+							<div class="col-auto"><?php $Printer($Blog->CountPosts) ?></div>
+							<div class="col-12"><hr class="mt-2 mb-2" /></div>
+
+							<div class="col-auto"><i class="mdi mdi-fw mdi-comment-text font-size-larger"></i></div>
+							<div class="col fw-bold">Comments</div>
+							<div class="col-auto"><?php $Printer($Blog->CountComments) ?></div>
+							<div class="col-12"><hr class="mt-2 mb-2" /></div>
+
+							<div class="col-auto"><i class="mdi mdi-fw mdi-image font-size-larger"></i></div>
+							<div class="col fw-bold">Images</div>
+							<div class="col-auto"><?php $Printer($Blog->CountImages) ?></div>
+							<div class="col-12"><hr class="mt-2 mb-2" /></div>
+
+							<div class="col-auto"><i class="mdi mdi-fw mdi-xml font-size-larger"></i></div>
+							<div class="col fw-bold">Code Blocks</div>
+							<div class="col-auto"><?php $Printer($Blog->CountCodeBlocks) ?></div>
+							<div class="col-12"><hr class="mt-2 mb-2" /></div>
+
+							<div class="col-auto"><i class="mdi mdi-fw mdi-clock-time-four font-size-larger"></i></div>
+							<div class="col fw-bold">Reading Time</div>
+							<div class="col-auto"><?php $Printer($Blog->CountReadingTime) ?></div>
+						</div>
+					</div>
+
 				</div>
 
 			</div>
-
 		</div>
 	</div>
+
 </div>
 
 
