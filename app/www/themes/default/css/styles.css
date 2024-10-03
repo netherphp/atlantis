@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 00:30:30 UTC
+@date 2024-10-03 00:40:55 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -2943,7 +2943,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 }
 
 .BlogHeaderWash {
-	filter: blur(10px) brightness(0.8);
+	filter: blur(20px) brightness(0.25);
 	transform: scale(1.1);
 }
 
