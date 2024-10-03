@@ -2,39 +2,40 @@
 .BlogHeader,
 .BlogHeader a:link,
 .BlogHeader a:visited {
-	color: var(--theme-header-color) !important;
+	color: var(--atl-blog-fg1) !important;
 	text-decoration: none;
 	border: 0px;
 }
 
 .BlogHeader {
 	position: relative;
-	background: var(--theme-dark);
+	background: var(--atl-blog-bg1);
 	overflow: hidden;
 }
 
-.BlogHeaderTitleBar {
-	background-color: var(--theme-orange);
-	position: relative;
-}
-
-.BlogHeaderGraphic {
-	background-position: center center;
-	height: 200px;
-}
-
-.BlogHeaderWash {
+.BlogHeader aside {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	
+	opacity: 0.85;
+
 	background-position: center center;
 	filter: blur(30px) brightness(0.35);
-	transform: scale(1.1);
+	transform: scale(1.25);
 }
 
-.BlogHeaderContainer {
+.BlogHeader header {
+	background-color: var(--atl-blog-bg1);
+	color: var(--atl-blog-fg1);
 	position: relative;
+}
+
+.BlogHeader section {
+	position: relative;
+}
+
+.BlogHeader section div {
+	background-position: center center; height: 200px;
 }
 
 @media(max-width: 767.99px) {

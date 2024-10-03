@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 06:21:02 UTC
+@date 2024-10-03 17:48:06 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -1332,6 +1332,12 @@ grouped are to be considered depreciated. */
 
 .cargobay > section:nth-of-type(4n+4) {
 	background-color: var(--atl-cargobay-s4-bg-colour);
+}
+
+/***/
+
+.container-flush {
+	
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -2937,39 +2943,40 @@ is being used and then prefixing all these with that theme name, if i recall. */
 .BlogHeader,
 .BlogHeader a:link,
 .BlogHeader a:visited {
-	color: var(--theme-header-color) !important;
+	color: var(--atl-blog-fg1) !important;
 	text-decoration: none;
 	border: 0px;
 }
 
 .BlogHeader {
 	position: relative;
-	background: var(--theme-dark);
+	background: var(--atl-blog-bg1);
 	overflow: hidden;
 }
 
-.BlogHeaderTitleBar {
-	background-color: var(--theme-orange);
-	position: relative;
-}
-
-.BlogHeaderGraphic {
-	background-position: center center;
-	height: 200px;
-}
-
-.BlogHeaderWash {
+.BlogHeader aside {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	
+	opacity: 0.85;
+
 	background-position: center center;
 	filter: blur(30px) brightness(0.35);
-	transform: scale(1.1);
+	transform: scale(1.25);
 }
 
-.BlogHeaderContainer {
+.BlogHeader header {
+	background-color: var(--atl-blog-bg1);
+	color: var(--atl-blog-fg1);
 	position: relative;
+}
+
+.BlogHeader section {
+	position: relative;
+}
+
+.BlogHeader section div {
+	background-position: center center; height: 200px;
 }
 
 @media(max-width: 767.99px) {
