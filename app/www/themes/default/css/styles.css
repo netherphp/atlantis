@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 20:14:27 UTC
+@date 2024-10-03 20:21:03 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -3038,6 +3038,14 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	border-radius: 4px;
 	height: 4px;
 	opacity: 1.0;
+}
+
+.atl-blog-post-container h4 {
+	color: var(--atl-blog-bg1);
+}
+
+.atl-blog-post-container h4 hr {
+	display: none;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

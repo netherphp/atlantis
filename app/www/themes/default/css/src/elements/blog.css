@@ -92,3 +92,11 @@
 	height: 4px;
 	opacity: 1.0;
 }
+
+.atl-blog-post-container h4 {
+	color: var(--atl-blog-bg1);
+}
+
+.atl-blog-post-container h4 hr {
+	display: none;
+}
