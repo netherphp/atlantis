@@ -32,11 +32,11 @@ use Nether\User;
 // these should be set in then pulled from the blog settings.
 
 $CSSVars = new Common\Datastore([
-	'--atl-blog-bg0' => 'var(--theme-grey-lt)', // graphic wash tone
-	'--atl-blog-bg1' => 'var(--theme-orange)',  // titlebar bg colour
-	'--atl-blog-fg1' => 'var(--theme-black)',   // titlebar text colour
-	'--atl-blog-bg2' => 'var(--theme-grey-lt)', // hr bg colour2
-	'--atl-blog-fg2' => 'var(--theme-black)'    // ...
+	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',   // graphic wash tone
+	'--atl-blog-bg1'   => 'var(--theme-orange)',    // titlebar bg colour
+	'--atl-blog-bg2'   => 'var(--theme-grey-lt)',   // titlebar bg colour2
+	'--atl-blog-fg1'   => 'var(--theme-black)',     // titlebar text colour
+	'--atl-blog-fgh4'  => 'var(--theme-orange-alt)' // h4 text colour
 ]);
 
 $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");

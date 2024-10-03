@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 20:21:03 UTC
+@date 2024-10-03 20:28:31 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -2958,6 +2958,13 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	--atl-blog-bg2: var(--theme-white);
 	--atl-blog-fg2: var(--theme-black);
 
+	--atl-blog-fgh1: var(--theme-white);
+	--atl-blog-fgh2: var(--theme-white);
+	--atl-blog-fgh3: var(--theme-white);
+	--atl-blog-fgh4: var(--theme-white);
+	--atl-blog-fgh5: var(--theme-white);
+	--atl-blog-fgh6: var(--theme-white);
+
 }
 
 /* the widget in its entirety */
@@ -3040,11 +3047,17 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	opacity: 1.0;
 }
 
-.atl-blog-post-container h4 {
-	color: var(--atl-blog-bg1);
-}
+.atl-blog-post-container h1 { color: var(--atl-blog-fgh1); }
+.atl-blog-post-container h2 { color: var(--atl-blog-fgh2); }
+.atl-blog-post-container h3 { color: var(--atl-blog-fgh3); }
+.atl-blog-post-container h4 { color: var(--atl-blog-fgh4); }
+.atl-blog-post-container h5 { color: var(--atl-blog-fgh5); }
+.atl-blog-post-container h6 { color: var(--atl-blog-fgh6); }
 
-.atl-blog-post-container h4 hr {
+.atl-blog-post-container h3 hr,
+.atl-blog-post-container h4 hr,
+.atl-blog-post-container h5 hr,
+.atl-blog-post-container h6 hr {
 	display: none;
 }
 
