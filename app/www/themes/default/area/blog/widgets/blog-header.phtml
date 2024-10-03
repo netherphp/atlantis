@@ -22,6 +22,7 @@ use Nether\User;
 $CacheBust ??= FALSE;
 $HeaderImageURL = $Blog->GetHeaderURL();
 $IconImageURL = $Blog->GetIconURL();
+$BlogURL = $Blog->GetURL();
 $Title = $Blog->Title;
 $Tagline = $Blog->Tagline;
 
@@ -36,8 +37,9 @@ if($CacheBust) {
 // these should be set in then pulled from the blog settings.
 
 $CSSVars = new Common\Datastore([
-	'--atl-blog-bg1' => 'var(--theme-orange)',
-	'--atl-blog-fg1' => 'var(--theme-black)'
+	'--atl-blog-bg0' => 'var(--theme-grey-lt)', // graphic wash tone
+	'--atl-blog-bg1' => 'var(--theme-orange)',  // titlebar bg
+	'--atl-blog-fg1' => 'var(--theme-black)'    // titlebar text
 ]);
 
 $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};")
@@ -47,25 +49,27 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};")
 
 ?>
 
-<div class="BlogHeader" style="<?php $Util->Print($CSSVars->Join(' ')) ?>">
+<header class="atl-blog-header" style="<?php $Util->Print($CSSVars->Join(' ')) ?>">
+
+	<!-- HEADER BACKGROUND WASHOUT -->
 	<aside style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
 	</aside>
 
 	<!-- HEADER TITLE BAR -->
 	<header>
 		<div class="container fs-smaller">
-			<div class="row align-items-center gx-2 gy-1 py-1">
+			<div class="row align-items-center gx-2 gy-0 py-1">
 				<div class="col-12 col-md-auto">
-					<span class="fw-bold">
+					<a class="atl-blog-header-title" href="<?php $Util->Print($BlogURL) ?>">
 						<?php $Util->Print($Title) ?>
-					</span>
+					</a>
 				</div>
 				<?php if($Tagline): ?>
 				<div class="col-12 col-md-auto">
-					<span class="o-50">
+					<a class="atl-blog-header-tagline" href="<?php $Util->Print($BlogURL) ?>">
 						<span class="d-none d-md-inline">// </span>
 						<?php $Util->Print($Tagline) ?>
-					</span>
+					</a>
 				</div>
 				<?php endif; ?>
 			</div>
@@ -73,8 +77,11 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};")
 	</header>
 
 	<!-- HEADER WALLPAPER -->
-	<section class="container gx-0 gx-sm-4">
-		<div class="wallpapered bg-black p-4" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
+	<section>
+		<div class="container gx-0 gx-sm-4">
+			<div class="wallpapered p-4" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
+			</div>
 		</div>
 	</section>
-</div>
+
+</header>
