@@ -1,6 +1,6 @@
 /*//
-@date 2024-09-17 01:20:26 UTC
-@files 42 [
+@date 2024-10-03 00:08:19 UTC
+@files 43 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -12,6 +12,7 @@
     "src\/ext-bootstrap\/filters.css",
     "src\/ext-bootstrap\/font-text-stuff.css",
     "src\/ext-bootstrap\/forms.css",
+    "src\/ext-bootstrap\/hr.css",
     "src\/ext-bootstrap\/jumbotron.css",
     "src\/ext-bootstrap\/opacity.css",
     "src\/ext-bootstrap\/position.css",
@@ -2286,6 +2287,17 @@ code.cli {
 //// src/ext-bootstrap/forms.css /////////////////////////////////////////////*/
 
 
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/hr.css ////////////////////////////////////////////////*/
+
+.atl-hr-fancy {
+	background: linear-gradient(90deg, var(--theme-primary) 0%, var(--theme-grey-lt) 100%) !important;
+	border: 0px;
+	border-radius: 4px;
+	height: 4px;
+	opacity: 1.0;
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap/jumbotron.css /////////////////////////////////////////*/

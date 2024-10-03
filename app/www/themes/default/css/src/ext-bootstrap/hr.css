@@ -1,0 +1,8 @@
+
+.atl-hr-fancy {
+	background: linear-gradient(90deg, var(--theme-primary) 0%, var(--theme-grey-lt) 100%) !important;
+	border: 0px;
+	border-radius: 4px;
+	height: 4px;
+	opacity: 1.0;
+}

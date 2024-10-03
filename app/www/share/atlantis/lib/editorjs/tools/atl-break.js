@@ -25,7 +25,7 @@ a piece of content using codemirror as the code syntax magic thing.
 	constructor(data) {
 
 		this.element = null;
-		this.data = data;
+		this.data = data.data;
 
 		if(typeof this.data.mode === 'undefined')
 		this.data.mode = 'line';
