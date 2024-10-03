@@ -1,14 +1,6 @@
-.atl-blog-dateline {
-	font-size: 0.8em;
-	font-weight: bold;
-	opacity: 0.5;
-	margin-bottom: 0.5rem;
-	text-transform: uppercase;
-}
 
-.atl-blog-title {
-	margin-bottom: 0.5rem;
-}
+
+
 
 .atl-blog-img {
 	text-align: center;
@@ -32,15 +24,6 @@
 
 .atl-blog-post-row .ratiobox a {
 	border: 0px !important;
-}
-
-.atl-blog-tags .btn {
-	border-radius: 3px;
-}
-
-
-h2.atl-editorjs-header hr {
-
 }
 
 

@@ -4,11 +4,11 @@
 	--atl-blog-bg0: var(--theme-black);
 
 	/* blog header title bar */
-	--atl-blog-bg1: var(--theme-black);
 	--atl-blog-fg1: var(--theme-white);
-
-	/* blog header title bar */
+	--atl-blog-bg1: var(--theme-black);
 	--atl-blog-bg2: var(--theme-white);
+
+	/* text accents like post date */
 	--atl-blog-fg2: var(--theme-black);
 
 	--atl-blog-fgh1: var(--theme-white);
@@ -92,6 +92,8 @@
 
 /***/
 
+/* make hr's inside of blog posts to be fancy */
+
 .atl-blog-post-container hr {
 	background: linear-gradient(135deg, var(--atl-blog-bg1) 0%, var(--atl-blog-bg2) 100%);
 	border: 0px;
@@ -100,6 +102,15 @@
 	opacity: 1.0;
 }
 
+.atl-blog-post-container h3 hr,
+.atl-blog-post-container h4 hr,
+.atl-blog-post-container h5 hr,
+.atl-blog-post-container h6 hr {
+	display: none;
+}
+
+/* allow headings to be themed wihin posts */
+
 .atl-blog-post-container h1 { color: var(--atl-blog-fgh1); }
 .atl-blog-post-container h2 { color: var(--atl-blog-fgh2); }
 .atl-blog-post-container h3 { color: var(--atl-blog-fgh3); }
@@ -107,9 +118,17 @@
 .atl-blog-post-container h5 { color: var(--atl-blog-fgh5); }
 .atl-blog-post-container h6 { color: var(--atl-blog-fgh6); }
 
-.atl-blog-post-container h3 hr,
-.atl-blog-post-container h4 hr,
-.atl-blog-post-container h5 hr,
-.atl-blog-post-container h6 hr {
-	display: none;
+.atl-blog-post-dateline {
+	color: var(--atl-blog-fg2);
+	font-size: 0.8em;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.atl-blog-post-title {
+	margin-bottom: 0.5rem;
+}
+
+.atl-blog-post-tags .btn {
+	border-radius: 4px;
 }

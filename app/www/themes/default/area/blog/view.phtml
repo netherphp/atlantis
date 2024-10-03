@@ -26,17 +26,22 @@ use Nether\User;
  * @var Database\ResultSet             $Profiles (use $Related)
  */
 
+$PostTags = $Post->GetTags();
+$PostURL = $App->RewriteURL($Post->GetURL(), $PostTags);
+$PostDateFancy = Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate);
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // these should be set in then pulled from the blog settings.
 
 $CSSVars = new Common\Datastore([
-	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',   // graphic wash tone
-	'--atl-blog-bg1'   => 'var(--theme-orange)',    // titlebar bg colour
-	'--atl-blog-bg2'   => 'var(--theme-grey-lt)',   // titlebar bg colour2
-	'--atl-blog-fg1'   => 'var(--theme-black)',     // titlebar text colour
-	'--atl-blog-fgh4'  => 'var(--theme-orange-alt)' // h4 text colour
+	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',    // graphic wash tone
+	'--atl-blog-bg1'   => 'var(--theme-orange)',     // titlebar bg colour
+	'--atl-blog-bg2'   => 'var(--theme-grey-lt)',    // titlebar bg colour2
+	'--atl-blog-fg1'   => 'var(--theme-black)',      // titlebar text colour
+	'--atl-blog-fg2'   => 'var(--theme-orange-alt)', // accent text colours
+	'--atl-blog-fgh4'  => 'var(--theme-orange-alt)'  // h4 text colour
 ]);
 
 $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
@@ -46,7 +51,7 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
 
 ?>
 
-<hr id="_deleteme_PostInfo" class="d-none"
+<hr id="PostInfo" class="d-none"
 	data-blog-id="<?php $Util->Print($Post->Blog->ID) ?>"
 	data-blog-uuid="<?php $Util->Print($Post->Blog->UUID) ?>"
 	data-post-id="<?php $Util->Print($Post->ID) ?>"
@@ -60,86 +65,86 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
 		<?php $Surface->Area('blog/widgets/blog-header', $__SCOPE) ?>
 	</div>
 
-	<!-- POST HEADER -->
-	<div class="container mb-4">
+	<!-- POST HEADING -->
+	<div class="container atl-blog-post-header mb-4">
 		<div class="row">
 
 			<!-- POST TITLE -->
 			<div class="col">
-				<div class="atl-blog-dateline">
-					<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
+				<div class="atl-blog-post-dateline">
+					<?php $Util->Print($PostDateFancy) ?>
 				</div>
-				<div class="atl-blog-title">
-					<h3><a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>" class="border-0"><?php $Printer($Post->Title) ?></a></h3>
+				<div class="atl-blog-post-title">
+					<h3><a href="<?php $Util->Print($PostURL) ?>" class="border-0"><?php $Util->Print($Post->Title) ?></a></h3>
 				</div>
-				<div class="atl-blog-tags">
-					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Post->GetTags() ]) ?>
+				<?php if($PostTags->Count()): ?>
+				<div class="atl-blog-post-tags">
+					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $PostTags ]) ?>
 				</div>
+				<?php endif; ?>
 			</div>
 
 			<?php if($Route->IsUserAdmin()): ?>
 			<div class="col-auto">
-				<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [
-					'Menu' => $AdminMenu
-				]) ?>
+				<?php echo Atlantis\UI\Dropdown::FromSurfaceWith($Surface, [ 'Menu'=> $AdminMenu ]) ?>
 			</div>
 			<?php endif; ?>
 
 		</div>
 	</div>
 
-	<div class="pt-0 pb-4">
-		<div class="container atl-blog-post-container">
+	<!-- POST BODY -->
+	<div class="container atl-blog-post-container">
 
-			<?php if(!$Post->Enabled): ?>
-			<div class="alert alert-primary text-center p-2 mb-4">
-				This post is in DRAFT mode.
-			</div>
-			<?php endif; ?>
-
-			<?php if($Post->HasPostImage()): ?>
-			<div class="row justify-content-center mb-4">
-				<div class="col-12">
-					<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" style="width:100%;" />
-				</div>
-			</div>
-			<?php endif; ?>
-
-			<?php
-			match($Post->Editor) {
-				'editorjs'
-				=> $Surface->Area('blog/views/editorjs', $__SCOPE),
-
-				'link'
-				=> $Surface->Area('blog/views/link', $__SCOPE),
-
-				default
-				=> $Surface->Area('blog/views/html', $__SCOPE)
-			};
-			?>
-
-			<?php if(isset($Photos) && $Photos->Total): ?>
-			<!-- PHOTOS -->
-			<div class="mb-8">
-				<h4 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h4>
-				<hr class="mt-1 mb-3" />
-
-				<?php echo Atlantis\UI\Gallery::FromDataset($Surface, $Photos) ?>
-			</div>
-			<?php endif; ?>
-
-			<?php if(isset($Videos) && $Videos->Total): ?>
-			<!-- VIDEOS -->
-			<div class="mb-8">
-				<h4 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Total) ?>)</h4>
-				<hr class="mt-1 mb-3" />
-
-				<?php echo Atlantis\UI\VideoList::FromDataset($Surface, $Videos, ParentUUID: $Post->UUID) ?>
-			</div>
-			<?php endif; ?>
-
+		<?php if(!$Post->Enabled): ?>
+		<div class="alert alert-info text-center p-2 mb-4">
+			This post is in DRAFT mode.
 		</div>
+		<?php endif; ?>
+
+		<?php if($Post->HasPostImage()): ?>
+		<div class="row justify-content-center mb-4">
+			<div class="col-12">
+				<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" style="width:100%;" />
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<?php
+		match($Post->Editor) {
+			'editorjs'
+			=> $Surface->Area('blog/views/editorjs', $__SCOPE),
+
+			'link'
+			=> $Surface->Area('blog/views/link', $__SCOPE),
+
+			default
+			=> $Surface->Area('blog/views/html', $__SCOPE)
+		};
+		?>
+
+		<?php if(isset($Photos) && $Photos->Total): ?>
+		<!-- PHOTOS -->
+		<div class="mb-8">
+			<h4 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h4>
+			<hr class="mt-1 mb-3" />
+
+			<?php echo Atlantis\UI\Gallery::FromDataset($Surface, $Photos) ?>
+		</div>
+		<?php endif; ?>
+
+		<?php if(isset($Videos) && $Videos->Total): ?>
+		<!-- VIDEOS -->
+		<div class="mb-8">
+			<h4 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Total) ?>)</h4>
+			<hr class="mt-1 mb-3" />
+
+			<?php echo Atlantis\UI\VideoList::FromDataset($Surface, $Videos, ParentUUID: $Post->UUID) ?>
+		</div>
+		<?php endif; ?>
+
 	</div>
+
 </div>
 
 <?php if($BlogUser && $BlogUser->CanEdit()): ?>
