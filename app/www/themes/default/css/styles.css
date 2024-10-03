@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 00:40:55 UTC
+@date 2024-10-03 01:01:35 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -2562,7 +2562,7 @@ code.cli {
 }
 
 .atl-blog-title {
-	margin-bottom: 0.75rem;
+	margin-bottom: 0.5rem;
 }
 
 .atl-blog-img {
@@ -2587,6 +2587,10 @@ code.cli {
 
 .atl-blog-post-row .ratiobox a {
 	border: 0px !important;
+}
+
+.atl-blog-tags .btn {
+	border-radius: 3px;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -2943,7 +2947,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 }
 
 .BlogHeaderWash {
-	filter: blur(20px) brightness(0.25);
+	filter: blur(30px) brightness(0.35);
 	transform: scale(1.1);
 }
 

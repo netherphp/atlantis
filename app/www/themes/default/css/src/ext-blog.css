@@ -7,7 +7,7 @@
 }
 
 .atl-blog-title {
-	margin-bottom: 0.75rem;
+	margin-bottom: 0.5rem;
 }
 
 .atl-blog-img {
@@ -32,6 +32,10 @@
 
 .atl-blog-post-row .ratiobox a {
 	border: 0px !important;
+}
+
+.atl-blog-tags .btn {
+	border-radius: 3px;
 }
 
 
