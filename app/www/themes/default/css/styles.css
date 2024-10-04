@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-03 21:08:16 UTC
+@date 2024-10-04 19:19:04 UTC
 @files 42 [
     "src\/imports.css",
     "src\/main.css",
@@ -2957,11 +2957,12 @@ is being used and then prefixing all these with that theme name, if i recall. */
 }
 
 .atl-blog-header-titlebar-title {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .atl-blog-header-titlebar-tagline {
-	opacity: 0.64;
+	opacity: 0.75;
+	font-weight: 500;
 }
 
 @media(max-width: 767.99px) {
@@ -2971,21 +2972,68 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	}
 }
 
+.atl-blog-header-breakbar {
+	position: relative;
+
+	background-color: var(--atl-blog-bg2);
+	height: 4px;
+}
+
 /* artwork area of the header */
 
 .atl-blog-header-artwork {
 	position: relative;
 }
 
-.atl-blog-header-artwork .wallpapered {
+.atl-blog-header-artwork-graphic {
+	position: relative;
 	background-position: 50% 25%;
 	height: 250px;
 }
 
+.atl-blog-header-artsplit-icon {
+	position: relative;
+	height: 200px;
+	width: 200px;
+}
+
+.atl-blog-header-artsplit-graphic {
+	position: relative;
+	background-position: 50% 25%;
+	height: 200px;
+}
+
+
+@media(max-width: 991.99px) {
+	.atl-blog-header-artsplit-icon {
+		height: 150px;
+		width: 150px;
+	}
+
+	.atl-blog-header-artsplit-graphic {
+		height: 150px;
+	}
+}
+
 @media(max-width: 767.99px) {
-	.atl-blog-header-artwork .wallpapered {
+	.atl-blog-header-artsplit-icon {
+		height: 100px;
+		width: 100px;
+	}
+
+	.atl-blog-header-artsplit-graphic {
 		background-position: 75% 50%;
-		height: 200px;
+		height: 100px;
+	}
+
+	.atl-blog-header-artsplit-graphic {
+		background-position: 75% 50%;
+	}
+}
+
+@media(max-width: 575.99px) {
+	.atl-blog-header-artsplit-graphic {
+		height: 145px;
 	}
 }
 
