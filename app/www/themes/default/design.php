@@ -9,16 +9,37 @@
 // not the entire scope that the application may have built, unlike the
 // design.phtml file which can access all the things scoped in.
 
-($Surface)
-->AddScriptURL('https://www.google.com/recaptcha/api.js')
-->AddStyleURL('/themes/default/lib/css/swiper-bundle.min.css')
-->AddScriptURL('/themes/default/lib/js/swiper-bundle.min.js')
-->Set('Page.Body.Classes', new Nether\Common\Datastore)
-->Set('Theme.Header.Contain', FALSE)
-->Set('Theme.Header.Logo.ImageURL', '/themes/default/gfx/atlantis-word.png')
-->Set('Theme.SiteMenu.Icons', TRUE)
-->Set('Theme.SiteMenu.Icons.NoIcon', 'mdi mdi-circle-medium')
-->Set('Theme.SiteMenu.Icons.Next', 'mdi mdi-chevron-double-right')
-->Set('Theme.SiteMenu.ItemArea', 'sitemenu-main/item')
-->Set('Theme.Page.Wrapper', 'design/page-wrapper')
-->AddStyleURL('https://fonts.googleapis.com/css2?family=Beiruti:wght@200..900&display=swap');
+$Surface->Queue('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
+
+	$PageThemeMode = match(TRUE) {
+		(isset($_COOKIE['theme']))
+		=> $_COOKIE['theme'],
+
+		default
+		=> 'dark'
+	};
+
+	($App->Surface)
+	->AddScriptURL('https://www.google.com/recaptcha/api.js')
+	->AddScriptURL('/themes/default/lib/js/swiper-bundle.min.js')
+	->AddStyleURL('https://fonts.googleapis.com/css2?family=Beiruti:wght@200..900&display=swap')
+	->AddStyleURL('/themes/default/lib/css/swiper-bundle.min.css')
+	->Define([
+		'Page.Body.Classes'           => new Nether\Common\Datastore,
+		'Page.Theme.Mode'             => $PageThemeMode,
+		'Page.Theme.FavIconURL'       => '/themes/default/gfx/favicon.ico',
+
+		'Theme.Page.MainCSS'          => ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'),
+		'Theme.Header.Contain'        => FALSE,
+		'Theme.Header.Logo.ImageURL'  => '/themes/default/gfx/atlantis-word.png',
+		'Theme.SiteMenu.Icons'        => TRUE,
+		'Theme.SiteMenu.Icons.NoIcon' => 'mdi mdi-circle-medium',
+		'Theme.SiteMenu.Icons.Next'   => 'mdi mdi-chevron-double-right',
+		'Theme.SiteMenu.ItemArea'     => 'sitemenu-main/item',
+		'Theme.Page.Wrapper'          => 'design/page-wrapper'
+	]);
+
+	return;
+});
+
+

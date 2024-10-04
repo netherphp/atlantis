@@ -12,39 +12,27 @@ use Nether\Surface;
  * @var Avenue\Router $Router
  * @var Avenue\Route $Route
  * @var Surface\Engine $Surface
- * @var void   $Printer(string in)
- * @var void   $ThemeURL(string path, string theme)
- * @var string $Encoder(string in)
- * @var string $Selected(bool if)
- * @var string $Checked(bool if)
- * @var string $GetThemeURL(string path, string theme)
+ * @var Atlantis\Struct\TemplateHelper $Util
  * @var string $CacheBuster
  */
 
 ################################################################################
 ################################################################################
 
-$ThemeURL = (fn(string $P, ?string $T='default')=> $ThemeURL($P, $T));
-
-$FavIconURL = $Surface->Get('Page.FavIconURL') ?? '/themes/default/gfx/favicon.ico';
-$DesignSubheader = $Surface->Get(Surface\Theme::KeyThemeSubheader);
+$PageThemeMode = $Surface->Get('Page.Theme.Mode');
+$PageFavIconURL = $Surface->Get('Page.Theme.FavIconURL') ?? $Surface->Get('Page.FavIconURL');
+$PageBodyClasses = $Surface->Get('Page.Body.Classes');
+$PageSubheader = $Surface->Get(Surface\Theme::KeyThemeSubheader);
+$PageThemeMainCSS = $Surface->Get('Theme.Page.MainCSS');
+$PageTitle = $Surface->Get('Page.Title');
+$PageImageURL = $Surface->Get('Page.ImageURL');
+$PageURL = $Router->Request->GetURL();
+$PageDomain = $Router->Request->Domain;
 
 ////////
 
-$PageBodyClasses = $Surface->Get('Page.Body.Classes');
-
-if(!is_a($PageBodyClasses, Common\Datastore::class))
-$PageBodyClasses = new Common\Datastore;
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-$Surface
-->Define('Theme.Page.ThemeMode', (array_key_exists('theme', $_COOKIE) ? $_COOKIE['theme'] : 'dark' ))
-->Define('Theme.Page.MainCSS', ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'));
-
 $ShowPageHeader = !($Surface->Get('Page.SkipHeader') ?? FALSE);
-$ShowPageSubheader = ($DesignSubheader !== NULL);
+$ShowPageSubheader = ($PageSubheader !== NULL);
 $ShowPageContent = !($Surface->Get('Page.SkipContent') ?? FALSE);
 $ShowPageFooter = !($Surface->Get('Page.SkipFooter') ?? FALSE);
 $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
@@ -54,33 +42,33 @@ $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 
 ?>
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="<?php $Surface->Show('Theme.Page.ThemeMode') ?>">
+<html lang="en" data-bs-theme="<?php $Util->Print($PageThemeMode) ?>">
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="shortcut icon" href="<?php $Util->Print($FavIconURL) ?>" type="image/x-icon" />
-	<title><?php $Surface->Show('Page.Title') ?></title>
+	<title><?php $Util->Print($PageTitle) ?></title>
+	<link rel="shortcut icon" href="<?php $Util->Print($PageFavIconURL) ?>" type="image/x-icon" />
 
-	<script type="text/javascript" src="<?php $ThemeURL('lib/js/jquery.min.js') ?>"></script>
-	<script type="text/javascript" src="<?php $ThemeURL('lib/js/bootstrap.bundle.min.js') ?>"></script>
+	<script type="text/javascript" src="<?php $Util->ThemeURL('lib/js/jquery.min.js', 'default') ?>"></script>
+	<script type="text/javascript" src="<?php $Util->ThemeURL('lib/js/bootstrap.bundle.min.js', 'default') ?>"></script>
 	<script type="module">import Main from '/share/atlantis/main.js';</script>
-	<script type="module">import Main from '<?php $ThemeURL('js/main.js') ?>';</script>
+	<script type="module">import Main from '<?php $Util->ThemeURL('js/main.js', 'default') ?>';</script>
 
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/bootstrap.min.css?v={$CacheBuster}") ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/materialdesignicons.min.css?v={$CacheBuster}") ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("lib/css/simple-icons.min.css?v={$CacheBuster}") ?>" />
-	<link rel="stylesheet" type="text/css" href="<?php $ThemeURL("{$Surface->Get('Theme.Page.MainCSS')}?v={$CacheBuster}") ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("lib/css/bootstrap.min.css?v={$CacheBuster}", 'default') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("lib/css/materialdesignicons.min.css?v={$CacheBuster}", 'default') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("lib/css/simple-icons.min.css?v={$CacheBuster}", 'default') ?>" />
+	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("{$PageThemeMainCSS}?v={$CacheBuster}", 'default') ?>" />
 
 	<meta property="og:type" content="article" />
-	<meta property="og:url" content="<?php $Util->Print($Router->Request->GetURL()) ?>" />
-	<meta property="og:title" content="<?php $Surface->Show('Page.Title') ?>" />
-	<meta property="og:image" content="<?php $Surface->Show('Page.ImageURL') ?>" />
+	<meta property="og:url" content="<?php $Util->Print($PageURL) ?>" />
+	<meta property="og:title" content="<?php $Util->Print($PageTitle) ?>" />
+	<meta property="og:image" content="<?php $Util->Print($PageImageURL) ?>" />
 	<meta property="og:description" content="" />
 
 	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:domain" content="<?php $Util->Print($Router->Request->Domain) ?>" />
-	<meta name="twitter:title" content="<?php $Surface->Show('Page.Title') ?>" />
-	<meta name="twitter:image" content="<?php $Surface->Show('Page.ImageURL') ?>" />
+	<meta name="twitter:domain" content="<?php $Util->Print($PageDomain) ?>" />
+	<meta name="twitter:title" content="<?php $Util->Print($PageTitle) ?>" />
+	<meta name="twitter:image" content="<?php $Util->Print($PageImageURL) ?>" />
 	<meta name="twitter:creator" content="" />
 
 	<!-- Additional Styles -->
@@ -104,7 +92,7 @@ if($ShowPageHeader)
 $Surface->Area('design/header');
 
 if($ShowPageHeader && $ShowPageSubheader)
-$Surface->Area($DesignSubheader, $__SCOPE);
+$Surface->Area($PageSubheader, $__SCOPE);
 
 if($ShowPageContent)
 $Surface->Area('design/main', [ 'Output'=> $Output ]);
