@@ -9,7 +9,7 @@
 // not the entire scope that the application may have built, unlike the
 // design.phtml file which can access all the things scoped in.
 
-$Surface->Queue('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
+$Surface->QueueOnce('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 
 	$PageThemeMode = match(TRUE) {
 		(isset($_COOKIE['theme']))
@@ -18,6 +18,8 @@ $Surface->Queue('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 		default
 		=> 'dark'
 	};
+
+	$PageMainCSS = ($App->IsDev() ? 'css/styles.php' : 'css/styles.css');
 
 	($App->Surface)
 	->AddScriptURL('https://www.google.com/recaptcha/api.js')
@@ -29,7 +31,7 @@ $Surface->Queue('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 		'Page.Theme.Mode'             => $PageThemeMode,
 		'Page.Theme.FavIconURL'       => '/themes/default/gfx/favicon.ico',
 
-		'Theme.Page.MainCSS'          => ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'),
+		'Theme.Page.MainCSS'          => $PageMainCSS,
 		'Theme.Header.Contain'        => FALSE,
 		'Theme.Header.Logo.ImageURL'  => '/themes/default/gfx/atlantis-word.png',
 		'Theme.SiteMenu.Icons'        => TRUE,
