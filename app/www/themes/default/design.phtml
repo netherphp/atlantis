@@ -40,8 +40,14 @@ $PageBodyClasses = new Common\Datastore;
 ////////////////////////////////////////////////////////////////////////////////
 
 $Surface
-->Set('Theme.Page.ThemeMode', (array_key_exists('theme', $_COOKIE) ? $_COOKIE['theme'] : 'dark' ))
-->Set('Theme.Page.MainCSS', ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'));
+->Define('Theme.Page.ThemeMode', (array_key_exists('theme', $_COOKIE) ? $_COOKIE['theme'] : 'dark' ))
+->Define('Theme.Page.MainCSS', ($App->IsDev() ? 'css/styles.php' : 'css/styles.css'));
+
+$ShowPageHeader = !($Surface->Get('Page.SkipHeader') ?? FALSE);
+$ShowPageSubheader = ($DesignSubheader !== NULL);
+$ShowPageContent = !($Surface->Get('Page.SkipContent') ?? FALSE);
+$ShowPageFooter = !($Surface->Get('Page.SkipFooter') ?? FALSE);
+$ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,18 +100,22 @@ $Surface
 
 <?php
 
+if($ShowPageHeader)
 $Surface->Area('design/header');
 
-if($DesignSubheader !== NULL)
+if($ShowPageHeader && $ShowPageSubheader)
 $Surface->Area($DesignSubheader, $__SCOPE);
 
+if($ShowPageContent)
+$Surface->Area('design/main', [ 'Output'=> $Output ]);
+
+if($ShowPageFooter)
+$Surface->Area('design/footer');
+
+if($ShowPageShutdown)
+$Surface->Area('design/shutdown');
+
 ?>
-
-<?php $Surface->Area('design/main', [ 'Output'=> $Output ]) ?>
-
-<?php $Surface->Area('design/footer') ?>
-
-<?php $Surface->Area('design/shutdown') ?>
 
 <script type="module">
 jQuery(function(){
