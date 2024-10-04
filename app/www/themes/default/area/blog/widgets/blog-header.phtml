@@ -26,6 +26,8 @@ $BlogURL = $Blog->GetURL();
 $Title = $Blog->Title;
 $Tagline = $Blog->Tagline;
 
+$ViewMode = 3;
+
 if($CacheBust) {
 	$HeaderImageURL .= sprintf('?v=%s', Nether\Common\UUID::V4());
 	$IconImageURL .= sprintf('?v=%s', Nether\Common\UUID::V4());
@@ -33,6 +35,9 @@ if($CacheBust) {
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+if($ViewMode === 0)
+return;
 
 ?>
 
@@ -64,11 +69,30 @@ if($CacheBust) {
 	</div>
 
 	<!-- HEADER WALLPAPER -->
+	<?php if($ViewMode === 1): ?>
 	<section class="atl-blog-header-artwork">
 		<div class="container gx-0 gx-sm-4">
-			<div class="wallpapered p-4" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
+			<div class="wallpapered p-4 atl-blog-header-artwork-graphic" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
 			</div>
 		</div>
 	</section>
+	<?php endif; ?>
+
+	<?php if($ViewMode === 2 || $ViewMode === 3): ?>
+	<section class="atl-blog-header-artsplit">
+		<div class="container gx-0 gx-sm-4 py-0 py-sm-4">
+			<div class="row">
+				<div class="col-auto d-none d-sm-block <?php $Util->Print($ViewMode === 3 ? 'order-2' : '') ?>">
+					<div class="ratiobox wallpapered square rounded atl-blog-header-artsplit-icon" style="background-image:url(<?php $Util->Print($IconImageURL) ?>);"></div>
+				</div>
+				<div class="col <?php $Util->Print($ViewMode === 3 ? 'order-1' : '') ?>">
+					<div class="wallpapered rounded atl-blog-header-artsplit-graphic" style="background-image:url(<?php $Util->Print($HeaderImageURL) ?>);"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<?php endif; ?>
+
+	<div class="atl-blog-header-breakbar"></div>
 
 </header>
