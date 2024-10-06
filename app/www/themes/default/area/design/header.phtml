@@ -35,8 +35,8 @@ $ContainerClass = $Surface->Get($TKHeaderContainer) ?? 'container';
 $MenuBtnLbl = $Surface->Get($TKHeaderMenuBtnLbl) ?? NULL;
 
 $ShowSpacer = $Surface->Get($TKHeaderShowSpacer) ?? TRUE;
-$ShowDevNote = $App->GetProjectEnvType('dev');
-$ShowDemoNote = $App->GetProjectEnvType('demo');
+$ShowDevNote = $App->IsEnv('dev');
+$ShowDemoNote = $App->IsEnv('demo');
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////// ?>
