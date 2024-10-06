@@ -1,0 +1,52 @@
+
+.atl-page-note-dev {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 9101;
+	width: 7svw;
+	height: 7svw;
+
+	filter: drop-shadow(2px 2px 2px #0004);
+}
+
+.atl-page-note-dev > div {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	clip-path: polygon(0 0, 0 100%, 100% 0);
+}
+
+.atl-page-note-dev svg,
+.atl-page-note-dev label {
+	position: absolute;
+	top: 1svw;
+	left: 1svw;
+	height: 5svw;
+	width: 5svw;
+	transform: rotate(-45deg);
+
+	line-height: 1.2rem;
+	font-family: 'Beiruti', monospace;
+	font-size: 1.5svw;
+	font-weight: 900;
+	text-align: center;
+}
+
+@media(max-width: 767.99px) {
+	.atl-page-note-dev {
+		width: 12svw;
+		height: 12svw;
+		filter: drop-shadow(2px 2px 1px #0004);
+	}
+
+	.atl-page-note-dev svg,
+	.atl-page-note-dev label {
+		height: 6svw;
+		width: 6svw;
+
+		font-size: 2.5svw;
+	}
+}

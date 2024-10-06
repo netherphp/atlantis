@@ -1,0 +1,14 @@
+<?php
+
+echo Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
+	'Pages' => [
+		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'SiteMenuMain',
+			'Content' => 'area:sitemenu-main/root'
+		]),
+		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
+			'UUID'    => 'SiteMenuDocs',
+			'Content' => 'area:sitemenu-main/docs'
+		])
+	]
+]);

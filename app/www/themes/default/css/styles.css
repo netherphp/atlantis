@@ -1,6 +1,6 @@
 /*//
-@date 2024-10-04 19:19:04 UTC
-@files 42 [
+@date 2024-10-06 21:41:32 UTC
+@files 43 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -25,6 +25,7 @@
     "src\/fx-text.css",
     "src\/design\/footer.css",
     "src\/design\/header.css",
+    "src\/design\/page-note-dev.css",
     "src\/elements\/ace-editor.css",
     "src\/elements\/article.css",
     "src\/elements\/blog.css",
@@ -2689,41 +2690,65 @@ code.cli {
 
 /* header element stuff *******************************************************/
 
-.PageHeader {
+:root {
+	--theme-header-bg: var(--theme-black);
+	--theme-header-fg: var(--theme-white);
+	--theme-header-link-fg: var(--theme-white);
+	--theme-header-link-fg-hover: var(--theme-orange-alt);
+	--theme-header-pad-x: 0.00rem;
+	--theme-header-pad-y: 0.75rem;
+}
+
+.atl-page-header {
 	position: relative;
 	z-index: 9001;
 
 	background-color: var(--theme-header-bg);
-	padding: 0.75rem 0px 0.75rem 0px;
+	color: var(--theme-header-fg);
+	padding: var(--theme-header-pad-y) var(--theme-header-pad-x);
 }
 
-.PageHeader a:link:not(.btn),
-.PageHeader a:visited:not(.btn) {
+.atl-page-header a:link:not(.btn),
+.atl-page-header a:visited:not(.btn) {
 	border-bottom: 0px;
-	color: var(--bs-body-color);
+	color: var(--theme-header-link-fg);
 	text-decoration: none;
-	transition: color 200ms;
+	transition: color 150ms;
 }
 
-.PageHeader a:hover:not(.btn),
-.PageHeader a:active:not(.btn) {
-	color: var(--bs-link-hover-color);
+.atl-page-header a:hover:not(.btn),
+.atl-page-header a:active:not(.btn) {
+	color: var(--theme-header-link-fg-hover);
 }
 
-.PageHeader nav {
-	text-transform: uppercase;
+.atl-page-header-logo-text {
+	font-weight: bold;
 }
 
-.PageHeader nav .btn {
+.atl-page-header-logo-img {
+	max-height: 20px;
+}
+
+.atl-page-header-menubtn {
+	padding: 0px 0.5rem;
+}
+
+.atl-page-header-menubtn .mdi-menu {
+	font-size: 2.0rem;
+	line-height: 2.0rem;
+	margin: 0px 0px;
+}
+
+.atl-page-header nav .btn {
 	font-size: 0.8em;
 	font-weight: bold;
 	padding: 1px 8px 2px 8px;
 }
 
-/*******************************************************************************
-*******************************************************************************/
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/design/page-note-dev.css ////////////////////////////////////////////*/
 
-.PageDevNote {
+.atl-page-note-dev {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -2734,7 +2759,7 @@ code.cli {
 	filter: drop-shadow(2px 2px 2px #0004);
 }
 
-.PageDevNote > div {
+.atl-page-note-dev > div {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -2743,8 +2768,8 @@ code.cli {
 	clip-path: polygon(0 0, 0 100%, 100% 0);
 }
 
-.PageDevNote svg,
-.PageDevNote label {
+.atl-page-note-dev svg,
+.atl-page-note-dev label {
 	position: absolute;
 	top: 1svw;
 	left: 1svw;
@@ -2760,14 +2785,14 @@ code.cli {
 }
 
 @media(max-width: 767.99px) {
-	.PageDevNote {
+	.atl-page-note-dev {
 		width: 12svw;
 		height: 12svw;
 		filter: drop-shadow(2px 2px 1px #0004);
 	}
 
-	.PageDevNote svg,
-	.PageDevNote label {
+	.atl-page-note-dev svg,
+	.atl-page-note-dev label {
 		height: 6svw;
 		width: 6svw;
 

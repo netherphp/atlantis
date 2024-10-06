@@ -1,87 +1,56 @@
 /* header element stuff *******************************************************/
 
-.PageHeader {
+:root {
+	--theme-header-bg: var(--theme-black);
+	--theme-header-fg: var(--theme-white);
+	--theme-header-link-fg: var(--theme-white);
+	--theme-header-link-fg-hover: var(--theme-orange-alt);
+	--theme-header-pad-x: 0.00rem;
+	--theme-header-pad-y: 0.75rem;
+}
+
+.atl-page-header {
 	position: relative;
 	z-index: 9001;
 
 	background-color: var(--theme-header-bg);
-	padding: 0.75rem 0px 0.75rem 0px;
+	color: var(--theme-header-fg);
+	padding: var(--theme-header-pad-y) var(--theme-header-pad-x);
 }
 
-.PageHeader a:link:not(.btn),
-.PageHeader a:visited:not(.btn) {
+.atl-page-header a:link:not(.btn),
+.atl-page-header a:visited:not(.btn) {
 	border-bottom: 0px;
-	color: var(--bs-body-color);
+	color: var(--theme-header-link-fg);
 	text-decoration: none;
-	transition: color 200ms;
+	transition: color 150ms;
 }
 
-.PageHeader a:hover:not(.btn),
-.PageHeader a:active:not(.btn) {
-	color: var(--bs-link-hover-color);
+.atl-page-header a:hover:not(.btn),
+.atl-page-header a:active:not(.btn) {
+	color: var(--theme-header-link-fg-hover);
 }
 
-.PageHeader nav {
-	text-transform: uppercase;
+.atl-page-header-logo-text {
+	font-weight: bold;
 }
 
-.PageHeader nav .btn {
+.atl-page-header-logo-img {
+	max-height: 20px;
+}
+
+.atl-page-header-menubtn {
+	padding: 0px 0.5rem;
+}
+
+.atl-page-header-menubtn .mdi-menu {
+	font-size: 2.0rem;
+	line-height: 2.0rem;
+	margin: 0px 0px;
+}
+
+.atl-page-header nav .btn {
 	font-size: 0.8em;
 	font-weight: bold;
 	padding: 1px 8px 2px 8px;
-}
-
-/*******************************************************************************
-*******************************************************************************/
-
-.PageDevNote {
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	z-index: 9101;
-	width: 7svw;
-	height: 7svw;
-
-	filter: drop-shadow(2px 2px 2px #0004);
-}
-
-.PageDevNote > div {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	height: 100%;
-	width: 100%;
-	clip-path: polygon(0 0, 0 100%, 100% 0);
-}
-
-.PageDevNote svg,
-.PageDevNote label {
-	position: absolute;
-	top: 1svw;
-	left: 1svw;
-	height: 5svw;
-	width: 5svw;
-	transform: rotate(-45deg);
-
-	line-height: 1.2rem;
-	font-family: 'Beiruti', monospace;
-	font-size: 1.5svw;
-	font-weight: 900;
-	text-align: center;
-}
-
-@media(max-width: 767.99px) {
-	.PageDevNote {
-		width: 12svw;
-		height: 12svw;
-		filter: drop-shadow(2px 2px 1px #0004);
-	}
-
-	.PageDevNote svg,
-	.PageDevNote label {
-		height: 6svw;
-		width: 6svw;
-
-		font-size: 2.5svw;
-	}
 }

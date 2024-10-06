@@ -30,10 +30,10 @@ $Surface->QueueOnce('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 		'Page.Body.Classes'           => new Nether\Common\Datastore,
 		'Page.Theme.Mode'             => $PageThemeMode,
 		'Page.Theme.FavIconURL'       => '/themes/default/gfx/favicon.ico',
+		'Page.Theme.Header.Container' => 'container',
+		'Page.Theme.Header.LogoURL'   => '/themes/default/gfx/atlantis-word.png',
 
 		'Theme.Page.MainCSS'          => $PageMainCSS,
-		'Theme.Header.Contain'        => FALSE,
-		'Theme.Header.Logo.ImageURL'  => '/themes/default/gfx/atlantis-word.png',
 		'Theme.SiteMenu.Icons'        => TRUE,
 		'Theme.SiteMenu.Icons.NoIcon' => 'mdi mdi-circle-medium',
 		'Theme.SiteMenu.Icons.Next'   => 'mdi mdi-chevron-double-right',

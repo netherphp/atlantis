@@ -1,79 +1,92 @@
-<?php
+<?php //////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 use Nether\Atlantis;
+use Nether\Avenue;
 use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
 
 /**
  * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
  */
 
-$ProjectName = $App->Config->Get(Atlantis\Key::ConfProjectName);
-$LogoImageURL = $Surface->Get('Theme.Header.Logo.ImageURL');
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-$Contain = $Surface->Get('Theme.Header.Contain');
-$ShowMenuLabel = $Surface->Get('Theme.Header.ShowMenuLabel') ?? TRUE;
+$TKHeaderContainer = 'Page.Theme.Header.Container';
+$TKLogoImageURL = 'Page.Theme.Header.LogoURL';
+$TKHeaderShowSpacer = 'Page.Theme.Header.Spacer';
 
-?>
+////////
 
-<?php if($App->GetProjectEnvType('dev')): ?>
-<div class="PageDevNote">
+$ProjectName = $App->Config->Get(Atlantis\Key::ConfProjectName) ?? 'Hello';
+$LogoImageURL = $Surface->Get($TKLogoImageURL) ?? NULL;
+$ContainerClass = $Surface->Get($TKHeaderContainer) ?? 'container';
+
+$ShowSpacer = $Surface->Get($TKHeaderShowSpacer) ?? TRUE;
+$ShowDevNote = $App->GetProjectEnvType('dev');
+$ShowDemoNote = $App->GetProjectEnvType('demo');
+
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////// ?>
+
+<?php if($ShowDevNote): ?>
+<div class="atl-page-note-dev">
 	<div class="bg-gold"></div>
 	<label class="tc-black">DEV</label>
 </div>
-<?php elseif($App->GetProjectEnvType('demo')): ?>
-<div class="PageDevNote">
+<?php elseif($ShowDemoNote): ?>
+<div class="atl-page-note-dev">
 	<div class="bg-purple"></div>
 	<label class="tc-white">DEMO</label>
 </div>
 <?php endif; ?>
 
-<header class="PageHeader">
-	<div class="<?php $Util->Print($Contain ? 'container' : 'container-fluid') ?>">
+<header class="atl-page-header">
+	<div class="<?php $Util->Print($ContainerClass) ?>">
 		<div class="row align-items-center justify-content-between">
 
 			<!-- LOGO -->
 			<div class="col-auto">
 				<a href="/">
 					<?php if($LogoImageURL): ?>
-					<img src="<?php $Util->Print($LogoImageURL) ?>" class="on-light-invert" style="max-height:20px;" />
+					<img class="atl-page-header-logo-img" src="<?php $Util->Print($LogoImageURL) ?>" alt="<?php $Util->Print($ProjectName) ?>" />
 					<?php else: ?>
-					<span class="fw-bold"><?php $Util->Print($ProjectName) ?></span>
+					<span class="atl-page-header-logo-text"><?php $Util->Print($ProjectName) ?></span>
 					<?php endif; ?>
 				</a>
 			</div>
 
 			<!-- SPACER -->
-			<div class="col"><hr class="opacity-10" /></div>
+			<div class="col">
+				<?php if($ShowSpacer): ?>
+				<hr class="atl-page-header-spacer" />
+				<?php endif; ?>
+			</div>
 
+			<!-- SITE MENU BUTTON -->
 			<div class="col-auto">
-				<button class="btn btn-dark d-flex align-items-center px-2 py-0 gap-2" data-sitemenu="SiteMenuMain">
+				<button class="btn btn-outline-light atl-page-header-menubtn d-flex align-items-center gap-2" data-sitemenu="SiteMenuMain">
 					<span>
-						<span class="o-70">Menu</span>
+						<span>Menu</span>
 					</span>
 					<span>
-						<i class="mdi mdi-menu fs-largerest mr-0"></i>
+						<i class="mdi mdi-menu mr-0"></i>
 					</span>
 				</button>
 			</div>
 
 		</div>
-
 	</div>
 </header>
 
-<?php
-
-echo Nether\Atlantis\UI\SiteMenu::FromSurfaceWith($Surface, [
-	'Pages' => [
-		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
-			'UUID'    => 'SiteMenuMain',
-			'Content' => 'area:sitemenu-main/root'
-		]),
-		Nether\Atlantis\UI\SiteMenuPage::FromSurfaceWith($Surface, [
-			'UUID'    => 'SiteMenuDocs',
-			'Content' => 'area:sitemenu-main/docs'
-		])
-	]
-]);
-
-?>
+<?php $Surface->Area('design/header-sitemenu') ?>

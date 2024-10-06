@@ -1,20 +1,37 @@
-<?php
+<?php //////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @var Nether\Atlantis\Engine $App
  * @var Nether\Atlantis\Struct\TemplateHelper $Util
  */
 
-$Theme = match(TRUE) {
-	isset($_COOKIE['theme']) => $_COOKIE['theme'],
-	default => 'dark'
-};
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-?>
+// purposely using 'lite' because we are going to walk away from how bootstrap
+// did this a little bit.
+
+$Current = $Surface->Get('Page.Theme.Mode');
+
+$Valid = Nether\Common\Datastore::FromArray([
+	'dark'  => 'Dark',
+	'lite'  => 'Light'
+]);
+
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////// ?>
 
 <div class="form-check form-switch">
 	<label class="form-check-label text-muted text-uppercase font-size-small cursor-pointer">
-		<input type="checkbox" role="switch" class="form-check-input nui-theme-switch" data-nui-theme-switch="dark/light" <?php echo $Util->GetCheckedHTML($Theme === 'light') ?> />
+
+		<input type="checkbox"
+		role="switch"
+		class="form-check-input nui-theme-switch"
+		data-nui-theme-switch="<?php $Util->Print($Valid->Keystore()->Join('/')) ?>"
+		<?php echo $Util->GetCheckedHTML($Valid->IsLastKey($Current)) ?>
+		/>
+
 		Dark / Light
 	</label>
 </div>
