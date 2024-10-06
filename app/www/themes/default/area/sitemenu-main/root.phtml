@@ -10,7 +10,7 @@ use Nether\User;
  * @var Atlantis\UI\SiteMenuPage       $Element
  */
 
-$Element->Title = 'Main Menu';
+$Element->Title = $App->Config->Get(Atlantis\Key::ConfProjectName);
 
 $AllowLogin = $App->Config[Atlantis\Key::ConfUserAllowLogin];
 $AllowSignup = $App->Config[Atlantis\Key::ConfUserAllowSignup];

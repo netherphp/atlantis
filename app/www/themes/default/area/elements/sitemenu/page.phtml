@@ -40,21 +40,26 @@ $Content = match(TRUE) {
 
 ?>
 
-<div id="<?php $Util->Print($Element->GetID()) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high" data-bs-scroll="true" data-bs-backdrop="false">
+<div id="<?php $Util->Print($Element->GetID()) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high atl-sitemenu-page" data-bs-scroll="true" data-bs-backdrop="false">
+
 	<div class="offcanvas-header">
-
-		<h5 class="offcanvas-title">
-			<?php $Util->Print($Element->Title) ?>
-
-			<?php if($Element->Subtitle): ?>
-			<div class="offcanvas-subtitle">
-				<i class="mdi mdi-chevron-right"></i> <?php $Util->Print($Element->Subtitle) ?>
+		<div>
+			<div class="offcanvas-title">
+				<?php $Util->Print($Element->Title) ?>
+				<?php if($Element->Subtitle): ?>
+				<div class="offcanvas-subtitle">
+					<i class="mdi mdi-chevron-right"></i> <?php $Util->Print($Element->Subtitle) ?>
+				</div>
+				<?php endif; ?>
 			</div>
-			<?php endif; ?>
-		</h5>
-
-		<button type="button" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent" class="btn-close"></button>
+		</div>
+		<div>
+			<button type="button" class="btn btn-dark" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent">
+				<i class="mdi mdi-close"></i>
+			</button>
+		</div>
 	</div>
+
 	<div class="offcanvas-body">
 
 	<?php if($Element->GetID() !== 'SiteMenuRoot'): ?>

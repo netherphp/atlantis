@@ -1,6 +1,21 @@
+.atl-sitemenu-page .offcanvas-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center !important;
+}
 
-.offcanvas-header {
-	align-items: start !important;
+.atl-sitemenu-page .offcanvas-header .offcanvas-title {
+	font-weight: bold;
+}
+
+.atl-sitemenu-page .offcanvas-header .btn-dark {
+	padding: 0rem 0.5rem;
+	font-size: 1.5rem;
+}
+
+.atl-sitemenu-page .offcanvas-header .btn-dark .mdi {
+	margin: 0px;
+	padding: 0px;
 }
 
 .sitemenu-body-lock {
