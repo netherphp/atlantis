@@ -206,15 +206,25 @@ application instance.
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Info('return if this environment is indeed the one that was asked about.')]
 	public function
 	IsEnv(string $Env):
 	bool {
-	/*//
-	Return if this environment is indeed the one that was asked about.
-	//*/
 
 		return ($this->ProjectEnv === $Env);
 	}
+
+	#[Common\Meta\Date('2024-10-06')]
+	#[Common\Meta\Info('match the env prefix like is dev-local dev.')]
+	public function
+	IsEnvType(string $Type):
+	bool {
+
+		return ($this->GetProjectEnvType() === $Type);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	IsDev():
