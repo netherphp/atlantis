@@ -27,18 +27,23 @@ $Surface->QueueOnce('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 	->AddStyleURL('https://fonts.googleapis.com/css2?family=Beiruti:wght@200..900&display=swap')
 	->AddStyleURL('/themes/default/lib/css/swiper-bundle.min.css')
 	->Define([
-		'Page.Body.Classes'           => new Nether\Common\Datastore,
-		'Page.Theme.Mode'             => $PageThemeMode,
-		'Page.Theme.FavIconURL'       => '/themes/default/gfx/favicon.ico',
-		'Page.Theme.Header.Container' => 'container',
-		'Page.Theme.Header.LogoURL'   => '/themes/default/gfx/atlantis-word.png',
 
+		// audited oct 2024
+		'Page.Body.Classes'               => new Nether\Common\Datastore,
+		'Page.Theme.Mode'                 => $PageThemeMode,
+		'Page.Theme.FavIconURL'           => '/themes/default/gfx/favicon.ico',
+		'Page.Theme.Header.Container'     => 'container',
+		'Page.Theme.Header.LogoURL'       => '/themes/default/gfx/atlantis-word.png',
+		'Page.Theme.Header.MenuBtn.Label' => 'Menu',
+
+		// old
 		'Theme.Page.MainCSS'          => $PageMainCSS,
 		'Theme.SiteMenu.Icons'        => TRUE,
 		'Theme.SiteMenu.Icons.NoIcon' => 'mdi mdi-circle-medium',
 		'Theme.SiteMenu.Icons.Next'   => 'mdi mdi-chevron-double-right',
 		'Theme.SiteMenu.ItemArea'     => 'sitemenu-main/item',
 		'Theme.Page.Wrapper'          => 'design/page-wrapper'
+
 	]);
 
 	return;

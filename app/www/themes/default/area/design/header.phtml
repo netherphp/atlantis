@@ -25,12 +25,14 @@ use Nether\User;
 $TKHeaderContainer = 'Page.Theme.Header.Container';
 $TKLogoImageURL = 'Page.Theme.Header.LogoURL';
 $TKHeaderShowSpacer = 'Page.Theme.Header.Spacer';
+$TKHeaderMenuBtnLbl = 'Page.Theme.Header.MenuBtn.Label';
 
 ////////
 
 $ProjectName = $App->Config->Get(Atlantis\Key::ConfProjectName) ?? 'Hello';
 $LogoImageURL = $Surface->Get($TKLogoImageURL) ?? NULL;
 $ContainerClass = $Surface->Get($TKHeaderContainer) ?? 'container';
+$MenuBtnLbl = $Surface->Get($TKHeaderMenuBtnLbl) ?? NULL;
 
 $ShowSpacer = $Surface->Get($TKHeaderShowSpacer) ?? TRUE;
 $ShowDevNote = $App->GetProjectEnvType('dev');
@@ -76,9 +78,11 @@ $ShowDemoNote = $App->GetProjectEnvType('demo');
 			<!-- SITE MENU BUTTON -->
 			<div class="col-auto">
 				<button class="btn btn-outline-light atl-page-header-menubtn d-flex align-items-center gap-2" data-sitemenu="SiteMenuMain">
+					<?php if($MenuBtnLbl): ?>
 					<span>
-						<span>Menu</span>
+						<span><?php $Util->Print($MenuBtnLbl) ?></span>
 					</span>
+					<?php endif; ?>
 					<span>
 						<i class="mdi mdi-menu mr-0"></i>
 					</span>
