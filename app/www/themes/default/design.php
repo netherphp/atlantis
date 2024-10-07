@@ -46,6 +46,15 @@ $Surface->QueueOnce('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 
 	]);
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// include google recaptcha script if keys are defined.
+
+	if($App->Config->IsTrue('Google.ReCaptcha.PublicKey'))
+	if($App->Config->IsTrue('Google.ReCaptcha.PrivateKey'))
+	$App->Surface->AddScriptURL('https://www.google.com/recaptcha/api.js');
+
 	return;
 });
 

@@ -11,6 +11,7 @@ extends Atlantis\PublicWeb {
 
 	#[Avenue\Meta\RouteHandler('/::Alias::', Verb: 'GET')]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
+	#[Avenue\Meta\ExtraDataArgs]
 	public function
 	View(string $Alias, Atlantis\Page\Entity $Page):
 	void {
