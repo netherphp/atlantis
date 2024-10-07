@@ -597,7 +597,7 @@ grouped are to be considered depreciated. */
 /*******************************************************************************
 **** offcanvas tweaks *********************************************************/
 
-.offcanvas {
+.zoffcanvas .atl-offcanvas-page {
 	box-shadow: 0px 0px 24px var(--theme-black);
 	z-index: 9101;
 	scrollbar-gutter: auto;
@@ -606,7 +606,7 @@ grouped are to be considered depreciated. */
 	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast), opacity var(--theme-anim-ease-fast), filter var(--theme-anim-ease-fast);
 }
 
-.offcanvas.offcanvas-glass {
+.zoffcanvas.offcanvas-glass .atl-offcanvas-page {
 	background-color: var(--theme-glass-bg-75);
 	backdrop-filter: var(--theme-glass-filter-thick);
 	-webkit-backdrop-filter: var(--theme-glass-filter-thick);

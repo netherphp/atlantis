@@ -1,15 +1,31 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 namespace Nether\Atlantis\UI;
 
 use Nether\Common;
 use Nether\Surface;
 
+################################################################################
+################################################################################
+
 class SiteMenuPage
 extends Surface\Element {
 
-	////////////////////////////////////////////////////////////////
-	// IMPLEMENTS: Surface\Element /////////////////////////////////
+	public SiteMenu
+	$Menu;
+
+	public string
+	$Title = '';
+
+	public string
+	$Subtitle = '';
+
+	public mixed
+	$Content = '';
+
+	public mixed
+	$Footer = '';
 
 	public string
 	$Area = 'elements/sitemenu/page';
@@ -29,24 +45,16 @@ extends Surface\Element {
 		return 'unknownmenu';
 	}
 
-	public SiteMenu
-	$Menu;
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	SetMenu(SiteMenu $Menu):
 	static {
 
 		$this->Menu = $Menu;
+
 		return $this;
 	}
-
-	public string
-	$Title = '';
-
-	public string
-	$Subtitle = '';
-
-	public mixed
-	$Content = '';
 
 }

@@ -21,6 +21,8 @@ use Nether\User;
 // data-bs-scroll="true" no bootstrap auto managed body props/classes.
 // data-bs-backdrop="false" no bootstrap auto managed overlay backdrops.
 
+$ElementID = $Element->GetID();
+
 $Content = match(TRUE) {
 	($Element->Content instanceof Surface\Element)
 	=> $Element->Content->Render(),
@@ -38,40 +40,68 @@ $Content = match(TRUE) {
 	}
 };
 
+$Footer = match(TRUE) {
+	($Element->Footer instanceof Surface\Element)
+	=> $Element->Footer->Render(),
+
+	(is_callable($Element->Footer))
+	=> ($Element->Footer)($__SCOPE),
+
+	default
+	=> match(TRUE) {
+		(str_starts_with($Element->Footer, 'area:'))
+		=> $Surface->GetArea(substr($Element->Footer, 4), $__SCOPE),
+
+		default
+		=> $Element->Footer
+	}
+};
+
+$ShowBackBtn = $ElementID !== 'SiteMenuRoot';
+$ShowFooter = (strlen($Footer) > 0);
+
 ?>
 
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="offcanvas offcanvas-end offcanvas-glass z-index-high atl-sitemenu-page" data-bs-scroll="true" data-bs-backdrop="false">
+	<div class="atl-sitemenu-page-container">
 
-	<div class="offcanvas-header">
-		<div>
-			<div class="offcanvas-title">
-				<?php $Util->Print($Element->Title) ?>
-				<?php if($Element->Subtitle): ?>
-				<div class="offcanvas-subtitle">
-					<i class="mdi mdi-chevron-right"></i> <?php $Util->Print($Element->Subtitle) ?>
+		<div class="offcanvas-header">
+			<div>
+				<div class="offcanvas-title">
+					<?php $Util->Print($Element->Title) ?>
+					<?php if($Element->Subtitle): ?>
+					<div class="offcanvas-subtitle">
+						<i class="mdi mdi-chevron-right"></i> <?php $Util->Print($Element->Subtitle) ?>
+					</div>
+					<?php endif; ?>
 				</div>
-				<?php endif; ?>
+			</div>
+			<div>
+				<button type="button" class="btn btn-dark" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent">
+					<i class="mdi mdi-close"></i>
+				</button>
 			</div>
 		</div>
-		<div>
-			<button type="button" class="btn btn-dark" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent">
-				<i class="mdi mdi-close"></i>
-			</button>
+
+		<div class="offcanvas-body">
+			<?php if($ShowBackBtn): ?>
+			<div class="mb-4">
+				<a href="#" class="tt-uppercase" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent">
+					<i class="mdi mdi-chevron-double-left"></i>
+					Back
+				</a>
+			</div>
+			<?php endif; ?>
+
+			<?php echo $Content ?>
+
 		</div>
+
+		<?php if($ShowFooter): ?>
+		<div class="offcanvas-footer">
+			<?php echo $Footer ?>
+		</div>
+		<?php endif; ?>
 	</div>
 
-	<div class="offcanvas-body">
-
-	<?php if($Element->GetID() !== 'SiteMenuRoot'): ?>
-	<div class="mb-4">
-		<a href="#" class="tt-uppercase" data-<?php $Util->Print($Element->GetDataKey()) ?>-close="parent">
-			<i class="mdi mdi-chevron-double-left"></i>
-			Back
-		</a>
-	</div>
-	<?php endif; ?>
-
-<?php echo $Content ?>
-
-	</div>
 </div>

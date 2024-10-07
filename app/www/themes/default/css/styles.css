@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-06 22:37:51 UTC
+@date 2024-10-07 07:06:55 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -1124,7 +1124,7 @@ grouped are to be considered depreciated. */
 /*******************************************************************************
 **** offcanvas tweaks *********************************************************/
 
-.offcanvas {
+.zoffcanvas .atl-offcanvas-page {
 	box-shadow: 0px 0px 24px var(--theme-black);
 	z-index: 9101;
 	scrollbar-gutter: auto;
@@ -1133,7 +1133,7 @@ grouped are to be considered depreciated. */
 	transition: transform var(--theme-anim-ease-fast), width var(--theme-anim-ease-fast), padding-right var(--theme-anim-ease-fast), opacity var(--theme-anim-ease-fast), filter var(--theme-anim-ease-fast);
 }
 
-.offcanvas.offcanvas-glass {
+.zoffcanvas.offcanvas-glass .atl-offcanvas-page {
 	background-color: var(--theme-glass-bg-75);
 	backdrop-filter: var(--theme-glass-filter-thick);
 	-webkit-backdrop-filter: var(--theme-glass-filter-thick);
@@ -3753,6 +3753,59 @@ is being used and then prefixing all these with that theme name, if i recall. */
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/sitemenu.css ///////////////////////////////////////////////*/
 
+:root {
+	--theme-sitemenu-bg: #000000AA;
+	--theme-sitemenu-fg: var(--theme-white);
+	--theme-sitemenu-blur: 8px;
+	--theme-sitemenu-page-padding: 0.0rem;
+	--theme-sitemenu-page-corner: 0px;
+	--theme-sitemenu-page-edge: 0px solid #FFFFFF22;
+	--theme-sitemenu-page-shadow: 0px 0px 14px #000000AA;
+}
+
+/* bootstrap resets */
+
+.atl-sitemenu-page.offcanvas {
+	background: transparent;
+}
+
+/* atlantis sitemenu */
+
+.atl-sitemenu .atl-sitemenu-page.show,
+.atl-sitemenu .atl-sitemenu-page.showing,
+.atl-sitemenu .atl-sitemenu-page.hiding {
+
+}
+
+.atl-sitemenu .atl-sitemenu-page.show {
+
+}
+
+/* atlantis sitemenu page */
+
+.atl-sitemenu-page {
+	border: 0px;
+	padding: var(--theme-sitemenu-page-padding);
+}
+
+.atl-sitemenu-page.offcanvas-end {
+	border-left: var(--theme-sitemenu-page-edge) !important;
+	margin-right: var(--theme-sitemenu-page-padding);
+}
+
+.atl-sitemenu-page-container {
+	display: flex;
+	flex-direction: column;
+
+	background-color: var(--theme-sitemenu-bg);
+	color: var(--theme-sitemenu-fg);
+	backdrop-filter: blur(var(--theme-sitemenu-blur));
+	border-radius: var(--theme-sitemenu-page-corner);
+	box-shadow: var(--theme-sitemenu-page-shadow);
+	min-height: 100%;
+	overflow: hidden;
+}
+
 .atl-sitemenu-page .offcanvas-header {
 	display: flex;
 	justify-content: space-between;
@@ -3771,6 +3824,18 @@ is being used and then prefixing all these with that theme name, if i recall. */
 .atl-sitemenu-page .offcanvas-header .btn-dark .mdi {
 	margin: 0px;
 	padding: 0px;
+}
+
+.atl-sitemenu-page .offcanvas-body {
+	overflow: hidden;
+	overflow-y: scroll;
+	height: 100%;
+}
+
+.atl-sitemenu-page .offcanvas-footer {
+	font-size: small;
+	padding: 1rem;
+	text-align: center;
 }
 
 .sitemenu-body-lock {

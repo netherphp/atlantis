@@ -1,3 +1,56 @@
+:root {
+	--theme-sitemenu-bg: #000000AA;
+	--theme-sitemenu-fg: var(--theme-white);
+	--theme-sitemenu-blur: 8px;
+	--theme-sitemenu-page-padding: 0.0rem;
+	--theme-sitemenu-page-corner: 0px;
+	--theme-sitemenu-page-edge: 0px solid #FFFFFF22;
+	--theme-sitemenu-page-shadow: 0px 0px 14px #000000AA;
+}
+
+/* bootstrap resets */
+
+.atl-sitemenu-page.offcanvas {
+	background: transparent;
+}
+
+/* atlantis sitemenu */
+
+.atl-sitemenu .atl-sitemenu-page.show,
+.atl-sitemenu .atl-sitemenu-page.showing,
+.atl-sitemenu .atl-sitemenu-page.hiding {
+
+}
+
+.atl-sitemenu .atl-sitemenu-page.show {
+
+}
+
+/* atlantis sitemenu page */
+
+.atl-sitemenu-page {
+	border: 0px;
+	padding: var(--theme-sitemenu-page-padding);
+}
+
+.atl-sitemenu-page.offcanvas-end {
+	border-left: var(--theme-sitemenu-page-edge) !important;
+	margin-right: var(--theme-sitemenu-page-padding);
+}
+
+.atl-sitemenu-page-container {
+	display: flex;
+	flex-direction: column;
+
+	background-color: var(--theme-sitemenu-bg);
+	color: var(--theme-sitemenu-fg);
+	backdrop-filter: blur(var(--theme-sitemenu-blur));
+	border-radius: var(--theme-sitemenu-page-corner);
+	box-shadow: var(--theme-sitemenu-page-shadow);
+	min-height: 100%;
+	overflow: hidden;
+}
+
 .atl-sitemenu-page .offcanvas-header {
 	display: flex;
 	justify-content: space-between;
@@ -16,6 +69,18 @@
 .atl-sitemenu-page .offcanvas-header .btn-dark .mdi {
 	margin: 0px;
 	padding: 0px;
+}
+
+.atl-sitemenu-page .offcanvas-body {
+	overflow: hidden;
+	overflow-y: scroll;
+	height: 100%;
+}
+
+.atl-sitemenu-page .offcanvas-footer {
+	font-size: small;
+	padding: 1rem;
+	text-align: center;
 }
 
 .sitemenu-body-lock {
