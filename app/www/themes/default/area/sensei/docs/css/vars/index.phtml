@@ -1,0 +1,75 @@
+<?php
+
+use Nether\Atlantis;
+
+/**
+ * @var Routes\Docs $Route
+ */
+
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Variables',
+	'Info'  => (''
+		. 'These are variables which can be overridden in the local theme to change a few aspects of misc components without having to fully overwrite their styles. '
+		. 'Most of them should be applied to a stylesheet\'s :root element.'
+	),
+	'Trail' => [ Atlantis\Struct\Item::New(Title: 'CSS', URL: '/docs/css') ]
+]);
+
+?>
+
+<div class="mb-6">
+	<?php $Surface->Area('sensei/docs/css/__nav', [ 'Section'=> 'vars' ]) ?>
+</div>
+
+<div class="cargobay">
+	<section>
+		<div class="container">
+
+<h3>Page Header</h3>
+<hr class="atl-hr-fancy" />
+<pre>
+:root {
+	--theme-header-bg: var(--theme-black);
+	--theme-header-fg: var(--theme-white);
+	--theme-header-link-fg: var(--theme-white);
+	--theme-header-link-fg-hover: var(--theme-orange-alt);
+	--theme-header-pad-x: 0.00rem;
+	--theme-header-pad-y: 0.75rem;
+}
+</pre>
+
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+
+<h3>Blog</h3>
+<hr class="atl-hr-fancy" />
+<pre>
+:root {
+	--atl-blog-bg0: var(--theme-black); /* blog header overall bg */
+
+	--atl-blog-bg1: var(--theme-black); /* primary gradient 1 */
+	--atl-blog-bg2: var(--theme-white); /* primary gradient 2 */
+
+	--atl-blog-bg3: var(--theme-black); /* secondary gradient 1 */
+	--atl-blog-bg4: var(--theme-white); /* secondary gradient 2 */
+	--atl-blog-fg1: var(--theme-white); /* titlebar */
+	--atl-blog-fg2: var(--theme-black); /* post date */
+
+	--atl-blog-h1-fg: var(--theme-white);
+	--atl-blog-h2-fg: var(--theme-white);
+	--atl-blog-h3-fg: var(--theme-white);
+	--atl-blog-h4-fg: var(--theme-white);
+	--atl-blog-h5-fg: var(--theme-white);
+	--atl-blog-h6-fg: var(--theme-white);
+}
+</pre>
+
+		</div>
+	</section>
+
+</div>
+
+<hr class="border-0 mb-4" />
