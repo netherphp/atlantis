@@ -1,5 +1,5 @@
 /*//
-@date 2024-10-07 07:06:55 UTC
+@date 2024-10-12 06:33:54 UTC
 @files 43 [
     "src\/imports.css",
     "src\/main.css",
@@ -3129,6 +3129,16 @@ is being used and then prefixing all these with that theme name, if i recall. */
 
 .atl-blog-post-row .ratiobox a {
 	border: 0px !important;
+}
+
+/* utility */
+
+.atl-blog-bg-grad1 {
+	background-image: linear-gradient(90deg, var(--atl-blog-bg1), var(--atl-blog-bg2) );
+}
+
+.atl-blog-bg-grad2 {
+	background-image: linear-gradient(90deg, var(--atl-blog-bg3), var(--atl-blog-bg4) );
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

@@ -33,14 +33,37 @@ $PostDateFancy = Common\Date::FromDateString($Post->DateCreated)->Get(Common\Val
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// these should be set in then pulled from the blog settings.
+$GetValueCSS = (fn(?string $Input)=> match(TRUE) {
+	(str_starts_with($Input, '--'))
+	=> sprintf('var(%s)', $Input),
+
+	(!!preg_match('/^[0-9a-fA-F]{6,8}/', $Input))
+	=> sprintf('#%s', $Input),
+
+	default
+	=> $Input
+});
+
+$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings'));
+$ThemeSettings->FilterPush('HeaderType', Common\Filters\Numbers::IntType(...));
+$ThemeSettings->FilterPush('Grad1Left', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('Grad1Right', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('Grad2Left', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('Grad2Right', Common\Filters\Text::Trimmed(...));
+
+$Grad1Left = $ThemeSettings->Get('Grad1Left') ?: '--theme-orange' ;
+$Grad1Right = $ThemeSettings->Get('Grad1Right') ?: '--theme-grey-lt' ;
+$Grad2Left = $ThemeSettings->Get('Grad2Left') ?: '--theme-purple' ;
+$Grad2Right = $ThemeSettings->Get('Grad2Right') ?: '--theme-grey-lt' ;
+
+////////
 
 $CSSVars = new Common\Datastore([
 	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',    // header bg
-	'--atl-blog-bg1'   => 'var(--theme-orange)',     // primary gradient 1
-	'--atl-blog-bg2'   => 'var(--theme-grey-lt)',    // primary gradient 2
-	'--atl-blog-bg3'   => 'var(--theme-purple)',     // secondary gradient 1
-	'--atl-blog-bg4'   => 'var(--theme-grey-lt)',    // secondary gradient 2
+	'--atl-blog-bg1'   => $GetValueCSS($Grad1Left),    // primary gradient 1
+	'--atl-blog-bg2'   => $GetValueCSS($Grad1Right),   // primary gradient 2
+	'--atl-blog-bg3'   => $GetValueCSS($Grad2Left),    // secondary gradient 1
+	'--atl-blog-bg4'   => $GetValueCSS($Grad2Right),   // secondary gradient 2
 	'--atl-blog-fg1'   => 'var(--theme-black)',      // titlebar text
 	'--atl-blog-fg2'   => 'var(--theme-orange-alt)'  // accent texts
 ]);

@@ -26,7 +26,8 @@ $BlogURL = $Blog->GetURL();
 $Title = $Blog->Title;
 $Tagline = $Blog->Tagline;
 
-$ViewMode = 3;
+$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings'));
+$ThemeSettings->FilterPush('HeaderType', Common\Filters\Numbers::IntType(...));
 
 if($CacheBust) {
 	$HeaderImageURL .= sprintf('?v=%s', Nether\Common\UUID::V4());
@@ -36,7 +37,7 @@ if($CacheBust) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-if($ViewMode === 0)
+if($ThemeSettings->HeaderType === 0)
 return;
 
 ?>
@@ -69,24 +70,29 @@ return;
 	</div>
 
 	<!-- HEADER WALLPAPER -->
-	<?php if($ViewMode === 1): ?>
+	<?php if($ThemeSettings->HeaderType === 1): ?>
 	<section class="atl-blog-header-artwork">
 		<div class="container gx-0 gx-sm-4">
-			<div class="wallpapered p-4 atl-blog-header-artwork-graphic" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
+			<div class="wallpapered p-4 atl-blog-header-artwork-graphic pos-relative" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
+				<a href="<?php $Util->Print($BlogURL) ?>" class="pos-absolutely border-0"></a>
 			</div>
 		</div>
 	</section>
 	<?php endif; ?>
 
-	<?php if($ViewMode === 2 || $ViewMode === 3): ?>
+	<?php if($ThemeSettings->HeaderType === 2 || $ThemeSettings->HeaderType === 3): ?>
 	<section class="atl-blog-header-artsplit">
 		<div class="container gx-0 gx-sm-4 py-0 py-sm-4">
 			<div class="row">
-				<div class="col-auto d-none d-sm-block <?php $Util->Print($ViewMode === 3 ? 'order-2' : '') ?>">
-					<div class="ratiobox wallpapered square rounded atl-blog-header-artsplit-icon" style="background-image:url(<?php $Util->Print($IconImageURL) ?>);"></div>
+				<div class="col-auto d-none d-sm-block <?php $Util->Print($ThemeSettings->HeaderType === 3 ? 'order-2' : '') ?>">
+					<div class="ratiobox wallpapered square rounded atl-blog-header-artsplit-icon" style="background-image:url(<?php $Util->Print($IconImageURL) ?>);">
+						<a href="<?php $Util->Print($BlogURL) ?>" class="pos-absolutely border-0"></a>
+					</div>
 				</div>
-				<div class="col <?php $Util->Print($ViewMode === 3 ? 'order-1' : '') ?>">
-					<div class="wallpapered rounded atl-blog-header-artsplit-graphic" style="background-image:url(<?php $Util->Print($HeaderImageURL) ?>);"></div>
+				<div class="col <?php $Util->Print($ThemeSettings->HeaderType === 3 ? 'order-1' : '') ?>">
+					<div class="wallpapered rounded atl-blog-header-artsplit-graphic" style="background-image:url(<?php $Util->Print($HeaderImageURL) ?>);">
+						<a href="<?php $Util->Print($BlogURL) ?>" class="pos-absolutely border-0"></a>
+					</div>
 				</div>
 			</div>
 		</div>

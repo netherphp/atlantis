@@ -208,3 +208,12 @@
 	border: 0px !important;
 }
 
+/* utility */
+
+.atl-blog-bg-grad1 {
+	background-image: linear-gradient(90deg, var(--atl-blog-bg1), var(--atl-blog-bg2) );
+}
+
+.atl-blog-bg-grad2 {
+	background-image: linear-gradient(90deg, var(--atl-blog-bg3), var(--atl-blog-bg4) );
+}

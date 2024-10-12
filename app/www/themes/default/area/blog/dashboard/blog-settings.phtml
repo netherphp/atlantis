@@ -22,19 +22,63 @@ use Nether\User;
 $BlogAliasTemplate = Blog\Library::Get(Blog\Library::ConfBlogURL);
 $BlogAliasPrefix = str_replace(':BlogAlias:', '', $BlogAliasTemplate);
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+$GetValueCSS = (fn(?string $Input)=> match(TRUE) {
+	(str_starts_with($Input, '--'))
+	=> sprintf('var(%s)', $Input),
+
+	(!!preg_match('/^[0-9a-fA-F]{6,8}/', $Input))
+	=> sprintf('#%s', $Input),
+
+	default
+	=> $Input
+});
+
+$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings'));
+$ThemeSettings->FilterPush('HeaderType', Common\Filters\Numbers::IntType(...));
+$ThemeSettings->FilterPush('Grad1Left', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('Grad1Right', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('Grad2Left', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('Grad2Right', Common\Filters\Text::Trimmed(...));
+
+$Grad1Left = $ThemeSettings->Get('Grad1Left') ?: '--theme-orange' ;
+$Grad1Right = $ThemeSettings->Get('Grad1Right') ?: '--theme-grey-lt' ;
+$Grad2Left = $ThemeSettings->Get('Grad2Left') ?: '--theme-purple' ;
+$Grad2Right = $ThemeSettings->Get('Grad2Right') ?: '--theme-grey-lt' ;
+
+////////
+
+$CSSVars = new Common\Datastore([
+	'--atl-blog-bg0'   => 'var(--theme-grey-lt)',    // header bg
+	'--atl-blog-bg1'   => $GetValueCSS($Grad1Left),    // primary gradient 1
+	'--atl-blog-bg2'   => $GetValueCSS($Grad1Right),   // primary gradient 2
+	'--atl-blog-bg3'   => $GetValueCSS($Grad2Left),    // secondary gradient 1
+	'--atl-blog-bg4'   => $GetValueCSS($Grad2Right),   // secondary gradient 2
+	'--atl-blog-fg1'   => 'var(--theme-black)',      // titlebar text
+	'--atl-blog-fg2'   => 'var(--theme-orange-alt)'  // accent texts
+]);
+
+$CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 ($Surface)
 ->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 
 ?>
 
-<div class="container-fluid gx-0">
-	<?php $Surface->Area('blog/widgets/blog-header', [ 'Blog'=> $Blog, 'CacheBust'=> TRUE ]) ?>
-</div>
+<form id="BlogSettings" data-blog-id="<?php $Printer($Blog->ID) ?>">
+<div class="cargobay" style="<?php $Util->Print($CSSVars->Join(' ')) ?>">
 
-<div class="container pt-4 pb-4">
-	<form id="BlogSettings" data-blog-id="<?php $Printer($Blog->ID) ?>">
-
-		<div class="mb-4">
+	<!-- Blog Header -->
+	<section>
+		<div class="container">
+			<div class="rounded mb-4" style="overflow:hidden;">
+				<?php $Surface->Area('blog/widgets/blog-header', [ 'Blog'=> $Blog, 'CacheBust'=> TRUE ]) ?>
+			</div>
 			<div class="row tight justify-content-center">
 				<div class="col-12 col-md-auto mb-2 mb-md-0">
 					<button name="BtnUploadBlogImgIcon" type="button" class="btn btn-block btn-outline-light">
@@ -48,60 +92,138 @@ $BlogAliasPrefix = str_replace(':BlogAlias:', '', $BlogAliasTemplate);
 				</div>
 			</div>
 		</div>
+	</section>
 
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">Title</div>
-			<div>
-				<input name="Title" type="text" class="form-control" value="<?php $Printer($Blog->Title) ?>" />
-			</div>
-		</div>
+	<!-- Blog Settings -->
+	<section>
+		<div class="container">
 
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">Tagline</div>
-			<div>
-				<input name="Tagline" type="text" class="form-control" value="<?php $Printer($Blog->Tagline) ?>" />
-			</div>
-		</div>
-
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">URL Alias</div>
-			<div class="input-group">
-				<span class="ff-mono input-group-text"><?php $Util->Print($BlogAliasPrefix) ?></span>
-				<input type="text" name="Alias" class="form-control ff-mono" value="<?php $Printer($Blog->Alias) ?>" />
-			</div>
-		</div>
-
-		<div class="mb-4">
-			<div class="fw-bold text-uppercase">About</div>
-			<div>
-				<textarea name="Details" class="form-control" rows="6"><?php $Printer($Blog->Details) ?></textarea>
-			</div>
-		</div>
-
-		<div class="mb-4">
-			<input type="hidden" name="ID" value="<?php $Printer($Blog->ID) ?>" />
-			<div class="row justify-content-end">
-				<div class="col-auto">
-					<button type="submit" class="atl-statebtn atl-state-default">
-						<section class="btn btn-primary fs-large default">
-							<i class="mdi mdi-fw mdi-content-save"></i>
-							Save
-						</section>
-						<section class="btn btn-primary fs-large processing">
-							<i class="mdi mdi-fw mdi-loading mdi-spin-fast"></i>
-							Saving...
-						</section>
-						<section class="btn btn-success fs-large success">
-							<i class="mdi mdi-fw mdi-check"></i>
-							Success
-						</section>
-					</button>
+			<!-- TITLE -->
+			<div class="mb-4">
+				<div class="fw-bold text-uppercase">Title</div>
+				<div>
+					<input name="Title" type="text" class="form-control" value="<?php $Printer($Blog->Title) ?>" />
 				</div>
 			</div>
-		</div>
 
-	</form>
+			<!-- TAGLINE -->
+			<div class="mb-4">
+				<div class="fw-bold text-uppercase">Tagline</div>
+				<div>
+					<input name="Tagline" type="text" class="form-control" value="<?php $Printer($Blog->Tagline) ?>" />
+				</div>
+			</div>
+
+			<!-- URL Alias -->
+			<div class="mb-4">
+				<div class="fw-bold text-uppercase">URL Alias</div>
+				<div class="input-group">
+					<span class="ff-mono input-group-text"><?php $Util->Print($BlogAliasPrefix) ?></span>
+					<input type="text" name="Alias" class="form-control ff-mono" value="<?php $Printer($Blog->Alias) ?>" />
+				</div>
+			</div>
+
+			<!-- About/Bio -->
+			<div class="mb-4">
+				<div class="fw-bold text-uppercase">About</div>
+				<div>
+					<textarea name="Details" class="form-control" rows="6"><?php $Printer($Blog->Details) ?></textarea>
+				</div>
+			</div>
+
+			<!-- Theme Settings -->
+			<div class="mb-4">
+
+				<!-- Header Type -->
+				<div class="jumbotron jumbotron-outline rounded mb-4">
+					<h4>Header Type</h4>
+					<hr />
+					<div class="row fs-smallerer">
+						<div class="col ta-center">
+							<div class="ratiobox ultrawide rounded bg-grey-dk mb-4">
+								<div class="pos-absolute pos-v-center pos-h-center">disabled</div>
+							</div>
+
+							<input type="radio" name="BTSHeaderType" value="0" <?php $Util->Print($Util->GetCheckedHTML($ThemeSettings->Get('HeaderType') === 1)) ?> />
+						</div>
+						<div class="col ta-center">
+							<div class="ratiobox ultrawide rounded bg-grey-dk mb-4">
+								<div class="pos-absolute pos-v-center pos-h-center">[ a r t w o r k ]</div>
+							</div>
+							<input type="radio" name="BTSHeaderType" value="1" <?php $Util->Print($Util->GetCheckedHTML($ThemeSettings->Get('HeaderType') === 1)) ?> />
+						</div>
+						<div class="col ta-center">
+							<div class="ratiobox ultrawide rounded bg-grey-dk mb-4">
+								<div class="pos-absolute pos-v-center pos-h-center">[icon] [artwork]</div>
+							</div>
+							<input type="radio" name="BTSHeaderType" value="2" <?php $Util->Print($Util->GetCheckedHTML($ThemeSettings->Get('HeaderType') === 2)) ?> />
+						</div>
+						<div class="col ta-center">
+							<div class="ratiobox ultrawide rounded bg-grey-dk mb-4">
+								<div class="pos-absolute pos-v-center pos-h-center">[artwork] [icon]</div>
+							</div>
+							<input type="radio" name="BTSHeaderType" value="3" <?php $Util->Print($Util->GetCheckedHTML($ThemeSettings->Get('HeaderType') === 3)) ?> />
+						</div>
+					</div>
+				</div>
+
+				<!-- Colour Pickers -->
+				<div class="jumbotron jumbotron-outline rounded mb-4">
+					<h4>Colours</h4>
+					<div>Can handle hex codes <span class="ff-mono o-50">(# prefixed)</span> or CSS variables <span class="ff-mono o-50">(-- prefixed)</span>.</div>
+					<hr />
+					<div class="atl-blog-bg-grad1 rounded py-6 mb-4">
+						<div class="row justify-content-around align-items-center">
+							<div class="col col-auto">
+								<input type="text" name="BTSGrad1Left" class="form-control ff-mono ta-center" value="<?php $Util->Print($Grad1Left) ?>" />
+							</div>
+							<div class="col col-auto">
+								<input type="text" name="BTSGrad1Right" class="form-control ff-mono ta-center" value="<?php $Util->Print($Grad1Right) ?>" />
+							</div>
+						</div>
+					</div>
+					<div class="atl-blog-bg-grad2 rounded py-6">
+						<div class="row justify-content-around align-items-center">
+							<div class="col col-auto">
+								<input type="text" name="BTSGrad2Left" class="form-control ff-mono ta-center" value="<?php $Util->Print($Grad2Left) ?>" />
+							</div>
+							<div class="col col-auto">
+								<input type="text" name="BTSGrad2Right" class="form-control ff-mono ta-center" value="<?php $Util->Print($Grad2Right) ?>" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- Save Button -->
+			<div class="mb-4">
+				<input type="hidden" name="ID" value="<?php $Printer($Blog->ID) ?>" />
+				<div class="row justify-content-end">
+					<div class="col-auto">
+						<button type="submit" class="atl-statebtn atl-state-default">
+							<section class="btn btn-primary fs-large default">
+								<i class="mdi mdi-fw mdi-content-save"></i>
+								Save
+							</section>
+							<section class="btn btn-primary fs-large processing">
+								<i class="mdi mdi-fw mdi-loading mdi-spin-fast"></i>
+								Saving...
+							</section>
+							<section class="btn btn-success fs-large success">
+								<i class="mdi mdi-fw mdi-check"></i>
+								Success
+							</section>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</section>
 </div>
+</form>
 
 <script type="module">
 import Blog from '/share/atlantis/js/ents/blog.js';
@@ -131,6 +253,12 @@ class BlogSettingsDashboard {
 		this.inTagline = this.element.find('[name="Tagline"]');
 		this.inDetails = this.element.find('[name="Details"]');
 
+		this.btsHeaderType = this.element.find('[name="BTSHeaderType"]');
+		this.btsGrad1Left = this.element.find('[name="BTSGrad1Left"]');
+		this.btsGrad1Right = this.element.find('[name="BTSGrad1Right"]');
+		this.btsGrad2Left = this.element.find('[name="BTSGrad2Left"]');
+		this.btsGrad2Right = this.element.find('[name="BTSGrad2Right"]');
+
 		this.btnUpIcon = this.element.find('[name=BtnUploadBlogImgIcon]');
 		this.btnUpHeader = this.element.find('[name=BtnUploadBlogImgHeader]');
 		this.btnSubmit = this.element.find('.atl-statebtn');
@@ -140,7 +268,13 @@ class BlogSettingsDashboard {
 
 	bindElements() {
 
+		let self = this;
+
+		////////
+
 		this.element.on('submit', this.onSubmitForm.bind(this));
+
+		////////
 
 		new Uploader(this.btnUpIcon, {
 			'conf': '/api/file/upload',
@@ -153,6 +287,51 @@ class BlogSettingsDashboard {
 			'dataset': { 'BlogID': this.id, 'Type': 'blog-img-header' },
 			'onSuccess': 'reload'
 		});
+
+		////////
+
+		this.btsGrad1Left.on('keyup', function() {
+			self.updateCSSVar('--atl-blog-bg1', this.value);
+			return;
+		});
+
+		this.btsGrad1Right.on('keyup', function() {
+			self.updateCSSVar('--atl-blog-bg2', this.value);
+			return;
+		});
+
+		this.btsGrad2Left.on('keyup', function() {
+			self.updateCSSVar('--atl-blog-bg3', this.value);
+			return;
+		});
+
+		this.btsGrad2Right.on('keyup', function() {
+			self.updateCSSVar('--atl-blog-bg4', this.value);
+			return;
+		});
+
+		return;
+	};
+
+	updateCSSVar(name, value) {
+
+		if(value.match(/^--/) !== null) {
+			console.log('var');
+			(this.element.find('.cargobay'))
+			.css(name, `var(${value})`);
+			return;
+		}
+
+		if(value.match(/^[0-9a-fA-F]{6,8}/) !== null) {
+			console.log('shitty hex');
+			(this.element.find('.cargobay'))
+			.css(name, `#${value}`);
+			return;
+		}
+
+		console.log('whatever');
+		(this.element.find('.cargobay'))
+		.css(name, value);
 
 		return;
 	};
@@ -196,11 +375,17 @@ class BlogSettingsDashboard {
 
 		let self = this;
 
+		////////
+
 		this.btnSubmit
 		.attr('disabled', 'disabled')
 		.prop('disabled', true)
 		.removeClass('atl-state-default atl-state-success atl-state-error')
 		.addClass('atl-state-processing');
+
+		////////
+
+		let btsHeaderType = self.btsHeaderType.filter(':checked');
 
 		setTimeout(async function(){
 
@@ -209,7 +394,14 @@ class BlogSettingsDashboard {
 				Title: self.inTitle.val(),
 				Alias: self.inAlias.val(),
 				Tagline: self.inTagline.val(),
-				Details: self.inDetails.val()
+				Details: self.inDetails.val(),
+				ThemeSettings: JSON.stringify({
+					HeaderType: ((btsHeaderType.length > 0) ? btsHeaderType.val() : 1),
+					Grad1Left: self.btsGrad1Left.val(),
+					Grad1Right: self.btsGrad1Right.val(),
+					Grad2Left: self.btsGrad2Left.val(),
+					Grad2Right: self.btsGrad2Right.val()
+				})
 			})
 			.then(self.onSubmitDone.bind(self));
 
