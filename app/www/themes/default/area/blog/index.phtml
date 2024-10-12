@@ -42,7 +42,7 @@ $GetValueCSS = (fn(?string $Input)=> match(TRUE) {
 	=> $Input
 });
 
-$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings'));
+$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings') ?: []);
 $ThemeSettings->FilterPush('HeaderType', Common\Filters\Numbers::IntType(...));
 $ThemeSettings->FilterPush('Grad1Left', Common\Filters\Text::Trimmed(...));
 $ThemeSettings->FilterPush('Grad1Right', Common\Filters\Text::Trimmed(...));
