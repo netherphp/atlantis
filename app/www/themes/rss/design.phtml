@@ -19,7 +19,9 @@ use Nether\User;
  */
 
 ($Router->Response)
-->SetContentType('application/rss+xml');
+->SetContentType('text/xml');
+
+$PageURL = $Surface->Get('Page.URL') ?? $Router->Request->GetURL();
 
 ?>
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -27,7 +29,7 @@ use Nether\User;
 	<channel>
 		<atom:link href="<?php $Util->Print($Router->Request->GetURL()) ?>" rel="self" type="application/rss+xml" />
 		<title><?php $Util->Print($Surface->Get('Page.Title')) ?></title>
-		<link><?php $Util->Print($Router->Request->GetURL()) ?></link>
+		<link><?php $Util->Print($PageURL) ?></link>
 		<description><?php $Util->Print($App->Config->Get(Atlantis\Key::ConfProjectDescShort)) ?></description>
 
 <?php echo $Output ?>
