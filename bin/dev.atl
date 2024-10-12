@@ -279,6 +279,131 @@ extends Atlantis\TerminalApp {
 		return 0;
 	}
 
+	#[Common\Meta\Date('2024-10-11')]
+	#[Console\Meta\Command('sync')]
+	#[Console\Meta\Arg('source', 'The authorative copy of data.')]
+	#[Console\Meta\Arg('dest', 'The other copy of data.')]
+	#[Console\Meta\Info('Wrap RSYNC to do the one goddamn thing I use it for, to make a mirror of a source directory, in a way I can remember. The source is the authouritative copy, the mirror is the duplicate.')]
+	#[Console\Meta\Toggle('--soft', 'When updating a destination, do not delete files the source said have been deleted.')]
+	public function
+	HandleMirrorCommand():
+	int {
+
+		$Source = $this->GetInput(1);
+		$Dest = $this->GetInput(2);
+		$OptSoft = $this->GetOption('soft');
+		$Commit = $this->GetOption('commit');
+
+		$Cmd = new Common\Datastore;
+		$Line = NULL;
+		$Timer = NULL;
+		$CLI = NULL;
+		$DS = DIRECTORY_SEPARATOR;
+
+		////////
+
+		if(!$Source || !$Dest)
+		$this->Quit(1);
+
+		////////
+
+		$Cmd->Push('rsync');
+		$Cmd->Push('-azq');
+
+		if(!$OptSoft)
+		$Cmd->Push('--delete');
+
+		// can almost promise what you wanted to happen is not what will
+		// happen if i dont fix this for you. you always do the same damn
+		// thing:
+		//
+		// => /some/source/data /some/dest/data
+		//
+		// and rsync always does too
+		// => /some/dest/data/data
+		//
+		// because you need to say /some/source/data/. and you never do
+		// and never will.
+
+		if(!str_ends_with($Source, '.'))
+		$Source = "{$Source}{$DS}.";
+
+		$Cmd->Push(escapeshellarg($Source));
+		$Cmd->Push(escapeshellarg($Dest));
+
+		////////
+
+		$Line = $Cmd->Join(' ');
+
+		$this->PrintBulletList([
+			'Command' => $Line
+		]);
+
+		if(!$Commit) {
+			$this->PrintLn($this->Format(
+				'Use --commit to serious.',
+				static::FmtAccent
+			));
+			$this->PrintLn();
+
+			return 0;
+		}
+
+		////////
+
+		$Timer = new Common\Timer;
+		$CLI = new Console\Struct\CommandLineUtil($Line);
+
+		$Timer->Start();
+		$CLI->Run();
+		$Timer->Stop();
+
+		$this->PrintStatusMuted(sprintf(
+			'Done (%.2fs)',
+			$Timer->Get()
+		));
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('pullenv')]
+	public function
+	HandlePullEnv():
+	int {
+
+		$Commit = $this->GetOption('commit');
+		$Source = $this->GetInput(1) ?? NULL;
+		$Current = $this->App->GetProjectEnv();
+		$Commands = new Common\Datastore;
+
+		$this->PrintAppHeader('Pull Environment');
+		$this->PrintStatusWarning('This command is unfinished.');
+
+		////////
+
+		if($Source === $Current)
+		$this->Quit(1, $Source);
+
+		$Commands->Push(sprintf('ndb dump (but in the source env)'));
+		$Commands->Push(sprintf('dev.atl sync source dest'));
+
+		$this->PrintBulletList($Commands->Export());
+
+		////////
+
+		if(!$Commit) {
+			$this->PrintLn($this->Format(
+				'Use --commit to serious.',
+				static::FmtAccent
+			));
+			$this->PrintLn();
+
+			return 0;
+		}
+
+		return 0;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
