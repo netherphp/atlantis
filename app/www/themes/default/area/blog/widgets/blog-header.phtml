@@ -26,7 +26,7 @@ $BlogURL = $Blog->GetURL();
 $Title = $Blog->Title;
 $Tagline = $Blog->Tagline;
 
-$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings'));
+$ThemeSettings = new Common\Datafilter($Blog->GetExtraData('ThemeSettings') ?: []);
 $ThemeSettings->FilterPush('HeaderType', Common\Filters\Numbers::IntType(...));
 
 if($CacheBust) {
