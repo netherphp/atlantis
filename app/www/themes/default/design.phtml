@@ -19,12 +19,16 @@ use Nether\Surface;
 ################################################################################
 ################################################################################
 
+// 2024-10-01
+// Page.Theme.FavIconURL is deprecated use Page.FavIconURL.
+
 $PageThemeMode = $Surface->Get('Page.Theme.Mode');
-$PageFavIconURL = $Surface->Get('Page.Theme.FavIconURL') ?? $Surface->Get('Page.FavIconURL');
+$PageFavIconURL = $Surface->Get('Page.FavIconURL') ?? $Surface->Get('Page.Theme.FavIconURL') ?? $Surface->Get('Page.FavIconURL');
 $PageBodyClasses = $Surface->Get('Page.Body.Classes');
 $PageSubheader = $Surface->Get(Surface\Theme::KeyThemeSubheader);
 $PageThemeMainCSS = $Surface->Get('Theme.Page.MainCSS');
 $PageTitle = $Surface->Get('Page.Title');
+$PageFeedURL = $Surface->Get('Page.FeedURL');
 $PageImageURL = $Surface->Get('Page.ImageURL');
 $PageURL = $Router->Request->GetURL();
 $PageDomain = $Router->Request->Domain;
@@ -58,6 +62,9 @@ $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("lib/css/materialdesignicons.min.css?v={$CacheBuster}", 'default') ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("lib/css/simple-icons.min.css?v={$CacheBuster}", 'default') ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php $Util->ThemeURL("{$PageThemeMainCSS}?v={$CacheBuster}", 'default') ?>" />
+
+	<?php if($PageFeedURL): ?><link rel="alternate" type="application/rss+xml" href="<?php $Util->Print($PageFeedURL) ?>" />
+	<?php endif; ?>
 
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="<?php $Util->Print($PageURL) ?>" />

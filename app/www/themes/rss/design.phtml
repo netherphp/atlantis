@@ -21,16 +21,20 @@ use Nether\User;
 ($Router->Response)
 ->SetContentType('text/xml');
 
-$PageURL = $Surface->Get('Page.URL') ?? $Router->Request->GetURL();
+$FeedURL = $Router->Request->GetURL();
+
+$HomeTitle = $Surface->Get('Page.Title');
+$HomeURL = $Surface->Get('Page.HomeURL');
+$HomeDesc = $App->Config->Get(Atlantis\Key::ConfProjectDescShort);
 
 ?>
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<atom:link href="<?php $Util->Print($Router->Request->GetURL()) ?>" rel="self" type="application/rss+xml" />
-		<title><?php $Util->Print($Surface->Get('Page.Title')) ?></title>
-		<link><?php $Util->Print($PageURL) ?></link>
-		<description><?php $Util->Print($App->Config->Get(Atlantis\Key::ConfProjectDescShort)) ?></description>
+		<atom:link href="<?php $Util->Print($FeedURL) ?>" rel="self" type="application/rss+xml" />
+		<title><?php $Util->Print($HomeTitle) ?></title>
+		<link><?php $Util->Print($HomeURL) ?></link>
+		<description><?php $Util->Print($HomeDesc) ?></description>
 
 <?php echo $Output ?>
 

@@ -29,9 +29,12 @@ $Surface->QueueOnce('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
 	->Define([
 
 		// audited oct 2024
+		'Page.URL'                        => $App->Router->Request->GetURL(),
+		'Page.HomeURL'                    => '/',
+		'Page.FeedURL'                    => NULL,
+		'Page.FavIconURL'                 => '/themes/default/gfx/favicon.ico',
 		'Page.Body.Classes'               => new Nether\Common\Datastore,
 		'Page.Theme.Mode'                 => $PageThemeMode,
-		'Page.Theme.FavIconURL'           => '/themes/default/gfx/favicon.ico',
 		'Page.Theme.Header.Container'     => 'container',
 		'Page.Theme.Header.LogoURL'       => '/themes/default/gfx/atlantis-word.png',
 		'Page.Theme.Header.MenuBtn.Label' => 'Menu',
