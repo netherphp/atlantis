@@ -1,0 +1,275 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Browser;
+use Nether\Common;
+use Nether\Console;
+use Nether\Dye;
+use Nether\Storage;
+use Nether\User;
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('CodeServerTool', '5.0.0-dev')]
+#[Common\Meta\Info('Manage running a local code-server for remote development.')]
+class CodeServerTool
+extends Atlantis\TerminalApp {
+
+	#[Console\Meta\Command('csrun')]
+	public function
+	HandleCodeServerRun():
+	int {
+
+		$Bin = $this->App->FromProjectRoot('local/code-server/bin/code-server');
+		$ConfYaml = $this->App->FromProjectRoot('local/code-server/conf/config.yaml');
+		$ProjectPath = $this->App->GetProjectRoot();
+
+		$OptVerbose = $this->GetOption('v');
+		$Config = new Common\Datastore;
+		$Line = NULL;
+		$PProc = NULL;
+		$PLine = NULL;
+		$PPipe = NULL;
+
+		$this->PrintAppHeader('Run Code-Server...');
+
+		////////
+
+		(Common\Datastore::FromArray(file($ConfYaml)))
+		->Remap(fn(string $L)=> trim($L))
+		->Each(fn(string $L)=> $Config->Set(...explode(': ', $L, 2)));
+
+		////////
+
+		$Line = sprintf(
+			'%s --config %s %s',
+			escapeshellarg($Bin),
+			escapeshellarg($ConfYaml),
+			escapeshellarg($ProjectPath)
+		);
+
+		$PPipe = NULL;
+		$PLine = NULL;
+		$PProc = proc_open(
+			$Line,
+			[ ['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w'] ],
+			$PPipe
+		);
+
+		if(!is_resource($PProc))
+		$this->Quit(1);
+
+		////////
+
+		$BindAddr = $Config->Get('bind-addr');
+		$Password = $Config->Get('password');
+		list($IFace, $Port) = explode(':', $BindAddr);
+
+		$URL = sprintf(
+			'http://%s:%s',
+			$this->App->Config->Get(Atlantis\Key::ConfProjectDomain),
+			$Port
+		);
+
+		$this->PrintBulletList([
+			'URL'  => $URL,
+			'Pass' => $Password
+		]);
+
+		////////
+
+		while(is_resource($PProc)) {
+			while($PLine = fgets($PPipe[1])) {
+
+				if($OptVerbose)
+				echo $PLine;
+
+				continue;
+			}
+		}
+
+		////////
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('csinstall')]
+	#[Console\Meta\Info('Downloads Code-Server tarball and sets it up in /local/.')]
+	#[Console\Meta\Error(1, 'failed to download code server')]
+	public function
+	HandleCodeServerInstall():
+	int {
+
+		$BindAddr    = '0.0.0.0:2222';
+		$AuthPass    = base_convert(str_replace('-','',Common\UUID::V4()), 16, 36);
+		$CertFile    = 'false';
+		$CertKey     = 'false';
+
+		$InstallDir  = $this->App->FromProjectRoot('local/code-server');
+		$ConfDir     = $this->App->FromProjectRoot('local/code-server/conf');
+		$RunDir      = $this->App->FromProjectRoot('local/code-server/run');
+
+		$ReleaseURL  = 'https://github.com/coder/code-server/releases/download/v4.93.1/code-server-4.93.1-linux-amd64.tar.gz';
+		$ReleaseHash = 'b34e7b751c222829458e5557a7a45b14';
+		$ReleaseFile = $this->App->FromProjectRoot('temp/code-server.tar.gz');
+
+		////////
+
+		$this->PrintH2('Downloading Code Server');
+		$this->PrintStatusMuted($ReleaseURL);
+		//$this->HandleCodeServerInstall_DownloadTarball($ReleaseFile, $ReleaseURL, $ReleaseHash);
+
+		$this->PrintH2('Installing Code Server');
+		$this->PrintStatusMuted($InstallDir);
+		//$this->HandleCodeServerInstall_ExtractTarball($ReleaseFile, $InstallDir);
+		$this->HandleCodeServerInstall_SetupDefaultConfig(
+			$InstallDir, $ConfDir, $RunDir,
+			$BindAddr, $AuthPass,
+			$CertFile, $CertKey
+		);
+
+		$this->PrintH2('Installing Code Server Extensions');
+		//$this->HandleCodeServerInstall_InstallExtensions($InstallDir);
+
+		////////
+
+		return 0;
+	}
+
+	protected function
+	HandleCodeServerInstall_DownloadTarball(string $ReleaseFile, string $ReleaseURL, string $ReleaseHash):
+	void {
+
+		$Timer = new Common\Timer;
+		$Client = Browser\Client::FromURL($ReleaseURL);
+
+		////////
+
+		$Timer->Start();
+		$Client->Save($ReleaseFile);
+		$Timer->Stop();
+
+		if(md5_file($ReleaseFile) !== $ReleaseHash)
+		$this->Quit(1);
+
+		////////
+
+		$this->PrintOK(sprintf(
+			'%.2fsec, %s',
+			$Timer->Get(),
+			Common\Units\Bytes::FromInt(filesize($ReleaseFile))
+		));
+
+		return;
+	}
+
+	protected function
+	HandleCodeServerInstall_ExtractTarball(string $ReleaseFile, string $InstallDir):
+	void {
+
+		$Cmd = new Common\Datastore;
+		$Timer = new Common\Timer;
+		$Command = NULL;
+
+		////////
+
+		Common\Filesystem\Util::MkDir($InstallDir);
+
+		$Cmd->Push('tar -xzf')->Push(escapeshellarg($ReleaseFile));
+		$Cmd->Push('-C')->Push(escapeshellarg($InstallDir));
+		$Cmd->Push('--strip-components=1');
+		$Command = new Console\Struct\CommandLineUtil($Cmd->Join(' '));
+
+		$Timer->Start();
+		$Command->Run();
+		$Timer->Stop();
+
+		if($Command->HasError())
+		$this->Quit(2);
+
+		////////
+
+		$this->PrintOK(sprintf(
+			'%.2fsec',
+			$Timer->Get()
+		));
+
+		return;
+	}
+
+	protected function
+	HandleCodeServerInstall_SetupDefaultConfig(string $InstallDir, string $ConfDir, string $RunDir, string $BindAddr, string $Password, string $CertFile, string $CertKey):
+	void {
+
+		$ConfigFile = Common\Filesystem\Util::Pathify($ConfDir, 'config.yaml');
+
+		////////
+
+		Common\Filesystem\Util::MkDir($ConfDir);
+		Common\Filesystem\Util::MkDir($RunDir);
+
+		$Config = new Common\Datastore([
+			'bind-addr'            => $BindAddr,
+			'auth'                 => 'password',
+			'password'             => $Password,
+			'cert'                 => $CertFile,
+			'cert-key'             => $CertKey,
+			'user-data-dir'        => $RunDir,
+			'disable-telemetry'    => TRUE,
+			'disable-update-check' => TRUE
+		]);
+
+		$Buffer = new Common\Overbuffer;
+		$Buffer->Exec(fn() => $Config->EachKeyValue(
+			fn(string $K, string $V)
+			=> printf('%s: %s%s', $K, $V, PHP_EOL)
+		));
+
+		file_put_contents($ConfigFile, $Buffer->Get());
+
+		return;
+	}
+
+	protected function
+	HandleCodeServerInstall_InstallExtensions(string $InstallDir):
+	void {
+
+		// the web code cannot use the real extension store, but it seems
+		// like everyone else has been double posting extensions to this
+		// place and i had no idea.
+		// https://open-vsx.org
+
+		$OpenVSX = new Common\Datastore([
+			'bmewburn.vscode-intelephense-client',
+			'wongjn.php-sniffer'
+		]);
+
+		$OpenVSX->Each(function(string $EID) use($InstallDir) {
+
+			$Line = sprintf(
+				'%s/bin/code-server --install-extension %s',
+				$InstallDir,
+				escapeshellarg($EID)
+			);
+
+			$this->PrintStatus($Line);
+
+			$CLI = new Console\Struct\CommandLineUtil($Line);
+			$CLI->Run();
+			//$this->PrintLn($CLI->GetOutputString());
+
+			return;
+		});
+
+		return;
+	}
+
+}
+
+exit(DevTool::Realboot([]));

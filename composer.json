@@ -47,6 +47,7 @@
 	"bin": [
 		"bin/atlantis",
 		"bin/backup.atl",
+		"bin/codeserver.atl",
 		"bin/cron.atl",
 		"bin/date.atl",
 		"bin/dev.atl",
