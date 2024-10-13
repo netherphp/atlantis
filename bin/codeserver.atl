@@ -1,141 +1,232 @@
-<?php
-
-use Nether\Atlantis;
-use Nether\Browser;
-use Nether\Common;
-use Nether\Console;
-use Nether\Dye;
-use Nether\Storage;
-use Nether\User;
+<?php ##########################################################################
+################################################################################
 
 (function(){
 	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
 	return;
 })();
 
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
+################################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Browser;
+use Nether\Common;
+use Nether\Console;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// code-server cannot use the real vscode extension marketplace but a lot of
+// devs have been double posting to openvsx and i had no idea. then after i
+// made an account there it yelled at me to make a 2nd eclipse account and
+// accept an eclipse agreement and it made me laugh. so i didn't bother posting
+// my own but we can do vsix files anyway. moral of the story is that you have
+// to get the extension id's from https://open-vsx.org or have the vsix.
 
 #[Console\Meta\Application('CodeServerTool', '5.0.0-dev')]
 #[Common\Meta\Info('Manage running a local code-server for remote development.')]
 class CodeServerTool
 extends Atlantis\TerminalApp {
 
-	#[Console\Meta\Command('csrun')]
+	const
+	InstallDir = 'local/code-server',
+		RunFile = 'bin/code-server';
+
+	const
+	ConfDir = 'local/code-server/conf',
+		ConfFile = 'config.yaml';
+
+	const
+	RunDir = 'local/code-server/run';
+
+	const
+	ReleaseURL  = 'https://github.com/coder/code-server/releases/download/v4.93.1/code-server-4.93.1-linux-amd64.tar.gz',
+	ReleaseHash = 'b34e7b751c222829458e5557a7a45b14',
+	ReleaseFile = 'temp/code-server.tar.gz';
+
+	const
+	Extensions = [
+		'bmewburn.vscode-intelephense-client',
+		'wongjn.php-sniffer',
+		'https://github.com/bobmagicii/vscode-dashboard/releases/download/1.0.3/bobmagicii.dashyeah-1.0.3.vsix'
+	];
+
+	const
+	DefaultBindAddr = '0.0.0.0:2222',
+	DefaultCertFile = 'false',
+	DefaultCertKey  = 'false';
+
+	////////
+
+	protected string
+	$ProjectDomain;
+
+	protected string
+	$ProjectPath;
+
+	protected string
+	$FileBin;
+
+	protected string
+	$FileConf;
+
+	protected Common\Datastore
+	$Config;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	OnReady():
+	void {
+
+		parent::OnReady();
+
+		$this->ProjectDomain = $this->App->Config->Get(Atlantis\Key::ConfProjectDomain);
+		$this->ProjectPath = $this->App->GetProjectRoot();
+
+		$this->FileBin = $this->GetRunFile();
+		$this->FileConf = $this->GetConfFile();
+		$this->Config = $this->ReadConfigFile();
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetRunFile():
+	string {
+
+		return Common\Filesystem\Util::Pathify(
+			static::InstallDir,
+			static::RunFile
+		);
+	}
+
+	public function
+	GetConfFile():
+	string {
+
+		return Common\Filesystem\Util::Pathify(
+			static::ConfDir,
+			static::ConfFile
+		);
+	}
+
+	protected function
+	ReadConfigFile():
+	Common\Datastore {
+
+		$Output = new Common\Datastore;
+		$ConfFile = $this->GetConfFile();
+
+		////////
+
+		if(file_exists($ConfFile))
+		(Common\Datastore::FromArray(file($ConfFile)))
+		->Remap(fn(string $L)=> trim($L))
+		->Filter(fn(string $L)=> str_contains($L, ': '))
+		->Each(fn(string $L)=> $Output->Set( ...explode(': ', $L, 2) ));
+
+		////////
+
+		return $Output;
+	}
+
+	protected function
+	GeneratePassword():
+	string {
+
+		return base_convert(
+			str_replace('-','',Common\UUID::V4()),
+			16, 36
+		);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('run')]
 	public function
 	HandleCodeServerRun():
 	int {
 
-		$Bin = $this->App->FromProjectRoot('local/code-server/bin/code-server');
-		$ConfYaml = $this->App->FromProjectRoot('local/code-server/conf/config.yaml');
-		$ProjectPath = $this->App->GetProjectRoot();
-
-		$OptVerbose = $this->GetOption('v');
-		$Config = new Common\Datastore;
-		$Line = NULL;
-		$PProc = NULL;
-		$PLine = NULL;
-		$PPipe = NULL;
+		$Command = NULL;
+		$BindAddr = NULL;
+		$Password = NULL;
+		$IFace = NULL;
+		$Port = NULL;
 
 		$this->PrintAppHeader('Run Code-Server...');
 
 		////////
 
-		(Common\Datastore::FromArray(file($ConfYaml)))
-		->Remap(fn(string $L)=> trim($L))
-		->Each(fn(string $L)=> $Config->Set(...explode(': ', $L, 2)));
-
-		////////
-
-		$Line = sprintf(
+		$Command = sprintf(
 			'%s --config %s %s',
-			escapeshellarg($Bin),
-			escapeshellarg($ConfYaml),
-			escapeshellarg($ProjectPath)
+			escapeshellarg($this->GetRunFile()),
+			escapeshellarg($this->GetConfFile()),
+			escapeshellarg($this->ProjectPath)
 		);
 
-		$PPipe = NULL;
-		$PLine = NULL;
-		$PProc = proc_open(
-			$Line,
-			[ ['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w'] ],
-			$PPipe
-		);
+		$Proc = new Console\ProcessRunner($Command);
 
-		if(!is_resource($PProc))
+		if(!$Proc->Run()->IsOK())
 		$this->Quit(1);
 
 		////////
 
-		$BindAddr = $Config->Get('bind-addr');
-		$Password = $Config->Get('password');
+		$BindAddr = $this->Config->Get('bind-addr');
+		$Password = $this->Config->Get('password');
 		list($IFace, $Port) = explode(':', $BindAddr);
 
-		$URL = sprintf(
-			'http://%s:%s',
-			$this->App->Config->Get(Atlantis\Key::ConfProjectDomain),
-			$Port
-		);
-
 		$this->PrintBulletList([
-			'URL'  => $URL,
-			'Pass' => $Password
+			'Server' => sprintf('%s:%s', $IFace, $Port),
+			'URL'    => sprintf('http://%s:%s', $this->ProjectDomain, $Port),
+			'Pass'   => $Password
 		]);
 
-		////////
-
-		while(is_resource($PProc)) {
-			while($PLine = fgets($PPipe[1])) {
-
-				if($OptVerbose)
-				echo $PLine;
-
-				continue;
-			}
-		}
+		$Proc->Spin();
 
 		////////
 
 		return 0;
 	}
 
-	#[Console\Meta\Command('csinstall')]
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('install')]
 	#[Console\Meta\Info('Downloads Code-Server tarball and sets it up in /local/.')]
 	#[Console\Meta\Error(1, 'failed to download code server')]
 	public function
 	HandleCodeServerInstall():
 	int {
 
-		$BindAddr    = '0.0.0.0:2222';
-		$AuthPass    = base_convert(str_replace('-','',Common\UUID::V4()), 16, 36);
-		$CertFile    = 'false';
-		$CertKey     = 'false';
+		$BindAddr    = static::DefaultBindAddr;
+		$CertFile    = static::DefaultCertFile;
+		$CertKey     = static::DefaultCertKey;
+		$AuthPass    = $this->GeneratePassword();
+		$InstallDir  = $this->App->FromProjectRoot(static::InstallDir);
+		$RunDir      = $this->App->FromProjectRoot(static::RunDir);
 
-		$InstallDir  = $this->App->FromProjectRoot('local/code-server');
-		$ConfDir     = $this->App->FromProjectRoot('local/code-server/conf');
-		$RunDir      = $this->App->FromProjectRoot('local/code-server/run');
-
-		$ReleaseURL  = 'https://github.com/coder/code-server/releases/download/v4.93.1/code-server-4.93.1-linux-amd64.tar.gz';
-		$ReleaseHash = 'b34e7b751c222829458e5557a7a45b14';
-		$ReleaseFile = $this->App->FromProjectRoot('temp/code-server.tar.gz');
+		$ReleaseURL  = static::ReleaseURL;
+		$ReleaseHash = static::ReleaseHash;
+		$ReleaseFile = $this->App->FromProjectRoot(static::ReleaseFile);
 
 		////////
 
 		$this->PrintH2('Downloading Code Server');
-		$this->PrintStatusMuted($ReleaseURL);
-		//$this->HandleCodeServerInstall_DownloadTarball($ReleaseFile, $ReleaseURL, $ReleaseHash);
+		$this->HandleCodeServerInstall_DownloadTarball($ReleaseFile, $ReleaseURL, $ReleaseHash);
 
 		$this->PrintH2('Installing Code Server');
-		$this->PrintStatusMuted($InstallDir);
-		//$this->HandleCodeServerInstall_ExtractTarball($ReleaseFile, $InstallDir);
-		$this->HandleCodeServerInstall_SetupDefaultConfig(
-			$InstallDir, $ConfDir, $RunDir,
-			$BindAddr, $AuthPass,
-			$CertFile, $CertKey
-		);
+		$this->HandleCodeServerInstall_ExtractTarball($ReleaseFile, $InstallDir);
+		$this->HandleCodeServerInstall_SetupDefaultConfig($RunDir, $BindAddr, $AuthPass, $CertFile, $CertKey);
 
 		$this->PrintH2('Installing Code Server Extensions');
-		//$this->HandleCodeServerInstall_InstallExtensions($InstallDir);
+		$this->HandleCodeServerInstall_InstallExtensions($InstallDir);
 
 		////////
 
@@ -148,8 +239,14 @@ extends Atlantis\TerminalApp {
 
 		$Timer = new Common\Timer;
 		$Client = Browser\Client::FromURL($ReleaseURL);
+		$Basename = basename($ReleaseURL);
 
 		////////
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('Downloading %s...', $Basename),
+			$this->Theme::Muted
+		));
 
 		$Timer->Start();
 		$Client->Save($ReleaseFile);
@@ -160,11 +257,15 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		$this->PrintOK(sprintf(
-			'%.2fsec, %s',
-			$Timer->Get(),
-			Common\Units\Bytes::FromInt(filesize($ReleaseFile))
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('File: %s...', Common\Filesystem\Util::Basename($ReleaseFile, 2)),
+			$this->Theme::Muted
 		));
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('%.2fsec, %s', $Timer->Get(), Common\Units\Bytes::FromInt(filesize($ReleaseFile))),
+			$this->Theme::OK
+		), 2);
 
 		return;
 	}
@@ -173,20 +274,28 @@ extends Atlantis\TerminalApp {
 	HandleCodeServerInstall_ExtractTarball(string $ReleaseFile, string $InstallDir):
 	void {
 
-		$Cmd = new Common\Datastore;
 		$Timer = new Common\Timer;
+		$Line = NULL;
 		$Command = NULL;
+		$Basename = basename($ReleaseFile);
 
 		////////
 
-		Common\Filesystem\Util::MkDir($InstallDir);
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('Extracting %s...', $Basename),
+			$this->Theme::Muted
+		));
 
-		$Cmd->Push('tar -xzf')->Push(escapeshellarg($ReleaseFile));
-		$Cmd->Push('-C')->Push(escapeshellarg($InstallDir));
-		$Cmd->Push('--strip-components=1');
-		$Command = new Console\Struct\CommandLineUtil($Cmd->Join(' '));
+		$Line = sprintf(
+			'tar -xzf %s -C %s --strip-components=1',
+			escapeshellarg($ReleaseFile),
+			escapeshellarg($InstallDir)
+		);
+
+		$Command = new Console\Struct\CommandLineUtil($Line);
 
 		$Timer->Start();
+		Common\Filesystem\Util::MkDir($InstallDir);
 		$Command->Run();
 		$Timer->Stop();
 
@@ -195,23 +304,20 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		$this->PrintOK(sprintf(
-			'%.2fsec',
-			$Timer->Get()
-		));
+		$this->PrintOK(sprintf('%.2fsec', $Timer->Get()));
 
 		return;
 	}
 
 	protected function
-	HandleCodeServerInstall_SetupDefaultConfig(string $InstallDir, string $ConfDir, string $RunDir, string $BindAddr, string $Password, string $CertFile, string $CertKey):
+	HandleCodeServerInstall_SetupDefaultConfig(string $RunDir, string $BindAddr, string $Password, string $CertFile, string $CertKey):
 	void {
 
-		$ConfigFile = Common\Filesystem\Util::Pathify($ConfDir, 'config.yaml');
+		$ConfFile = $this->GetConfFile();
 
 		////////
 
-		Common\Filesystem\Util::MkDir($ConfDir);
+		Common\Filesystem\Util::MkDir(dirname($ConfFile));
 		Common\Filesystem\Util::MkDir($RunDir);
 
 		$Config = new Common\Datastore([
@@ -231,45 +337,118 @@ extends Atlantis\TerminalApp {
 			=> printf('%s: %s%s', $K, $V, PHP_EOL)
 		));
 
-		file_put_contents($ConfigFile, $Buffer->Get());
+		file_put_contents($ConfFile, $Buffer->Get());
 
 		return;
 	}
 
 	protected function
-	HandleCodeServerInstall_InstallExtensions(string $InstallDir):
+	HandleCodeServerInstall_InstallExtensions():
 	void {
 
-		// the web code cannot use the real extension store, but it seems
-		// like everyone else has been double posting extensions to this
-		// place and i had no idea.
-		// https://open-vsx.org
+		$Items = new Common\Datastore(static::Extensions);
 
-		$OpenVSX = new Common\Datastore([
-			'bmewburn.vscode-intelephense-client',
-			'wongjn.php-sniffer'
-		]);
+		$Items->Each(function(string $EID) {
 
-		$OpenVSX->Each(function(string $EID) use($InstallDir) {
+			if(str_starts_with($EID, 'https://'))
+			return $this->HandleCodeServerInstall_InstallVSIX($EID);
 
-			$Line = sprintf(
-				'%s/bin/code-server --install-extension %s',
-				$InstallDir,
-				escapeshellarg($EID)
-			);
-
-			$this->PrintStatus($Line);
-
-			$CLI = new Console\Struct\CommandLineUtil($Line);
-			$CLI->Run();
-			//$this->PrintLn($CLI->GetOutputString());
-
-			return;
+			return $this->HandleCodeServerInstall_InstallOpenVSX($EID);
 		});
+
+		return;
+	}
+
+	protected function
+	HandleCodeServerInstall_InstallVSIX(string $Filename):
+	void {
+
+		$Tmp = NULL;
+		$Client = NULL;
+		$Basename = basename($Filename);
+
+		////////
+
+		if(str_starts_with($Filename, 'https://')) {
+			$Basename = basename($Filename);
+
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('Downloading %s...', $Basename),
+				$this->Theme::Muted
+			));
+
+			$Tmp = $this->App->FromProjectRoot(sprintf('temp/%s.vsix', Common\UUID::V4()));
+
+			$Client = Browser\Client::FromURL($Filename);
+			$Client->Save($Tmp);
+
+			$Filename = $Tmp;
+		}
+
+		////////
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('Installing %s...', $Basename),
+			$this->Theme::Muted
+		));
+
+		$Line = sprintf(
+			'%s --install-extension %s',
+			$this->GetRunFile(),
+			escapeshellarg($Filename)
+		);
+
+		$CLI = new Console\Struct\CommandLineUtil($Line);
+		$CLI->Run();
+
+		////////
+
+		if($Tmp !== NULL)
+		if(file_exists($Tmp))
+		unlink($Tmp);
+
+		////////
+
+		if($CLI->HasError()) {
+			$this->PrintError();
+			return;
+		}
+
+		$this->PrintOK();
+
+		return;
+	}
+
+	protected function
+	HandleCodeServerInstall_InstallOpenVSX(string $EID):
+	void {
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('Installing %s...', $EID),
+			$this->Theme::Muted
+		));
+
+		$Line = sprintf(
+			'%s --install-extension %s',
+			$this->GetRunFile(),
+			escapeshellarg($EID)
+		);
+
+		$CLI = new Console\Struct\CommandLineUtil($Line);
+		$CLI->Run();
+
+		////////
+
+		if($CLI->HasError()) {
+			$this->PrintError();
+			return;
+		}
+
+		$this->PrintOK();
 
 		return;
 	}
 
 }
 
-exit(DevTool::Realboot([]));
+exit(CodeServerTool::Realboot([]));
