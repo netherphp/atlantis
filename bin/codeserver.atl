@@ -17,6 +17,9 @@ use Nether\Console;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+// $ codeserver.atl install
+// $ codeserver.atl run
+
 // code-server cannot use the real vscode extension marketplace but a lot of
 // devs have been double posting to openvsx and i had no idea. then after i
 // made an account there it yelled at me to make a 2nd eclipse account and
@@ -30,26 +33,34 @@ class CodeServerTool
 extends Atlantis\TerminalApp {
 
 	const
-	InstallDir = 'local/code-server',
-		RunFile = 'bin/code-server';
+	InstallDir      = 'local/code-server',
+	RunFile         = 'bin/code-server',
+	WorkbenchFile   = 'lib/vscode/out/vs/code/browser/workbench/workbench.html',
+	CustomStyleFile = 'src/browser/media/custom.css';
 
 	const
-	ConfDir = 'local/code-server/conf',
-		ConfFile = 'config.yaml';
+	ConfDir         = 'local/code-server/conf',
+	ConfFile        = 'config.yaml';
 
 	const
-	RunDir = 'local/code-server/run';
+	RunDir          = 'local/code-server/run';
 
 	const
-	ReleaseURL  = 'https://github.com/coder/code-server/releases/download/v4.93.1/code-server-4.93.1-linux-amd64.tar.gz',
-	ReleaseHash = 'b34e7b751c222829458e5557a7a45b14',
-	ReleaseFile = 'temp/code-server.tar.gz';
+	ReleaseURL      = 'https://github.com/coder/code-server/releases/download/v4.93.1/code-server-4.93.1-linux-amd64.tar.gz',
+	ReleaseHash     = 'b34e7b751c222829458e5557a7a45b14',
+	ReleaseFile     = 'temp/code-server.tar.gz';
 
 	const
-	Extensions = [
+	Extensions      = [
 		'bmewburn.vscode-intelephense-client',
-		'wongjn.php-sniffer',
+		'valeryanm.vscode-phpsab',
+		'RobbOwen.synthwave-vscode',
 		'https://github.com/bobmagicii/vscode-dashboard/releases/download/1.0.3/bobmagicii.dashyeah-1.0.3.vsix'
+	];
+
+	const
+	CustomCSS       = [
+		'https://gist.githubusercontent.com/bobmagicii/6234ef0ddb70a32271bba370176b7a62/raw/51203021e1934c4bda84f6766adf7ba2dd3a3405/custom-synthwave84-padparadscha.css'
 	];
 
 	const
@@ -146,6 +157,71 @@ extends Atlantis\TerminalApp {
 		);
 	}
 
+	protected function
+	FindCertFiles():
+	?Common\Datastore {
+
+		$Project = Atlantis\Struct\ProjectJSON::FromApp($this->App);
+		$Output = NULL;
+
+		foreach($Project as $P) {
+			/** @var Atlantis\Struct\ProjectJSON $P */
+
+			if($P->Web->Type === 'apachectl')
+			$Output = $this->FindCertFiles_FromApache();
+
+			if($Output !== NULL)
+			break;
+		}
+
+		return $Output;
+	}
+
+	protected function
+	FindCertFiles_FromApache():
+	?Common\Datastore {
+
+		$Output = NULL;
+		$ApacheConfFile = $this->App->FromConfEnv('apache24.conf');
+
+		$ApacheConf = NULL;
+		$Certs = NULL;
+
+		////////
+
+		if(!file_exists($ApacheConfFile))
+		return NULL;
+
+		////////
+
+		$Certs = new Common\Datastore;
+		$ApacheConf = new Common\Datastore(file($ApacheConfFile));
+		$ApacheConf->Remap(fn(string $L)=> trim($L));
+		$ApacheConf->Filter(fn(string $L)=> str_starts_with($L, 'SSLCertificate'));
+		$ApacheConf->Each(fn(string $L)=> match(TRUE) {
+			(preg_match('/([A-Za-z]+)[\s\h]+\"(.+?)\"/', $L, $F) > 0)
+			=> $Certs->Set($F[1], $F[2]),
+			default
+			=> NULL
+		});
+
+		$Certs->RemapKeys(function(string $K, string $V) {
+			if(str_contains($K, 'Key'))
+			return [ 'CertKey'=> str_replace('$SSLDomain', $this->ProjectDomain, $V) ];
+
+			else
+			return [ 'Cert'=> str_replace('$SSLDomain', $this->ProjectDomain, $V) ];
+		});
+
+		if(!$Certs->HasKey('Cert') || !$Certs->HasKey('CertKey'))
+		return NULL;
+
+		if(!file_exists($Certs->Get('Cert')))
+		return NULL;
+
+		return $Certs;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -159,10 +235,16 @@ extends Atlantis\TerminalApp {
 		$Password = NULL;
 		$IFace = NULL;
 		$Port = NULL;
+		$URL = NULL;
 
-		$this->PrintAppHeader('Run Code-Server...');
+		$this->PrintAppHeader('Run code-server...');
 
 		////////
+
+		// VSCODE_IPC_HOOK_CLI
+		// when you launch from a terminal from within vscode this gets
+		// set and code-server smells it and tries to interact with your
+		// actual vscode instead of launching itself so blank that out.
 
 		$Command = sprintf(
 			'%s --config %s %s',
@@ -172,8 +254,10 @@ extends Atlantis\TerminalApp {
 		);
 
 		$Proc = new Console\ProcessRunner($Command);
+		$Proc->Env->Set('VSCODE_IPC_HOOK_CLI', '');
+		$Proc->Run();
 
-		if(!$Proc->Run()->IsOK())
+		if(!$Proc->IsOK())
 		$this->Quit(1);
 
 		////////
@@ -182,9 +266,14 @@ extends Atlantis\TerminalApp {
 		$Password = $this->Config->Get('password');
 		list($IFace, $Port) = explode(':', $BindAddr);
 
+		$URL = match($this->Config->Get('cert') !== static::DefaultCertFile) {
+			TRUE  => sprintf('https://%s:%s', $this->ProjectDomain, $Port),
+			FALSE => sprintf('http://%s:%s', $this->ProjectDomain, $Port)
+		};
+
 		$this->PrintBulletList([
 			'Server' => sprintf('%s:%s', $IFace, $Port),
-			'URL'    => sprintf('http://%s:%s', $this->ProjectDomain, $Port),
+			'URL'    => $URL,
 			'Pass'   => $Password
 		]);
 
@@ -199,7 +288,7 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('install')]
-	#[Console\Meta\Info('Downloads Code-Server tarball and sets it up in /local/.')]
+	#[Console\Meta\Info('Downloads Code-Server tarball and sets it up in ./local')]
 	#[Console\Meta\Error(1, 'failed to download code server')]
 	public function
 	HandleCodeServerInstall():
@@ -211,22 +300,32 @@ extends Atlantis\TerminalApp {
 		$AuthPass    = $this->GeneratePassword();
 		$InstallDir  = $this->App->FromProjectRoot(static::InstallDir);
 		$RunDir      = $this->App->FromProjectRoot(static::RunDir);
+		$Certs       = $this->FindCertFiles();
 
 		$ReleaseURL  = static::ReleaseURL;
 		$ReleaseHash = static::ReleaseHash;
 		$ReleaseFile = $this->App->FromProjectRoot(static::ReleaseFile);
 
+		$this->PrintAppHeader('Install code-server...');
+
 		////////
 
-		$this->PrintH2('Downloading Code Server');
-		$this->HandleCodeServerInstall_DownloadTarball($ReleaseFile, $ReleaseURL, $ReleaseHash);
+		if($Certs) {
+			$CertFile = $Certs->Get('Cert');
+			$CertKey = $Certs->Get('CertKey');
+		}
 
-		$this->PrintH2('Installing Code Server');
-		$this->HandleCodeServerInstall_ExtractTarball($ReleaseFile, $InstallDir);
+		$this->PrintH2('Downloading Server...');
+		$this->HandleCodeServerInstall_DownloadReleaseTarball($ReleaseFile, $ReleaseURL, $ReleaseHash);
+
+		$this->PrintH2('Installing Server...');
+		$this->HandleCodeServerInstall_ExtractReleaseTarball($ReleaseFile, $InstallDir);
 		$this->HandleCodeServerInstall_SetupDefaultConfig($RunDir, $BindAddr, $AuthPass, $CertFile, $CertKey);
 
-		$this->PrintH2('Installing Code Server Extensions');
+		$this->PrintH2('Installing Code Extensions...');
 		$this->HandleCodeServerInstall_InstallExtensions($InstallDir);
+
+		$this->HandlePatchCustomCSS();
 
 		////////
 
@@ -234,7 +333,7 @@ extends Atlantis\TerminalApp {
 	}
 
 	protected function
-	HandleCodeServerInstall_DownloadTarball(string $ReleaseFile, string $ReleaseURL, string $ReleaseHash):
+	HandleCodeServerInstall_DownloadReleaseTarball(string $ReleaseFile, string $ReleaseURL, string $ReleaseHash):
 	void {
 
 		$Timer = new Common\Timer;
@@ -243,22 +342,31 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		$this->PrintLn($this->FormatHeaderPoint(
-			sprintf('Downloading %s...', $Basename),
-			$this->Theme::Muted
-		));
+		if(file_exists($ReleaseFile) && (md5_file($ReleaseFile) === $ReleaseHash)) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('Cached %s is OK.', $Basename),
+				$this->Theme::Muted
+			));
+		}
 
-		$Timer->Start();
-		$Client->Save($ReleaseFile);
-		$Timer->Stop();
+		else {
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('Downloading %s...', $Basename),
+				$this->Theme::Muted
+			));
 
-		if(md5_file($ReleaseFile) !== $ReleaseHash)
-		$this->Quit(1);
+			$Timer->Start();
+			$Client->Save($ReleaseFile);
+			$Timer->Stop();
+
+			if(md5_file($ReleaseFile) !== $ReleaseHash)
+			$this->Quit(1);
+		}
 
 		////////
 
 		$this->PrintLn($this->FormatHeaderPoint(
-			sprintf('File: %s...', Common\Filesystem\Util::Basename($ReleaseFile, 2)),
+			sprintf('Cached as %s.', Common\Filesystem\Util::Basename($ReleaseFile, 2)),
 			$this->Theme::Muted
 		));
 
@@ -271,7 +379,7 @@ extends Atlantis\TerminalApp {
 	}
 
 	protected function
-	HandleCodeServerInstall_ExtractTarball(string $ReleaseFile, string $InstallDir):
+	HandleCodeServerInstall_ExtractReleaseTarball(string $ReleaseFile, string $InstallDir):
 	void {
 
 		$Timer = new Common\Timer;
@@ -314,6 +422,7 @@ extends Atlantis\TerminalApp {
 	void {
 
 		$ConfFile = $this->GetConfFile();
+		$AuthType = ($Password ? 'password' : 'none');
 
 		////////
 
@@ -321,14 +430,16 @@ extends Atlantis\TerminalApp {
 		Common\Filesystem\Util::MkDir($RunDir);
 
 		$Config = new Common\Datastore([
-			'bind-addr'            => $BindAddr,
-			'auth'                 => 'password',
-			'password'             => $Password,
-			'cert'                 => $CertFile,
-			'cert-key'             => $CertKey,
-			'user-data-dir'        => $RunDir,
-			'disable-telemetry'    => TRUE,
-			'disable-update-check' => TRUE
+			'app-name'                => sprintf('"%s"', $this->App->Config->Get(Atlantis\Key::ConfProjectName)),
+			'bind-addr'               => $BindAddr,
+			'auth'                    => $AuthType,
+			'password'                => $Password,
+			'cert'                    => $CertFile,
+			'cert-key'                => $CertKey,
+			'user-data-dir'           => $RunDir,
+			'disable-telemetry'       => 'true',
+			'disable-update-check'    => 'true',
+			'disable-workspace-trust' => 'true'
 		]);
 
 		$Buffer = new Common\Overbuffer;
@@ -393,8 +504,9 @@ extends Atlantis\TerminalApp {
 		));
 
 		$Line = sprintf(
-			'%s --install-extension %s',
+			'%s --config %s --install-extension %s',
 			$this->GetRunFile(),
+			$this->GetConfFile(),
 			escapeshellarg($Filename)
 		);
 
@@ -429,8 +541,9 @@ extends Atlantis\TerminalApp {
 		));
 
 		$Line = sprintf(
-			'%s --install-extension %s',
+			'%s --config %s --install-extension %s',
 			$this->GetRunFile(),
+			$this->GetConfFile(),
 			escapeshellarg($EID)
 		);
 
@@ -447,6 +560,93 @@ extends Atlantis\TerminalApp {
 		$this->PrintOK();
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('patch-custom-css')]
+	public function
+	HandlePatchCustomCSS():
+	int {
+
+		$File = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(static::InstallDir, static::WorkbenchFile));
+		$PrintFile = str_replace(sprintf('%s%s', $this->App->GetProjectRoot(), DIRECTORY_SEPARATOR), '', $File);
+
+		$CSSFile = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(static::InstallDir, static::CustomStyleFile));
+		$CSSURL = '{{BASE}}/_static/src/browser/media/custom.css';
+		$PrintCSS = str_replace(sprintf('%s%s', $this->App->GetProjectRoot(), DIRECTORY_SEPARATOR), '', $CSSFile);
+
+		$this->PrintAppHeader('Patch in Custom CSS');
+
+		////////
+
+		if(!file_exists($File))
+		throw new Common\Error\RequiredDataMissing($File, 'file');
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('Patching: %s', $PrintFile),
+			$this->Theme::Muted
+		));
+
+		$this->PrintLn($this->FormatHeaderPoint(
+			sprintf('CSS File: %s', $PrintCSS),
+			$this->Theme::Muted
+		));
+
+		////////
+
+		$CustomCSS = NULL;
+		$CustomFile = NULL;
+		$CustomName = NULL;
+		$Client = new Browser\Client;
+		$Imports = new Common\Datastore;
+
+		foreach(static::CustomCSS as $CustomCSS) {
+			$CustomName = Common\Filesystem\Util::Basename($CustomCSS);
+			$CustomFile = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(
+				static::InstallDir, dirname(static::CustomStyleFile), $CustomName
+			));
+
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('Downloading %s...', $CustomName),
+				$this->Theme::Muted
+			));
+
+			$Client->SetURL($CustomCSS);
+			$Client->Save($CustomFile);
+
+			$Imports->Push(sprintf('@import url(./%s);%s', $CustomName, PHP_EOL));
+		}
+
+		file_put_contents(
+			$CSSFile,
+			$Imports->Join(PHP_EOL)
+		);
+
+		////////
+
+		$Data = Common\Filesystem\Util::TryToReadFile($File);
+
+		if(str_contains($Data, $CSSURL)) {
+			$this->PrintOK('Already patched.');
+			return 0;
+		}
+
+		$Data = str_replace(
+			sprintf('%s</head>', "\t"),
+			sprintf(
+				'%s<link rel="stylesheet" type="text/css" href="%s" />%s%s</head>',
+				"\t\t", $CSSURL, PHP_EOL, "\t"
+			),
+			$Data
+		);
+
+		Common\Filesystem\Util::TryToWriteFile($File, $Data);
+
+		$this->PrintOK();
+
+		return 0;
 	}
 
 }
