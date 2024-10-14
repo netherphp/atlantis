@@ -64,9 +64,10 @@ extends Atlantis\TerminalApp {
 	];
 
 	const
-	DefaultBindAddr = '0.0.0.0:2222',
-	DefaultCertFile = 'false',
-	DefaultCertKey  = 'false';
+	DefaultBindAddr     = '0.0.0.0:2222',
+	DefaultCertFile     = 'false',
+	DefaultCertKey      = 'false',
+	DefaultCustomCSSURL = '{{BASE}}/_static/src/browser/media/custom.css';
 
 	////////
 
@@ -571,13 +572,13 @@ extends Atlantis\TerminalApp {
 	int {
 
 		$File = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(static::InstallDir, static::WorkbenchFile));
-		$PrintFile = str_replace(sprintf('%s%s', $this->App->GetProjectRoot(), DIRECTORY_SEPARATOR), '', $File);
-
 		$CSSFile = $this->App->FromProjectRoot(Common\Filesystem\Util::Pathify(static::InstallDir, static::CustomStyleFile));
-		$CSSURL = '{{BASE}}/_static/src/browser/media/custom.css';
+		$CSSURL = static::DefaultCustomCSSURL;
+
+		$PrintFile = str_replace(sprintf('%s%s', $this->App->GetProjectRoot(), DIRECTORY_SEPARATOR), '', $File);
 		$PrintCSS = str_replace(sprintf('%s%s', $this->App->GetProjectRoot(), DIRECTORY_SEPARATOR), '', $CSSFile);
 
-		$this->PrintAppHeader('Patch in Custom CSS');
+		$this->PrintAppHeader('Patch In Custom CSS');
 
 		////////
 
@@ -595,6 +596,17 @@ extends Atlantis\TerminalApp {
 		));
 
 		////////
+
+		$this->HandlePatchCustomCSS_WriteCustomCSSFile($CSSFile);
+		$this->HandlePatchCustomCSS_PatchCustomStylesIn($File, $CSSURL);
+		$this->PrintOK();
+
+		return 0;
+	}
+
+	protected function
+	HandlePatchCustomCSS_WriteCustomCSSFile(string $CSSFile):
+	void {
 
 		$CustomCSS = NULL;
 		$CustomFile = NULL;
@@ -619,19 +631,32 @@ extends Atlantis\TerminalApp {
 			$Imports->Push(sprintf('@import url(./%s);%s', $CustomName, PHP_EOL));
 		}
 
-		file_put_contents(
+		Common\Filesystem\Util::TryToWriteFile(
 			$CSSFile,
 			$Imports->Join(PHP_EOL)
 		);
 
-		////////
+		return;
+	}
+
+	protected function
+	HandlePatchCustomCSS_PatchCustomStylesIn(string $File, string $CSSURL):
+	void {
 
 		$Data = Common\Filesystem\Util::TryToReadFile($File);
 
+		////////
+
 		if(str_contains($Data, $CSSURL)) {
-			$this->PrintOK('Already patched.');
-			return 0;
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('%s is already patched for custom.css', basename($File)),
+				$this->Theme::Muted
+			));
+
+			return;
 		}
+
+		////////
 
 		$Data = str_replace(
 			sprintf('%s</head>', "\t"),
@@ -644,9 +669,7 @@ extends Atlantis\TerminalApp {
 
 		Common\Filesystem\Util::TryToWriteFile($File, $Data);
 
-		$this->PrintOK();
-
-		return 0;
+		return;
 	}
 
 }
