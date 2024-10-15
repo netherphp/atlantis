@@ -129,6 +129,23 @@ extends Atlantis\TerminalApp {
 	}
 
 	protected function
+	WriteConfigFile():
+	void {
+
+		$Buffer = new Common\Overbuffer;
+		$ConfFile = $this->GetConfFile();
+
+		$Buffer->Exec(fn() => $this->Config->EachKeyValue(
+			fn(string $K, string $V)
+			=> printf('%s: %s%s', $K, $V, PHP_EOL)
+		));
+
+		Common\Filesystem\Util::TryToWriteFile($ConfFile, $Buffer->Get());
+
+		return;
+	}
+
+	protected function
 	ReadConfigFile():
 	Common\Datastore {
 
@@ -227,10 +244,14 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('run')]
+	#[Console\Meta\Value('--pass', 'Omit to use the password in the config file. Specify to set a new password. No value will auto generate a new password.')]
 	public function
 	HandleCodeServerRun():
 	int {
 
+		$OptNewPass = $this->GetOption('pass') ?? FALSE;
+		$ConfFile = $this->GetConfFile();
+		$RunFile = $this->GetRunFile();
 		$Command = NULL;
 		$BindAddr = NULL;
 		$Password = NULL;
@@ -242,6 +263,16 @@ extends Atlantis\TerminalApp {
 
 		////////
 
+		if($OptNewPass) {
+			if($OptNewPass === TRUE)
+			$OptNewPass = $this->GeneratePassword();
+
+			$this->Config->Set('password', $OptNewPass);
+			$this->WriteConfigFile();
+		}
+
+		////////
+
 		// VSCODE_IPC_HOOK_CLI
 		// when you launch from a terminal from within vscode this gets
 		// set and code-server smells it and tries to interact with your
@@ -249,8 +280,8 @@ extends Atlantis\TerminalApp {
 
 		$Command = sprintf(
 			'%s --config %s %s',
-			escapeshellarg($this->GetRunFile()),
-			escapeshellarg($this->GetConfFile()),
+			escapeshellarg($RunFile),
+			escapeshellarg($ConfFile),
 			escapeshellarg($this->ProjectPath)
 		);
 
@@ -458,13 +489,7 @@ extends Atlantis\TerminalApp {
 			));
 		}
 
-		$Buffer = new Common\Overbuffer;
-		$Buffer->Exec(fn() => $Config->EachKeyValue(
-			fn(string $K, string $V)
-			=> printf('%s: %s%s', $K, $V, PHP_EOL)
-		));
-
-		Common\Filesystem\Util::TryToWriteFile($ConfFile, $Buffer->Get());
+		$this->WriteConfigFile($Config);
 		$this->PrintOK();
 
 		return;
