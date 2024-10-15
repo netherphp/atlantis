@@ -1,0 +1,108 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Routes\Docs $Route
+ * ...
+ */
+
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'codeserver.atl',
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'CLI', URL: '/docs/cli')
+	]
+]);
+
+?>
+
+<div class="cargobay">
+	<section class="pt-0">
+		<div class="container">
+			<div class="mb-4">
+				Atlantis supports running <code>code-server</code> so you can set up a remote development environment quickly.
+				It runs an almost fully featured VS Code on the server.
+				This is basically the same as running normal VS Code locally with the remote development extension, except even the UI is hosted you access it via the browser.
+				If you are trying to make development on a tablet device such as an iPad viable, this is likely the only way to get a legit VS Code on it.
+			</div>
+			<div class="mb-4">
+				You should not expose this service publically. It is literally an editor.
+				Make sure to take proper precautions such as network firewalling to prevent any unauthourised access.
+				<code>code-server</code> itself only supports a basic password authentication.
+				The default port has been set to <code>2222</code> to make it easier to remember given how important <code>22</code> is to secure as well.
+				There is a section below with instructions on how to tighten security a little more by requiring an SSH forwarded port instead.
+			</div>
+
+			<ul class="mb-0">
+				<li class="mb-2"><a href="#install">Download &amp; Install <code>code-server</code>.</a></li>
+				<li class="mb-2"><a href="#run">Run <code>code-server</code></a></li>
+				<li class="mb-2"><a href="#tighten">Tighten Security</a></li>
+				<li class="mb-2"><a href="#custom-css">Custom CSS</a></li>
+			</ul>
+
+		</div>
+	</section>
+	<section id="install">
+		<div class="container">
+			<h3>Download & Install</h3>
+			<div class="mb-4">
+				This will download and install <a href="https://github.com/coder/code-server"><code>code-server</code></a> into <code>./local/</code>.
+				It will be automatically configured with a baseline set of PHP plugins and be automatically patched to allow for adding custom CSS to the editor.
+				If the project it is being installed into is configured for SSL it will use the certificates from the <code>apache24.conf</code> file.
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-sm-6 col-md-8 mb-4 mb-md-0">
+					<div class="jumbotron rounded">
+						<code>$ codeserver.atl install</code>
+					</div>
+				</div>
+				<div class="col-12 col-sm-6 col-md-4 mb-0 mb-md-0">
+					<img class="rounded" src="/share/atlantis/gfx/docs/codeserver-atl-install.png" alt="codeserver.atl install" />
+				</div>
+			</div>
+		</div>
+	</section>
+	<section id="run">
+		<div class="container">
+			<h3>Run Server</h3>
+			<div class="mb-4">
+				All the info needed to use it will be printed when the server is ran on the CLI.
+			</div>
+			<div class="row">
+				<div class="col-12 col-sm-6 col-md-8 mb-4 mb-md-0">
+					<div class="jumbotron rounded">
+						<code>$ codeserver.atl run</code>
+					</div>
+				</div>
+				<div class="col-12 col-sm-6 col-md-4 mb-0 mb-md-0">
+					<img class="rounded" src="/share/atlantis/gfx/docs/codeserver-atl-run.png" alt="codeserver.atl run" />
+				</div>
+			</div>
+		</div>
+	</section>
+	<section id="tighten">
+		<div class="container">
+			<h3>Tighten Security</h3>
+			(bind localhost only, ssh port forward)
+		</div>
+	</section>
+	<section id="custom-css">
+		<div class="container">
+			<h3>Custom CSS</h3>
+			(local/src/media/browser/custom.css)
+		</div>
+	</section>
+</div>
+
+
