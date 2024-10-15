@@ -443,13 +443,29 @@ extends Atlantis\TerminalApp {
 			'disable-workspace-trust' => 'true'
 		]);
 
+		if($CertFile !== static::DefaultCertFile) {
+			$this->PrintLn($this->FormatHeaderPoint(
+				'Enabling SSL...',
+				$this->Theme::Muted
+			));
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('Cert: %s', Common\Filesystem\Util::Basename($CertFile, 2)),
+				$this->Theme::Muted
+			));
+			$this->PrintLn($this->FormatHeaderPoint(
+				sprintf('Key: %s', Common\Filesystem\Util::Basename($CertFile, 2)),
+				$this->Theme::Muted
+			));
+		}
+
 		$Buffer = new Common\Overbuffer;
 		$Buffer->Exec(fn() => $Config->EachKeyValue(
 			fn(string $K, string $V)
 			=> printf('%s: %s%s', $K, $V, PHP_EOL)
 		));
 
-		file_put_contents($ConfFile, $Buffer->Get());
+		Common\Filesystem\Util::TryToWriteFile($ConfFile, $Buffer->Get());
+		$this->PrintOK();
 
 		return;
 	}
