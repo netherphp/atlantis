@@ -322,6 +322,9 @@ application instance.
 		return $WebRoot;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	GetCacheBuster(string $Path='data/cache.bust'):
 	Util\CacheBuster {
@@ -336,6 +339,29 @@ application instance.
 		$Buster->Generate();
 
 		return $Buster;
+	}
+
+	#[Common\Meta\Date('2024-10-15')]
+	public function
+	GetCacheBustedURL(string $URL, string $CBFile='data/cache.bust'):
+	string {
+
+		$CacheBuster = $this->GetCacheBuster($CBFile);
+
+		////////
+
+		if(!str_contains($URL, '?'))
+		return sprintf('%s?v=%s', $URL, $CacheBuster);
+
+		if(!str_contains($URL, 'v='))
+		return sprintf('%s&v=%s', $URL, $CacheBuster);
+
+		if(str_contains($URL, 'v='))
+		return sprintf('%s&atlcb=%s', $URL, $CacheBuster);
+
+		////////
+
+		return $URL;
 	}
 
 	////////////////////////////////////////////////////////////////

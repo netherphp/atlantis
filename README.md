@@ -27,6 +27,7 @@ The following libraries are used in this project via direct inclusion and are se
 * SimpleLightbox (Image gallery thing, https://github.com/andreknieriem/simplelightbox)
 * Luxon (DateTime stuff, https://github.com/moment/luxon)
 * Editor.js (Block editor, https://github.com/codex-team/editor.js)
+* PinchZoom.js (Touch handler, bobmagicii's fork: https://github.com/bobmagicii/pinchzoom)
 
 ### Style & Assets
 
