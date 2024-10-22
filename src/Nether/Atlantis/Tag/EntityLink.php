@@ -248,14 +248,24 @@ required data in.
 		];
 	}
 
-
 	static public function
 	GetTypeByEntityClass(string $CName):
 	string {
 
+		$EntProp = NULL;
 
+		////////
+
+		foreach(static::$TypeList as $LinkType => $LinkClass) {
+			try { $EntProp = ($LinkClass)::EntityProperty($LinkClass); }
+			catch(Exception $E) {  }
+
+			if($EntProp->Type === $CName)
+			return $LinkType;
+		}
 
 		throw new Exception("no type found for $CName");
+
 		return '';
 	}
 

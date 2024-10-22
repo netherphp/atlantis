@@ -114,9 +114,12 @@ extends Database\Prototype {
 
 	static public function
 	FetchTypeForUUID(string $UUID):
-	string {
+	?string {
 
 		$PIndex = static::GetByField('UUID', $UUID);
+
+		if(!$PIndex)
+		return NULL;
 
 		return $PIndex->Type;
 	}
