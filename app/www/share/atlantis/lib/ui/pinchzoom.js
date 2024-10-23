@@ -119,6 +119,7 @@ var definePinchZoom = function () {
               this.setupOffsets();
             }
 
+            if(this.options.autoEnable)
             this.enable();
 
         },
@@ -132,6 +133,7 @@ var definePinchZoom = function () {
     PinchZoom.prototype = {
 
         defaults: {
+            autoEnable: true,
             tapZoomFactor: 2,
             zoomOutFactor: 1.3,
             animationDuration: 300,

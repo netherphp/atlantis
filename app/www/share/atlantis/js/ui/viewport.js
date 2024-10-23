@@ -1,4 +1,4 @@
-import PinchZoom from '/share/atlantis/lib/ui/pinchzoom.js?v=2';
+import PinchZoom from '/share/atlantis/lib/ui/pinchzoom.js?v=3';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,7 @@ class Viewport {
 		////////
 
 		this.pinch = new PinchZoom(this.surface.get(0), {
+			'autoEnable': false,
 			'minZoom': 0.20,
 			'maxZoom': 5.0,
 			'useMouseWheel': true,
@@ -103,6 +104,21 @@ class Viewport {
 		let m = t.match(/matrix\(([\d\.\-]+), ([\d\.\-]+), ([\d\.\-]+), ([\d\.\-]+), ([\d\.\-]+), ([\d\.\-]+)\)/);
 
 		return parseFloat(m[1]);
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	enable() {
+
+		this.pinch.enable();
+		return;
+	};
+
+	disable() {
+
+		this.pinch.disable();
+		return;
 	};
 
 };
