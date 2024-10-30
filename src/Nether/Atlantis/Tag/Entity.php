@@ -15,6 +15,16 @@ extends Atlantis\Prototype
 implements
 	Atlantis\Interfaces\ExtraDataInterface {
 
+	const
+	TypeNormal    = 'tag',
+	TypeTag       = 'tag',
+	TypeTopic     = 'topic',
+	TypeAdmin     = 'admin',
+	TypeSite      = 'site';
+
+	const
+	SubtypeNormal = 'normal';
+
 	use
 	Atlantis\Packages\CoverImage,
 	Atlantis\Packages\ExtraData;

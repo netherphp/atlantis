@@ -590,4 +590,46 @@ extends Atlantis\Prototype {
 		return parent::Insert($Input);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	CopyFileToUpload(Storage\File $Temp, Storage\Adaptor $Box):
+	Storage\File {
+
+		$UUID = Common\UUID::V7();
+		$UPath = join('/', explode('-', $UUID, 2));
+		$Outpath = sprintf('upl/%s/original.%s', $UPath, $Temp->GetExtension());
+
+		////////
+
+		$Box->Put($Outpath, $Temp->Read());
+		$Copy = $Box->GetFileObject($Outpath);
+
+		return $Copy;
+	}
+
+	static public function
+	Import(string $Name, Storage\File $File, ?string $UUID=NULL, ?int $UserID=NULL):
+	static {
+
+		$UserID ??= 0;
+		$UUID ??= Common\UUID::V7();
+
+		////////
+
+		$Output = Atlantis\Media\File::Insert([
+			'UUID'   => $UUID,
+			'UserID' => $UserID,
+			'Name'   => $Name,
+			'Type'   => $File->GetType(),
+			'Size'   => $File->GetSize(),
+			'URL'    => $File->GetStorageURL()
+		]);
+
+		$Output->GenerateExtraFiles();
+
+		return $Output;
+	}
+
 }
