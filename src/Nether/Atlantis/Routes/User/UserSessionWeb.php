@@ -89,9 +89,13 @@ extends PublicWeb {
 	PageSignup():
 	void {
 
+		$AllowSignup = $this->App->Config->Get(Atlantis\Key::ConfUserAllowSignup);
+		$RequireAlias = $this->Config[Atlantis\Key::ConfUserRequireAlias];
+
 		($this->App->Surface)
 		->Wrap('user/signup',[
-			'RequireAlias' => $this->Config[Atlantis\Key::ConfUserRequireAlias]
+			'AllowSignup'  => $AllowSignup,
+			'RequireAlias' => $RequireAlias
 		]);
 
 		return;

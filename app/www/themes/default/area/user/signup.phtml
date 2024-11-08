@@ -5,6 +5,7 @@ use Nether\User;
 /**
  * @var Nether\Surface\Engine $Surface
  * @var Nether\Avenue\Route $Route
+ * @var bool $AllowSignup
  * @var bool $RequireAlias
  */
 
@@ -15,6 +16,14 @@ $PasswordTester = new Nether\Atlantis\Util\PasswordTester;
 $Captcha = new Nether\Atlantis\Util\Captcha($App);
 
 ?>
+
+<?php if(!$AllowSignup): ?>
+<div class="cargobay">
+	<section>
+		<div class="alert alert-danger ta-center">Signup is currently disabled.</div>
+	</section>
+</div>
+<?php return; endif; ?>
 
 <div>
 	<div class="<?php $Printer($TitleCSS) ?> mb-4">
