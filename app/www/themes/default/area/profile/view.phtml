@@ -163,6 +163,9 @@ if(isset($Photos) && $Photos->Count() >= 6) {
 					<div class="position-absolute position-bottom position-right p-1">
 						<?php if($Route->IsUserAdmin()): ?>
 						<button data-bs-toggle="tooltip" title="Set Primary Photo" class="btn <?php $Util->Print($Profile->CoverImageID === $Photo->ID ? 'btn-success' : 'btn-dark') ?>" <?php echo $Profile->GetDataAttrForHTML(['profile-cmd'=> 'photoset', 'photo-id'=> $Photo->ID]) ?>><i class="mdi mdi-account-star mr-0"></i></button>
+						<button data-bs-toggle="tooltip" title="Linked Profiles" class="btn btn-dark font-size-large p-0 pl-2 pr-2" <?php echo $Photo->GetDataAttrForHTML([ 'profile-cmd'=> 'erlink', 'parent-type'=> 'Media.Image', 'parent-child'=> 1 ]) ?>>
+							<i class="mdi mdi-account-multiple-plus mr-0"></i>
+						</button>
 						<button data-bs-toggle="tooltip" title="Delete" class="btn btn-danger" <?php echo $Photo->GetDataAttrForHTML(['photolib-cmd'=> 'delete']) ?>><i class="mdi mdi-trash-can mr-0"></i></button>
 						<?php endif; ?>
 					</div>
