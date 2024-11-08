@@ -202,6 +202,9 @@ extends Atlantis\ProtectedAPI {
 		->Sort(
 			Common\Filters\Misc::OneOfTheseFirst(...),
 			[ 'name-az', 'state-az' ]
+		)
+		->Filters(
+			Common\Filters\Text::DatastoreFromJSON(...)
 		);
 
 		$Enabled = $this->IsUserAdmin() ? NULL : 1;
@@ -222,6 +225,17 @@ extends Atlantis\ProtectedAPI {
 				Atlantis\Tag\Entity::Find([ 'Alias' => $TagKeys ])
 				->Remap(Atlantis\Prototype::MapToID(...))
 				->Export()
+			);
+		}
+
+		////////
+
+		$InFilters = $this->Data->Filters;
+
+		if($InFilters->Get('Type') === 'tags') {
+			$FilterTagsAll = array_merge(
+				($FilterTagsAll ?? []),
+				$InFilters->Get('Data')
 			);
 		}
 
@@ -257,9 +271,17 @@ extends Atlantis\ProtectedAPI {
 	EntityFilters():
 	void {
 
-		$this->SetPayload([
-			'test' => 'Test'
-		]);
+		$IFace = Atlantis\Plugin\Interfaces\ProfileAPI\OnFiltersInterface::class;
+		$Filters = new Common\Datastore;
+		$Plugins = $this->App->Plugins->GetInstanced($IFace);
+		$P = NULL;
+
+		foreach($Plugins as $P) {
+			/** @var Atlantis\Plugin\Interfaces\ProfileAPI\OnFiltersInterface $P */
+			$P->OnFilters($Filters);
+		}
+
+		$this->SetPayload($Filters->Export());
 
 		return;
 	}

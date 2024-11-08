@@ -85,6 +85,7 @@ extends ModalDialog {
 		this.querybin = this.element.find('.TagsQuery');
 		this.tagbin = this.element.find('.TagsCurrent');
 		this.newbin = this.element.find('.TagsNew');
+		this.inFilters = this.element.find('.eri-type-selector');
 
 		this.timerQuery = null;
 
@@ -186,7 +187,7 @@ extends ModalDialog {
 		let val = jQuery.trim(this.query.val());
 		let api = new API.Request(this.searchVerb, this.searchURL);
 
-		(api.send({ Q: val, TagsAll: this.tags, Sort: this.sort }))
+		(api.send({ Q: val, TagsAll: this.tags, Sort: this.sort, Filters: this.inFilters.val() }))
 		.then(this.updateTagsQuery.bind(this))
 		.catch(api.catch);
 
@@ -258,7 +259,17 @@ extends ModalDialog {
 
 	onFilterFetch(result) {
 
-		// populate filter dropdown with choices.
+		for(const k in result.payload) {
+			let op = jQuery('<option />');
+
+			op.text(k);
+			op.attr('value', result.payload[k]);
+
+			if(result.payload[k].match(/"Default":true/))
+			op.attr('selected', 'selected');
+
+			this.inFilters.append(op);
+		}
 
 		return;
 	};
