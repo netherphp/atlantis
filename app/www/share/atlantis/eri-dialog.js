@@ -90,6 +90,7 @@ extends ModalDialog {
 		this.timerQuery = null;
 
 		this.query.on('keyup', this.onSearchKeyPress.bind(this));
+		this.inFilters.on('change', this.onSearchKeyPress.bind(this));
 
 		////////
 
