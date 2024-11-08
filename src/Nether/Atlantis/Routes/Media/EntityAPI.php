@@ -11,6 +11,7 @@ use Exception;
 use Imagick;
 use GdImage;
 
+#[Common\Meta\Deprecated('2024-11-08', 'use Atlantis\Routes\FileUploadAPI instead.')]
 class EntityAPI
 extends Atlantis\Routes\UploadAPI {
 

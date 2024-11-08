@@ -159,7 +159,7 @@ implements
 		Atlantis\Profile\EntityTagLink::Register();
 		Atlantis\Tag\SubtagLink::Register();
 
-		Atlantis\Struct\EntityRelationship::Register('Media.Image', Media\File::class);
+		Atlantis\Struct\EntityRelationship::Register(Media\File::EntType, Media\File::class);
 		Atlantis\Struct\EntityRelationship::Register('Media.Video.ThirdParty', Media\VideoThirdParty::class);
 		Atlantis\Struct\EntityRelationship::Register('Media.Related.Link', Media\RelatedLink::class);
 		Atlantis\Struct\EntityRelationship::Register('Profile.Entity', Profile\Entity::class);

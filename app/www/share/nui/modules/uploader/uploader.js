@@ -154,6 +154,11 @@ extends ModalDialog {
 			'mode-upload'
 		)
 		.addButton(
+			'By Paste...',
+			'btn-secondary atl-uploader-mode-paste',
+			'mode-paste'
+		)
+		.addButton(
 			'Upload',
 			'btn-primary atl-uploader-mode-url d-none',
 			'accept'
@@ -167,6 +172,10 @@ extends ModalDialog {
 		.on(
 			'click', '.modal-action-mode-upload',
 			this.onModeUpload.bind(this)
+		)
+		.on(
+			'click', '.modal-action-mode-paste',
+			this.onModePaste.bind(this)
 		);
 
 		this.show();
@@ -205,6 +214,68 @@ extends ModalDialog {
 
 		return;
 	};
+
+	onModePaste() {
+
+		let self = this;
+
+		////////
+
+		const goModePaste = async function() {
+
+			// get paste permissions and the clipboard.
+
+			let cb = await navigator.clipboard.read();
+
+			// for each item on the clipboard determine if it is an image
+			// and if it is, add it to the queue.
+
+			for(const item of cb) {
+				let types = item.types.filter((t)=> t.match(/^image\//));
+				let type = null;
+				let blob = null;
+
+				if(types.length === 0)
+				continue;
+
+				////////
+
+				type = types[0];
+
+				blob = await item.getType(type);
+				blob.name = 'paste.idk';
+
+				// give it a related name.
+
+				if(type === 'image/png')
+				blob.name = 'paste.png';
+
+				if(type === 'image/jpeg')
+				blob.name = 'paste.jpg';
+
+				if(type === 'image/webp')
+				blob.name = 'paste.webp';
+
+				// if it wasn't a supported time bail.
+
+				if(blob.name === 'paste.idk')
+				continue;
+
+				self.onModeUpload();
+				self.queueAddFile(blob);
+			}
+
+			if(self.queue.length > 0)
+			self.queueRun();
+
+			return;
+		};
+
+		////////
+
+		goModePaste();
+		return;
+	}
 
 	onSelectFile() {
 
@@ -481,25 +552,25 @@ class UploadButtonOptions {
 		this.url = (
 			typeof input.url !== 'undefined'
 			? input.url
-			: '/api/media/entity'
+			: '/api/file/upload'
 		);
 
 		this.method = (
 			typeof input.method !== 'undefined'
 			? input.method
-			: 'POST'
+			: 'UPCHUNK'
 		);
 
 		this.urlFinal = (
 			typeof input.urlFinal !== 'undefined'
 			? input.urlFinal
-			: '/api/media/entity'
+			: '/api/file/upload'
 		);
 
 		this.methodFinal = (
 			typeof input.methodFinal !== 'undefined'
 			? input.methodFinal
-			: 'POSTFINAL'
+			: 'UPFINAL'
 		);
 
 		this.dataset = (

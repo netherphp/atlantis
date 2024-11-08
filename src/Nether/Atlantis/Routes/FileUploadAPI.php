@@ -251,6 +251,8 @@ extends Atlantis\ProtectedAPI {
 		// whatever needs to be updated with references to this new upload.
 
 		$this->OnUploadDonePlugins($Type, $Entity, $this->Data);
+		$this->OnUploadDoneRelate($Type, $Entity, $this->Data);
+		$this->OnUploadDoneTag($Type, $Entity, $this->Data);
 
 		//$this->SetGoto($Entity->GetPageURL());
 		$this->SetPayload($Entity->DescribeForPublicAPI());
@@ -273,6 +275,49 @@ extends Atlantis\ProtectedAPI {
 			fn(FileUploadInterface $P)
 			=> $P->OnHandleUpload($Type, $Entity, $Data)
 		);
+
+		return;
+	}
+
+	#[Common\Meta\Date('2024-11-08')]
+	protected function
+	OnUploadDoneRelate(string $Type, Atlantis\Media\File $File, Common\Datafilter $Data):
+	void {
+
+		$ParentUUID = $Data->Get('ParentUUID');
+		$ParentType = $Data->Get('ParentType');
+		$ParentClass = NULL;
+		$ParentEntity = NULL;
+
+		////////
+
+		if(!$ParentUUID || !$ParentType)
+		return;
+
+		$ParentClass = Atlantis\Struct\EntityRelationship::TypeClass($ParentType);
+		$ParentEntity = $ParentClass::GetByUUID($ParentUUID);
+
+		if(!$ParentEntity)
+		return;
+
+		////////
+
+		Atlantis\Struct\EntityRelationship::InsertByPair(
+			$ParentClass::EntType,
+			$ParentUUID,
+			$File::EntType,
+			$File->UUID
+		);
+
+		return;
+	}
+
+	#[Common\Meta\Date('2024-11-08')]
+	protected function
+	OnUploadDoneTag(string $Type, Atlantis\Media\File $File, Common\Datafilter $Data):
+	void {
+
+		// todo
 
 		return;
 	}
