@@ -251,8 +251,8 @@ extends Atlantis\ProtectedAPI {
 		// whatever needs to be updated with references to this new upload.
 
 		$this->OnUploadDonePlugins($Type, $Entity, $this->Data);
-		$this->OnUploadDoneRelate($Type, $Entity, $this->Data);
-		$this->OnUploadDoneTag($Type, $Entity, $this->Data);
+		$this->OnUploadDoneRelateProfile($Type, $Entity, $this->Data);
+		$this->OnUploadDoneRelateTag($Type, $Entity, $this->Data);
 
 		//$this->SetGoto($Entity->GetPageURL());
 		$this->SetPayload($Entity->DescribeForPublicAPI());
@@ -281,7 +281,7 @@ extends Atlantis\ProtectedAPI {
 
 	#[Common\Meta\Date('2024-11-08')]
 	protected function
-	OnUploadDoneRelate(string $Type, Atlantis\Media\File $File, Common\Datafilter $Data):
+	OnUploadDoneRelateProfile(string $Type, Atlantis\Media\File $File, Common\Datafilter $Data):
 	void {
 
 		$ParentUUID = $Data->Get('ParentUUID');
@@ -314,10 +314,26 @@ extends Atlantis\ProtectedAPI {
 
 	#[Common\Meta\Date('2024-11-08')]
 	protected function
-	OnUploadDoneTag(string $Type, Atlantis\Media\File $File, Common\Datafilter $Data):
+	OnUploadDoneRelateTag(string $Type, Atlantis\Media\File $File, Common\Datafilter $Data):
 	void {
 
-		// todo
+		if($Type !== 'tagphoto')
+		return;
+
+		////////
+
+		$TagID = Common\Filters\Numbers::IntType($Data->Get('TagID'));
+		$Tag = Atlantis\Tag\Entity::GetByID($TagID);
+
+		if(!$Tag)
+		return;
+
+		////////
+
+		Atlantis\Tag\EntityPhoto::Insert([
+			'EntityID' => $Tag->ID,
+			'PhotoID'  => $File->ID
+		]);
 
 		return;
 	}
