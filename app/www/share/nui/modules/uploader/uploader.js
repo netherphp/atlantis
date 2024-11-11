@@ -627,11 +627,17 @@ class UploadButton {
 
 		////////
 
-		if(this.element.is('[data-method]'))
-		this.options.method = ths.element.attr('data-method');
+		if(this.element.is('[data-upload-method]'))
+		this.options.method = this.element.attr('data-upload-method');
 
-		if(this.element.is('[data-url]'))
-		this.options.url = ths.element.attr('data-url');
+		if(this.element.is('[data-upload-url]'))
+		this.options.url = this.element.attr('data-upload-url');
+
+		if(this.element.is('[data-upload-method-final]'))
+		this.options.methodFinal = this.element.attr('data-upload-method-final');
+
+		if(this.element.is('[data-upload-url-final]'))
+		this.options.urlFinal = this.element.attr('data-upload-url-final');
 
 		if(this.element.is('[data-on-success]'))
 		this.options.onSuccess = this.element.attr('data-on-success');
@@ -670,6 +676,7 @@ class UploadButton {
 		await this.getRemoteConfig(conf);
 
 		this.dialog = new UploadButtonDialog(this);
+
 
 		return false;
 	};
