@@ -9,5 +9,6 @@
 }
 
 .si-twitter::before {
+	/* content: "\f4e4"; prior to 13.16.0 */
 	content: "\f643";
 }
