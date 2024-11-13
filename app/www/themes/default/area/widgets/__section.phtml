@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @var Nether\Surface\Engine $Surface
+ * @var string $Title
+ * @var string $Subtitle
+ * @var string $URL
+ * @var string $SubURL
+ */
+
+$Title ??= $Surface->Get('Page.Title') ?? '';
+$Subtitle ??= $Surface->Get('Page.Subtitle') ?? '';
+$URL ??= '';
+$SubURL ??= $URL;
+
+?>
+
+<div style="background-color:#f0f0f0;">
+	<div class="container mb-4">
+		<div class="text-align-center pt-6 pb-6">
+			<?php if($Title): ?><h2 class="text-uppercase mb-0"><a href="<?php $Util->Print($URL) ?>"><?php $Util->Print($Title) ?></a></h2>
+			<?php endif; ?>
+
+			<?php if($Subtitle): ?><h3 class="text-uppercase mb-0 o-70"><a href="<?php $Util->Print($SubURL) ?>"><?php $Util->Print($Subtitle) ?></a></h3>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>

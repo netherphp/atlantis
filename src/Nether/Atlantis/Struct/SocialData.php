@@ -25,7 +25,8 @@ implements
 		'Threads'   => 'si-threads',
 		'TikTok'    => 'si-tiktok',
 		'Twitter'   => 'si-twitter',
-		'YouTube'   => 'si-youtube'
+		'YouTube'   => 'si-youtube',
+		'Bluesky'   => 'si-bluesky'
 	];
 
 	////////////////////////////////////////////////////////////////
