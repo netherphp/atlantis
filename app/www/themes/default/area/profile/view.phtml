@@ -167,9 +167,8 @@ if(isset($Photos) && $Photos->Count() >= 6) {
 				<div class="cursor-pointer ratiobox photo wallpapered contained rounded bg-dark PhotoGalleryItem" style="background-image:url(<?php $Util->Print($Photo->GetPublicURL()) ?>); background-position: top center; background-size: cover;" data-url-lg="<?php $Util->Print($Photo->GetPublicURL()) ?>">
 
 					<div class="position-absolute position-bottom position-left p-1">
-						<?php if($Route->IsUserAdmin()): ?>
 						<a onclick="href.location=this.href;event.stopPropagation();" href="/photo/<?php $Util->Print($Photo->ID) ?>" data-bs-toggle="tooltip" title="View Photo Page" class="btn btn-dark font-size-large p-0 pl-2 pr-2" style="text-shadow:none;"><i class="mdi mdi-image-album mr-0"></i></a>
-						<?php endif; ?>
+						<button data-bs-toggle="tooltip" title="View Slideshow" class="btn <?php $Util->Print($Profile->CoverImageID === $Photo->ID ? 'btn-success' : 'btn-dark') ?> font-size-large p-0 pl-2 pr-2"><i class="mdi mdi-magnify mr-0"></i></button>
 					</div>
 
 					<div class="position-absolute position-bottom position-right p-1">
