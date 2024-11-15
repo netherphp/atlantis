@@ -195,9 +195,9 @@ class JsonRequest {
 		}
 
 		if(goto !== null)
-		setTimeout((()=>location.href = goto), 100);
+		setTimeout((()=> location.href = goto), 100);
 
-		return;
+		return false;
 	};
 
 	reload(result) {

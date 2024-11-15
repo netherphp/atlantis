@@ -26,7 +26,7 @@ switch($Item->Warn) {
 ?>
 
 <div class="dropdown-div">
-	<a href="<?php $Util->Print($Item->GetURL()) ?>" class="<?php $Util->Print($BtnClasses->Join(' ')) ?>" <?php echo $Item->GetAttrForHTML() ?>>
+	<a data-btn-cmd="<?php $Util->Print($Key) ?>" href="<?php $Util->Print($Item->GetURL()) ?>" class="<?php $Util->Print($BtnClasses->Join(' ')) ?>" <?php echo $Item->GetAttrForHTML() ?>>
 		<i class="<?php $Util->Print($Item->GetIcon()) ?>"></i>
 		<?php $Util->Print($Item->GetTitle()) ?>
 	</a>

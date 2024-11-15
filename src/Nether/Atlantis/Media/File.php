@@ -31,6 +31,11 @@ extends Atlantis\Prototype {
 	public int
 	$UserID;
 
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Nullable: TRUE)]
+	#[Database\Meta\ForeignKey('Profiles', 'ID', Delete: 'SET NULL')]
+	public ?int
+	$ProfileID;
+
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE, Default: 0, Nullable: FALSE)]
 	public int
 	$TimeCreated;
@@ -65,6 +70,95 @@ extends Atlantis\Prototype {
 	public Common\Datastore
 	$ExtraFiles;
 
+	#[Database\Meta\TableJoin('ProfileID')]
+	public Atlantis\Profile\Entity
+	$Profile;
+
+	public function
+	HasProfile():
+	bool {
+
+		return ($this->ProfileID !== NULL && $this->ProfileID > 0);
+	}
+
+	public function
+	BootProfile():
+	static {
+
+		if($this->BootProfileExisting())
+		return $this;
+
+		if($this->BootProfileExistingUnbound())
+		return $this;
+
+		////////
+
+		$this->BootProfileFresh();
+
+		return $this;
+	}
+
+	protected function
+	BootProfileExisting():
+	bool {
+
+		// there is already a profile bound and loaded.
+
+		if(isset($this->Profile))
+		return TRUE;
+
+		// there is a profile bound but not loaded.
+
+		if(isset($this->ProfileID)) {
+			$this->Profile = Atlantis\Profile\Entity::GetByID(
+				$this->ProfileID
+			);
+
+			return TRUE;
+		}
+
+		////////
+
+		return FALSE;
+	}
+
+	protected function
+	BootProfileExistingUnbound():
+	bool {
+
+		$this->Profile = Atlantis\Profile\Entity::GetByField(
+			'ParentUUID', $this->UUID
+		);
+
+		////////
+
+		if(isset($this->Profile)) {
+			$this->Update([ 'ProfileID'=> $this->Profile->ID ]);
+			return TRUE;
+		}
+
+		////////
+
+		return FALSE;
+	}
+
+	protected function
+	BootProfileFresh():
+	bool {
+
+		$this->Profile = Atlantis\Profile\Entity::Insert([
+			'ParentUUID' => $this->UUID,
+			'Title'      => '',
+			'Alias'      => sprintf('photo-profile-%d', $this->ID),
+			'Details'    => '',
+			'Enabled'    => 0
+		]);
+
+		$this->Update([ 'ProfileID'=> $this->Profile->ID ]);
+
+		return TRUE;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -87,6 +181,11 @@ extends Atlantis\Prototype {
 
 			unset($Data);
 		}
+
+		//Common\Dump::Var($Args->Input, TRUE);
+
+		if($Args->InputExists('PRO_ID'))
+		$this->Profile = Atlantis\Profile\Entity::FromPrefixedDataset($Args->Input);
 
 		return;
 	}

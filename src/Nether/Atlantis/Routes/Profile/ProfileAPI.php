@@ -133,8 +133,10 @@ extends Atlantis\ProtectedAPI {
 			$this->Quit(100, $Err->GetMessage());
 		}
 
+		$Goto = $Ent->GetPageURL();
+
 		$this
-		->SetGoto($Ent->GetPageURL())
+		->SetGoto($Goto)
 		->SetPayload($Ent->DescribeForPublicAPI());
 
 		return;
@@ -152,14 +154,24 @@ extends Atlantis\ProtectedAPI {
 
 		$Patchset = $Ent->Patch($this->Data);
 
-		//var_dump($Patchset);
-
 		if(count($Patchset))
 		$Ent->Update($Patchset);
 
 		////////
 
-		$this->SetPayload($Ent->DescribeForPublicAPI());
+		$Goto = $Ent->GetPageURL();
+
+		if(str_starts_with($Ent->Alias, 'video-profile-'))
+		$Goto = 'reload';
+
+		if(str_starts_with($Ent->Alias, 'photo-profile-'))
+		$Goto = 'reload';
+
+		////////
+
+		($this)
+		->SetGoto($Goto)
+		->SetPayload($Ent->DescribeForPublicAPI());
 
 		return;
 	}

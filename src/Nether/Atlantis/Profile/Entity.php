@@ -69,7 +69,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
-	public string
+	public ?string
 	$Title;
 
 	#[Database\Meta\TypeVarChar(Size: 120)]
@@ -220,7 +220,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			?? $this->Title
 		);
 
-		return $Title;
+		return $Title ?: '';
 	}
 
 	static public function

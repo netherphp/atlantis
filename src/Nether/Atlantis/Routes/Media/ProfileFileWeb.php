@@ -8,47 +8,41 @@ use Nether\Database;
 use Nether\Avenue;
 use Nether\Blog;
 
-class VideoWeb
+class ProfileFileWeb
 extends Atlantis\ProtectedWeb {
 
-	#[Avenue\Meta\RouteHandler('/video/:VideoID:')]
+	#[Avenue\Meta\RouteHandler('/file/:FileID:')]
+	#[Avenue\Meta\RouteHandler('/photo/:FileID:')]
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
 	#[Avenue\Meta\ExtraDataArgs]
 	public function
-	View(int $VideoID, Atlantis\Media\VideoThirdParty $Video):
+	View(int $FileID, Atlantis\Media\File $File):
 	void {
 
-		$Profiles = $this->FetchRelatedProfiles($Video);
-		$Posts = $this->FetchRelatedNews($Video);
-		$Links = $Video->Profile->FetchRelatedLinks();
+		if($File->Type === $File::TypeImg)
+		$this->ViewFileImage($File);
 
-		////////
-
-		$this->Surface
-		->Set('Page.Title', sprintf('Video: %s', $Video->Title))
-		->Wrap('media/video/view', [
-			'Video'    => $Video,
-			'Links'    => $Links,
-			'Tags'     => $Video->GetTags(),
-			'News'     => $Posts,
-			'Related'  => $Profiles
-		]);
+		else
+		$this->Quit(404);
 
 		return;
 	}
 
 	public function
-	ViewWillAnswerRequest(int $VideoID, Avenue\Struct\ExtraData $Data):
+	ViewWillAnswerRequest(int $FileID, Avenue\Struct\ExtraData $Data):
 	int {
 
-		$Video = Atlantis\Media\VideoThirdParty::GetBYID($VideoID);
+		$File = Atlantis\Media\File::GetByID($FileID);
 
-		if(!$Video)
+		////////
+
+		if(!$File)
 		return ($this->Response)::CodeNope;
 
 		////////
 
-		$Data['Video'] = $Video;
+		$Data['File'] = $File;
+
 		return ($this->Response)::CodeOK;
 	}
 
@@ -56,7 +50,46 @@ extends Atlantis\ProtectedWeb {
 	////////////////////////////////////////////////////////////////
 
 	protected function
-	FetchRelatedProfiles(Atlantis\Media\VideoThirdParty $Video):
+	ViewFileGeneric(Atlantis\Media\File $File):
+	void {
+
+		return;
+	}
+
+	protected function
+	ViewFileImage(Atlantis\Media\File $File):
+	void {
+
+		$Scope = [
+			'File'     => $File,
+			'Related'  => $this->FetchRelatedProfiles($File),
+			'Tags'     => $File->Profile->GetTags()
+		];
+
+		$File->BootProfile();
+
+		////////
+
+		($this->Surface)
+		->Area('media/image/view', $Scope);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	protected function
+	FetchFileProfile(Atlantis\Media\File $File):
+	Atlantis\Profile\Entity {
+
+		$File->BootProfile();
+
+		return $File->Profile;
+	}
+
+	protected function
+	FetchRelatedProfiles(Atlantis\Media\File $File):
 	?Database\ResultSet {
 
 		$Profiles = NULL;
@@ -64,12 +97,12 @@ extends Atlantis\ProtectedWeb {
 		////////
 
 		$Index = Atlantis\Struct\EntityRelationship::Find([
-			'EntityUUID' => $Video->UUID,
+			'EntityUUID' => $File->UUID,
 			'EntityType' => Atlantis\Profile\Entity::EntType,
 			'Remappers'  => [
 				fn(Atlantis\Struct\EntityRelationship $ERI)
 				=> Atlantis\Struct\EntityRelationship::KeepTheOtherUUID(
-					$ERI, $Video->UUID
+					$ERI, $File->UUID
 				)
 			]
 		]);
@@ -77,6 +110,7 @@ extends Atlantis\ProtectedWeb {
 		if($Index->Count())
 		$Profiles = Atlantis\Profile\Entity::Find([
 			'UseSiteTags' => FALSE,
+			'Enabled'     => NULL,
 			'UUID'        => $Index->Export()
 		]);
 

@@ -176,7 +176,7 @@ class Profile {
 				let api = new API.Request('PATCH', self.endpoint, data);
 
 				(api.send())
-				.then((result)=> location.href = result.payload.PageURL)
+				.then((result)=> api.goto(result))
 				.catch(api.catch);
 
 				return;
