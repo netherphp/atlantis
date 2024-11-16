@@ -28,7 +28,7 @@ class FindClass {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	IsValidPrototype():
+	HasFindClass():
 	bool {
 
 		return (TRUE

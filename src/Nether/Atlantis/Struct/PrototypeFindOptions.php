@@ -74,6 +74,7 @@ implements
 		return TRUE;
 	}
 
+	#[Common\Meta\Date('2024-11-16')]
 	public function
 	Import(iterable $Input):
 	static {
@@ -108,16 +109,16 @@ implements
 	Common\Datastore {
 
 		$CInfo = static::FetchClassInfo();
-		$Attr = $CInfo->GetAttribute(Atlantis\Meta\Prototype\FindOptionsPrototype::class);
+		$Attr = $CInfo->GetAttribute(Atlantis\Meta\Prototype\FindClass::class);
 
 		////////
 
 		/**
-		 * @var Atlantis\Meta\Prototype\FindOptionsPrototype $Attr
+		 * @var Atlantis\Meta\Prototype\FindClass $Attr
 		 */
 
 		if($Attr) {
-			if($Attr->IsValidPrototype())
+			if($Attr->HasFindClass())
 			return $Attr->Find($this);
 		}
 
@@ -135,6 +136,7 @@ implements
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2024-11-16')]
 	static public function
 	FromArray(iterable $Input):
 	static {
