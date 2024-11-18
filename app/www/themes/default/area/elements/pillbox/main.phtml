@@ -8,7 +8,7 @@
 ?>
 
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-pillbox')) ?>">
-	<div class="row tight justify-content-start justify-content-md-center mb-1">
+	<div class="row tight justify-content-start justify-content-md-center mb-0">
 		<?php foreach($Element->Items as $Item): /** @var Nether\Atlantis\Struct\Item $Item */ ?>
 		<div class="col-6 col-md-auto mb-2 mb-md-0">
 			<div class="<?php $Util->Print($Item->GetClassesForHTML('atl-ui-pillbox-item', ($Item->IsTheUUID($Element->Section) ? 'on' : 'off'))) ?>" <?php echo $Item->GetDataAttrAsHTML() ?>>
