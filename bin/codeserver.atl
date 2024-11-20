@@ -129,13 +129,14 @@ extends Atlantis\TerminalApp {
 	}
 
 	protected function
-	WriteConfigFile():
+	WriteConfigFile(?Common\Datastore $Config=NULL):
 	void {
 
+		$Config ??= $this->Config;
 		$Buffer = new Common\Overbuffer;
 		$ConfFile = $this->GetConfFile();
 
-		$Buffer->Exec(fn() => $this->Config->EachKeyValue(
+		$Buffer->Exec(fn() => $Config->EachKeyValue(
 			fn(string $K, string $V)
 			=> printf('%s: %s%s', $K, $V, PHP_EOL)
 		));
