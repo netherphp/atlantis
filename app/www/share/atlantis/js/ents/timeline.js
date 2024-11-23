@@ -153,6 +153,7 @@ class Timeline {
 	static WhenClickItemNew(el) {
 
 		el.toggleClass('d-none');
+		jQuery('.atl-dropsort-cmd-save').toggleClass('d-none');
 
 		el[0].scrollIntoView();
 

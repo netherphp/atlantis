@@ -53,6 +53,12 @@ TOOLBAR;
 		<hr />
 
 		<div class="row g-2 mb-4">
+			<?php if(!$Timeline->GetItems()->Count()): ?>
+			<div class="col-12 ta-center fst-italic">
+				There are no items in this timeline.
+			</div>
+			<?php endif; ?>
+
 			<?php foreach($Timeline->GetItems() as $I=> $Item): /** @var Atlantis\Media\TimelineItem $Item */ ?>
 			<div class="col-12 px-3 rounded atl-dropsort-item trans-o-fast" data-id="<?php $Util->Print($Item->ID); ?>">
 				<div class="row g-2 align-items-start align-items-md-center">
