@@ -1,0 +1,69 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Media\Timeline $Timeline
+ * @var Atlantis\Media\TimelineItem $Item
+ */
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'Timelines', URL: '/dashboard/timelines'),
+		Atlantis\Struct\Item::New(Title: $Timeline->Title, URL: $Timeline->GetEditURL()),
+		Atlantis\Struct\Item::New(Title: 'Edit Item', URL: $Item->GetEditURL())
+	]
+]);
+
+?>
+
+<div class="container pb-6">
+	<div id="AtlDashTimelineFormEditItem" data-atl-timeline-id="<?php $Util->Print($Timeline->ID) ?>" data-atl-timeline-form="item-edit" data-atl-timeline-item-id="<?php $Util->Print($Item->ID) ?>">
+
+		<form class="rounded">
+			<div class="row gy-2">
+				<div class="col-12 mb-2">
+					<div><span class="fw-bold">Title</span> <span class="o-50">(optional)</span></div>
+					<div><input name="Title" type="text" class="form-control" value="<?php $Util->Print($Item->Title) ?>" /></div>
+				</div>
+				<div class="col-12 mb-2">
+					<div><span class="fw-bold">Date</span> <span class="o-50">(optional)</span></div>
+					<div><input name="Date" type="text" class="form-control" value="<?php $Util->Print($Item->Date) ?>" /></div>
+				</div>
+				<div class="col-12 mb-2">
+					<div><span class="fw-bold">URL</span> <span class="o-50">(optional)</span></div>
+					<div><input name="URL" type="text" class="form-control" value="<?php $Util->Print($Item->URL) ?>" /></div>
+				</div>
+				<div class="col-12 mb-2">
+					<div><span class="fw-bold">Content</span> <span class="o-50">(optional)</span></div>
+					<div><div class="Editor" data-atl-timeline-content-editor="html"><?php echo $Item->Details ?></div></div>
+				</div>
+				<div class="col-12 mb-0">
+					<button type="submit" class="btn btn-primary">Update</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
+</div>
+
+<script type="module">
+import Timeline from '<?php $Util->Print($App->GetCacheBustedURL('/share/atlantis/js/ents/timeline.js')) ?>';
+
+jQuery(function(){
+	Timeline.BindDocument();
+	return;
+});
+</script>

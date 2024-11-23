@@ -1,0 +1,96 @@
+<?php ##########################################################################
+################################################################################
+
+// @todo 2024-09-16 - delete file make route smarter.
+
+$Surface->Area('dashboard/faqs/type-faqs/entity-delete', $__SCOPE);
+return;
+
+################################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\Routes\User\UserSessionWeb $Route
+ * @var Local\FAQ\Group $Group
+ * @var Local\FAQ\Entity $Entity
+ */
+
+################################################################################
+################################################################################
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: $Group->TitleShort, URL: $Group->GetEditURL()),
+		Atlantis\Struct\Item::New(Title: 'Delete Entry')
+	]
+]);
+
+?>
+
+<div class="atl-page-dashboard container mb-6">
+	<div class="jumbotron jumbotron-theme p-3 hr-hide-last mb-4">
+
+		<form id="SubmitFAQ" method="post">
+			<div class="row align-items-center">
+				<div class="col-12 mb-4">
+					<div class="fw-bold ta-center">Are you sure you want to delete this entry?</div>
+					<div class="fw-bold ta-center tc-red">This cannot be undone.</div>
+				</div>
+				<div class="col-12 mb-4">
+					<hr />
+					<h3><?php $Util->Print($Group->Title) ?></h3>
+					<h4><?php $Util->Print($Entity->GetEntryTitle()) ?></h4>
+					<div>
+						<?php echo $Entity->Render() ?>
+					</div>
+					<hr />
+				</div>
+				<div class="col-12 ta-center">
+					<input type="hidden" name="ID" value="<?php $Util->Print($Entity->ID) ?>" />
+					<input type="hidden" name="Type" value="plain" />
+					<div class="row justify-content-center g-4">
+						<div class="col-auto">
+							<a href="<?php $Util->Print($Group->GetEditURL()) ?>" class="btn btn-secondary fs-large">
+								Cancel
+							</a>
+						</div>
+						<div class="col-auto">
+							<button type="submit" class="btn btn-primary fs-large">
+								<i class="mdi mdi-trash-can-outline"></i>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</div>
+</div>
+
+<script type="module">
+import SubmitFAQ from '/share/local/js/submit-faq.js';
+
+jQuery(function() {
+
+	let submitter = new SubmitFAQ;
+	submitter.mode = 'DELETE';
+	submitter.goto = '<?php $Util->Print($Group->GetEditURL()) ?>';
+
+	return;
+});
+</script>
+

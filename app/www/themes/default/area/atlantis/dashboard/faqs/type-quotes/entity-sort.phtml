@@ -1,0 +1,163 @@
+<?php ##########################################################################
+################################################################################
+
+// @todo 2024-09-16 - delete file make route smarter.
+
+$Surface->Area('dashboard/faqs/type-faqs/entity-sort', $__SCOPE);
+return;
+
+################################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\Routes\User\UserSessionWeb $Route
+ * @var Local\FAQ\Group $Group
+ * @var Common\Datastore $Items <Local\FAQ\Entity>
+ */
+
+################################################################################
+################################################################################
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: $Group->TitleShort, URL: $Group->GetEditURL()),
+		Atlantis\Struct\Item::New(Title: 'Manage Sorting')
+	]
+]);
+
+$Toolbar = <<< TOOLBAR
+	<div class="row justify-content-center">
+		<div class="col-auto">
+			<a href="{$Group->GetAddItemURL()}" class="btn btn-outline-dark">
+				<i class="mdi mdi-plus"></i>
+				Add
+			</a>
+		</div>
+		<div class="col-auto">
+			<button type="button" class="btn btn-primary atl-dropsort-cmd-save">
+				<i class="mdi mdi-content-save"></i>
+				Save
+			</button>
+		</div>
+	</div>
+TOOLBAR;
+
+?>
+
+<style type="text/css">
+.form-control { background-color: #fff4 !important; color: #fff !important; }
+.Collapser header { background-color: transparent; border: 0px; color: var(--theme-black); font-size: 1.0rem; }
+</style>
+
+<div class="container mb-6">
+	<div class="pt-6 pb-6">
+
+		<!-- SORTING AREA -->
+		<div id="SortFAQ" class="atl-dropsort mb-4" data-group-id="<?php $Util->Print($Group->ID) ?>">
+
+			<div class="mb-4"><?php echo $Toolbar ?></div>
+
+			<div class="row g-2 mb-4">
+				<?php foreach($Items as $I=> $Item): /** @var Local\FAQ\Entity $Item */ ?>
+				<div class="col-12 px-3 rounded atl-dropsort-item trans-o-fast" data-id="<?php $Util->Print($Item->ID); ?>">
+					<div class="row g-2 align-items-start align-items-md-center">
+						<div class="col-auto">
+							<div class="ta-center fw-bold ff-mono pt-2 pt-md-0">
+								<span class="atl-dropsort-item-num">
+									<?php $Util->Print($I + 1) ?>
+								</span>
+							</div>
+						</div>
+						<div class="col">
+							<div class="Collapser mb-0 atl-dropsort-preview">
+								<header>
+									<div>
+										<?php $Util->Print($Item->GetEntryTitle()) ?>
+									</div>
+								</header>
+								<section>
+									<?php echo $Item->GetContentHTML() ?>
+								</section>
+							</div>
+						</div>
+						<div class="col-12 d-block d-md-none"></div>
+						<div class="col d-block d-md-none"></div>
+						<div class="col-auto">
+							<a href="<?php $Util->Print($Item->GetEditURL()) ?>" class="fs-largerer tc-black atl-dropsort-item-edit">
+								<i class="mdi mdi-square-edit-outline"></i>
+							</a>
+						</div>
+						<div class="col-auto">
+							<a href="<?php $Util->Print($Item->GetDeleteURL()) ?>" class="fs-largerer tc-black atl-dropsort-item-delete">
+								<i class="mdi mdi-trash-can-outline"></i>
+							</a>
+						</div>
+						<div class="col-auto">
+							<span class="fs-largerer atl-dropsort-item-handle ml-4" data-id="<?php $Util->Print($Item->ID) ?>" draggable="true">
+								<i class="mdi mdi-reorder-horizontal"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+				<?php endforeach; unset($I, $Item); ?>
+			</div>
+
+			<div class="mb-0"><?php echo $Toolbar ?></div>
+
+		</div>
+
+	</div>
+</div>
+
+<script type="module">
+import Collapser from '/share/nui/util/collapser.js';
+import API from '/share/nui/api/json.js';
+import SubmitFAQ from '/share/local/js/submit-faq.js';
+import Dropsorter from '/share/atlantis/js/ui/dropsorter.js';
+
+jQuery(function(){
+
+	let sorter = new Dropsorter('#SortFAQ');
+
+	jQuery('.Collapser')
+	.each(function(){
+		new Collapser(this);
+		return;
+	});
+
+	(sorter.btnSave)
+	.on('click', function(){
+
+		let data = sorter.lock();
+		let api = new API.Request('SORT', '/api/faq/list', {
+			GroupID: sorter.element.attr('data-group-id'),
+			Order: data.join(',')
+		});
+
+		(api.send())
+		.then(function(r) {
+			console.log(r);
+			return;
+		})
+		.catch(api.catch);
+
+		sorter.unlock();
+
+		return;
+	});
+
+	return;
+});
+</script>

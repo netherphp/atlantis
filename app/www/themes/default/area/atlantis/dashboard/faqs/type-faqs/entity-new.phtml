@@ -1,0 +1,93 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+use Nether\Atlantis\Plugin\Interfaces\Dashboard\InfoWidgetInterface;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\Routes\User\UserSessionWeb $Route
+ * @var Local\FAQ\Group $Group
+ */
+
+################################################################################
+################################################################################
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: $Group->TitleShort, URL: $Group->GetEditURL()),
+		Atlantis\Struct\Item::New(Title: 'New Entry')
+	]
+]);
+
+$CType = 'squire';
+
+?>
+
+<div class="atl-page-dashboard container mb-6">
+	<div class="jumbotron jumbotron-theme p-3 hr-hide-last mb-4">
+
+		<form id="SubmitFAQ" method="post">
+			<div class="row align-items-center">
+				<div class="col-12 mb-4">
+					<div class="mb-4">
+						<div class="tt-upper fw-bold mb-2">Question:</div>
+						<input type="text" name="Title" class="form-control" />
+					</div>
+					<div>
+						<div class="tt-upper fw-bold mb-2">Answer:</div>
+
+						<?php if($CType === Local\FAQ\Entity::CTypePlain): ?>
+						<textarea name="Content" class="form-control" rows="6" style="min-height:50svh;"><?php echo $Entity->Render() ?></textarea>
+
+						<?php elseif($CType === Local\FAQ\Entity::CTypeSquire): ?>
+						<div id="Editor1" class="Editor d-none"></div>
+
+						<?php endif; ?>
+
+					</div>
+				</div>
+				<div class="col-12 ta-center">
+					<input type="hidden" name="Type" value="<?php $Util->Print($CType) ?>" />
+					<input type="hidden" name="GroupID" value="<?php $Util->Print($Group->ID) ?>" />
+					<button type="submit" class="btn btn-primary fs-large">
+						<i class="mdi mdi-plus"></i>
+						Add
+					</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import SubmitFAQ from '/share/local/js/submit-faq.js';
+import Editor from '/share/nui/modules/editor/editor.js';
+
+jQuery(function() {
+
+	let editobj = jQuery('#Editor1');
+	let editapi = new Editor('#Editor1');
+	let submitter = new SubmitFAQ;
+
+	editobj.data('editor', editapi);
+	submitter.mode = 'POST';
+	submitter.editor = editapi;
+
+	return;
+});
+</script>
+

@@ -1,0 +1,161 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Media\Timeline $Timeline
+ */
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'Timelines', URL: '/dashboard/timelines'),
+		Atlantis\Struct\Item::New(Title: $Timeline->Title, URL: $Timeline->GetEditURL())
+	]
+]);
+
+$Toolbar = <<< TOOLBAR
+	<div class="row justify-content-end">
+		<div class="col-auto">
+			<a data-atl-timeline-cmd="item-new" data-atl-timeline-target="#AtlDashTimelineFormNewItem" href="{$Timeline->GetAddItemURL()}" class="btn btn-outline-light">
+				<i class="mdi mdi-plus"></i>
+				New Item
+			</a>
+		</div>
+		<div class="col-auto">
+			<button type="button" class="btn btn-primary atl-dropsort-cmd-save" data-atl-timeline-id="{$Timeline->ID}">
+				<i class="mdi mdi-content-save"></i>
+				Save
+			</button>
+		</div>
+	</div>
+TOOLBAR;
+
+?>
+
+<div class="container pb-6">
+
+	<!-- SORTING AREA -->
+	<div id="SortTimelineItems" class="atl-dropsort mb-4" data-atl-timeline-id="<?php $Util->Print($Timeline->ID) ?>">
+
+		<div class="mb-4"><?php echo $Toolbar ?></div>
+		<hr />
+
+		<div class="row g-2 mb-4">
+			<?php foreach($Timeline->GetItems() as $I=> $Item): /** @var Atlantis\Media\TimelineItem $Item */ ?>
+			<div class="col-12 px-3 rounded atl-dropsort-item trans-o-fast" data-id="<?php $Util->Print($Item->ID); ?>">
+				<div class="row g-2 align-items-start align-items-md-center">
+					<div class="col-auto">
+						<div class="ta-center fw-bold ff-mono pt-2 pt-md-0">
+							<span class="atl-dropsort-item-num">
+								<?php $Util->Print($I + 1) ?>
+							</span>
+						</div>
+					</div>
+					<div class="col">
+						<div class="atl-dropsort-preview">
+							<span class="fw-bold fs-large"><?php $Util->Print($Item->Title) ?></span>
+						</div>
+					</div>
+					<div class="col-12 d-block d-md-none"></div>
+					<div class="col d-block d-md-none"></div>
+					<div class="col-auto">
+						<a href="<?php $Util->Print($Item->GetEditURL()) ?>" class="fs-largerer tc-black atl-dropsort-item-edit">
+							<i class="mdi mdi-square-edit-outline"></i>
+						</a>
+					</div>
+					<div class="col-auto">
+						<a href="<?php $Util->Print($Item->GetDeleteURL()) ?>" class="fs-largerer tc-black atl-dropsort-item-delete">
+							<i class="mdi mdi-trash-can-outline"></i>
+						</a>
+					</div>
+					<div class="col-auto">
+						<span class="fs-largerer atl-dropsort-item-handle ml-4" data-id="<?php $Util->Print($Item->ID) ?>" draggable="true">
+							<i class="mdi mdi-reorder-horizontal"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+
+		<div id="AtlDashTimelineFormNewItem" class="d-none" data-atl-timeline-id="<?php $Util->Print($Timeline->ID) ?>" data-atl-timeline-form="item-new">
+			<hr />
+			<form class="jumbotron rounded p-3">
+				<div class="row gy-2">
+					<div class="col-12 mb-2">
+						<div><span class="fw-bold">Title</span> <span class="o-50">(optional)</span></div>
+						<div><input name="Title" type="text" class="form-control" /></div>
+					</div>
+					<div class="col-12 mb-2">
+						<div><span class="fw-bold">Date</span> <span class="o-50">(optional)</span></div>
+						<div><input name="Date" type="text" class="form-control" /></div>
+					</div>
+					<div class="col-12 mb-2">
+						<div><span class="fw-bold">URL</span> <span class="o-50">(optional)</span></div>
+						<div><input name="URL" type="text" class="form-control" /></div>
+					</div>
+					<div class="col-12 mb-2">
+						<div><span class="fw-bold">Content</span> <span class="o-50">(optional)</span></div>
+						<div><div class="Editor" data-atl-timeline-content-editor="html"></div></div>
+					</div>
+					<div class="col-12 mb-0">
+						<button type="submit" class="btn btn-primary">Create</button>
+					</div>
+				</div>
+			</form>
+			<hr />
+		</div>
+
+		<div class="mb-4"><?php echo $Toolbar ?></div>
+
+	</div>
+
+</div>
+
+<script type="module">
+import API        from '/share/nui/api/json.js';
+import Dropsorter from '/share/atlantis/js/ui/dropsorter.js';
+import Timeline   from '<?php $Util->Print($App->GetCacheBustedURL('/share/atlantis/js/ents/timeline.js')) ?>';
+
+jQuery(function(){
+
+	Timeline.BindDocument();
+
+	let sorter = new Dropsorter('#SortTimelineItems');
+
+	(sorter.btnSave)
+	.on('click', function(){
+
+		let data = sorter.lock();
+		let api = new API.Request('SORT', '/api/media/timeline', {
+			ID: sorter.element.attr('data-atl-timeline-id'),
+			Order: data.join(',')
+		});
+
+		(api.send())
+		.then(function(r) {
+			console.log(r);
+			return;
+		})
+		.catch(api.catch);
+
+		sorter.unlock();
+
+		return;
+	});
+
+	return;
+});
+</script>

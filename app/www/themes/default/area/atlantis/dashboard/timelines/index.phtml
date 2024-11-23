@@ -1,0 +1,91 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'Timelines', URL: '/dashboard/timelines')
+	]
+]);
+
+?>
+
+
+<div class="container pb-6">
+	<div class="row justify-content-end mb-4">
+		<div class="col-auto">
+			<a data-atl-timeline-cmd="new" data-atl-timeline-target="#AtlDashTimelineFormNew" href="" class="btn btn-outline-light">
+				<i class="mdi mdi-plus"></i>
+				New Timeline
+			</a>
+		</div>
+	</div>
+	<hr />
+
+	<div id="AtlDashTimelineFormNew" class="d-none" data-atl-timeline-form="new">
+		<form class="jumbotron rounded p-2">
+			<div class="row gy-2">
+				<div class="col-12">
+					<div class="fw-bold">Title:</div>
+					<div><input name="Title" type="text" class="form-control" /></div>
+				</div>
+				<div class="col-12">
+					<button type="submit" class="btn btn-primary">Create</button>
+				</div>
+			</div>
+		</form>
+		<hr />
+	</div>
+
+	<div>
+		<?php foreach($Timelines as $T): /** @var Atlantis\Media\Timeline $T */ ?>
+		<div class="row">
+			<div class="col">
+				<a href="<?php $Util->Print($T->GetEditURL()) ?>" class="td-underline fw-bold">
+					<?php $Util->Print($T->Title) ?>
+				</a>
+			</div>
+			<div class="col-auto">
+				<?php $Util->Print($T->ID) ?>
+			</div>
+			<div class="col-auto">
+				<?php $Util->Print($T->UUID) ?>
+			</div>
+		</div>
+		<hr />
+		<?php endforeach; ?>
+
+		<?php echo Atlantis\UI\Pager::FromSurfaceWithResultSet($Surface, $Timelines) ?>
+	</div>
+
+</div>
+
+<script type="module">
+import Timeline from '<?php $Util->Print($App->GetCacheBustedURL('/share/atlantis/js/ents/timeline.js')) ?>';
+
+jQuery(function() {
+
+	Timeline.BindDocument();
+
+	return;
+});
+</script>
+
+
+

@@ -1,0 +1,60 @@
+
+:root {
+	--atl-timeline-item-bg: #dadada;
+}
+
+.atl-timeline .jumbotron {
+	background-color: var(--atl-timeline-item-bg);
+}
+
+.atl-timeline-vertical-bar {
+	background-color: var(--theme-grey-lt);
+	height: 100%;
+	width: 4px;
+}
+
+.atl-timeline-vertical-node {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+
+	background-color: var(--theme-primary);
+	border-radius: 300px;
+	height: 16px;
+	width: 16px;
+}
+
+.atl-timeline-vertical-node::after {
+	content: ' ';
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+
+	background-color: var(--theme-white);
+	border-radius: 300px;
+	height: 8px;
+	width: 8px;
+}
+
+.atl-timeline-item-arrow {
+	position: absolute;
+	top: 50%;
+	right: 0px;
+	width: 24px;
+	height: 24px;
+
+	transform: translateX(100%) translateY(-50%);
+	background-color: var(--atl-timeline-item-bg);
+
+	clip-path: polygon(0 0, 0% 100%, 50% 50%);
+}
+
+.atl-timeline-item-arrow.atl-timeline-even {
+	left:0px;
+	transform: translateX(-100%) translateY(-50%);
+	clip-path: polygon(100% 0%, 100% 100%, 50% 50%);
+}
+
