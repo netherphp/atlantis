@@ -72,6 +72,11 @@ implements
 	Patch(array|ArrayAccess $Input):
 	array {
 
+		// remember the orginal uuid in the event that was updated.
+
+		$UUID = $this->UUID;
+
+		// run the patch set.
 
 		$Data = parent::Patch($Input);
 
@@ -79,6 +84,12 @@ implements
 
 		if($this instanceof Interfaces\ExtraDataInterface)
 		$Data = array_merge($Data, $this->PatchExtraData($Input));
+
+		// if the uuid was updated then we should update the prototype
+		// index as well.
+
+		if(isset($Input['UUID']) && ($Input['UUID'] !== $this->UUID))
+		Struct\PrototypeIndex::UpdateUUID($UUID, $this->UUID);
 
 		return $Data;
 	}

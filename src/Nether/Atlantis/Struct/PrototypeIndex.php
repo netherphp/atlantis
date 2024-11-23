@@ -109,6 +109,18 @@ extends Database\Prototype {
 		return;
 	}
 
+	static public function
+	UpdateUUID(string $Old, string $New):
+	void {
+
+		$Row = static::GetByField('UUID', $Old);
+
+		if($Row)
+		$Row->Update([ 'UUID'=> $New ]);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

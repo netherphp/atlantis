@@ -15,6 +15,12 @@ use Nether\Database;
 class Timeline
 extends Atlantis\Prototype {
 
+	const
+	EntType = 'Timeline.Entity';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Database\Meta\TypeVarChar(Size: 128)]
 	public string
 	$Title;

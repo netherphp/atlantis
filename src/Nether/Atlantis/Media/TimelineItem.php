@@ -15,6 +15,12 @@ use Nether\Database;
 class TimelineItem
 extends Atlantis\Prototype {
 
+	const
+	EntType = 'Timeline.Item';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	#[Database\Meta\ForeignKey('Timelines', 'ID')]
 	public int
