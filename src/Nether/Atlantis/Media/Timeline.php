@@ -46,7 +46,8 @@ extends Atlantis\Prototype {
 	Database\ResultSet {
 
 		$Rows = TimelineItem::Find(TimelineItemFinder::New(
-			TimelineID: $this->ID
+			TimelineID: $this->ID,
+			Sort: 'sort-asc'
 		));
 
 		return $Rows;

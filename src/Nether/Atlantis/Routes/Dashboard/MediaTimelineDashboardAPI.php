@@ -76,8 +76,12 @@ extends Atlantis\ProtectedAPI {
 			'Limit'      => 0
 		]);
 
+		var_dump($Order);
+
 		$Ents->Each(function(Atlantis\Media\TimelineItem $E) use(&$Iter) {
-			$E->Update([ 'SortVal'=> $Iter++ ]);
+			var_dump($Iter);
+			$E->Update([ 'SortVal'=> $Iter ]);
+			$Iter += 1;
 			return;
 		});
 
