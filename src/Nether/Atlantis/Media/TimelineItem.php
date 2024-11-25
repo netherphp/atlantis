@@ -122,7 +122,7 @@ extends Atlantis\Prototype {
 	void {
 
 		if($Input['TimelineID'] !== NULL) {
-			$SQL->Where('TimelineID=:TimelineID');
+			$SQL->Where('Main.TimelineID=:TimelineID');
 		}
 
 		return;

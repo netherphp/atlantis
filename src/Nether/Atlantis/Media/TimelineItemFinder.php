@@ -26,7 +26,7 @@ extends Atlantis\Struct\PrototypeFindOptions {
 	New(?int $TimelineID=NULL, ?string $Sort=NULL):
 	static {
 
-		$Args = func_get_args();
+		$Args = get_defined_vars();
 		$Output = new static;
 		$K = NULL;
 		$V = NULL;
