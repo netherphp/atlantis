@@ -17,16 +17,34 @@ implements
 	IteratorAggregate,
 	JsonSerializable {
 
-	const Icons = [
-		'Website'   => 'mdi-web',
-		'Facebook'  => 'si-facebook',
-		'Instagram' => 'si-instagram',
-		'LinkedIn'  => 'si-linkedin',
-		'Threads'   => 'si-threads',
-		'TikTok'    => 'si-tiktok',
-		'Twitter'   => 'si-twitter',
-		'YouTube'   => 'si-youtube',
-		'Bluesky'   => 'si-bluesky'
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	const
+	Website   = 'Website',
+	Facebook  = 'Facebook',
+	Instagram = 'Instagram',
+	LinkedIn  = 'LinkedIn',
+	Threads   = 'Threads',
+	TikTok    = 'TikTok',
+	Twitter   = 'Twitter',
+	YouTube   = 'YouTube',
+	Bluesky   = 'Bluesky';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	const
+	Icons = [
+		self::Website   => 'mdi-web',
+		self::Facebook  => 'si-facebook',
+		self::Instagram => 'si-instagram',
+		self::LinkedIn  => 'si-linkedin',
+		self::Threads   => 'si-threads',
+		self::TikTok    => 'si-tiktok',
+		self::Twitter   => 'si-twitter',
+		self::YouTube   => 'si-youtube',
+		self::Bluesky   => 'si-bluesky'
 	];
 
 	////////////////////////////////////////////////////////////////
