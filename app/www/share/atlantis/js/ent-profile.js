@@ -30,6 +30,7 @@ class Profile {
 		this.details = Details;
 		this.adminNotes = AdminNotes;
 		this.extraData = ExtraData;
+		this.enabled = Enabled;
 
 		this.tags = Tags;
 
@@ -46,6 +47,7 @@ class Profile {
 		fdat.append('AliasPrefix', this.aliasPrefix);
 		fdat.append('Title', this.title);
 		fdat.append('Details', this.details);
+		fdat.append('Enabled', this.enabled);
 
 		for(const item of Object.keys(this.extraData))
 		fdat.append(`ExtraData[${item}]`, this.extraData[item]);
