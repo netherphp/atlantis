@@ -2,7 +2,7 @@
 ################################################################################
 
 // $Img = ImageEditor::FromFile($FilenameOpen);
-// $Img->ResizeToFit(1280, 720);
+// $Img->Fit(1280, 720);
 // $Img->Save($FilenameSave);
 
 namespace Nether\Atlantis\Media;
