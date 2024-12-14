@@ -602,6 +602,14 @@ class Window {
 		return this;
 	};
 
+	showHeader() {
+
+		this.elHeader.show();
+
+		return this;
+	};
+
+
 	showFooter() {
 
 		this.elFooter.show();
@@ -621,6 +629,13 @@ class Window {
 		this.element.addClass('d-none');
 
 		// emit event app can listen for.
+
+		return this;
+	};
+
+	hideHeader() {
+
+		this.elHeader.hide();
 
 		return this;
 	};

@@ -85,7 +85,7 @@ extends App {
 		os.dmgr.current.addWindow(this.window);
 		this.window.show();
 		this.window.centerInParent();
-		this.window.maximise();
+		//this.window.maximise();
 
 		return;
 	};
@@ -121,9 +121,13 @@ class TestWin extends Win {
 		this.setMinable(false);
 		this.setMovable(true);
 		this.setResizable(true);
-		this.setTitle(app.name);
+		this.setTitle(`${app.os.name} ${app.os.version}`);
 		this.setIcon(app.icon);
 		this.setBody(TemplateWindowMainHTML);
+		this.setSize(75, 75, '%');
+		//this.hideHeader();
+		this.hideFooter();
+
 
 		let box = this.getOutputElement('AppList');
 

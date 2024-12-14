@@ -36,6 +36,9 @@ class OS {
 		this.taskbar = null;
 		this.apps = [];
 
+		this.name = 'NUI Desktop';
+		this.version = 'v1';
+
 		this._elementGenID();
 		this._elementBuild();
 		this._elementDock(selector);

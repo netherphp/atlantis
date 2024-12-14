@@ -17,6 +17,9 @@ extends OS {
 
 		super(selector);
 
+		this.name = 'AtlantOS';
+		this.version = 'Mk1';
+
 		////////
 
 		let api = new API.Request(
