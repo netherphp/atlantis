@@ -25,7 +25,7 @@ types.
 
 		if(!$this->CanUserAccess()) {
 			$this->Response->SetCode(403);
-			$this->Quit(403);
+			$this->Quit(-403, 'Session Expired');
 		}
 
 		return;

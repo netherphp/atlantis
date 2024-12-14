@@ -33,7 +33,8 @@ extends Atlantis\ProtectedAPI {
 		$this->Quit(2, 'no user entity found');
 
 		$this->SetPayload([
-			'User' => $Entity
+			'User'   => $Entity,
+			'Access' => $Entity->GetAccessTypes()->Export()
 		]);
 
 		return;
@@ -104,6 +105,13 @@ extends Atlantis\ProtectedAPI {
 			$this->Quit(2, 'Email already in use.');
 		}
 
+		if(array_key_exists('Admin', $Dataset)) {
+			if($User->ID === $this->User->ID)
+			if(!$Dataset['Admin']) {
+				$this->Quit(3, 'You do not want to de-admin yourself.');
+			}
+		}
+
 		////////
 
 		if(count($Dataset)) {
@@ -122,6 +130,47 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		$this->SetMessage('DELETE');
+
+		return;
+	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'SEARCH')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntitySearch():
+	void {
+
+		($this->Data)
+		->FilterPush('Alias', Common\Filters\Text::TrimmedNullable(...))
+		->FilterPush('Email', Common\Filters\Text::TrimmedNullable(...));
+
+		////////
+
+		$QueryField = match(TRUE) {
+			($this->Data->Exists('Email')) => 'Email',
+			default                        => 'Alias'
+		};
+
+		$QueryValue = $this->Data->Get($QueryField);
+
+		$Limit = 50;
+		$Page = 1;
+
+		$Result = User\Entity::Find([
+			'Search'      => $QueryValue,
+			'SearchAlias' => ($QueryField === 'Alias'),
+			'SearchEmail' => ($QueryField === 'Email'),
+			'Limit'       => $Limit,
+			'Page'        => $Page
+		]);
+
+		$this->SetPayload([
+			'QueryField' => $QueryField,
+			'QueryValue' => $QueryValue,
+			'Limit'      => $Limit,
+			'Page'       => $Page,
+			'Results'    => $Result->Export()
+		]);
 
 		return;
 	}

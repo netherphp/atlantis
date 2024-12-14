@@ -1,0 +1,421 @@
+:root {
+
+	/*// basecfg ///////////////////
+	//////////////////////////////*/
+
+	--atl-dtop-cfg-colour-nullary:   var(--theme-black);
+	--atl-dtop-cfg-colour-primary:   var(--theme-red);
+	--atl-dtop-cfg-colour-mix-hover: var(--theme-white) 35%;
+	--atl-dtop-cfg-colour-mix-tp1:   transparent 80%;
+	--atl-dtop-cfg-corner-radius:    4px;
+	--atl-dtop-cfg-gap-primary:      0.2rem;
+	--atl-dtop-cfg-gap-primary-mult: 3.0;
+
+	--atl-dtop-cfg-z-desktop:        9001;
+	--atl-dtop-cfg-z-taskbar:        9010;
+	--atl-dtop-cfg-z-window:         9100;
+
+	/*// desktop ///////////////////
+	//////////////////////////////*/
+
+	--atl-dtop-desktop-bgc: var(--atl-dtop-cfg-colour-nullary);
+	--atl-dtop-desktop-tc:  var(--atl-dtop-cfg-colour-primary);
+
+	/*// taskbar ///////////////////
+	//////////////////////////////*/
+
+	--atl-dtop-taskbar-bgc: var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-taskbar-tc: var(--atl-dtop-cfg-colour-nullary);
+	--atl-dtop-taskbar-pad: 0px;
+	--atl-dtop-taskbar-icon-w: 2rem;
+	--atl-dtop-taskbar-icon-pad: var(--atl-dtop-cfg-gap-primary);
+
+	/*// window ////////////////////
+	//////////////////////////////*/
+
+	--atl-dtop-win-bc:         var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-win-bw:         var(--atl-dtop-cfg-gap-primary);
+	--atl-dtop-win-bs:         solid;
+	--atl-dtop-win-br:         var(--atl-dtop-cfg-corner-radius);
+
+	--atl-dtop-win-header-bgc: var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-win-header-tc:  var(--atl-dtop-cfg-colour-nullary);
+	--atl-dtop-win-header-pad: var(--atl-dtop-cfg-gap-primary) calc(var(--atl-dtop-cfg-gap-primary) * var(--atl-dtop-cfg-gap-primary-mult));
+
+	--atl-dtop-win-body-bgc:   var(--atl-dtop-cfg-colour-nullary);
+	--atl-dtop-win-body-tc:    var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-win-body-pad:   calc(var(--atl-dtop-cfg-gap-primary) * var(--atl-dtop-cfg-gap-primary-mult)) calc(var(--atl-dtop-cfg-gap-primary) * var(--atl-dtop-cfg-gap-primary-mult));
+
+	--atl-dtop-win-footer-bgc: color-mix(in srgb, var(--atl-dtop-primary), var(--atl-dtop-cfg-mix-tp1));
+	--atl-dtop-win-footer-tc:  var(--atl-dtop-cfg-colour-nullary);
+	--atl-dtop-win-footer-pad: calc(var(--atl-dtop-cfg-gap-primary) * var(--atl-dtop-cfg-gap-primary-mult)) calc(var(--atl-dtop-cfg-gap-primary) * var(--atl-dtop-cfg-gap-primary-mult));
+
+	/*// button ////////////////////
+	//////////////////////////////*/
+
+	--atl-dtop-btn-bgc: var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-btn-bs:  solid;
+	--atl-dtop-btn-bc:  var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-btn-br:  var(--atl-dtop-cfg-corner-radius);
+	--atl-dtop-btn-bw:  var(--atl-dtop-cfg-gap-primary);
+	--atl-dtop-btn-tc:  var(--atl-dtop-cfg-colour-nullary);
+
+	/*// form controls /////////////
+	//////////////////////////////*/
+
+	--atl-dtop-input-bc: var(--atl-dtop-cfg-colour-primary);
+	--atl-dtop-input-bs: solid;
+	--atl-dtop-input-bw1: calc(var(--atl-dtop-cfg-gap-primary) * 0.25);
+	--atl-dtop-input-bw2: var(--atl-dtop-cfg-gap-primary);
+	--atl-dtop-input-bgc: var(--atl-dtop-cfg-colour-nullary);
+	--atl-dtop-input-tc: var(--atl-dtop-cfg-colour-primary);
+
+}
+
+@keyframes nui-window-quit {
+	0% {
+		filter: saturate(1.0);
+		transform: scale(1.0);
+		opacity: 1.0;
+	}
+
+	100% {
+		filter: saturate(0.0);
+		transform: scale(1.5);
+		opacity: 0.0;
+	}
+}
+
+@keyframes nui-window-hide {
+	0% {
+		filter: saturate(1.0);
+		transform: scale(1.0);
+		opacity: 1.0;
+	}
+
+	100% {
+		filter: saturate(0.0);
+		transform: scale(0.0);
+		opacity: 0.0;
+	}
+}
+
+@keyframes nui-window-show {
+	0% {
+		filter: saturate(0.0);
+		transform: scale(0.0);
+	}
+
+	100% {
+		filter: saturate(1.0);
+		transform: scale(1.0);
+	}
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.bg-dtop-nullary {
+	background-color: var(--atl-dtop-cfg-colour-nullary);
+}
+
+.bg-dtop-primary {
+	background-color: var(--atl-dtop-cfg-colour-primary);
+}
+
+.tc-dtop-nullary {
+	color: var(--atl-dtop-cfg-colour-nullary);
+}
+
+.tc-dtop-primary {
+	color: var(--atl-dtop-cfg-colour-primary);
+}
+
+.atl-dtop-ignore-input-all {
+	pointer-events: none;
+	user-select: none;
+}
+
+.atl-dtop-transition-none {
+	transition: none !important;
+}
+
+.atl-dtop-os {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+
+	background-color: #000;
+	z-index: 42001;
+
+	transition: opacity 200ms;
+}
+
+.atl-dtop-os .form-control,
+.atl-dtop-os .form-select {
+	background-color: var(--atl-dtop-input-bgc);
+	border: var(--atl-dtop-input-bw1) var(--atl-dtop-input-bs) var(--atl-dtop-input-bc);
+	border-left: var(--atl-dtop-input-bw2) var(--atl-dtop-input-bs) var(--atl-dtop-input-bc);
+	border-radius: 0px;
+	color: var(--atl-dtop-input-tc);
+
+	---bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23adb5bd' style='stroke:var(--theme-primary)!important;' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.atl-dtop-os .form-control::placeholder,
+.atl-dtop-os .form-select::placeholder {
+	color: var(--atl-dto-input-tc);
+}
+
+.atl-dtop-os .table {
+	--bs-table-color: var(--atl-dtop-cfg-colour-primary);
+	--bs-table-border-color: var(--atl-dtop-cfg-colour-primary);
+}
+
+.atl-dtop-os pre {
+	color: var(--atl-dtop-cfg-colour-primary);
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.atl-dtop-manager {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.atl-dtop-desktop {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+
+	background-color: var(--atl-dtop-desktop-bgc);
+	color: var(--atl-dtop-desktop-tc);
+	overflow: hidden;
+	z-index: var(--atl-dtop-cfg-z-desktop);
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.atl-dtop-win {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+
+	border-color: var(--atl-dtop-win-bc);
+	border-width: var(--atl-dtop-win-bw);
+	border-style: var(--atl-dtop-win-bs);
+	border-radius: var(--atl-dtop-win-br);
+
+	background-color: var(--atl-dtop-win-body-bgc);
+	color: var(--atl-dtop-win-body-tc);
+	padding: 0px;
+	overflow: hidden;
+	z-index: var(--atl-dtop-cfg-z-window);
+
+	transition: filter 100ms, width 100ms, height 100ms, top 100ms, left 100ms, opacity 100ms;
+	transform-origin: 50% 50%;
+
+	min-width: 200px;
+	max-width: 100%;
+	min-height: 120px;
+	max-height: 100%;
+
+	filter: brightness(0.5) contrast(0.95);
+}
+
+.atl-dtop-win:last-of-type {
+	filter: initial;
+}
+
+.atl-dtop-win > header {
+	border-top-left-radius: calc(var(--atl-dtop-win-br) * 0.80);
+	border-top-right-radius: calc(var(--atl-dtop-win-br) * 0.80);
+	border-color: var(--atl-dtop-win-bgc);
+	border-width: var(--atl-dtop-win-bw);
+	border-style: var(--atl-dtop-win-bs);
+
+	background-color: var(--atl-dtop-win-header-bgc);
+	color: var(--atl-dtop-win-header-tc);
+	cursor: default;
+	font-weight: bold;
+	text-transform: uppercase;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.atl-dtop-win > section {
+	position: relative;
+
+	padding: var(--atl-dtop-win-body-pad);
+
+	flex-grow: 1;
+}
+
+.atl-dtop-win > footer {
+	border-bottom-left-radius: calc(var(--atl-dtop-win-br) * 0.80);
+	border-bottom-right-radius: calc(var(--atl-dtop-win-br) * 0.80);
+
+	background-color: var(--atl-dtop-win-footer-bgc);
+	color: var(--atl-dtop-win-footer-tc);
+	padding: var(--atl-dtop-win-footer-pad);
+}
+
+.atl-dtop-win > header .atl-dtop-btn {
+	border-radius: calc(var(--atl-dtop-win-br) * 0.50) !important;
+}
+
+.atl-dtop-win > footer .atl-dtop-btn {
+	border-radius: calc(var(--atl-dtop-win-br) * 0.50) !important;
+}
+
+.atl-dtop-win > .atl-dtop-win-resizehandle {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+
+	background: transparent;
+	border: 0px;
+	color: var(--atl-dtop-win-bc);
+	cursor: nw-resize;
+	padding: 0px;
+	margin: 0px;
+	line-height: 100%;
+	user-select: none;
+}
+
+.atl-dtop-win.maximise {
+	top: 0px !important;
+	left: 0px !important;
+	width: 100% !important;
+	height: 100% !important;
+
+	border-radius: 0px;
+}
+
+.atl-dtop-win.maximise .atl-dtop-win-resizehandle {
+	display: none;
+}
+
+.atl-dtop-win.quitting {
+	pointer-events: none;
+	user-select: none;
+
+	animation-name: nui-window-quit;
+	animation-duration: 200ms;
+	animation-fill-mode: forwards;
+}
+
+.atl-dtop-win.hiding {
+	pointer-events: none;
+	user-select: none;
+
+	animation-name: nui-window-hide;
+	animation-duration: 200ms;
+	animation-fill-mode: forwards;
+}
+
+.atl-dtop-win.showing {
+	pointer-events: none;
+	user-select: none;
+
+	animation-name: nui-window-show;
+	animation-duration: 200ms;
+	animation-fill-mode: forwards;
+}
+
+.atl-dtop-win-init {
+	max-width: 88svw;
+	max-height: 88svh;
+}
+
+.atl-dtop-win-overlay {
+	position: absolute;
+	left: 0px; top: 0px;
+	width: 100%; height: 100%;
+
+	background-color: var(--atl-dtop-cfg-colour-primary);
+	color: var(--atl-dtop-cfg-colour-nullary);
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.atl-dtop-btn {
+	border-radius: 0px;
+}
+
+.atl-dtop-btn {
+	background: var(--atl-dtop-btn-bgc);
+	border-style: var(--atl-dtop-btn-bs);
+	border-color: var(--atl-dtop-btn-bc);
+	border-radius: var(--atl-dtop-btn-br);
+	border-width: var(--atl-dtop-btn-bw);
+	color: var(--atl-dtop-btn-tc);
+	opacity: 1.0;
+
+	text-transform: uppercase;
+	font-weight: bold;
+	padding: 1.0rem 0.5rem;
+	line-height: 0rem;
+}
+
+.atl-dtop-btn-alt {
+	background: var(--atl-dtop-btn-tc);
+	border-color: var(--atl-dtop-btn-bc);
+	color: var(--atl-dtop-btn-bc);
+}
+
+.atl-dtop-btn:active,
+.atl-dtop-btn:hover {
+	background: color-mix(in srgb, var(--atl-dtop-btn-bgc), var(--atl-dtop-cfg-colour-mix-hover));
+	border-color: color-mix(in srgb, var(--atl-dtop-btn-bc), var(--atl-dtop-cfg-colour-mix-hover));
+	color: var(--atl-dtop-btn-bc);
+}
+
+.atl-dtop-btn * {
+	pointer-events: none;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+
+.atl-dtop-taskbar {
+	background: var(--atl-dtop-taskbar-bgc);
+	padding: var(--atl-dtop-taskbar-pad);
+	height: 100%;
+	gap: var(--atl-dtop-cfg-gap-primary);
+	z-index: var(--atl-dtop-cfg-z-taskbar);
+	width: calc(var(--atl-dtop-taskbar-icon-w) + calc(var(--atl-dtop-taskbar-icon-pad) * 2));
+}
+
+.atl-dtop-taskbar-item {
+	background: var(--atl-dtop-taskbar-bgc);
+	color: var(--atl-dtop-taskbar-tc);
+	font-size: var(--atl-dtop-taskbar-icon-w);
+	padding: var(--atl-dtop-taskbar-icon-pad);
+	line-height: 100%;
+}
+
+.atl-dtop-taskbar-item * {
+	pointer-events: none;
+	user-select: none;
+}
+
+.atl-dtop-taskbar-item:hover,
+.atl-dtop-taskbar-item:active {
+	background: color-mix(in srgb, var(--atl-dtop-btn-bgc), var(--atl-dtop-cfg-colour-mix-hover));
+	color: var(--atl-dtop-taskbar-bgc);
+	cursor: pointer;
+}
+
+
+

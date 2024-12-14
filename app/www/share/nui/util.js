@@ -86,6 +86,9 @@ class Util {
 		return Util.ElementValueOrNull(el);
 	};
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static ValueOrNull(v) {
 	/*//
 	@date 2024-04-11
@@ -103,6 +106,29 @@ class Util {
 	static VON(v) {
 
 		return Util.ValueOrNull(v);
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static NotInstanceOf(thing, ToBe) {
+	/*//
+	@date 2024-12-10
+	i hate typing and reading if(!(t instanceof T)) so fucking much.
+	//*/
+
+		return !(thing instanceof ToBe);
+	};
+
+	static InstanceOf(thing, ToBe) {
+	/*//
+	@date 2024-12-10
+	just to pair with my angst regarding the negate version. its only the
+	negate that really pisses me off. but not having a matching set would
+	just drive me nuts in other ways even if i never use it.
+	//*/
+
+		return (thing instanceof ToBe);
 	};
 
 };
