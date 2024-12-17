@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 import API from '../../api/json.js';
-import NetherOS from '../main.js';
+import NetherOS from '../__main.js';
 
 await NetherOS.load();
 

@@ -1,16 +1,41 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @class
+ * @member {string} CacheBuster
+ */
+
 class Framework {
+/*//
+this class presents itself with a static styled api despite not truely being
+a static system, because when pulled in it should be treated as a namespace or
+stack of consts. it is not designed to be interacted with, but rather an
+authourative index.
+//*/
+
 
 	constructor() {
 
+		/** @type {string} */
 		this.CacheBuster = null;
+
+		/** @type {OS} */
 		this.System = null;
+
+		/** @type {Desktop} */
 		this.Desktop = null;
+
+		/** @type {DesktopManager} */
 		this.DesktopManager = null;
+
+		/** @type {App} */
 		this.App = null;
+
+		/** @type {Window} */
 		this.Window = null;
+
+		/** @type {Taskbar} */
 		this.Taskbar = null;
 
 		////////
