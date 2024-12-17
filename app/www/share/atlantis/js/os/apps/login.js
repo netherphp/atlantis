@@ -1,10 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import OpSys from '../../../../nui/desktop/os.js';
-import App from '../../../../nui/desktop/app.js';
-import Win from '../../../../nui/desktop/window.js';
-import API from '../../../../nui/api/json.js';
+import API      from '../../../../nui/api/json.js';
+import NetherOS from '../../../../nui/desktop/main.js';
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+await NetherOS.load();
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +27,7 @@ let TemplateUserLoginWindow = `
 ////////////////////////////////////////////////////////////////////////////////
 
 class LoginApp
-extends App {
+extends NetherOS.App {
 
 	constructor() {
 
@@ -32,6 +35,7 @@ extends App {
 		this.setName('Log In');
 		this.setIdent('net.pegasusgate.atl.login');
 		this.setIcon('mdi mdi-login');
+		this.pushToTaskbar(true);
 
 		this.loginWindow = null;
 
@@ -41,7 +45,6 @@ extends App {
 	onInstall(os) {
 
 		super.onInstall(os);
-		super.pushToTaskbar();
 
 		setTimeout(
 			(()=> this.onLaunch(os)),
@@ -63,7 +66,7 @@ extends App {
 };
 
 class UserLoginWindow
-extends Win {
+extends NetherOS.Window {
 
 	constructor(app) {
 

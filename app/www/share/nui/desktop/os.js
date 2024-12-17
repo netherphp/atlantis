@@ -1,13 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import DesktopManager from './manager.js';
-import Taskbar from './taskbar.js';
-import StartApp from './apps/start.js';
-
 let TemplateOperatingSystemHTML = `
 <div id="" class="atl-dtop-os o-0 g-0">
-
 </div>
 `;
 
@@ -23,9 +18,10 @@ let TemplateDesktopHTML = `
 
 class OS {
 
-	/**
-	 * @property {Taskbar} taskbar
-	 */
+	static Framework = null;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	constructor(selector) {
 
@@ -47,7 +43,7 @@ class OS {
 		(this.container)
 		.append(this.element);
 
-		this.appInstall(StartApp);
+		//this.appInstall(StartApp);
 
 		return;
 	};
@@ -86,8 +82,8 @@ class OS {
 	_dmgrBuild() {
 
 		this.dsplit = jQuery(TemplateDesktopHTML);
-		this.dmgr = new DesktopManager;
-		this.taskbar = new Taskbar;
+		this.dmgr = new OS.Framework.DesktopManager;
+		this.taskbar = new OS.Framework.Taskbar;
 
 		////////
 
@@ -169,6 +165,23 @@ class OS {
 
 		if(found !== null)
 		found.onLaunch(this);
+
+		return this;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	setName(name) {
+
+		this.name = name;
+
+		return this;
+	};
+
+	setVersion(version) {
+
+		this.version = version;
 
 		return this;
 	};

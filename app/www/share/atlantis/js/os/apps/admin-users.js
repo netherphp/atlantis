@@ -1,10 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import OpSys from '../../../../nui/desktop/os.js';
-import App from '../../../../nui/desktop/app.js';
-import Win from '../../../../nui/desktop/window.js';
 import API from '../../../../nui/api/json.js';
+import NetherOS from '../../../../nui/desktop/main.js';
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+await NetherOS.load();
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +127,7 @@ let TemplateUserEditPrivRow = `
 ////////////////////////////////////////////////////////////////////////////////
 
 class AdminUserApp
-extends App {
+extends NetherOS.App {
 
 	constructor() {
 
@@ -132,16 +135,9 @@ extends App {
 		this.setName('User Admin');
 		this.setIdent('net.pegasusgate.atl.admin.users');
 		this.setIcon('mdi mdi-account-multiple');
+		this.pushToTaskbar(true);
 
 		this.searchWindow = null;
-
-		return;
-	};
-
-	onInstall(os) {
-
-		super.onInstall(os);
-		super.pushToTaskbar();
 
 		return;
 	};
@@ -158,7 +154,7 @@ extends App {
 };
 
 class UserSearchWindow
-extends Win {
+extends NetherOS.Window {
 
 	constructor(app) {
 
@@ -180,7 +176,7 @@ extends Win {
 		this.setTitle(app.name);
 		this.setIcon(app.icon);
 		this.setBody(TemplateUserSearchWindow);
-		this.setSize(75, 75, '%');
+		this.setSize(30, 75, '%');
 		this.pushToDesktop();
 
 		return;
@@ -291,7 +287,7 @@ extends Win {
 };
 
 class UserEditWindow
-extends Win {
+extends NetherOS.Window {
 
 	constructor(app, uid) {
 		super();
@@ -301,7 +297,7 @@ extends Win {
 
 		this.setTitle('User Edit');
 		this.setIcon(app.icon);
-		this.setSize(50, 80, '%');
+		this.setSize(40, 80, '%');
 		this.setBody(TemplateUserEditWindow);
 		this.addButton('Save', 'save-user');
 		this.addButton('Cancel', 'cancel', true);
@@ -311,7 +307,8 @@ extends Win {
 		this.pushToDesktop();
 		this.showOverlay();
 		this.show();
-		this.centerInParent();
+
+		this.setPositionBasedOn(app.searchWindow);
 
 		this.fetchUserInfo();
 

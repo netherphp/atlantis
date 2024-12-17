@@ -1,11 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import OpSys from './os.js';
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 let TemplateTaskbarHTML = `
 <div id="" class="atl-dtop-taskbar">
 	<div class="flex flex-column align-items-center"></div>
@@ -22,6 +17,8 @@ let TemplateTaskbarItemHTML = `
 ////////////////////////////////////////////////////////////////////////////////
 
 class Taskbar {
+
+	static Framework = null;
 
 	constructor() {
 
@@ -78,11 +75,7 @@ class Taskbar {
 
 	setOS(os) {
 
-		if(os instanceof OpSys)
 		this.os = os;
-
-		if(os === null)
-		this.os = null;
 
 		return;
 	};
@@ -93,6 +86,8 @@ class Taskbar {
 ////////////////////////////////////////////////////////////////////////////////
 
 class TaskbarItem {
+
+	static Framework = null;
 
 	constructor(appID, icon, name) {
 
@@ -182,7 +177,7 @@ class TaskbarItem {
 
 		let ev = jEv.originalEvent;
 
-		console.log(`left click ${this.id}}`);
+		console.log(`[Taskbar.onLeftClick] ${this.id}}`);
 
 		this.parent.os.appLaunchByIdent(this.app);
 
@@ -194,7 +189,7 @@ class TaskbarItem {
 
 		let ev = jEv.originalEvent;
 
-		console.log(`middle click ${this.id}}`);
+		console.log(`[Taskbar.onMiddleClick]  ${this.id}}`);
 
 		return false;
 	};
@@ -203,9 +198,27 @@ class TaskbarItem {
 
 		let ev = jEv.originalEvent;
 
-		console.log(`right click ${this.id}}`);
+		console.log(`[Taskbar.onRightClick]  ${this.id}}`);
 
 		return false;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	destroy() {
+
+		for(const item in this.parent.items) {
+			if(this.parent.items[k].id !== this.id)
+			continue;
+
+			this.parent.items[k] = null;
+			this.element.remove();
+		}
+
+		this.parent.items = this.parent.items.filter((v)=> v !== null);
+
+		return;
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -220,11 +233,10 @@ class TaskbarItem {
 
 };
 
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-export default Taskbar;
+export { Taskbar, TaskbarItem };
 
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+export default Taskbar; ////////////////////////////////////////////////////////

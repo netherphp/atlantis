@@ -1,44 +1,9 @@
-/*//////////////////////////////////////////////////////////////////////////////
-// NUI Desktop Application /////////////////////////////////////////////////////
-
-class Example extends App {
-
-	constructor() {
-		super();
-
-		this.name = 'Example App';
-		this.ident = 'local.example.app';
-		this.icon = 'mdi mdi-alien';
-
-		return;
-	};
-
-	onInstall(os) {
-		super.onInstall(os);
-		super.pushToTaskbar();
-
-		return;
-	};
-
-	onLaunch(os) {
-		super.onLaunch(os);
-
-		return;
-	};
-
-};
-
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////*/
-
-import Util from '../util.js';
-import OpSys from './os.js';
-import Taskbar from './taskbar.js';
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 class App {
+
+	static Framework = null;
 
 	static get EvWindowAnimEnd() { return 'animationend.atl-dtop-app-winanim'; }
 
@@ -64,9 +29,13 @@ class App {
 
 		////////
 
+		this.onConstruct();
+
 		(this)
 		._elementGenID()
 		._elementBuild();
+
+		this.onReady();
 
 		////////
 
@@ -100,11 +69,30 @@ class App {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	onConstruct() {
+
+		return this;
+	};
+
+	onReady() {
+
+		return this;
+	};
+
 	onInstall(os) {
 
 		console.log(`[App.onInstall] ${this.name} ${this.id}`);
 
 		this.setOS(os);
+
+		////////
+
+		if(this.os) {
+			if(this.taskbarItem === true)
+			this.pushToTaskbar(false);
+		}
+
+		////////
 
 		return;
 	};
@@ -156,11 +144,7 @@ class App {
 
 	setOS(os) {
 
-		if(os instanceof OpSys)
 		this.os = os;
-
-		else
-		this.os = null;
 
 		return this;
 	};
@@ -187,12 +171,22 @@ class App {
 		return this;
 	};
 
-	pushToTaskbar() {
+	pushToTaskbar(later=false) {
 
-		if(Util.NotInstanceOf(this.os, OpSys))
+		if(later) {
+			if(this.taskbarItem)
+			this.taskbarItem.destroy();
+
+			this.taskbarItem = true;
+			return true;
+		}
+
+		////////
+
+		if(!this.os)
 		return false;
 
-		if(Util.NotInstanceOf(this.os.taskbar, Taskbar))
+		if(!this.os.taskbar)
 		return false;
 
 		this.taskbarItem = this.os.taskbar.addItem(

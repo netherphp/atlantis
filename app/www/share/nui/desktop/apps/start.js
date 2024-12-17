@@ -1,9 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import OpSys from '../os.js';
-import App from '../app.js';
-import Win from '../window.js';
+import API from '../../api/json.js';
+import NetherOS from '../main.js';
+
+await NetherOS.load();
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,36 +41,20 @@ let TemplateWindowMainHTML = `
 ////////////////////////////////////////////////////////////////////////////////
 
 class StartApp
-extends App {
+extends NetherOS.App {
 
-	constructor() {
+	onConstruct() {
 
-		super();
 
-		(this)
-		.setName('Start')
-		.setIdent('net.pegasusgate.atl.start-app')
-		.setIcon('mdi mdi-star-face')
-		.setListed(false);
+		this.setName('Start');
+		this.setIdent('net.pegasusgate.atl.start-app');
+		this.setIcon('mdi mdi-star-face');
+		this.pushToTaskbar(true);
+		this.setListed(false);
 
 		////////
 
 		this.window = null;
-
-		return;
-	};
-
-	onInstall(os) {
-
-		super.onInstall(os);
-		super.pushToTaskbar();
-
-		////////
-
-		//setTimeout(
-		//	(()=> this.onLaunch(os)),
-		//	500
-		//);
 
 		return;
 	};
@@ -109,7 +94,8 @@ extends App {
 
 };
 
-class TestWin extends Win {
+class TestWin
+extends NetherOS.Window {
 
 	constructor(app) {
 		super();

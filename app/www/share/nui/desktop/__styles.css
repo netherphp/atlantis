@@ -221,7 +221,7 @@
 	overflow: hidden;
 	z-index: var(--atl-dtop-cfg-z-window);
 
-	transition: filter 100ms, width 100ms, height 100ms, top 100ms, left 100ms, opacity 100ms;
+	transition: filter 200ms, width 200ms, height 200ms, top 200ms, left 200ms, opacity 200ms;
 	transform-origin: 50% 50%;
 
 	min-width: 200px;
@@ -229,11 +229,14 @@
 	min-height: 120px;
 	max-height: 100%;
 
-	filter: brightness(0.5) contrast(0.95);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+
+	filter: opacity(0.5) blur(1px);
 }
 
 .atl-dtop-win:last-of-type {
-	filter: initial;
+	filter: opacity(1.0) blur(0px);
 }
 
 .atl-dtop-win > header {

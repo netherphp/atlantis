@@ -1,9 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import Vec2  from '../units/vec2.js';
-import Util  from '../util.js';
-import OpSys from './os.js';
+import Vec2  from '../units/vec2.js?v=20241216a';
+import Util  from '../util.js?v=20241216a';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,11 +67,15 @@ let TemplateWindowHTML = `
 
 class Window {
 
+	static Framework = null;
+
 	static get ActionAccept() { return 'accept'; };
 	static get ActionCancel() { return 'cancel'; };
 	static get ActionWinMin() { return 'win-min'; };
 	static get ActionWinMax() { return 'win-max'; };
 
+	static get EvTouchDownMove() { return 'touchstart.atl-dtop-win-move'; };
+	static get EvTouchDownSize() { return 'touchstart.atl-dtop-win-resize'; };
 	static get EvMouseDownMove() { return 'mousedown.atl-dtop-win-move'; };
 	static get EvMouseDownSize() { return 'mousedown.atl-dtop-win-resize'; };
 	static get EvWindowAction() { return 'click.atl-dtop-win-action'; }
@@ -118,6 +121,8 @@ class Window {
 		this.enableMove = false;
 		this.enableMax = false;
 		this.enableMin = false;
+		this.userMoved = false;
+		this.userSized = false;
 
 		////////
 
@@ -191,7 +196,17 @@ class Window {
 			this.onTitleBarMouseDown.bind(this)
 		)
 		.on(
+			this.constructor.EvTouchDownMove,
+			this.constructor.SelectHandleMove,
+			this.onTitleBarMouseDown.bind(this)
+		)
+		.on(
 			this.constructor.EvMouseDownSize,
+			this.constructor.SelectHandleSize,
+			this.onResizeMouseDown.bind(this)
+		)
+		.on(
+			this.constructor.EvTouchDownSize,
 			this.constructor.SelectHandleSize,
 			this.onResizeMouseDown.bind(this)
 		)
@@ -199,6 +214,10 @@ class Window {
 			this.constructor.EvWindowAction,
 			this.constructor.SelectWindowAction,
 			this.onWindowAction.bind(this)
+		)
+		.on(
+			'click',
+			this.onWindowClick.bind(this)
 		)
 		.on(
 			this.constructor.EvWindowAnimEnd,
@@ -277,6 +296,8 @@ class Window {
 
 	onTitleBarMouseMove(jEv, oVec) {
 
+		this.userMoved = true;
+
 		this.setPosition(
 			(jEv.originalEvent.clientX - oVec.x),
 			(jEv.originalEvent.clientY - oVec.y)
@@ -347,7 +368,24 @@ class Window {
 		let x = Math.abs(ev.layerX - this.pos.x) + oVec.x;
 		let y = Math.abs(ev.layerY - this.pos.y) + oVec.y;
 
+		this.userSized = true;
+
 		this.setSize(x, y);
+
+		return false;
+	};
+
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	onWindowClick(jEv) {
+
+		jEv.originalEvent.preventDefault();
+		jEv.originalEvent.stopPropagation();
+
+		if(!this.element.is(':last-of-type'))
+		this.bringToTop();
 
 		return false;
 	};
@@ -691,7 +729,7 @@ class Window {
 
 	pushToDesktop() {
 
-		if(Util.NotInstanceOf(this.os, OpSys))
+		if(!this.os)
 		return false;
 
 		(this.os.dmgr.current)
@@ -738,6 +776,30 @@ class Window {
 		);
 
 		////////
+
+		return this;
+	};
+
+	setPositionBasedOn(what=null) {
+
+		//console.log(`[Window.setPositionBasedOn] ${this.id}`);
+		//console.log(what);
+
+		if(what instanceof Window);
+		if(what.isUserMoved()) {
+			(this)
+			.setUserMoved()
+			.setPosition(
+				(what.pos.x + 16),
+				(what.pos.y + 16),
+			);
+
+			return this;
+		}
+
+		////////
+
+		this.centerInParent();
 
 		return this;
 	};
@@ -809,6 +871,20 @@ class Window {
 			'width': `auto`,
 			'height': `auto`
 		});
+
+		return this;
+	};
+
+	setUserMoved(state=true) {
+
+		this.userMoved = state;
+
+		return this;
+	};
+
+	setUserSized(state=true) {
+
+		this.userMoved = state;
 
 		return this;
 	};
@@ -973,6 +1049,16 @@ class Window {
 	isMinimised() {
 
 		return this.element.hasClass('minimise');
+	};
+
+	isUserMoved() {
+
+		return this.userMoved;
+	};
+
+	isUserSized() {
+
+		return this.userSized;
 	};
 
 };
