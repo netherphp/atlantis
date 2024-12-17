@@ -647,7 +647,6 @@ class Window {
 		return this;
 	};
 
-
 	showFooter() {
 
 		this.elFooter.show();
@@ -766,6 +765,8 @@ class Window {
 
 		////////
 
+		return this;
+
 		if(this.dampSetPosition)
 		clearInterval(this.dampSetPosition);
 
@@ -848,6 +849,8 @@ class Window {
 		this.size.w = w;
 		this.size.h = h;
 		this.size.unit = unit;
+
+		return this;
 
 		////////
 
@@ -962,6 +965,16 @@ class Window {
 	setOS(os) {
 
 		this.os = os;
+
+		return this;
+	};
+
+	setApp(app) {
+
+		this.app = app;
+
+		if(this.app.os)
+		this.setOS(this.app.os);
 
 		return this;
 	};

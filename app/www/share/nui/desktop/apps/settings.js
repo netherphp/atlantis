@@ -19,7 +19,42 @@ extends NetherOS.App {
 		this.setIcon('mdi mdi-cog');
 		this.pushToTaskbar(true);
 
+		/** @type {CfgWindow} */
+		this.win = null;
+
 		return this;
+	};
+
+	onLaunch(os) {
+
+		super.onLaunch(os);
+
+		this.win = new CfgWindow(this);
+
+		return;
+	};
+
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+class CfgWindow
+extends NetherOS.Window {
+
+	constructor(app) {
+		super();
+
+		this.setApp(app);
+		this.setTitle(app.name);
+		this.setIcon(app.icon);
+		this.setIdent(app.ident);
+
+		this.pushToDesktop();
+		this.show();
+		this.centerInParent();
+
+		return;
 	};
 
 };
