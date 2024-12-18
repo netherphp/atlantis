@@ -10,7 +10,7 @@ await NetherOS.load();
 ////////////////////////////////////////////////////////////////////////////////
 
 class AtlantOS
-extends NetherOS.System {s
+extends NetherOS.System {
 
 	constructor(selector='body') {
 

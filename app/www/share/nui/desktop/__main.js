@@ -1,10 +1,37 @@
-////////////////////////////////////////////////////////////////////////////////
+/*//////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-/**
- * @class
- * @member {string} CacheBuster
- */
+import NetherOS from 'path/to/desktop/__main.js';
+
+////////
+
+await NetherOS.Load();
+
+////////
+
+class MyOS
+extends NetherOS.System {
+
+	constructor() {
+		this.setName('MyOS);
+		this.setVersion('v1');
+		return;
+	};
+
+};
+
+////////////////////////////////////////
+////////////////////////////////////////
+
+import MyOS from 'path/to/myos.js';
+
+jQuery(function() {
+	new MyOS;
+	return;
+});
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////*/
 
 class Framework {
 /*//
@@ -19,6 +46,12 @@ authourative index.
 
 		/** @type {string} */
 		this.CacheBuster = null;
+
+		/** @type {Vec2} */
+		this.Vec2 = null;
+
+		/** @type {API} */
+		this.API = null;
 
 		/** @type {OS} */
 		this.System = null;
@@ -41,6 +74,8 @@ authourative index.
 		////////
 
 		this.Files = {
+			'Vec2':           '../units/vec2.js',
+			'API':            '../api/json.js',
 			'System':         './os.js',
 			'Desktop':        './desktop.js',
 			'DesktopManager': './manager.js',
@@ -102,6 +137,11 @@ authourative index.
 
 	load(onReady=null) {
 
+		return this.Load(onReady);
+	};
+
+	Load(onReady=null) {
+
 		let self = this;
 		let loaders = [];
 		let waitzord = null;
@@ -127,36 +167,6 @@ authourative index.
 
 		waitzord = Promise.all(loaders);
 		waitzord.then((v)=> this);
-
-		if(typeof onReady === 'function')
-		waitzord.then(onReady);
-
-		return waitzord;
-	};
-
-	static LoadOld(onReady=null) {
-
-		let main = new NUIDesktop;
-		let loaders = [];
-
-		////////
-
-		for(const k in main.files) {
-			let url = `${main.files[k]}?v=${main.cacheBuster}`;
-			let modlod = import(url);
-
-			// hydrate the property on this namespace with the same name
-			// after the script file loads.
-			modlod.then((m)=> (main[k] = m.default));
-
-			loaders.push(modlod);
-		}
-
-		////////
-
-		let waitzord = Promise.all(loaders).then((v)=> main);
-
-		waitzord.then((v)=> main);
 
 		if(typeof onReady === 'function')
 		waitzord.then(onReady);

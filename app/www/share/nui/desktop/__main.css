@@ -72,6 +72,10 @@
 
 }
 
+html, body {
+	overscroll-behavior: none;
+}
+
 @keyframes nui-window-quit {
 	0% {
 		filter: saturate(1.0);
@@ -131,9 +135,20 @@
 	color: var(--atl-dtop-cfg-colour-primary);
 }
 
+/*******************************************************************************
+*******************************************************************************/
+
 .atl-dtop-ignore-input-all {
-	pointer-events: none;
-	user-select: none;
+	pointer-events: none !important;
+	user-select: none !important;
+}
+
+.atl-dtop-ignore-select {
+	user-select: none !important;
+}
+
+.atl-dtop-ignore-events {
+	pointer-events: none !important;
 }
 
 .atl-dtop-transition-none {
@@ -229,9 +244,6 @@
 	min-height: 120px;
 	max-height: 100%;
 
-	backdrop-filter: blur(10px);
-	-webkit-backdrop-filter: blur(10px);
-
 	filter: opacity(0.5) blur(1px);
 }
 
@@ -270,6 +282,7 @@
 	background-color: var(--atl-dtop-win-footer-bgc);
 	color: var(--atl-dtop-win-footer-tc);
 	padding: var(--atl-dtop-win-footer-pad);
+	user-select: none;
 }
 
 .atl-dtop-win > header .atl-dtop-btn {
@@ -289,6 +302,7 @@
 	border: 0px;
 	color: var(--atl-dtop-win-bc);
 	cursor: nw-resize;
+	font-size: 1.2em;
 	padding: 0px;
 	margin: 0px;
 	line-height: 100%;

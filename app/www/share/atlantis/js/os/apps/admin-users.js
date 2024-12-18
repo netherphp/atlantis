@@ -129,64 +129,49 @@ let TemplateUserEditPrivRow = `
 class AdminUserApp
 extends NetherOS.App {
 
-	constructor() {
+	onConstruct() {
 
-		super();
-		this.setName('User Admin');
-		this.setIdent('net.pegasusgate.atl.admin.users');
-		this.setIcon('mdi mdi-account-multiple');
-		this.pushToTaskbar(true);
-
-		this.searchWindow = null;
+		(this)
+		.setName('User Admin')
+		.setIdent('net.pegasusgate.atl.admin.users')
+		.setIcon('mdi mdi-account-multiple')
+		.setTaskbarItem(true);
 
 		return;
 	};
 
-	onLaunch(os) {
+	onLaunchInstance() {
 
-		super.onLaunch(os);
+		let w = new UserSearchWindow(this);
 
-		this.searchWindow = new UserSearchWindow(this);
+		this.registerWindow(w);
+		w.show();
+		w.centerInParent();
 
 		return;
 	};
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class UserSearchWindow
 extends NetherOS.Window {
 
 	constructor(app) {
-
 		super();
 
-		this.app = app;
-		this.setupWindow(app);
-		this.setupActions();
-		this.onSearchByRecent();
-		this.show();
-		this.centerInParent();
-
-		return;
-	};
-
-	setupWindow(app) {
-
-		this.setOS(app.os);
-		this.setTitle(app.name);
-		this.setIcon(app.icon);
-		this.setBody(TemplateUserSearchWindow);
-		this.setSize(30, 75, '%');
-		this.pushToDesktop();
-
-		return;
-	};
-
-	setupActions() {
+		(this)
+		.setAppAndBake(app)
+		.setSize(30, 75, '%')
+		.setBody(TemplateUserSearchWindow);
 
 		this.setAction('search-alias', this.onSearchByAlias);
 		this.setAction('search-email', this.onSearchByEmail);
-		this.setAction('edit-user', this.onEditUser)
+		this.setAction('edit-user', this.onEditUser);
+
+		this.onSearchByRecent();
 
 		return;
 	};
@@ -279,7 +264,11 @@ extends NetherOS.Window {
 
 		let that = jQuery(jEv.target);
 		let uid = that.attr('data-user-id');
-		let win = new UserEditWindow(this.app, uid);
+		let win = new UserEditWindow(this, uid);
+
+		this.app.registerWindow(win);
+		win.show();
+		//win.centerInParent();
 
 		return;
 	}
@@ -289,26 +278,26 @@ extends NetherOS.Window {
 class UserEditWindow
 extends NetherOS.Window {
 
-	constructor(app, uid) {
+	constructor(parent, uid) {
 		super();
 
-		this.setOS(app.os);
 		this.uid = uid;
 
-		this.setTitle('User Edit');
-		this.setIcon(app.icon);
-		this.setSize(40, 80, '%');
-		this.setBody(TemplateUserEditWindow);
+		(this)
+		.setAppAndBake(parent.app)
+		.setTitle('User Edit')
+		.setSize(40, 80, '%')
+		.setBody(TemplateUserEditWindow);
+
 		this.addButton('Save', 'save-user');
-		this.addButton('Cancel', 'cancel', true);
 		this.setAction('save-user', this.onSaveUser);
+
+		this.addButton('Cancel', 'cancel', true);
 		this.setAction('priv-add', this.onPrivAdd);
 
-		this.pushToDesktop();
 		this.showOverlay();
-		this.show();
 
-		this.setPositionBasedOn(app.searchWindow);
+		this.setPositionBasedOn(parent);
 
 		this.fetchUserInfo();
 

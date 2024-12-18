@@ -45,84 +45,76 @@ extends NetherOS.App {
 
 	onConstruct() {
 
-
-		this.setName('Start');
-		this.setIdent('net.pegasusgate.atl.start-app');
-		this.setIcon('mdi mdi-star-face');
-		this.pushToTaskbar(true);
-		this.setListed(false);
-
-		////////
-
-		this.window = null;
+		(this)
+		.setName('Start')
+		.setIdent('net.pegasusgate.atl.start-app')
+		.setIcon('mdi mdi-star-face')
+		.setListed(false)
+		.setSingleInstance(true)
+		.setTaskbarItem(true);
 
 		return;
 	};
 
-	onLaunch(os) {
+	onLaunchSingle() {
 
-		super.onLaunch(os);
+		let win = new StartAppWindow(this);
 
-		this.window = new TestWin(this);
-		super.bindWindowAnim(this.window);
-		//super.pushToDesktop(this.window);
-
-		os.dmgr.current.addWindow(this.window);
-		this.window.show();
-		this.window.centerInParent();
-		//this.window.maximise();
+		super.registerWindow(win);
+		win.show();
+		win.centerInParent();
 
 		return;
 	};
 
-	onWindowAnim(jEv) {
+	onWindowShown(jEv, win) {
 
-		super.onWindowAnim(jEv);
+		(win.element)
+		.find('.form-control:first')
+		.focus();
 
-		////////
-
-		let aName = jEv.originalEvent.animationName;
-
-		if(aName === 'nui-window-show') {
-			(this.window.element)
-			.find('.form-control:first')
-			.focus();
-		}
-
-		return false;
+		return;
 	};
 
 };
 
-class TestWin
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+class StartAppWindow
 extends NetherOS.Window {
 
 	constructor(app) {
 		super();
-		this.ident = 'net.pegasusgate.atl.start-app.main';
 
-		this.hideFooter();
+		(this)
+		.setAppAndBake(app)
+		.setBody(TemplateWindowMainHTML)
+		.setSize(75, 75, '%')
+		.setMaxable(true)
+		.setMinable(false)
+		.setMovable(true)
+		.setResizable(true)
+		.hideFooter();
 
-		this.setMaxable(true);
-		this.setMinable(false);
-		this.setMovable(true);
-		this.setResizable(true);
-		this.setTitle(`${app.os.name} ${app.os.version}`);
-		this.setIcon(app.icon);
-		this.setBody(TemplateWindowMainHTML);
-		this.setSize(75, 75, '%');
-		//this.hideHeader();
-		this.hideFooter();
+		this.fillAppList();
 
+		return;
+	};
+
+	fillAppList() {
 
 		let box = this.getOutputElement('AppList');
+		let tpl = jQuery(TemplateWindowAppRowHTML);
 
-		for(const a of app.os.apps) {
+		////////
+
+		for(const a of this.os.apps) {
 
 			if(!a.isListed())
 			continue;
 
-			let row = jQuery(TemplateWindowAppRowHTML);
+			let row = tpl.clone();
 
 			if(a.icon.match(/(?:mdi|si) /)) {
 				row.find('[data-app-icon]')
@@ -134,17 +126,15 @@ extends NetherOS.Window {
 			}
 
 			row.find('[data-app-name-text]').text(a.name);
-
 			box.append(row);
+
+			continue;
 		}
 
-		this.element.css({
-			'min-width': '50vw',
-			'min-height': '50vh'
-		});
+		////////
 
 		return;
-	};
+	}
 
 };
 

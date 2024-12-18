@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import API from '../../api/json.js';
 import NetherOS from '../__main.js';
 
 await NetherOS.load();
@@ -14,22 +13,23 @@ extends NetherOS.App {
 
 	onConstruct() {
 
-		this.setName('Settings');
-		this.setIdent('net.pegasusgate.atl.settingsapp');
-		this.setIcon('mdi mdi-cog');
-		this.pushToTaskbar(true);
-
-		/** @type {CfgWindow} */
-		this.win = null;
+		(this)
+		.setName('Settings')
+		.setIdent('net.pegasusgate.atl.settingsapp')
+		.setIcon('mdi mdi-cog')
+		.setSingleInstance(true)
+		.setTaskbarItem(true);
 
 		return this;
 	};
 
-	onLaunch(os) {
+	onLaunchSingle() {
 
-		super.onLaunch(os);
+		let w = new SettingsAppWindow(this);
 
-		this.win = new CfgWindow(this);
+		this.registerWindow(w);
+		w.show();
+		w.centerInParent();
 
 		return;
 	};
@@ -39,20 +39,13 @@ extends NetherOS.App {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-class CfgWindow
+class SettingsAppWindow
 extends NetherOS.Window {
 
 	constructor(app) {
 		super();
 
-		this.setApp(app);
-		this.setTitle(app.name);
-		this.setIcon(app.icon);
-		this.setIdent(app.ident);
-
-		this.pushToDesktop();
-		this.show();
-		this.centerInParent();
+		this.setAppAndBake(app);
 
 		return;
 	};

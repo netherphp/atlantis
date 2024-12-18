@@ -69,6 +69,9 @@ class Window {
 
 	static Framework = null;
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static get ActionAccept() { return 'accept'; };
 	static get ActionCancel() { return 'cancel'; };
 	static get ActionWinMin() { return 'win-min'; };
@@ -79,6 +82,7 @@ class Window {
 	static get EvMouseDownMove() { return 'mousedown.atl-dtop-win-move'; };
 	static get EvMouseDownSize() { return 'mousedown.atl-dtop-win-resize'; };
 	static get EvWindowAction() { return 'click.atl-dtop-win-action'; }
+	static get EvWindowActionTouch() { return 'touchstart.atl-dtop-win-action'; }
 	static get EvWindowAnimEnd() { return 'animationend.atl-dtop-win-anim'; }
 
 	static get SelectHandleMove() { return '> header'; };
@@ -216,6 +220,11 @@ class Window {
 			this.onWindowAction.bind(this)
 		)
 		.on(
+			this.constructor.EvWindowActionTouch,
+			this.constructor.SelectWindowAction,
+			this.onWindowAction.bind(this)
+		)
+		.on(
 			'click',
 			this.onWindowClick.bind(this)
 		)
@@ -243,14 +252,24 @@ class Window {
 	onTitleBarMouseDown(jEv) {
 
 		if(!this.enableMove || this.isMaximised())
-		return;
+		return false;
 
 		////////
 
 		let self = this;
 		let ev = jEv.originalEvent;
+		let offset = null;
 
-		let offset = (
+		////////
+
+		if(typeof ev.touches !== 'undefined')
+		offset = (
+			(new Vec2(ev.touches[0].clientX, ev.touches[0].clientY))
+			.sub(this.getPosVec())
+		);
+
+		else
+		offset = (
 			(new Vec2(ev.clientX, ev.clientY))
 			.sub(this.getPosVec())
 		);
@@ -263,16 +282,24 @@ class Window {
 		jQuery(window)
 		.on(this.getEventName('mousemove'), function(jEv) {
 			self.onTitleBarMouseMove(jEv, offset);
-			return;
+			return false;
 		})
 		.on(this.getEventName('mouseup'), function(jEv) {
 			self.onTitleBarMouseUp(jEv, offset);
-			return;
+			return false;
+		})
+		.on(this.getEventName('touchmove'), function(jEv) {
+			self.onTitleBarMouseMove(jEv, offset);
+			return false;
+		})
+		.on(this.getEventName('touchend'), function(jEv) {
+			self.onTitleBarMouseUp(jEv, offset);
+			return false;
 		});
 
 		////////
 
-		return;
+		return false;
 	};
 
 	onTitleBarMouseUp(jEv, oVec) {
@@ -285,25 +312,38 @@ class Window {
 
 		jQuery(window)
 		.off(this.getEventName('mousemove'))
-		.off(this.getEventName('moseup'));
-
-		oVec;
+		.off(this.getEventName('mouseup'))
+		.off(this.getEventName('touchmove'))
+		.off(this.getEventName('touchend'));
 
 		////////
 
-		return;
+		return false;
 	};
 
 	onTitleBarMouseMove(jEv, oVec) {
 
+		let ev = jEv.originalEvent;
+
+		////////
+
 		this.userMoved = true;
 
-		this.setPosition(
-			(jEv.originalEvent.clientX - oVec.x),
-			(jEv.originalEvent.clientY - oVec.y)
-		);
+		if(typeof ev.touches !== 'undefined') {
+			this.setPosition(
+				(ev.touches[0].clientX - oVec.x),
+				(ev.touches[0].clientY - oVec.y)
+			);
+		}
 
-		return;
+		else {
+			this.setPosition(
+				(ev.clientX - oVec.x),
+				(ev.clientY - oVec.y)
+			);
+		}
+
+		return false;
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -318,7 +358,19 @@ class Window {
 
 		let self = this;
 		let ev = jEv.originalEvent;
-		let offset = new Vec2(ev.offsetX, ev.offsetY);
+		let offset = null;
+
+		////////
+
+		if(typeof ev.touches !== 'undefined') {
+			offset = new Vec2(ev.touches[0].offsetX, ev.touches[0].offsetY);
+		}
+
+		else {
+			offset = new Vec2(ev.offsetX, ev.offsetY);
+		}
+
+		offset = this.getOffsetClientCoords(offset.mult(0.5));
 
 		////////
 
@@ -335,6 +387,14 @@ class Window {
 			return;
 		})
 		.on(this.getEventName('mouseup'), function(jEv) {
+			self.onResizeMouseUp(jEv, offset);
+			return;
+		})
+		.on(this.getEventName('touchmove'), function(jEv) {
+			self.onResizeMouseMove(jEv, offset);
+			return;
+		})
+		.on(this.getEventName('touchend'), function(jEv) {
 			self.onResizeMouseUp(jEv, offset);
 			return;
 		});
@@ -354,7 +414,9 @@ class Window {
 
 		jQuery(window)
 		.off(this.getEventName('mousemove'))
-		.off(this.getEventName('moseup'));
+		.off(this.getEventName('mouseup'))
+		.off(this.getEventName('touchmove'))
+		.off(this.getEventName('touchup'));
 
 		////////
 
@@ -364,9 +426,19 @@ class Window {
 	onResizeMouseMove(jEv, oVec) {
 
 		let ev = jEv.originalEvent;
+		let cur = null;
 
-		let x = Math.abs(ev.layerX - this.pos.x) + oVec.x;
-		let y = Math.abs(ev.layerY - this.pos.y) + oVec.y;
+		////////
+
+		if(typeof jEv.originalEvent.touches !== 'undefined')
+		cur = jEv.originalEvent.touches[0];
+		else
+		cur = jEv.originalEvent;
+
+		////////
+
+		let x = Math.abs(cur.clientX - this.pos.x) + oVec.x;
+		let y = Math.abs(cur.clientY - this.pos.y) + oVec.y;
 
 		this.userSized = true;
 
@@ -374,7 +446,6 @@ class Window {
 
 		return false;
 	};
-
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -627,6 +698,20 @@ class Window {
 		return el.val();
 	};
 
+	// take into consideration the client offset of the desktop and modify
+	// any client values received to account for it.
+
+	getOffsetClientCoords(oVec) {
+
+		let offset = this.element.parent().offset();
+
+		// i was surprised that the jQuery offset was working to convey
+		// that for things nested in flexbox. figured the offset would be
+		// relative 0,0. if we are revisiting this in the future then rip.
+
+		return oVec.sub(Window.Framework.Vec2.FromOffset(offset));
+	};
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -701,6 +786,9 @@ class Window {
 	destroy() {
 
 		this.element.remove();
+
+		if(this.app)
+		this.app.unregisterWindow(this);
 
 		return this;
 	};
@@ -973,11 +1061,27 @@ class Window {
 
 		this.app = app;
 
-		if(this.app.os)
-		this.setOS(this.app.os);
+		if(app && app.os)
+		this.setOS(app.os);
 
 		return this;
 	};
+
+	setAppAndBake(app) {
+
+		this.setApp(app);
+
+		if(this.app) {
+			this.setIdent(app.ident);
+			this.setIcon(app.icon);
+			this.setTitle(app.name);
+
+			if(this.app.os)
+			this.setOS(app.os);
+		}
+
+		return this;
+	}
 
 	setBody(content) {
 

@@ -69,31 +69,25 @@ let TemplateToolWindowHTML = `
 class ApiTool
 extends NetherOS.App {
 
-	constructor() {
+	onConstruct() {
 
-		super();
-		this.setName('API Tool');
-		this.setIdent('net.pegasusgate.atl.apitool');
-		this.setIcon('mdi mdi-api');
-		this.setListed(true);
+		(this)
+		.setName('API Tool')
+		.setIdent('net.pegasusgate.atl.apitool')
+		.setIcon('mdi mdi-api')
+		.setListed(true)
+		.setTaskbarItem(true);
 
 		return;
 	};
 
-	onInstall(os) {
-
-		super.onInstall(os);
-
-		this.pushToTaskbar();
-
-		return this;
-	};
-
-	onLaunch(os) {
-
-		super.onLaunch(os);
+	onLaunchInstance() {
 
 		let w = new ApiToolWindow(this);
+
+		this.registerWindow(w);
+		w.show();
+		w.centerInParent();
 
 		return this;
 	};
@@ -109,9 +103,7 @@ extends NetherOS.Window {
 	constructor(app) {
 
 		super();
-		this.setTitle(app.name);
-		this.setIdent(app.ident);
-		this.setIcon(app.icon);
+		this.setAppAndBake(app);
 		this.setSize(80, 75, '%');
 		this.setOS(app.os);
 		this.setBody(TemplateToolWindowHTML);
@@ -122,10 +114,6 @@ extends NetherOS.Window {
 		this.setAction('run', this.onRun);
 
 		this.hideFooter();
-
-		this.pushToDesktop();
-		this.show();
-		this.centerInParent();
 
 		return;
 	};

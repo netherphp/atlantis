@@ -26,6 +26,7 @@ class App {
 		// as an app the user can directly launch.
 
 		this.listed = true;
+		this.singleInstance = false;
 
 		////////
 
@@ -69,19 +70,9 @@ class App {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	onConstruct() {
-
-		return this;
-	};
-
-	onReady() {
-
-		return this;
-	};
-
 	onInstall(os) {
 
-		console.log(`[App.onInstall] ${this.name} ${this.id}`);
+		console.log(`[App.onInstall] ${this.name} (${this.id})`);
 
 		this.setOS(os);
 
@@ -99,16 +90,96 @@ class App {
 
 	onLaunch(os) {
 
-		console.log(`[App.onLaunch] ${this.name} ${this.id}`);
+		console.log(`[App.onLaunch] ${this.name} (${this.id})`);
 
-		return;
+		////////
+
+		if(this.singleInstance) {
+			if(this.windows.length !== 0)
+			this.windows[0].bringToTop();
+
+			else
+			this.onLaunchSingle();
+		}
+
+		else {
+			this.onLaunchInstance();
+		}
+
+		////////
+
+		return false;
 	};
 
 	onWindowAnim(jEv) {
 
-		console.log(`[App.onWindowAnim] ${this.name} ${this.id} ${jEv.originalEvent.animationName}`);
+		let name = jEv.originalEvent.animationName;
+		let win = this.findWindowByElement(jEv.target);
+
+		////////
+
+		console.log(`[App.onWindowAnim] ${this.name} (${this.id}) ${name}`);
+
+		if(name === 'nui-window-show')
+		this.onWindowShown(jEv, win);
+
+		////////
 
 		return false;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// these these events are designed to be overridden by the userland
+	// application to perform whatever actions are needed.
+
+	onConstruct() {
+
+		console.log(`[App.onConstruct] ${this.name} (${this.id})`);
+
+		// applications should overwrite this if needed.
+
+		return;
+	};
+
+	onReady() {
+
+		console.log(`[App.onReady] ${this.name} (${this.id})`);
+
+		// applications should overwrite this if needed.
+
+		return;
+	};
+
+	onLaunchSingle() {
+
+		console.log(`[App.onLaunchSingle] ${this.name} (${this.id})`);
+
+		// applications should overwrite this to spawn their windows
+		// and push those windows into this.windows.
+
+		return;
+	};
+
+	onLaunchInstance() {
+
+		console.log(`[App.onLaunchInstance] ${this.name} (${this.id})`);
+
+		// applications should overwrite this to spawn their windows
+		// and push those windows into this.windows.
+
+		return;
+	};
+
+	onWindowShown(jEv, win) {
+
+		console.log(`[App.onWindowShown] ${this.name} (${this.id}) ${win.id}`);
+
+		// applications should overwrite this to spawn their windows
+		// and push those windows into this.windows.
+
+		return;
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -142,6 +213,20 @@ class App {
 		return this;
 	};
 
+	setSingleInstance(enable) {
+
+		this.singleInstance = enable;
+
+		return this;
+	};
+
+	setTaskbarItem(enable) {
+
+		this.taskbarItem = enable;
+
+		return this;
+	};
+
 	setOS(os) {
 
 		this.os = os;
@@ -160,6 +245,56 @@ class App {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	findWindow(win) {
+
+		for(const w in this.windows)
+		if(this.windows[w].id === win.id)
+		return win;
+
+		return false;
+	};
+
+	findWindowByElement(el) {
+
+		let elid = jQuery(el).attr('id');
+
+		////////
+
+		for(const w in this.windows)
+		if(this.windows[w].element.attr('id') === elid)
+		return this.windows[w];
+
+		////////
+
+		return false;
+	};
+
+	registerWindow(win) {
+
+		let found = this.findWindow(win);
+
+		////////
+
+		if(!found) {
+			this.windows.push(win);
+			this.pushToDesktop(win);
+			this.bindWindowAnim(win);
+		}
+
+		return this;
+	};
+
+	unregisterWindow(win) {
+
+		this.windows = this.windows.filter(
+			(w)=> w.id !== win.id
+		);
+
+		return this;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	bindWindowAnim(win) {
 
@@ -192,6 +327,17 @@ class App {
 		this.taskbarItem = this.os.taskbar.addItem(
 			this.ident, this.icon, this.name
 		);
+
+		return true;
+	};
+
+	pushToDesktop(win) {
+
+		if(!this.os)
+		return false;
+
+		(this.os.dmgr.current)
+		.addWindow(win);
 
 		return true;
 	};
