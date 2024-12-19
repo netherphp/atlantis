@@ -103,6 +103,7 @@ let TemplateUserEditWindow = `
 					<tr>
 						<th class="th-grow">Key</th>
 						<th class="th-shrink">Value</th>
+						<th class="th-shrink"></th>
 					</tr>
 				</thead>
 				<tbody data-win-output="AccessPrivs"></tbody>
@@ -116,6 +117,7 @@ let TemplateUserEditPrivRow = `
 <tr>
 	<td data-key class="ff-mono "></td>
 	<td data-val class="ff-mono ta-right"></td>
+	<td><button class="atl-dtop-btn" data-win-action="priv-del" data-access-id><i class="mdi mdi-close"></i></button></td>
 </tr>
 `;
 
@@ -155,11 +157,9 @@ extends NetherOS.App {
 class UserSearchWindow
 extends NetherOS.Window {
 
-	constructor(app) {
-		super();
+	onConstruct() {
 
 		(this)
-		.setAppAndBake(app)
 		.setSize(30, 75, '%')
 		.setBody(TemplateUserSearchWindow);
 
@@ -260,52 +260,63 @@ extends NetherOS.Window {
 
 		let that = jQuery(jEv.target);
 		let uid = that.attr('data-user-id');
-		let win = new UserEditWindow(this, uid);
+
+		let win = new UserEditWindow(this.app);
 
 		this.app.registerWindow(win);
+		win.fetchUserInfo(uid);
 		win.show();
 		win.setPositionBasedOn(this);
 
 		return;
-	}
+	};
 
 };
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 class UserEditWindow
 extends NetherOS.Window {
 
-	constructor(parent, uid) {
-		super();
-
-		this.uid = uid;
+	onConstruct() {
 
 		(this)
-		.setAppAndBake(parent.app)
-		.setTitle('User Edit')
 		.setSize(40, 80, '%')
 		.setBody(TemplateUserEditWindow);
+
+		this.uid = null;
 
 		this.addButton('Save', 'save-user');
 		this.setAction('save-user', this.onSaveUser);
 
 		this.addButton('Cancel', 'cancel', true);
 		this.setAction('priv-add', this.onPrivAdd);
-
-		this.showOverlay();
-
-		this.setPositionBasedOn(parent);
-
-		this.fetchUserInfo();
+		this.setAction('priv-del', this.onPrivDel);
 
 		return;
 	};
 
-	fetchUserInfo() {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		//this.showOverlay();
+	setUserID(uid) {
+
+		this.uid = uid;
+
+		return;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	fetchUserInfo(uid) {
 
 		let api = new NetherOS.API.Request('GET', '/api/user/entity');
-		let data = { ID: this.uid };
+		let data = { ID: uid };
+
+		this.setUserID(uid);
+		this.showOverlay();
 
 		(api.send(data))
 		.then(this.onFetchUser.bind(this))
@@ -315,8 +326,6 @@ extends NetherOS.Window {
 	};
 
 	onFetchUser(result) {
-
-		console.log(result);
 
 		this.getInputElement('Alias').val(result.payload.User.Alias);
 		this.getInputElement('Email').val(result.payload.User.Email);
@@ -331,6 +340,7 @@ extends NetherOS.Window {
 			let pr = jQuery(TemplateUserEditPrivRow);
 			pr.find('[data-key]').text(result.payload.Access[p].Key);
 			pr.find('[data-val]').text(result.payload.Access[p].Value);
+			pr.find('[data-access-id]').attr('data-access-id', result.payload.Access[p].ID);
 			el.append(pr);
 		}
 
@@ -358,7 +368,7 @@ extends NetherOS.Window {
 
 	onSaveDone() {
 
-		this.destroy();
+		this.quit();
 
 		return;
 	};
@@ -376,13 +386,25 @@ extends NetherOS.Window {
 		};
 
 		(api.send(data))
-		.then(this.fetchUserInfo.bind(this))
+		.then(()=> this.fetchUserInfo(this.uid))
 		.catch(api.catch);
 
 		this.getInputElement('NewPrivKey').val('');
 		this.getInputElement('NewPrivVal').val('');
 
-		this.fetchUserInfo();
+		return this;
+	};
+
+	onPrivDel(jEv) {
+
+		let that = jQuery(jEv.target);
+		let aid = that.attr('data-access-id');
+		let api = new NetherOS.API.Request('DELACCESS', '/api/user/entity');
+		let data = { 'ID': this.uid,  'AccessID': aid };
+
+		(api.send(data))
+		.then(()=> this.fetchUserInfo(this.uid))
+		.catch(api.catch);
 
 		return this;
 	};
