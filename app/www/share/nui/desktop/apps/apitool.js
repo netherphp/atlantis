@@ -137,6 +137,7 @@ extends NetherOS.Window {
 
 			////////
 
+			if(k)
 			output.append(k, v);
 
 			return;
