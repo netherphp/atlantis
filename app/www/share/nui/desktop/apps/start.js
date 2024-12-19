@@ -115,10 +115,10 @@ extends NetherOS.Window {
 			continue;
 
 			let row = tpl.clone();
+			row.attr('data-app-ident', a.ident);
 
 			if(a.icon.match(/(?:mdi|si) /)) {
-				row.find('[data-app-icon]')
-				.html(
+				row.find('[data-app-icon]').html(
 					jQuery('<div />')
 					.addClass('pos-absolute pos-h-center pos-v-center')
 					.html(`<i class="${a.icon}"></i>`)
@@ -126,8 +126,10 @@ extends NetherOS.Window {
 			}
 
 			row.find('[data-app-name-text]').text(a.name);
-			box.append(row);
 
+			row.on('click', this.onClickItem.bind(this));
+
+			box.append(row);
 			continue;
 		}
 
@@ -135,6 +137,18 @@ extends NetherOS.Window {
 
 		return;
 	}
+
+	onClickItem(jEv) {
+
+		let that = jQuery(jEv.delegateTarget);
+		let ident = that.attr('data-app-ident');
+
+		this.quit();
+
+		this.os.appLaunchByIdent(ident);
+
+		return;
+	};
 
 };
 

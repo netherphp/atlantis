@@ -72,7 +72,7 @@ class App {
 
 	onInstall(os) {
 
-		console.log(`[App.onInstall] ${this.name} (${this.id})`);
+		//console.log(`[App.onInstall] ${this.name} (${this.id})`);
 
 		this.setOS(os);
 
@@ -84,6 +84,8 @@ class App {
 		}
 
 		////////
+
+		this.onInstalled();
 
 		return;
 	};
@@ -148,6 +150,13 @@ class App {
 		console.log(`[App.onReady] ${this.name} (${this.id})`);
 
 		// applications should overwrite this if needed.
+
+		return;
+	};
+
+	onInstalled() {
+
+		console.log(`[App.onInstalled] ${this.name} (${this.id})`);
 
 		return;
 	};
@@ -281,6 +290,8 @@ class App {
 			this.bindWindowAnim(win);
 		}
 
+		console.log(`[App.registerWindow] windows: ${this.windows.length}`);
+
 		return this;
 	};
 
@@ -289,6 +300,8 @@ class App {
 		this.windows = this.windows.filter(
 			(w)=> w.id !== win.id
 		);
+
+		console.log(`[App.unregisterWindow] windows: ${this.windows.length}`);
 
 		return this;
 	};

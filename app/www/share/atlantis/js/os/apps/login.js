@@ -1,11 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import API      from '../../../../nui/api/json.js';
 import NetherOS from '../../../../nui/desktop/__main.js';
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 await NetherOS.load();
 
@@ -29,62 +25,47 @@ let TemplateUserLoginWindow = `
 class LoginApp
 extends NetherOS.App {
 
-	constructor() {
+	onConstruct() {
 
-		super();
-		this.setName('Log In');
-		this.setIdent('net.pegasusgate.atl.login');
-		this.setIcon('mdi mdi-login');
-		this.pushToTaskbar(true);
-
-		this.loginWindow = null;
-
-		return;
-	};
-
-	onInstall(os) {
-
-		super.onInstall(os);
-
-		setTimeout(
-			(()=> this.onLaunch(os)),
-			250
-		);
+		(this)
+		.setName('Log In')
+		.setIdent('net.pegasusgate.atl.login')
+		.setIcon('mdi mdi-login')
+		.setListed(false)
+		.setSingleInstance(true)
+		.setTaskbarItem(true);
 
 		return;
 	};
 
-	onLaunch(os) {
+	onInstalled() {
 
-		super.onLaunch(os);
+		setTimeout(this.onLaunchSingle.bind(this), 250);
 
-		this.loginWindow = new UserLoginWindow(this);
+		return;
+	};
+
+	onLaunchSingle() {
+
+		let w = new UserLoginWindow(this);
+
+		this.registerWindow(w);
+		w.show();
+		w.centerInParent();
 
 		return;
 	};
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class UserLoginWindow
 extends NetherOS.Window {
 
-	constructor(app) {
+	onConstruct() {
 
-		super();
-
-		this.setup(app);
-		this.show();
-		this.resizeToFit();
-		this.centerInParent();
-
-		return;
-	};
-
-	setup(app) {
-
-		this.setOS(app.os);
-		this.setTitle(app.name);
-		this.setIcon(app.icon);
 		this.setMaxable(false);
 		this.setMinable(false);
 		this.setResizable(false);
@@ -94,14 +75,15 @@ extends NetherOS.Window {
 		this.addButton('Submit', 'login');
 		this.setAction('login', this.onLogin);
 
-		this.pushToDesktop();
-
 		return;
 	};
 
-	onLogin(jEv) {
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		let api = new API.Request('LOGIN', '/api/user/session');
+	onLogin() {
+
+		let api = new NetherOS.API.Request('LOGIN', '/api/user/session');
 
 		let data = {
 			'Username': this.getInputValue('Account'),

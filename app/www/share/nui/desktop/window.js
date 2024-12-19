@@ -94,7 +94,7 @@ class Window {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	constructor() {
+	constructor(app=null) {
 
 		this.id = null;
 		this.ident = null;
@@ -106,6 +106,7 @@ class Window {
 		this.element = null;
 		this.parent = null;
 		this.actions = {};
+		this.app = null;
 		this.os = null;
 
 		this.elHeader = null;
@@ -134,6 +135,16 @@ class Window {
 		.#generateElementID()
 		.#elementBuild()
 		.#elementBind();
+
+		////////
+
+		if(app)
+		this.setAppAndBake(app);
+
+		////////
+
+		this.onConstruct();
+		this.onReady();
 
 		return;
 	};
@@ -244,6 +255,19 @@ class Window {
 		let name = `${type}.${this.id}`;
 
 		return name;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	onConstruct() {
+
+		return;
+	};
+
+	onReady() {
+
+		return;
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -490,8 +514,8 @@ class Window {
 
 	onWindowActionAccept() {
 
-		console.log(`[Window.onWindowActionCancel] ${this.id}`);
-		this.element.addClass('quitting');
+		console.log(`[Window.onWindowActionAccept] ${this.id}`);
+		this.quit();
 
 		return;
 	};
@@ -499,7 +523,7 @@ class Window {
 	onWindowActionCancel() {
 
 		console.log(`[Window.onWindowActionCancel] ${this.id}`);
-		this.element.addClass('quitting');
+		this.quit();
 
 		return;
 	};
@@ -521,11 +545,13 @@ class Window {
 		if(ev.animationName === 'nui-window-hide') {
 			this.element.addClass('d-none');
 			this.element.removeClass('hiding');
+			return;
 		}
 
 		if(ev.animationName === 'nui-window-show') {
 			this.element.removeClass('showing');
 			this.element.removeClass('atl-dtop-win-init');
+			return;
 		}
 
 		////////
@@ -806,6 +832,13 @@ class Window {
 		////////
 
 		return this;
+	};
+
+	quit() {
+
+		this.element.addClass('quitting');
+
+		return;
 	};
 
 	////////////////////////////////

@@ -177,7 +177,7 @@ class TaskbarItem {
 
 		let ev = jEv.originalEvent;
 
-		console.log(`[Taskbar.onLeftClick] ${this.id}}`);
+		//console.log(`[Taskbar.onLeftClick] ${this.id}}`);
 
 		this.parent.os.appLaunchByIdent(this.app);
 
@@ -189,7 +189,7 @@ class TaskbarItem {
 
 		let ev = jEv.originalEvent;
 
-		console.log(`[Taskbar.onMiddleClick]  ${this.id}}`);
+		//console.log(`[Taskbar.onMiddleClick]  ${this.id}}`);
 
 		return false;
 	};
@@ -198,7 +198,7 @@ class TaskbarItem {
 
 		let ev = jEv.originalEvent;
 
-		console.log(`[Taskbar.onRightClick]  ${this.id}}`);
+		//console.log(`[Taskbar.onRightClick]  ${this.id}}`);
 
 		return false;
 	};

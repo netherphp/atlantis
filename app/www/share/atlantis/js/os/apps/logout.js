@@ -1,11 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import API from '../../../../nui/api/json.js';
 import NetherOS from '../../../../nui/desktop/__main.js';
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 await NetherOS.load();
 
@@ -36,43 +32,33 @@ extends NetherOS.App {
 		this.setName('Log Out');
 		this.setIdent('net.pegasusgate.atl.logoutapp');
 		this.setIcon('mdi mdi-logout');
-		this.pushToTaskbar(true);
-
-		this.win = null;
+		this.setSingleInstance(true);
+		this.setTaskbarItem(true);
 
 		return;
 	};
 
-	onLaunch(os) {
+	onLaunchSingle() {
 
-		super.onLaunch(os);
+		let w = new UserLogoutWindow(this);
 
-		this.win = new UserLogoutWindow(this);
+		this.registerWindow(w);
+		w.show();
+		w.centerInParent();
 
 		return;
 	};
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class UserLogoutWindow
 extends NetherOS.Window {
 
-	constructor(app) {
+	onConstruct() {
 
-		super();
-
-		this.setup(app);
-		this.show();
-		this.centerInParent();
-
-		return;
-	};
-
-	setup(app) {
-
-		this.setOS(app.os);
-		this.setTitle(app.name);
-		this.setIcon(app.icon);
 		this.setMaxable(false);
 		this.setMinable(false);
 		this.setResizable(false);
@@ -83,14 +69,15 @@ extends NetherOS.Window {
 		this.addButton('Cancel', 'cancel', true);
 		this.setAction('logout', this.onLogout);
 
-		this.pushToDesktop();
-
 		return;
 	};
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	onLogout(jEv) {
 
-		let api = new API.Request('LOGOUT', '/api/user/session');
+		let api = new NetherOS.API.Request('LOGOUT', '/api/user/session');
 
 		////////
 
