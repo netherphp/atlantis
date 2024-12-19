@@ -84,11 +84,8 @@ extends NetherOS.App {
 class StartAppWindow
 extends NetherOS.Window {
 
-	constructor(app) {
-		super();
-
+	onConstruct() {
 		(this)
-		.setAppAndBake(app)
 		.setBody(TemplateWindowMainHTML)
 		.setSize(75, 75, '%')
 		.setMaxable(true)

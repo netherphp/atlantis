@@ -100,12 +100,9 @@ extends NetherOS.App {
 class ApiToolWindow
 extends NetherOS.Window {
 
-	constructor(app) {
+	onConstruct() {
 
-		super();
-		this.setAppAndBake(app);
 		this.setSize(80, 75, '%');
-		this.setOS(app.os);
 		this.setBody(TemplateToolWindowHTML);
 
 		this.elBtnAddKeyVal = this.element.find('[data-win-action="add-key-value"]');

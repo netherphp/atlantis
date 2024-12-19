@@ -83,24 +83,22 @@ extends NetherOS.App {
 class SettingsAppWindow
 extends NetherOS.Window {
 
-	constructor(app) {
-		super();
+	onConstruct() {
 
 		this.inColourNullary = null;
 		this.inColourPrimary = null;
 
 		(this)
-		.setAppAndBake(app)
 		.setBody(TemplateConfigWindowHTML)
 		.setSize(40, 75, '%');
 
-		this.#bindElements();
-		this.#fillValues();
+		this.bindValues();
+		this.fillValues();
 
 		return;
 	};
 
-	#bindElements() {
+	bindValues() {
 
 		this.inColourNullary = this.getInputElement('--atl-dtop-cfg-colour-nullary');
 		this.inColourPrimary = this.getInputElement('--atl-dtop-cfg-colour-primary');
@@ -113,7 +111,7 @@ extends NetherOS.Window {
 		return;
 	};
 
-	#fillValues() {
+	fillValues() {
 
 		let colours = this.os.fetchStyleVarList([
 			'--atl-dtop-cfg-colour-nullary',
