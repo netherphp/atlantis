@@ -8,6 +8,47 @@ await NetherOS.load();
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+let TemplateConfigWindowHTML = `
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th class="th-grow">Setting</th>
+				<th class="th-shrink">Value</th>
+				<th class="th-shrink"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="text-nowrap">Nullary</td>
+				<td class="text-nowrap">
+					<input type="color" data-win-input="--atl-dtop-cfg-colour-nullary" />
+				</td>
+				<td class="text-nowrap">
+					<button class="atl-dtop-btn" data-win-action="setting-reset" data-setting-name="--atl-dtop-cfg-colour-nullary">
+						<i class="mdi mdi-backup-restore"></i>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-nowrap">Primary</td>
+				<td class="text-nowrap">
+					<input type="color" data-win-input="--atl-dtop-cfg-colour-primary" />
+				</td>
+				<td class="text-nowrap">
+					<button class="atl-dtop-btn" data-win-action="setting-reset" data-setting-name="--atl-dtop-cfg-colour-primary">
+						<i class="mdi mdi-backup-restore"></i>
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+`;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class SettingsApp
 extends NetherOS.App {
 
@@ -45,7 +86,82 @@ extends NetherOS.Window {
 	constructor(app) {
 		super();
 
-		this.setAppAndBake(app);
+		this.inColourNullary = null;
+		this.inColourPrimary = null;
+
+		(this)
+		.setAppAndBake(app)
+		.setBody(TemplateConfigWindowHTML)
+		.setSize(40, 75, '%');
+
+		this.#bindElements();
+		this.#fillValues();
+
+		return;
+	};
+
+	#bindElements() {
+
+		this.inColourNullary = this.getInputElement('--atl-dtop-cfg-colour-nullary');
+		this.inColourPrimary = this.getInputElement('--atl-dtop-cfg-colour-primary');
+
+		this.inColourNullary.on('change', this.onSettingChange.bind(this));
+		this.inColourPrimary.on('change', this.onSettingChange.bind(this));
+
+		return;
+	};
+
+	#fillValues() {
+
+		let colours = this.os.fetchStyleVarList([
+			'--atl-dtop-cfg-colour-nullary',
+			'--atl-dtop-cfg-colour-primary'
+		]);
+
+		// the html5 colour input cannot take alpha values yet.
+
+		this.inColourNullary.val(colours['--atl-dtop-cfg-colour-nullary'].substr(0, 7));
+		this.inColourPrimary.val(colours['--atl-dtop-cfg-colour-primary'].substr(0, 7));
+
+		return;
+	};
+
+	onSettingReset(jEv) {
+
+		let n = jEv.target.dataset.settingName;
+
+		////////
+
+		switch(n) {
+			case '--atl-dtop-cfg-colour-nullary':
+			case '--atl-dtop-cfg-colour-primary':
+				this.getInputElement(n).val(this.os.styleVarDefaults[n].substr(0, 7));
+				this.os.pushStyleVar(n, this.os.styleVarDefaults[n]);
+				this.os.delete(n);
+			break;
+		};
+
+		////////
+
+		return false;
+	};
+
+	onSettingChange(jEv) {
+
+		let n = jEv.target.dataset.winInput;
+		let v = jEv.target.value;
+
+		////////
+
+		switch(n) {
+			case '--atl-dtop-cfg-colour-nullary':
+			case '--atl-dtop-cfg-colour-primary':
+				this.os.pushStyleVar(n, v);
+				this.os.save(n, v);
+			break;
+		};
+
+		////////
 
 		return;
 	};

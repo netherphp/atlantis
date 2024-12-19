@@ -452,13 +452,10 @@ class Window {
 
 	onWindowClick(jEv) {
 
-		jEv.originalEvent.preventDefault();
-		jEv.originalEvent.stopPropagation();
-
 		if(!this.element.is(':last-of-type'))
 		this.bringToTop();
 
-		return false;
+		return;
 	};
 
 	////////////////////////////////////////////////////////////////

@@ -31,6 +31,7 @@ class OS {
 		this.dmgr = null;
 		this.taskbar = null;
 		this.apps = [];
+		this.styleVarDefaults = { };
 
 		this.name = 'NUI Desktop';
 		this.version = 'v1';
@@ -39,6 +40,7 @@ class OS {
 		this._elementBuild();
 		this._elementDock(selector);
 		this._dmgrBuild();
+		this._fillStyleVars();
 
 		(this.container)
 		.append(this.element);
@@ -96,6 +98,25 @@ class OS {
 		this.dsplit.find('[data-dock=desktop]').append(this.dmgr.element);
 
 		this.element.append(this.dsplit);
+
+		return;
+	};
+
+	_fillStyleVars() {
+
+		let vars = {
+			'--atl-dtop-cfg-colour-nullary': null,
+			'--atl-dtop-cfg-colour-primary': null
+		};
+
+		// keep the default values around.
+
+		this.styleVarDefaults = this.fetchStyleVarList(Object.keys(vars));
+
+		// fill in the overwrites.
+
+		for(const k of Object.keys(this.styleVarDefaults))
+		this.pushStyleVar(k, (this.fetch(k) || this.styleVarDefaults[k]));
 
 		return;
 	};
@@ -213,6 +234,43 @@ class OS {
 		localStorage.removeItem(key);
 
 		return;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	fetchStyleVar(key) {
+
+		let cvarOrigin = document.querySelector(':root');
+		let cvarStyle = window.getComputedStyle(cvarOrigin);
+
+		return cvarStyle.getPropertyValue(key);
+	};
+
+	fetchStyleVarList(keys) {
+
+		let cvarOrigin = document.querySelector(':root');
+		let cvarStyle = window.getComputedStyle(cvarOrigin);
+		let output = {};
+
+		////////
+
+		for(const k in keys)
+		output[keys[k]] = cvarStyle.getPropertyValue(keys[k]);
+
+		////////
+
+		return output;
+	};
+
+	pushStyleVar(key, val) {
+
+		let cvarOrigin = document.querySelector(':root');
+		let cvarStyle = window.getComputedStyle(cvarOrigin);
+
+		cvarOrigin.style.setProperty(key, val);
+
+		return this;
 	};
 
 };
