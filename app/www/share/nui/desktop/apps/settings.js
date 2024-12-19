@@ -108,6 +108,8 @@ extends NetherOS.Window {
 		this.inColourNullary.on('change', this.onSettingChange.bind(this));
 		this.inColourPrimary.on('change', this.onSettingChange.bind(this));
 
+		this.setAction('setting-reset', this.onSettingReset.bind(this));
+
 		return;
 	};
 

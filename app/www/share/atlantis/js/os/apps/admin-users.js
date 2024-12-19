@@ -1,11 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import API from '../../../../nui/api/json.js';
 import NetherOS from '../../../../nui/desktop/__main.js';
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 await NetherOS.load();
 
@@ -178,7 +174,7 @@ extends NetherOS.Window {
 
 	onSearchByRecent(jEv) {
 
-		let api = new API.Request('SEARCH', '/api/user/entity');
+		let api = new NetherOS.API.Request('SEARCH', '/api/user/entity');
 		let data = { 'Sort': 'newest' };
 
 		////////
@@ -190,7 +186,7 @@ extends NetherOS.Window {
 
 	onSearchByAlias(jEv) {
 
-		let api = new API.Request('SEARCH', '/api/user/entity');
+		let api = new NetherOS.API.Request('SEARCH', '/api/user/entity');
 		let data = { 'Alias': this.getInputValue('Query') };
 
 		////////
@@ -202,7 +198,7 @@ extends NetherOS.Window {
 
 	onSearchByEmail(jEv) {
 
-		let api = new API.Request('SEARCH', '/api/user/entity');
+		let api = new NetherOS.API.Request('SEARCH', '/api/user/entity');
 		let data = { 'Email': this.getInputValue('Query') };
 
 		////////
@@ -268,7 +264,7 @@ extends NetherOS.Window {
 
 		this.app.registerWindow(win);
 		win.show();
-		//win.centerInParent();
+		win.setPositionBasedOn(this);
 
 		return;
 	}
@@ -308,7 +304,7 @@ extends NetherOS.Window {
 
 		//this.showOverlay();
 
-		let api = new API.Request('GET', '/api/user/entity');
+		let api = new NetherOS.API.Request('GET', '/api/user/entity');
 		let data = { ID: this.uid };
 
 		(api.send(data))
@@ -345,7 +341,7 @@ extends NetherOS.Window {
 
 	onSaveUser(jEv) {
 
-		let api = new API.Request('PATCH', '/api/user/entity');
+		let api = new NetherOS.API.Request('PATCH', '/api/user/entity');
 		let data = {
 			'ID': this.uid,
 			'Alias': this.getInputValue('Alias'),
@@ -369,7 +365,7 @@ extends NetherOS.Window {
 
 	onPrivAdd(jEv) {
 
-		let api = new API.Request('SETACCESS', '/api/user/entity');
+		let api = new NetherOS.API.Request('SETACCESS', '/api/user/entity');
 		let k = this.getInputValue('NewPrivKey');
 		let v = this.getInputValue('NewPrivVal');
 

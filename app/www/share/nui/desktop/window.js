@@ -871,7 +871,7 @@ class Window {
 		//console.log(`[Window.setPositionBasedOn] ${this.id}`);
 		//console.log(what);
 
-		if(what instanceof Window);
+		if(what instanceof Window)
 		if(what.isUserMoved()) {
 			(this)
 			.setUserMoved()
