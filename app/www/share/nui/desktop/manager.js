@@ -67,6 +67,23 @@ class Manager {
 		return d;
 	};
 
+	resetWindowInactiveClass() {
+
+		(this.element)
+		.removeClass('atl-dtop-desktop-window-inactive-none')
+		.removeClass('atl-dtop-desktop-window-inactive-dim')
+		.removeClass('atl-dtop-desktop-window-inactive-dimblur');
+
+		return this;
+	};
+
+	pushWindowInactiveClass(cname) {
+
+		this.element.addClass(cname);
+
+		return this;
+	};
+
 };
 
 export default Manager;

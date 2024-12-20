@@ -31,6 +31,11 @@ class OS {
 		this.dmgr = null;
 		this.taskbar = null;
 		this.apps = [];
+
+		this.configDefaults = {
+			'OS.WindowInactiveClass': 'atl-dtop-desktop-window-inactive-dim'
+		};
+
 		this.styleVarDefaults = { };
 
 		this.name = 'NUI Desktop';
@@ -87,15 +92,26 @@ class OS {
 		this.dmgr = new OS.Framework.DesktopManager;
 		this.taskbar = new OS.Framework.Taskbar;
 
+		let winInactiveClass = this.fetch('OS.WindowInactiveClass');
+		let tbsplit = this.dsplit.find('[data-dock=taskbar]');
+		let dksplit = this.dsplit.find('[data-dock=desktop]')
+
+		if(!winInactiveClass)
+		winInactiveClass = 'atl-dtop-desktop-window-inactive-dim';
+
 		////////
 
 		this.taskbar.setOS(this);
 		this.dmgr.createDesktop(true);
 
+		(this.dmgr)
+		.resetWindowInactiveClass()
+		.pushWindowInactiveClass(winInactiveClass);
+
 		////////
 
-		this.dsplit.find('[data-dock=taskbar]').append(this.taskbar.element)
-		this.dsplit.find('[data-dock=desktop]').append(this.dmgr.element);
+		tbsplit.append(this.taskbar.element)
+		dksplit.append(this.dmgr.element);
 
 		this.element.append(this.dsplit);
 

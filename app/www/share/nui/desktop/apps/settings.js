@@ -21,7 +21,7 @@ let TemplateConfigWindowHTML = `
 		<tbody>
 			<tr>
 				<td class="text-nowrap">Nullary</td>
-				<td class="text-nowrap">
+				<td class="text-nowrap ta-right">
 					<input type="color" data-win-input="--atl-dtop-cfg-colour-nullary" />
 				</td>
 				<td class="text-nowrap">
@@ -32,11 +32,26 @@ let TemplateConfigWindowHTML = `
 			</tr>
 			<tr>
 				<td class="text-nowrap">Primary</td>
-				<td class="text-nowrap">
+				<td class="text-nowrap ta-right">
 					<input type="color" data-win-input="--atl-dtop-cfg-colour-primary" />
 				</td>
 				<td class="text-nowrap">
 					<button class="atl-dtop-btn" data-win-action="setting-reset" data-setting-name="--atl-dtop-cfg-colour-primary">
+						<i class="mdi mdi-backup-restore"></i>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td class="text-nowrap">Window Inactive</td>
+				<td class="text-nowrap ta-right">
+					<select class="form-select" data-win-input="OS.WindowInactiveClass" style="min-width:150px;">
+						<option value="atl-dtop-desktop-window-inactive-none">None</option>
+						<option value="atl-dtop-desktop-window-inactive-dim">Dim</option>
+						<option value="atl-dtop-desktop-window-inactive-dimblur">Dim &amp; Blur</option>
+					</select>
+				</td>
+				<td class="text-nowrap">
+					<button class="atl-dtop-btn" data-win-action="setting-reset" data-setting-name="OS.WindowInactiveClass">
 						<i class="mdi mdi-backup-restore"></i>
 					</button>
 				</td>
@@ -102,9 +117,11 @@ extends NetherOS.Window {
 
 		this.inColourNullary = this.getInputElement('--atl-dtop-cfg-colour-nullary');
 		this.inColourPrimary = this.getInputElement('--atl-dtop-cfg-colour-primary');
+		this.inWinInactiveClass = this.getInputElement('OS.WindowInactiveClass');
 
 		this.inColourNullary.on('change', this.onSettingChange.bind(this));
 		this.inColourPrimary.on('change', this.onSettingChange.bind(this));
+		this.inWinInactiveClass.on('change', this.onSettingChange.bind(this));
 
 		this.setAction('setting-reset', this.onSettingReset.bind(this));
 
@@ -118,10 +135,16 @@ extends NetherOS.Window {
 			'--atl-dtop-cfg-colour-primary'
 		]);
 
+		let winInactiveClass = (
+			this.os.fetch('OS.WindowInactiveClass')
+			|| this.os.configDefaults['OS.WindowInactiveClass']
+		);
+
 		// the html5 colour input cannot take alpha values yet.
 
 		this.inColourNullary.val(colours['--atl-dtop-cfg-colour-nullary'].substr(0, 7));
 		this.inColourPrimary.val(colours['--atl-dtop-cfg-colour-primary'].substr(0, 7));
+		this.inWinInactiveClass.val(winInactiveClass);
 
 		return;
 	};
@@ -133,6 +156,11 @@ extends NetherOS.Window {
 		////////
 
 		switch(n) {
+			case 'OS.WindowInactiveClass':
+				this.inWinInactiveClass.val(this.os.configDefaults[n]);
+				this.os.dmgr.resetWindowInactiveClass();
+				this.os.delete(n);
+			break;
 			case '--atl-dtop-cfg-colour-nullary':
 			case '--atl-dtop-cfg-colour-primary':
 				this.getInputElement(n).val(this.os.styleVarDefaults[n].substr(0, 7));
@@ -154,6 +182,11 @@ extends NetherOS.Window {
 		////////
 
 		switch(n) {
+			case 'OS.WindowInactiveClass':
+				this.os.dmgr.resetWindowInactiveClass();
+				this.os.dmgr.pushWindowInactiveClass(v);
+				this.os.save(n, v);
+			break;
 			case '--atl-dtop-cfg-colour-nullary':
 			case '--atl-dtop-cfg-colour-primary':
 				this.os.pushStyleVar(n, v);
