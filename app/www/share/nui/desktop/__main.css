@@ -367,8 +367,8 @@ html, body {
 	left: 0px; top: 0px;
 	width: 100%; height: 100%;
 
-	background-color: var(--atl-dtop-cfg-colour-primary);
-	color: var(--atl-dtop-cfg-colour-nullary);
+	background-color: var(--atl-dtop-cfg-colour-nullary);
+	color: var(--atl-dtop-cfg-colour-primary);
 }
 
 /*******************************************************************************

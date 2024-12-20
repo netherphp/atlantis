@@ -160,7 +160,7 @@ extends NetherOS.Window {
 	onConstruct() {
 
 		(this)
-		.setSize(30, 75, '%')
+		.setSize(40, 75, '%')
 		.setBody(TemplateUserSearchWindow);
 
 		this.setAction('search-alias', this.onSearchByAlias);
