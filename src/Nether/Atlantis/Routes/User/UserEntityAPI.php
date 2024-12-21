@@ -32,9 +32,12 @@ extends Atlantis\ProtectedAPI {
 		if(!$Entity)
 		$this->Quit(2, 'no user entity found');
 
+		$Access = $Entity->GetAccessTypes();
+		$Access->Remap(fn(User\EntityAccessType $T)=> $T->DescribeForPublicAPI());
+
 		$this->SetPayload([
 			'User'   => $Entity,
-			'Access' => $Entity->GetAccessTypes()->Export()
+			'Access' => $Access->Export()
 		]);
 
 		return;

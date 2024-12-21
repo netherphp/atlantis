@@ -59,6 +59,80 @@ let TemplateUserSearchRow = `
 `;
 
 let TemplateUserEditWindow = `
+<div class="d-flex gap-4 h-100">
+	<div class="flex-fill h-100 w-50">
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="th-shrink text-nowrap">User Info</th>
+					<th class="th-grow text-nowrap"></th>
+					<th class="th-shrink text-nowrap"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="text-nowrap">Email</td>
+					<td class="text-nowrap"><input type="text" class="form-control" data-win-input="Email" /></td>
+					<td class="text-nowrap">
+						<button class="atl-dtop-btn">
+							Save
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-nowrap">Alias</td>
+					<td class="text-nowrap"><input type="text" class="form-control" data-win-input="Alias" /></td>
+					<td class="text-nowrap">
+						<button class="atl-dtop-btn">
+							Save
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-nowrap">Admin</td>
+					<td class="text-nowrap">
+						<select class="form-select" data-win-input="Admin">
+							<option value="0">No</option>
+							<option value="1">Normal Admin</option>
+							<option value="65535">Ultra Admin</option>
+						</select>
+					</td>
+					<td class="text-nowrap">
+						<button class="atl-dtop-btn">
+							Save
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="flex-fill h-100 w-50 pos-relative">
+		<div class="pos-absolutely" style="overflow:scroll;">
+			<table class="table h-100 w-100 m-0 g-2">
+				<thead>
+					<tr>
+						<th class="th-grow">Key</th>
+						<th class="th-throw">Value</th>
+						<th class="th-shrink"></th>
+					</tr>
+					<tr>
+						<td><input class="form-control" placeholder="Key..." data-win-input="NewPrivKey" /></td>
+						<td><input class="form-control" placeholder="Value..." data-win-input="NewPrivVal" /></td>
+						<td>
+							<button class="atl-dtop-btn" data-win-action="priv-add">
+								<i class="mdi mdi-plus"></i>
+							</button>
+						</td>
+					</tr>
+				</thead>
+				<tbody data-win-output="AccessPrivs"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+`;
+
+let zTemplateUserEditWindow = `
 <div class="d-flex flex-column h-100">
 	<div class="flex-shrink-1 flex-grow-0">
 		<div class="mb-2">
@@ -282,7 +356,7 @@ extends NetherOS.Window {
 	onConstruct() {
 
 		(this)
-		.setSize(40, 80, '%')
+		.setSize(80, 80, '%')
 		.setBody(TemplateUserEditWindow);
 
 		this.uid = null;
