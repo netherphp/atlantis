@@ -1,6 +1,8 @@
 <?php ##########################################################################
 ################################################################################
 
+namespace Nether\Atlantis\Social;
+
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
@@ -9,12 +11,12 @@ use Nether\Database;
 ################################################################################
 
 #[Database\Meta\TableClass('SocialPingData')]
-class SocialPingRow
+class PingDataRow
 extends Atlantis\Prototype {
 
 	const
-	Bluesky  = 'Bluesky',
-	Mastodon = 'Mastodon';
+	Bluesky  = 'bluesky',
+	Mastodon = 'mastodon';
 
 	const
 	Services = [
@@ -125,10 +127,10 @@ extends Atlantis\Prototype {
 
 		switch($Input->Get('Sort')) {
 			case 'handle-az':
-				$SQL->Sort('Main.Handle', $SQL::SortAsc);
+				$SQL->Sort(['Main.Service', 'Main.Handle'], $SQL::SortAsc);
 			break;
 			case 'handle-za':
-				$SQL->Sort('Main.Handle', $SQL::SortDesc);
+				$SQL->Sort(['Main.Service', 'Main.Handle'], $SQL::SortDesc);
 			break;
 			case 'newest':
 				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
