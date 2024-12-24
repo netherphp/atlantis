@@ -61,6 +61,7 @@ let TemplateUserSearchRow = `
 let TemplateUserEditWindow = `
 <div class="d-flex gap-4 h-100">
 	<div class="flex-fill h-100 w-50">
+
 		<table class="table">
 			<thead>
 				<tr>
@@ -105,29 +106,42 @@ let TemplateUserEditWindow = `
 				</tr>
 			</tbody>
 		</table>
+
 	</div>
-	<div class="flex-fill h-100 w-50 pos-relative">
-		<div class="pos-absolutely" style="overflow:scroll;">
-			<table class="table h-100 w-100 m-0 g-2">
-				<thead>
-					<tr>
-						<th class="th-grow">Key</th>
-						<th class="th-throw">Value</th>
-						<th class="th-shrink"></th>
-					</tr>
-					<tr>
-						<td><input class="form-control" placeholder="Key..." data-win-input="NewPrivKey" /></td>
-						<td><input class="form-control" placeholder="Value..." data-win-input="NewPrivVal" /></td>
-						<td>
-							<button class="atl-dtop-btn" data-win-action="priv-add">
-								<i class="mdi mdi-plus"></i>
-							</button>
-						</td>
-					</tr>
-				</thead>
-				<tbody data-win-output="AccessPrivs"></tbody>
-			</table>
+	<div class="flex-fill h-100 w-50">
+
+		<div class="d-flex flex-column h-100">
+			<div class="flex-grow-0">
+
+				<div class="d-flex">
+					<div><input class="form-control" placeholder="Key..." data-win-input="NewPrivKey" /></div>
+					<div><input class="form-control" placeholder="Value..." data-win-input="NewPrivVal" /></div>
+					<div>
+						<button class="atl-dtop-btn" data-win-action="priv-add">
+							<i class="mdi mdi-plus"></i>
+						</button>
+					</div>
+				</div>
+
+			</div>
+			<div class="flex-grow-1 pos-relative h-100">
+
+				<div class="pos-absolutely h-100" style="overflow:scroll;">
+					<table class="table h-100 w-100 m-0 g-0">
+						<thead>
+							<tr>
+								<th class="th-grow">Key</th>
+								<th class="th-throw">Value</th>
+								<th class="th-shrink"></th>
+							</tr>
+						</thead>
+						<tbody data-win-output="AccessPrivs"></tbody>
+					</table>
+				</div>
+
+			</div>
 		</div>
+
 	</div>
 </div>
 `;
@@ -171,6 +185,7 @@ let zTemplateUserEditWindow = `
 		</div>
 	</div>
 	<div class="flex-shrink-0 flex-grow-1 pos-relative">
+
 		<div class="pos-absolutely" style="overflow:scroll;">
 			<table class="table w-100 m-0 g-2">
 				<thead>
@@ -183,6 +198,7 @@ let zTemplateUserEditWindow = `
 				<tbody data-win-output="AccessPrivs"></tbody>
 			</table>
 		</div>
+
 	</div>
 </div>
 `;

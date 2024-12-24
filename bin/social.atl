@@ -1,0 +1,244 @@
+#! /usr/bin/env php
+<?php ##########################################################################
+################################################################################
+
+$AppRoot = dirname(__FILE__, 2);
+
+chdir($AppRoot);
+require(sprintf('%s/vendor/autoload.php', $AppRoot));
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+
+################################################################################
+################################################################################
+
+class SocialPingBluesky {
+
+	public string
+	$Service = Atlantis\Struct\SocialData::Bluesky;
+
+	public string
+	$Handle;
+
+	public int
+	$NumFollowers;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	SetHandle(string $Handle):
+	static {
+
+		$this->Handle = $Handle;
+
+		return $this;
+	}
+
+	public function
+	SetNumFollowers(int $Num):
+	static {
+
+		$this->NumFollowers = $Num;
+
+		return $this;
+	}
+
+	public function
+	LogToDatabase():
+	static {
+
+		Local\SocialPingRow::Insert([
+			'Service'      => $this->Service,
+			'Handle'       => $this->Handle,
+			'NumFollowers' => $this->NumFollowers
+		]);
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FromHandle(string $Who):
+	static {
+
+		$Output = new static;
+
+		$URL = sprintf(
+			'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=%s',
+			$Who
+		);
+
+		////////
+
+		$JSON = file_get_contents($URL);
+
+		if(!$JSON)
+		throw new Common\Error\RequiredDataMissing('Data from BSky Public API', 'JSON');
+
+		$Data = Common\Datastore::FromJSON($JSON);
+
+		if(!$Data->Count() || !$Data->HasKey('followersCount'))
+		throw new Common\Error\RequiredDataMissing('Data from BSky Public API', 'Expected Data Format');
+
+		////////
+
+		($Output)
+		->SetHandle($Who)
+		->SetNumFollowers($Data->Get('followersCount'));
+
+		////////
+
+		return $Output;
+	}
+
+};
+
+class SocialPingTool
+extends Atlantis\TerminalApp {
+
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('ping')]
+	#[Console\Meta\Value('--delay', 'How long to wait in seconds between each hit [Default: 2]')]
+	public function
+	HandlePing():
+	int {
+
+		$Network = new Common\Datastore;
+		$Socials = new Common\Datastore;
+		$Reports = new Common\Datastore;
+		$OptDelay = $this->GetOption('delay') ?? 2;
+
+		$Social = NULL;
+		$Site = NULL;
+		$URL = NULL;
+
+		////////
+
+		$Socials->Set('CurtisGarrison.com', new Atlantis\Struct\SocialData([
+			'Data' => [
+				'Bluesky' => 'https://bsky.app/profile/curtisgarrison.com'
+			]
+		]));
+
+		foreach($Socials as $Social) {
+			/** @var Atlantis\Struct\SocialData $Social */
+
+			foreach($Social as $Site=> $URL) {
+				if(!$Reports->HasKey($Site))
+				$Reports[$Site] = new Common\Datastore;
+
+				if($Site === $Social::Bluesky && $URL)
+				$Reports[$Site]->Push($this->PingBlueskySocial($URL));
+			}
+
+			sleep($OptDelay);
+			continue;
+		}
+
+		$Reports->SortKeys();
+
+		$this->PrintReportTables($Reports);
+
+		////////
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('check')]
+	public function
+	HandleCheck():
+	int {
+
+		$Headers = [ 'ID', 'Name', 'Followers' ];
+		$Rows = new Common\Datastore;
+		$Service = $this->GetInput(1);
+
+		////////
+
+		$Pile = Local\SocialPingRow::Find([
+			'Service' => Atlantis\Struct\SocialData::Bluesky,
+			'Sort'    => 'handle-az',
+			'Group'   => 'account-newest',
+			'Limit'   => 0
+		]);
+
+		$Pile->Remap(fn(Local\SocialPingRow $S)=> $S->ID);
+
+		////////
+
+		$Data = Local\SocialPingRow::Find([
+			'ID'    => $Pile->Export(),
+			'Limit' => 0
+		]);
+
+		foreach($Data->Export() as $S) {
+			/** @var Local\SocialPingRow $S */
+			$Rows->Push([ $S->ID, $S->Handle, $S->NumFollowers ]);
+		}
+
+		$this->PrintTable($Headers, $Rows->Export());
+
+		return 0;
+	}
+
+	protected function
+	PrintReportTables(Common\Datastore $Reports):
+	static {
+
+		$TableData = new Common\Datastore;
+		$TableHead = [ 'Name', 'Followers' ];
+
+		$Report = NULL;
+		$Ping = NULL;
+
+		////////
+
+		foreach($Reports as $Site=> $Report) {
+			if(!$Report->Count())
+			continue;
+
+			$TableData->Clear();
+
+			/** @var Common\Datastore $Report */
+			foreach($Report as $Ping) {
+				/** @var SocialPingBluesky $P */
+				$TableData->Push([ $Ping->Handle, number_format($Ping->NumFollowers) ]);
+			}
+
+			$this->PrintH3($Site);
+			$this->PrintTable(
+				$TableHead,
+				$TableData->Export()
+			);
+		}
+
+		////////
+
+		return $this;
+	}
+
+	protected function
+	PingBlueskySocial(string $URL):
+	SocialPingBluesky {
+
+		$URL = trim(trim($URL), '/');
+		$Bits = Common\Datastore::FromString($URL, '/');
+		$Handle = $Bits[$Bits->GetLastKey()];
+		$Ping = SocialPingBluesky::FromHandle($Handle);
+
+		$Ping->LogToDatabase();
+
+		return $Ping;
+	}
+
+};
+
+exit(SocialPingTool::Realboot([ ]));
