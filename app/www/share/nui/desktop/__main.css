@@ -76,6 +76,11 @@ html, body {
 	overscroll-behavior: none;
 }
 
+a:link,
+a:visited {
+	--color: var(--atl-dtop-win-body-tc) !important;
+}
+
 @keyframes nui-window-quit {
 	0% {
 		filter: saturate(1.0);

@@ -32,15 +32,10 @@ let TemplateSocialOverviewHTML = `
 				<th class="th-shrink ta-center"></th>
 				<th class="th-grow ta-left">Account</th>
 				<th class="th-shrink ta-center">Followers</th>
+				<th class="th-shrink ta-center"></th>
 			</tr>
 		</thead>
 		<tbody data-win-output="Accounts">
-			<tr>
-				<td class="ta-center" colspan="2">
-					<i class="mdi mdi-loading mdi-spin"></i>
-					Loading...
-				</td>
-			</tr>
 		</tbody>
 	</table>
 </div>
@@ -51,6 +46,7 @@ let TemplateSocialOverviewRowHTML = `
 	<td class="ta-center" data-account-service-icon></td>
 	<td class="ta-left" data-account-handle-text></td>
 	<td class="ta-center" data-account-followers-text></td>
+	<td class="ta-center"><a class="btn atl-dtop-btn" href="" target="_blank" title="Open in New Tab" data-account-url-href><i class="mdi mdi-open-in-new mr-0"></i></a></td>
 </tr>
 `;
 
@@ -178,6 +174,7 @@ extends NetherOS.Window {
 			row.find('[data-account-handle-text]').text(a.Handle);
 			row.find('[data-account-followers-text]').text(a.Followers);
 			row.find('[data-account-service-icon]').html(icon);
+			row.find('[data-account-url-href]').attr('href', a.URL);
 
 			this.elAccounts.append(row);
 		}
