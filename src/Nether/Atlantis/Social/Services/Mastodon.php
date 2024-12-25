@@ -14,44 +14,24 @@ class Mastodon
 extends Atlantis\Social\Service {
 
 	static public string
+	$Key = 'mastodon';
+
+	static public string
+	$Name = 'Mastodon';
+
+	static public string
+	$Icon = 'si si-mastodon';
+
+	////////
+
+	static public string
 	$ProfileAPI = '/api/v1/accounts/lookup?acct={%Handle%}';
 
 	static public string
 	$FieldFollowers = 'followers_count';
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	public string
-	$Service = Atlantis\Social\PingDataRow::Mastodon;
-
-	////////////////////////////////////////////////////////////////
 	// overrides ///////////////////////////////////////////////////
-
-	public function
-	SetHandle(string $Handle):
-	static {
-
-		// normalise by peeling off the leading at sign.
-
-		$Handle = ltrim(ltrim($Handle), '@');
-
-		// confirm that it looks like an email address now.
-
-		$Handle = Common\Filters\Text::Email($Handle);
-
-		if(!$Handle)
-		throw new Common\Error\FormatInvalid(
-			'Mastodon handles look like Email addresses: user@instance.tld'
-		);
-
-		////////
-
-		return parent::SetHandle($Handle);
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
 
 	public function
 	Fetch():
@@ -97,5 +77,39 @@ extends Atlantis\Social\Service {
 
 		return $this;
 	}
+
+	public function
+	GetURL():
+	string {
+
+		list($User, $Host) = explode('@', $this->Handle);
+
+		$User = ltrim($User, '@');
+
+		return sprintf('https://%s/@%s', $Host, $User);
+	}
+
+	public function
+	SetHandle(string $Handle):
+	static {
+
+		// normalise by peeling off the leading at sign.
+
+		$Handle = ltrim(ltrim($Handle), '@');
+
+		// confirm that it looks like an email address now.
+
+		$Handle = Common\Filters\Text::Email($Handle);
+
+		if(!$Handle)
+		throw new Common\Error\FormatInvalid(
+			'Mastodon handles look like Email addresses: user@instance.tld'
+		);
+
+		////////
+
+		return parent::SetHandle($Handle);
+	}
+
 
 };

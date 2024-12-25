@@ -64,7 +64,7 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	FetchServiceAccounts():
+	FetchUniqueAccounts():
 	Common\Datastore {
 
 		$Output = new Common\Datastore;

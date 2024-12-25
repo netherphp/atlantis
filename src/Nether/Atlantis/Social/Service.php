@@ -5,10 +5,24 @@ namespace Nether\Atlantis\Social;
 
 use Nether\Common;
 
+use Exception;
+
 ################################################################################
 ################################################################################
 
-class Service {
+abstract class Service {
+
+	static public string
+	$Key = 'unknown';
+
+	static public string
+	$Name = 'Unnamed Social Media';
+
+	static public string
+	$Icon = 'mdi mdi-help-box';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public string
 	$Service;
@@ -18,6 +32,17 @@ class Service {
 
 	public int
 	$NumFollowers;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	__Construct() {
+
+		$this->Service = static::$Key;
+
+		return;
+	}
 
 	////////////////////////////////////////////////////////////////
 	// psuedo abstract methods /////////////////////////////////////
@@ -30,8 +55,36 @@ class Service {
 		return $this;
 	}
 
+	public function
+	GetURL():
+	string {
+
+		return '---url---';
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	public function
+	GetKey():
+	string {
+
+		return static::$Key;
+	}
+
+	public function
+	GetName():
+	string {
+
+		return static::$Name;
+	}
+
+	public function
+	GetIcon():
+	string {
+
+		return static::$Icon;
+	}
 
 	public function
 	SetService(string $Service):
@@ -80,13 +133,21 @@ class Service {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	FromHandle(string $Handle):
+	FromFactory(string $Service):
 	static {
 
-		$Output = new static;
-		$Output->SetHandle($Handle);
+		return match($Service) {
 
-		return $Output;
+			Services\Bluesky::$Key
+			=> new Services\Bluesky,
+
+			Services\Mastodon::$Key
+			=> new Services\Mastodon,
+
+			default
+			=> throw new Exception('unsupported social media')
+
+		};
 	}
 
 };

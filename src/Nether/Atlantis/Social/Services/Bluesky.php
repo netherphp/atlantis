@@ -14,19 +14,24 @@ class Bluesky
 extends Atlantis\Social\Service {
 
 	static public string
+	$Key = 'bluesky';
+
+	static public string
+	$Name = 'Bluesky';
+
+	static public string
+	$Icon = 'si si-bluesky';
+
+	////////
+
+	static public string
 	$ProfileAPI = 'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor={%Handle%}';
 
 	static public string
 	$FieldFollowers = 'followersCount';
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	public string
-	$Service = Atlantis\Social\PingDataRow::Bluesky;
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	// overrides ///////////////////////////////////////////////////
 
 	public function
 	Fetch():
@@ -53,5 +58,13 @@ extends Atlantis\Social\Service {
 
 		return $this;
 	}
+
+	public function
+	GetURL():
+	string {
+
+		return sprintf('https://bsky.app/profile/%s', $this->Handle);
+	}
+
 
 };
