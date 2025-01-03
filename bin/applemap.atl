@@ -1,0 +1,44 @@
+<?php ##########################################################################
+################################################################################
+
+$AppRoot = dirname(__FILE__, 4);
+require(sprintf('%s/autoload.php', $AppRoot));
+
+use Nether\Browser;
+use Nether\Common;
+use Nether\Console;
+
+################################################################################
+################################################################################
+
+class AppleMapClient
+extends Console\Client {
+
+	#[Console\Meta\Command('lookup')]
+	public function
+	HandleAddressLookup():
+	int {
+
+		$Address = $this->GetInput(1);
+		$Client = Browser\Clients\AppleMap::FromMapKitToken(static::FetchMapKitToken());
+
+		$this->PrintStatus($Address);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	FetchMapKitToken():
+	string {
+
+		return trim(file_get_contents(sprintf(
+			'%s/conf/env/prod/keys/apple-mapkit.txt'
+		)));
+	}
+
+};
+
+exit(AppleMapClient::Realboot([]));

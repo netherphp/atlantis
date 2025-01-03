@@ -46,6 +46,7 @@
 	},
 	"bin": [
 		"bin/atlantis",
+		"bin/applemap.atl",
 		"bin/backup.atl",
 		"bin/codeserver.atl",
 		"bin/cron.atl",
