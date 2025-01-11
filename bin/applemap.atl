@@ -4,6 +4,7 @@
 $AppRoot = dirname(__FILE__, 4);
 require(sprintf('%s/autoload.php', $AppRoot));
 
+use Nether\Atlantis;
 use Nether\Browser;
 use Nether\Common;
 use Nether\Console;
@@ -12,17 +13,23 @@ use Nether\Console;
 ################################################################################
 
 class AppleMapClient
-extends Console\Client {
+extends Atlantis\TerminalApp {
 
 	#[Console\Meta\Command('lookup')]
+	#[Console\Meta\Error(1, 'no address specified')]
 	public function
 	HandleAddressLookup():
 	int {
 
 		$Address = $this->GetInput(1);
-		$Client = Browser\Clients\AppleMap::FromMapKitToken(static::FetchMapKitToken());
 
-		$this->PrintStatus($Address);
+		if(!$Address)
+		$this->Quit(1);
+
+		$Client = $this->NewAppleMapClient();
+		$Result = $Client->LookupAddressCoords($Address);
+
+		Common\Dump::Var($Result);
 
 		return 0;
 	}
@@ -30,13 +37,24 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	static public function
+	public function
+	NewAppleMapClient():
+	Browser\Clients\AppleMap {
+
+		$Client = Browser\Clients\AppleMap::FromMapKitToken(
+			$this->FetchMapKitToken()
+		);
+
+		return $Client;
+	}
+
+	public function
 	FetchMapKitToken():
 	string {
 
-		return trim(file_get_contents(sprintf(
-			'%s/conf/env/prod/keys/apple-mapkit.txt'
-		)));
+		return trim(file_get_contents(
+			$this->App->FromConfEnv('keys/apple-mapkit.txt')
+		));
 	}
 
 };

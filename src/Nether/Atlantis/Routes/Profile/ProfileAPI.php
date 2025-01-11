@@ -3,6 +3,7 @@
 namespace Nether\Atlantis\Routes\Profile;
 
 use Nether\Atlantis;
+use Nether\Browser;
 use Nether\Common;
 
 use Exception;
@@ -169,6 +170,28 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
+		// there needs to be an after update plugin system.
+
+		if($Ent->IsAddressMappable() && !$Ent->HasGeoCoords()) {
+			$MapKitTokFile = $this->App->FromConfEnv('keys/apple-mapkit.txt');
+			$MapKitToken = NULL;
+			$MapKitAPI = NULL;
+			$MapKitCoord = NULL;
+
+			if(file_exists($MapKitTokFile)) {
+				$MapKitToken = trim(file_get_contents($this->App->FromConfEnv('keys/apple-mapkit.txt')));
+				$MapKitAPI = Browser\Clients\AppleMap::FromMapKitToken($MapKitToken);
+				$MapKitCoord = $MapKitAPI->LookupAddressCoords($Ent->GetAddressConcat());
+
+				if($MapKitCoord)
+				$Ent->Update($Ent->Patch([
+					'ExtraData' => [ 'GeoCoord'=> $MapKitCoord ]
+				]));
+			}
+		}
+
+		////////
+
 		($this)
 		->SetGoto($Goto)
 		->SetPayload($Ent->DescribeForPublicAPI());
@@ -294,6 +317,46 @@ extends Atlantis\ProtectedAPI {
 		}
 
 		$this->SetPayload($Filters->Export());
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Atlantis\Meta\RouteHandler('/api/profile/map', Verb: 'GET')]
+	public function
+	EntityMapGet():
+	void {
+
+		($this->Data)
+		->FilterPush('TagID', Common\Filters\Numbers::IntNullable(...));
+
+		$Tags = NULL;
+
+		if($this->Data->Get('TagID'))
+		$Tags = [ $this->Data->Get('TagID') ];
+
+		$Results = Atlantis\Profile\Entity::Find([
+			'TagsAll'  => $Tags,
+			'Mappable' => TRUE,
+			'Limit'    => 0
+		]);
+
+		$Output = $Results->MapKeyValue(
+			fn(string $K, Atlantis\Profile\Entity $V)
+			=> [
+				'Name'        => $V->Title,
+				'PageURL'     => $V->GetPageURL(),
+				'ImageURL'    => $V->GetCoverImageURL('md'),
+				'Coord'       => $V->GetGeoCoords(),
+				'AddressLine' => $V->GetAddressConcat()
+			]
+		);
+
+		$this->SetPayload([
+			'Data' => $Output->Export()
+		]);
 
 		return;
 	}
