@@ -1,5 +1,5 @@
 /*//
-@date 2025-01-01 02:55:56 UTC
+@date 2025-01-14 02:37:10 UTC
 @files 44 [
     "src\/imports.css",
     "src\/main.css",
@@ -295,6 +295,11 @@ hr {
 
 strong {
 	font-weight: bold;
+}
+
+table th,
+table td {
+	white-space: nowrap;
 }
 
 /*******************************************************************************

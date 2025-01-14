@@ -60,6 +60,20 @@ extends Atlantis\Prototype {
 		return $Output;
 	}
 
+	public function
+	GetServiceURL():
+	string {
+
+		return '';
+	}
+
+	public function
+	GetChartPageURL():
+	string {
+
+		return sprintf('/dashboard/social/chart?service=%s&handle=%s', $this->Service, $this->Handle);
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -141,6 +155,11 @@ extends Atlantis\Prototype {
 		}
 
 		switch($Input->Get('Group')) {
+			case 'service':
+				$SQL->Group('Main.Service');
+				$SQL->Fields('MAX(Main.ID) AS ID');
+				$SQL->Fields('MAX(Main.TimeCreated) AS TimeCreated');
+			break;
 			case 'account-newest':
 				$SQL->Group('Main.Service, Main.Handle');
 				$SQL->Fields('MAX(Main.ID) AS ID');
