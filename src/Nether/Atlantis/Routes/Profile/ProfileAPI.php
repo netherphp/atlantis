@@ -85,8 +85,11 @@ extends Atlantis\ProtectedAPI {
 		);
 
 		$Tags = Atlantis\Tag\Entity::Find([
+			'Type'  => NULL,
 			'Alias' => $TagList->Export()
 		]);
+
+		//var_dump($TagList->Export(), $Tags->Export()); die();
 
 		try {
 			$Ent = Atlantis\Profile\Entity::Insert($Dataset);

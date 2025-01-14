@@ -56,10 +56,22 @@ abstract class Service {
 	}
 
 	public function
-	GetURL():
+	GetServiceURL():
 	string {
 
+		throw new Common\Error\MethodUnimplemented(__CLASS__, __FUNCTION__);
 		return '---url---';
+	}
+
+	public function
+	GetChartPageURL():
+	string {
+
+		return sprintf(
+			'/dashboard/social/chart?service=%s&handle=%s',
+			urlencode($this->Service),
+			urlencode($this->Handle)
+		);
 	}
 
 	////////////////////////////////////////////////////////////////

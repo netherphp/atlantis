@@ -60,6 +60,30 @@ extends Atlantis\Prototype {
 		return $Output;
 	}
 
+	public function
+	GetServiceURL():
+	string {
+
+		// @todo 2024-12-30 FetchAccount+GetAccount
+
+		$Account = Service::FromFactory($this->Service);
+		$Account->SetHandle($this->Handle);
+
+		return $Account->GetServiceURL();
+	}
+
+	public function
+	GetChartPageURL():
+	string {
+
+		// @todo 2024-12-30 FetchAccount+GetAccount
+
+		$Account = Service::FromFactory($this->Service);
+		$Account->SetHandle($this->Handle);
+
+		return $Account->GetChartPageURL();
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -97,7 +121,9 @@ extends Atlantis\Prototype {
 		$Input->Define([
 			'Service' => NULL,
 			'Handle'  => NULL,
-			'Group'   => NULL
+			'Group'   => NULL,
+			'Start'   => NULL,
+			'End'     => NULL
 		]);
 
 		return;
@@ -117,6 +143,9 @@ extends Atlantis\Prototype {
 
 		if($Input->Get('Start') !== NULL)
 		$SQL->Where('Main.TimeCreated >= :Start');
+
+		if($Input->Get('End') !== NULL)
+		$SQL->Where('Main.TimeCreated <= :End');
 
 		return;
 	}
@@ -141,6 +170,11 @@ extends Atlantis\Prototype {
 		}
 
 		switch($Input->Get('Group')) {
+			case 'service':
+				$SQL->Group('Main.Service');
+				$SQL->Fields('MAX(Main.ID) AS ID');
+				$SQL->Fields('MAX(Main.TimeCreated) AS TimeCreated');
+			break;
 			case 'account-newest':
 				$SQL->Group('Main.Service, Main.Handle');
 				$SQL->Fields('MAX(Main.ID) AS ID');
