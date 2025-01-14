@@ -50,7 +50,7 @@ as html pages. //*/
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__RewireDoNothing():
+	__RewireDoNothing(...$Argv):
 	void {
 
 		return;

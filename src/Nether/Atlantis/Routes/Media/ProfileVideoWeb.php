@@ -91,6 +91,9 @@ extends Atlantis\ProtectedWeb {
 
 		$Posts = NULL;
 
+		if(!class_exists('Nether\Blog\Post'))
+		return $Posts;
+
 		////////
 
 		$Index = Atlantis\Struct\EntityRelationship::Find([

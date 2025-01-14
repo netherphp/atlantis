@@ -3,9 +3,11 @@
 ################################################################################
 
 (function(){
-	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	require(sprintf('%s/autoload.php', dirname(__FILE__, 4)));
 	return;
 })();
+
+chdir('/opt/tg-dev');
 
 use Nether\Atlantis;
 use Nether\Common;
@@ -67,7 +69,10 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		Common\Dump::Var($Ping);
+		$this->PrintTable(
+			[ 'Handle', 'Followers'],
+			[ [ $Ping->Handle, $Ping->NumFollowers ] ]
+		);
 
 		if($LogToDatabase)
 		$Ping->PushToDatabase();

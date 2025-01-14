@@ -60,10 +60,10 @@ extends Atlantis\Social\Service {
 	}
 
 	public function
-	GetURL():
+	GetServiceURL():
 	string {
 
-		return sprintf('https://bsky.app/profile/%s', $this->Handle);
+		return sprintf('https://bsky.app/profile/%s', urlencode($this->Handle));
 	}
 
 
