@@ -314,12 +314,24 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 	#[Common\Meta\Date('2023-12-01')]
 	public function
+	IsAddressBarelyMappable():
+	bool {
+
+		return (TRUE
+			&& isset($this->AddressCity) && trim($this->AddressCity)
+			&& isset($this->AddressState) && trim($this->AddressState)
+		);
+	}
+
+	#[Common\Meta\Date('2023-12-01')]
+	public function
 	IsAddressMappable():
 	bool {
 
 		return (TRUE
-			&& $this->AddressCity
-			&& $this->AddressState
+			&& isset($this->AddressStreet1) && trim($this->AddressStreet1)
+			&& isset($this->AddressCity) && trim($this->AddressCity)
+			&& isset($this->AddressState) && trim($this->AddressState)
 		);
 	}
 
@@ -355,6 +367,13 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		}
 
 		return $Output;
+	}
+
+	public function
+	GetAddressConcat():
+	string {
+
+		return $this->GetAddresssLines()->Join(' ');
 	}
 
 	public function
@@ -416,6 +435,50 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		return TRUE;
 	}
 
+	public function
+	HasGeoCoords():
+	bool {
+
+		$Coord = $this->GetExtraData('GeoCoord');
+		$Vec = NULL;
+
+		////////
+
+		if(is_array($Coord))
+		$Vec = Common\Units\Vec2::FromVectorkin($Coord);
+
+		////////
+
+		if($Vec && $Vec->X !== 0 && $Vec->Y !== 0)
+		return TRUE;
+
+		////////
+
+		return FALSE;
+	}
+
+	public function
+	GetGeoCoords():
+	?Common\Units\Vec2 {
+
+		$Coord = $this->GetExtraData('GeoCoord');
+		$Vec = NULL;
+
+		////////
+
+		if(is_array($Coord))
+		$Vec = Common\Units\Vec2::FromVectorkin($Coord);
+
+		////////
+
+		if($Vec && $Vec->X !== 0 && $Vec->Y !== 0)
+		return $Vec;
+
+		////////
+
+		return NULL;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -465,7 +528,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		//var_dump($URL);
 
 		if(isset($this->CoverImage)) {
-			$URL = $this->CoverImage->GetPublicURL();
+			$URL = $this->CoverImage->GetPublicURL($Size);
 
 			foreach($this->CoverImage->ExtraFiles as $FName => $FInfo) {
 				if(str_starts_with($FName, "")) {
@@ -538,6 +601,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		/** @var ?Engine $App */
 
 		$App = defined('Atlantis') ? constant('Atlantis') : NULL;
+
+		if(!$App)
+		$App = static::AppInstanceGet();
 
 		if(!$App)
 		throw new Common\Error\RequiredDataMissing('Magic Atlantis');
@@ -638,6 +704,10 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		////////
 
+		if($Input['Mappable'] === TRUE) {
+			$SQL->Where('JSON_EXISTS(Main.ExtraJSON, "$.GeoCoord")');
+		}
+
 		static::FindExtendFiltersFromPlugins($SQL, $Input);
 
 		return;
@@ -650,6 +720,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		/** @var ?Engine $App */
 
 		$App = defined('Atlantis') ? constant('Atlantis') : NULL;
+
+		if(!$App)
+		$App = static::AppInstanceGet();
 
 		if(!$App)
 		throw new Common\Error\RequiredDataMissing('Magic Atlantis');
@@ -984,6 +1057,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		/** @var ?Engine $App */
 
 		$App = defined('Atlantis') ? constant('Atlantis') : NULL;
+
+		if(!$App)
+		$App = static::AppInstanceGet();
 
 		if(!$App)
 		throw new Common\Error\RequiredDataMissing('Magic Atlantis');

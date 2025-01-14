@@ -7,7 +7,7 @@ import Vec3 from '../../../nui/units/vec3.js';
 // this because apple's documentation couldn't be arsed to tell you.
 
 let TemplateCallout = `
-<div class="d-flex g-2 gap-2" style="text-shadow:none;">
+<div class="d-flex g-2 gap-2" style="text-shadow:none;max-width:400px;">
 	<div class="flex-grow-0">
 		<div class="ratiobox rounded square wallpapered bg-grey-dk" style="width:100px;"></div>
 	</div>
@@ -79,6 +79,9 @@ extends MapBase {
 
 		let c = new mapkit.Coordinate(lat, lng);
 
+		console.log(this.pinColourBG);
+		console.log(bgc);
+
 		let m = new mapkit.MarkerAnnotation(c, {
 			'draggable': false,
 			'animates': false,
@@ -93,7 +96,7 @@ extends MapBase {
 
 		////////
 
-		if(bgc)
+		if(bgc !== null)
 		m.color = bgc;
 
 		if(tc)
@@ -104,6 +107,12 @@ extends MapBase {
 
 		if(iconSelected)
 		m.selectedGlyphImage = { 1: iconSelected };
+
+		if(typeof callout === 'function')
+		m.callout = {
+			calloutContentForAnnotation:
+			callout
+		};
 
 		if(callout === true)
 		m.callout = {
@@ -128,6 +137,64 @@ extends MapBase {
 		box.find('span').text(JSON.stringify( marker.data ));
 
 		return box.get(0);
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static FromElement(selector, onReadyFunc) {
+
+		let el = jQuery(selector);
+		let token = el.attr('data-apple-map-token');
+		let mkjs = jQuery('#AppleMapLibrary');
+
+		// first map on the page will load the scripting first.
+
+		if(mkjs.length === 0) {
+			AppleMap.InjectMapKitScript(token, selector, onReadyFunc);
+			return;
+		}
+
+		// other maps can just launch themselves.
+
+		AppleMap.OnReadyNewMap(selector, onReadyFunc);
+
+		return;
+	};
+
+	static InjectMapKitScript(token, selector, onReadyFunc) {
+
+		// pretty sure i cannot get apple's data-callback system to work
+		// within an es6 module the way i want so this kicks off the
+		// loading of their script from within so we can listen to the
+		// load event instead.
+
+		let mkjs = jQuery('<script />');
+
+		mkjs.attr('id', 'AppleMapLibrary');
+		mkjs.attr('type', 'text/javascript');
+		mkjs.attr('src', 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js');
+		mkjs.attr('crossorigin', 'anonymous');
+		mkjs.attr('data-language', 'en-US');
+		mkjs.attr('data-token', token);
+		mkjs.attr('data-libraries', 'services,full-map,geojson');
+		mkjs.on('load', function() {
+			AppleMap.OnReadyNewMap(selector, onReadyFunc);
+			return;
+		});
+
+		document.head.appendChild(mkjs.get(0));
+
+		return;
+	};
+
+	static OnReadyNewMap(selector, onReadyFunc) {
+
+		let map = new AppleMap(selector);
+
+		onReadyFunc(map);
+
+		return;
 	};
 
 };
