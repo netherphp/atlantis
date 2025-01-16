@@ -41,6 +41,9 @@ extends Surface\Element {
 	$Presize = TRUE;
 
 	public ?string
+	$BackgroundURL = NULL;
+
+	public ?string
 	$VideoURL = NULL;
 
 	public bool

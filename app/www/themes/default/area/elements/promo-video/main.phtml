@@ -19,6 +19,7 @@ use Nether\Surface;
 
 $UUID ??= Common\UUID::ForElementHTML();
 $Ratio ??= $Element->Ratio;
+$BackgroundURL ??= $Element->BackgroundURL;
 $VideoURL ??= $Element->VideoURL;
 $Overlay ??= $Element->Overlay ?? '';
 $Title ??= $Element->Title ?? '';
@@ -34,9 +35,11 @@ $Justify ??= $Element->Justify;
 
 ?>
 
-<div id="<?php $Util->Print($UUID) ?>" class="ratiobox <?php $Util->Print($Ratio) ?>">
+<div id="<?php $Util->Print($UUID) ?>" class="ratiobox wallpapered <?php $Util->Print($Ratio) ?>" style="background-image:url(<?php $Util->Print($BackgroundURL) ?>);">
 	<video class="position-absolutely" style="object-fit:cover;" muted autoplay loop playsinline>
+		<?php if($VideoURL): ?>
 		<source src="<?php $Util->Print($VideoURL) ?>" type="video/mp4" />
+		<?php endif; ?>
 	</video>
 	<div class="position-absolutely <?php $Util->Print($Overlay) ?>"></div>
 	<div class="position-absolutely">
