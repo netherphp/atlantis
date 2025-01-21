@@ -531,8 +531,10 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			$URL = $this->CoverImage->GetPublicURL($Size);
 
 			foreach($this->CoverImage->ExtraFiles as $FName => $FInfo) {
-				if(str_starts_with($FName, "")) {
-					$URL = str_replace($this->CoverImage->Name, $FName, $URL);
+				if(str_starts_with($FName, "{$Size}.")) {
+					// no surprise if this craters the windows tests.
+					// you'll be back.
+					$URL = sprintf('%s/%s', dirname($URL), $FName);
 					break;
 				}
 			}
