@@ -27,6 +27,9 @@ extends Surface\Element {
 	public ?string
 	$Section = NULL;
 
+	public string
+	$ItemColumnClass = 'col-6 col-md-auto';
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -51,6 +54,15 @@ extends Surface\Element {
 	static {
 
 		$this->Section = $Section;
+
+		return $this;
+	}
+
+	public function
+	SetItemColumnClass(string $Classes):
+	static {
+
+		$this->ItemColumnClass = $Classes;
 
 		return $this;
 	}

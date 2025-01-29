@@ -5,12 +5,14 @@
  * @var Nether\Atlantis\UI\Pillbox $Element
  */
 
+$ItemColumnClass ??= $Element->ItemColumnClass;
+
 ?>
 
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="<?php $Util->Print($Element->GetClassesForHTML('atl-ui-pillbox')) ?>">
 	<div class="row tight justify-content-start justify-content-md-center g-2">
 		<?php foreach($Element->Items as $Item): /** @var Nether\Atlantis\Struct\Item $Item */ ?>
-		<div class="col-6 col-md-auto">
+		<div class="<?php $Util->Print($ItemColumnClass) ?>">
 			<div class="<?php $Util->Print($Item->GetClassesForHTML('atl-ui-pillbox-item', ($Item->IsTheUUID($Element->Section) ? 'on' : 'off'))) ?>" <?php echo $Item->GetDataAttrAsHTML() ?>>
 				<a href="<?php $Util->Print($Item->GetURL()) ?>" class=""><?php $Util->Print($Item->GetTitle()) ?></a>
 			</div>
