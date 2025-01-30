@@ -1,0 +1,33 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+
+################################################################################
+################################################################################
+
+$Surface->Area('sensei/docs/__header', [
+	'Title' => 'Extending Surface Theme',
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'Install & Setup')
+	]
+]);
+
+################################################################################
+############################################################################# ?>
+
+<div class="cargobay">
+	<section>
+
+		<div class="container">
+			<?php $Surface->Area('sensei/docs/__example-via-area', [
+				'ShowCodeBlock' => FALSE,
+				'Areas'         => [
+					'design.php'
+					=> 'sensei/docs/misc/surface-design-php'
+				]
+			]); ?>
+		</div>
+
+	</section>
+</div>

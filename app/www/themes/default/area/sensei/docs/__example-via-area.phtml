@@ -1,4 +1,11 @@
-<?php
+<?php ##########################################################################
+################################################################################
+
+$ShowCodeBlock ??= TRUE;
+$ShowDemoBlock ??= TRUE;
+
+################################################################################
+################################################################################
 
 $ReadTestFile = function(string $Area) use($Surface) {
 	$Filename = Nether\Common\Filesystem\Util::Pathify(
@@ -12,16 +19,22 @@ $ReadTestFile = function(string $Area) use($Surface) {
 	return file_get_contents($Filename);
 };
 
-?>
+################################################################################
+############################################################################# ?>
 
 <div class="container pt-0 pb-8">
 	<div class="hr-hide-last">
 		<?php foreach($Areas as $Title => $Area): ?>
 		<h3><?php $Util->Print($Title) ?></h3>
+
+		<?php if($ShowDemoBlock): ?>
 		<div class="o-50 fw-bold tt-upper fs-smaller">Demo[<span class="ff-mono fw-normal tt-none"><span class="o-50">area://</span><?php $Util->Print($Area) ?></span>]</div>
 		<div class="jumbotron rounded mb-4">
 			<?php $Surface->Area($Area) ?>
 		</div>
+		<?php endif; ?>
+
+		<?php if($ShowCodeBlock): ?>
 		<div class="o-50 fw-bold tt-upper fs-smaller">Code[<span class="ff-mono fw-normal tt-none"><span class="o-50">area://</span><?php $Util->Print($Area) ?></span>]</div>
 		<div class="jumbotron rounded mb-4">
 			<?php echo Nether\Atlantis\UI\AceEditor::FromSurfaceWith($Surface, [
@@ -29,7 +42,8 @@ $ReadTestFile = function(string $Area) use($Surface) {
 				'Content' => $ReadTestFile($Area)
 			]); ?>
 		</div>
-		<hr class="mt-6 mb-6" />
+		<?php endif; ?>
+
 		<?php endforeach; ?>
 	</div>
 </div>
