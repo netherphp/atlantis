@@ -594,6 +594,11 @@ grouped are to be considered depreciated. */
 	--bs-border-width: 2px;
 }
 
+.hr-snug {
+	margin-top: 0.25rem;
+	margin-bottom: 0.75rem;
+}
+
 /*******************************************************************************
 **** offcanvas tweaks *********************************************************/
 

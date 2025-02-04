@@ -1,5 +1,5 @@
 /*//
-@date 2025-01-14 02:37:10 UTC
+@date 2025-02-04 22:45:12 UTC
 @files 44 [
     "src\/imports.css",
     "src\/main.css",
@@ -1125,6 +1125,11 @@ grouped are to be considered depreciated. */
 
 .hr-phatline {
 	--bs-border-width: 2px;
+}
+
+.hr-snug {
+	margin-top: 0.25rem;
+	margin-bottom: 0.75rem;
 }
 
 /*******************************************************************************
