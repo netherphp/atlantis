@@ -646,7 +646,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		////////
 
 		if($Input['ParentUUID'] === FALSE)
-		$SQL->Where('ParentUUID IS NULL');
+		$SQL->Where('Main.ParentUUID IS NULL');
 
 		elseif(is_string($Input['ParentUUID']))
 		$SQL->Where('Main.ParentUUID=:ParentUUID');

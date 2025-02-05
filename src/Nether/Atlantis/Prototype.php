@@ -144,12 +144,28 @@ implements
 		return $Output;
 	}
 
+	static protected function
+	FindExtendOptions(Common\Datastore $Input):
+	void {
+
+		parent::FindExtendOptions($Input);
+
+		$Input->Define([
+			'ID' => NULL,
+			'UUID' => NULL,
+			'Untagged' => NULL,
+			'RelatedTo' => NULL
+		]);
+
+		return;
+	}
+
 	#[Common\Meta\Date('2023-02-15')]
 	static protected function
 	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
 	void {
 
-		if(isset($Input['ID'])) {
+		if($Input['ID'] !== NULL) {
 			if(is_array($Input['ID']))
 			$SQL->Where('Main.ID IN(:ID)');
 
@@ -157,7 +173,7 @@ implements
 			$SQL->Where('Main.ID=:ID');
 		}
 
-		if(isset($Input['UUID'])) {
+		if($Input['UUID'] !== NULL) {
 			if(is_array($Input['UUID'])) {
 				if(!count($Input['UUID']))
 				$Input['UUID'] = 'null-null-null-null-null';
@@ -170,7 +186,7 @@ implements
 			}
 		}
 
-		if(isset($Input['Untagged'])) {
+		if($Input['Untagged'] !== NULL) {
 			if($Input['Untagged'] === TRUE) {
 				$TableTL = Tag\EntityLink::GetTableInfo();
 
@@ -181,6 +197,28 @@ implements
 
 				$SQL->Where('UTCHK.ID IS NULL');
 			}
+		}
+
+		if($Input['RelatedTo'] !== NULL) {
+
+			// in practice joining the table twice for each direction was
+			// a lot faster than an OR clause in the join to support the
+			// bidirectional relationship. by like an 8 second difference.
+
+			($SQL)
+			->Join(
+				'EntityRelationshipIndex RT1 ON (RT1.ParentUUID=:RelatedTo AND RT1.ChildUUID=Main.UUID)',
+				$SQL::JoinLeft
+			)
+			->Join(
+				'EntityRelationshipIndex RT2 ON (RT2.ChildUUID=:RelatedTo AND RT2.ParentUUID=Main.UUID)',
+				$SQL::JoinLeft
+			)
+			->Where(
+				'(RT1.ParentUUID IS NOT NULL AND RT1.ChildUUID IS NOT NULL) OR '.
+				'(RT2.ParentUUID IS NOT NULL AND RT2.ChildUUID IS NOT NULL)'
+			)
+			->Group('Main.ID');
 		}
 
 		return;
