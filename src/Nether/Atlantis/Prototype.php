@@ -144,6 +144,7 @@ implements
 		return $Output;
 	}
 
+	#[Common\Meta\Date('2025-02-05')]
 	static protected function
 	FindExtendOptions(Common\Datastore $Input):
 	void {
@@ -151,10 +152,10 @@ implements
 		parent::FindExtendOptions($Input);
 
 		$Input->Define([
-			'ID' => NULL,
-			'UUID' => NULL,
-			'Untagged' => NULL,
-			'RelatedTo' => NULL
+			'ID'        => NULL, // integer
+			'UUID'      => NULL, // string<uuid>
+			'Untagged'  => NULL, // boolean
+			'RelatedTo' => NULL  // string<uuid>
 		]);
 
 		return;
