@@ -163,6 +163,7 @@ implements
 		Atlantis\Struct\EntityRelationship::Register('Media.Video.ThirdParty', Media\VideoThirdParty::class);
 		Atlantis\Struct\EntityRelationship::Register('Media.Related.Link', Media\RelatedLink::class);
 		Atlantis\Struct\EntityRelationship::Register('Profile.Entity', Profile\Entity::class);
+		Atlantis\Struct\EntityRelationship::Register(Atlantis\Tag\Entity::EntType, Atlantis\Tag\Entity::class);
 
 		return $this;
 	}

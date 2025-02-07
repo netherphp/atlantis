@@ -16,6 +16,9 @@ implements
 	Atlantis\Interfaces\ExtraDataInterface {
 
 	const
+	EntType = 'Tag.Entity';
+
+	const
 	TypeNormal    = 'tag',
 	TypeTag       = 'tag',
 	TypeTopic     = 'topic',
