@@ -326,8 +326,8 @@ extends Atlantis\TerminalApp {
 		// because you need to say /some/source/data/. and you never do
 		// and never will.
 
-		$Source = rtrim($DS);
-		$Dest = rtrim($DS);
+		$Source = rtrim($Source, $DS);
+		$Dest = rtrim($Dest, $DS);
 
 		if(!str_ends_with($Source, '.'))
 		$Source = "{$Source}{$DS}.";
