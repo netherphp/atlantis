@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @var Nether\Atlantis\UI\Slider $Element
+ * @var Nether\Atlantis\UI\SliderItem $Item
+ * @var Nether\Atlantis\Profile\Entity $Profile
+ */
+
+$Profile = $Item->GetItem();
+
+?>
+
+<div class="swiper-slide">
+	<div class="">
+		<div class="ratiobox square rounded">
+			<div class="position-absolutely wallpapered covered" style="transform:scale(1.1);filter:blur(26px);background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);"></div>
+			<div class="position-absolutely wallpapered contained bg-transparent" style="background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);">
+				<a class="position-absolutely" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>"></a>
+			</div>
+		</div>
+		<div class="line-clamp line-clamp-3 fw-bold fs-small">
+			<a href="<?php $Util->Print($Profile->GetPageURL()) ?>"><?php $Util->Print($Profile->Title) ?></a>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,115 @@
+#!/usr/bin/env php
+<?php ##########################################################################
+################################################################################
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+
+################################################################################
+################################################################################
+
+class App
+extends Atlantis\TerminalApp {
+
+	#[Console\Meta\Command('add')]
+	#[Console\Meta\Arg('name', 'Name of the tag as you want it displayed.')]
+	#[Console\Meta\Value('--alias', 'Specify a custom alias rather than generating it based from the name of the tag.')]
+	#[Console\Meta\Value('--type', 'Specify a type: "tag", "site", "topic" (default: "tag")')]
+	#[Console\Meta\Value('--subtype', 'Specify a subtype (default: "normal")')]
+	#[Console\Meta\Error(1, 'no Name specified')]
+	#[Console\Meta\Error(2, 'Already Exists: %s "%s" "%s"')]
+	public function
+	HandleTagCreate():
+	int {
+
+		$Name = $this->GetInput(1);
+		$Alias = $this->GetOption('alias') ?: Common\Filters\Text::SlottableKey($Name);
+		$Type = $this->GetOption('type') ?: Atlantis\Tag\Entity::TypeTag;
+		$Subtype = $this->GetOption('subtype') ?: Atlantis\Tag\Entity::SubtypeNormal;
+		$Old = NULL;
+
+		////////
+
+		if(!$Name)
+		$this->Quit(1);
+
+		////////
+
+		$Old = Atlantis\Tag\Entity::GetByAlias($Alias);
+
+		if($Old)
+		$this->Quit(2, $Old->ID, $Old->Name, $Old->Alias);
+
+		////////
+
+		$Tag = Atlantis\Tag\Entity::Insert([
+			'Name'    => $Name,
+			'Alias'   => $Alias,
+			'Type'    => $Type,
+			'Subtype' => $Subtype
+		]);
+
+		$this->PrintBulletList([
+			'ID'      => $Tag->ID,
+			'Name'    => $Tag->Name,
+			'Alias'   => $Tag->Alias,
+			'Type'    => $Tag->Type,
+			'Subtype' => $Tag->Subtype
+		]);
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('del')]
+	#[Console\Meta\Value('--id', 'ID of the tag to delete.')]
+	#[Console\Meta\Value('--alias', 'Alias of the tag to delete.')]
+	#[Console\Meta\Error(1, 'no --id or --alias specified')]
+	#[Console\Meta\Error(2, 'tag not found')]
+	public function
+	HandleTagDelete():
+	int {
+
+		$ID = $this->GetOption('id') ?: NULL;
+		$Alias = $this->GetOption('alias') ?: NULL;
+		$Old = NULL;
+
+		////////
+
+		if(!$ID && !$Alias)
+		$this->Quit(1);
+
+		////////
+
+		$Old = match(TRUE) {
+			(strlen($Alias) > 0)
+			=> Atlantis\Tag\Entity::GetByAlias($Alias),
+
+			default
+			=> Atlantis\Tag\Entity::GetByID($ID)
+		};
+
+		if(!$Old)
+		$this->Quit(2);
+
+		////////
+
+		$this->PrintLn(sprintf(
+			'Dropping %s "%s" "%s"',
+			$Old->ID, $Old->Name, $Old->Alias
+		));
+
+		$Old->Drop();
+
+		return 0;
+	}
+
+};
+
+exit(App::Realboot([]));
+

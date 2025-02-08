@@ -57,6 +57,7 @@
 		"bin/project.atl",
 		"bin/social.atl",
 		"bin/ssl.atl",
+		"bin/tag.atl",
 		"bin/traffic.atl",
 		"bin/user.atl",
 		"bin/web.atl",
