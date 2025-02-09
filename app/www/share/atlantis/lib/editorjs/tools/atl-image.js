@@ -194,14 +194,17 @@ a piece of content using codemirror as the code syntax magic thing.
 		let id = result.payload.ID;
 		let url = result.payload.URL.replace('original.', 'lg.');
 
+		console.log(result);
+
 		this.data.imageID = id;
 		this.data.imageURL = url;
 
 		this.imgPreview.attr('src', url);
+		this.imgPreview.removeClass('d-none');
 		this.upload.dialog.destroy();
 
 		return;
-	}
+	};
 
 };
 

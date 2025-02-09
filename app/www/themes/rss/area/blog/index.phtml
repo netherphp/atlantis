@@ -40,11 +40,11 @@ foreach($Posts as $Post) {
 	/** @var Blog\Post $Post */
 
 	echo Common\Text::TemplateReplaceTokens($ItemTemplate, [
-		'Title'   => $Post->Title,
+		'Title'   => htmlspecialchars($Post->Title),
 		'Date'    => $Post->DateCreated->Get(DateTime::RFC2822),
 		'UUID'    => $Post->UUID,
 		'URL'     => $Post->GetPageURL(),
-		'Excerpt' => $Post->GetExcerpt()
+		'Excerpt' => htmlspecialchars($Post->GetExcerpt())
 	]);
 
 	continue;
