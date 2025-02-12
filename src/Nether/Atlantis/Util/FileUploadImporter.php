@@ -58,7 +58,7 @@ after the core upload handling gets refactored to not suck.
 	void {
 
 		$UUID = Common\UUID::V7();
-		$Temp = "upl/tmp-{$UUID}.jpeg";
+		$Temp = "upl/tmp-{$UUID}.file";
 		$Storage = $this->App->Storage->Location('Temp');
 		$File = NULL;
 
