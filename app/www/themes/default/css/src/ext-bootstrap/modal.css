@@ -1,0 +1,6 @@
+
+.modal-header,
+.modal-header .btn,
+.modal-body {
+	color: var(--theme-body-fg);
+}

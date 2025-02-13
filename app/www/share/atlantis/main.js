@@ -1,3 +1,5 @@
+import AtlBlobEntity from './js/ents/blob.js';
+
 import Photo   from './photo.js';
 import Profile from './profile.js';
 import VideoTP from './video-tp.js';
@@ -6,6 +8,8 @@ import VideoTP from './video-tp.js';
 ////////////////////////////////////////////////////////////////////////////////
 
 jQuery(function() {
+
+	AtlBlobEntity.WhenDocumentReady();
 
 	Photo.WhenDocumentReady();
 	Profile.WhenDocumentReady();
@@ -18,6 +22,7 @@ jQuery(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 export default {
+	"Blob":    AtlBlobEntity,
 	"Photo":   Photo,
 	"Profile": Profile,
 	"VideoTP": VideoTP
