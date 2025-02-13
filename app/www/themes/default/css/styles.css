@@ -1,6 +1,6 @@
 /*//
-@date 2025-02-04 22:45:12 UTC
-@files 44 [
+@date 2025-02-13 01:58:24 UTC
+@files 45 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -14,6 +14,7 @@
     "src\/ext-bootstrap\/forms.css",
     "src\/ext-bootstrap\/hr.css",
     "src\/ext-bootstrap\/jumbotron.css",
+    "src\/ext-bootstrap\/modal.css",
     "src\/ext-bootstrap\/opacity.css",
     "src\/ext-bootstrap\/position.css",
     "src\/ext-bootstrap\/tags.css",
@@ -2341,6 +2342,15 @@ code.cli {
 .jumbotron-outline {
 	background-color: transparent;
 	border: 4px solid var(--atl-jumbotron-bg);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/ext-bootstrap/modal.css /////////////////////////////////////////////*/
+
+.modal-header,
+.modal-header .btn,
+.modal-body {
+	color: var(--theme-body-fg);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
