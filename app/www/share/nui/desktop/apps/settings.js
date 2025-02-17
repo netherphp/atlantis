@@ -56,6 +56,21 @@ let TemplateConfigWindowHTML = `
 					</button>
 				</td>
 			</tr>
+			<tr>
+				<td class="text-nowrap">Full Screen Windows on Mobile</td>
+				<td class="text-nowrap ta-right">
+					<select class="form-select" data-win-input="OS.WindowAutoMaximise" style="min-width:150px;">
+						<option value="0">Never</option>
+						<option value="1">Only on Mobile/Portrait screens</option>
+						<option value="2">Always</option>
+					</select>
+				</td>
+				<td class="tw-normal">
+					<button class="atl-dtop-btn" data-win-action="setting-reset" data-setting-name="OS.WindowAutoMaximise">
+						<i class="mdi mdi-backup-restore"></i>
+					</button>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
@@ -102,6 +117,8 @@ extends NetherOS.Window {
 
 		this.inColourNullary = null;
 		this.inColourPrimary = null;
+		this.inWinInactiveClass = null;
+		this.inWinAutoMaximise = null;
 
 		(this)
 		.setBody(TemplateConfigWindowHTML)
@@ -118,10 +135,12 @@ extends NetherOS.Window {
 		this.inColourNullary = this.getInputElement('--atl-dtop-cfg-colour-nullary');
 		this.inColourPrimary = this.getInputElement('--atl-dtop-cfg-colour-primary');
 		this.inWinInactiveClass = this.getInputElement('OS.WindowInactiveClass');
+		this.inWinAutoMaximise = this.getInputElement('OS.WindowAutoMaximise');
 
 		this.inColourNullary.on('change', this.onSettingChange.bind(this));
 		this.inColourPrimary.on('change', this.onSettingChange.bind(this));
 		this.inWinInactiveClass.on('change', this.onSettingChange.bind(this));
+		this.inWinAutoMaximise.on('change', this.onSettingChange.bind(this));
 
 		this.setAction('setting-reset', this.onSettingReset.bind(this));
 
@@ -145,6 +164,7 @@ extends NetherOS.Window {
 		this.inColourNullary.val(colours['--atl-dtop-cfg-colour-nullary'].substr(0, 7));
 		this.inColourPrimary.val(colours['--atl-dtop-cfg-colour-primary'].substr(0, 7));
 		this.inWinInactiveClass.val(winInactiveClass);
+		this.inWinAutoMaximise.val(this.os.fetch('OS.WindowAutoMaximise'));
 
 		return;
 	};
@@ -156,6 +176,10 @@ extends NetherOS.Window {
 		////////
 
 		switch(n) {
+			case 'OS.WindowAutoMaximise':
+				this.inWinAutoMaxPortraitMode.val(this.os.configDefaults[n]);
+				this.os.save(n, this.os.configDefaults[n]);
+			break;
 			case 'OS.WindowInactiveClass':
 				this.inWinInactiveClass.val(this.os.configDefaults[n]);
 				this.os.dmgr.resetWindowInactiveClass();
@@ -182,6 +206,9 @@ extends NetherOS.Window {
 		////////
 
 		switch(n) {
+			case 'OS.WindowAutoMaximise':
+				this.os.save(n, parseInt(v));
+			break;
 			case 'OS.WindowInactiveClass':
 				this.os.dmgr.resetWindowInactiveClass();
 				this.os.dmgr.pushWindowInactiveClass(v);

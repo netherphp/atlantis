@@ -37,6 +37,9 @@
 	--atl-dtop-win-bw:         var(--atl-dtop-cfg-gap-primary);
 	--atl-dtop-win-bs:         solid;
 	--atl-dtop-win-br:         var(--atl-dtop-cfg-corner-radius);
+	--atl-dtop-win-shpos:      0px 0px 10px;
+	--atl-dtop-win-sho:        50%;
+	--atl-dtop-win-shc:        color-mix(in srgb, var(--atl-dtop-cfg-colour-nullary) var(--atl-dtop-win-sho), transparent);
 
 	--atl-dtop-win-header-bgc: var(--atl-dtop-cfg-colour-primary);
 	--atl-dtop-win-header-tc:  var(--atl-dtop-cfg-colour-nullary);
@@ -94,7 +97,7 @@ table, td, th {
 
 	100% {
 		filter: saturate(0.0);
-		transform: scale(1.5);
+		transform: scale(1.1);
 		opacity: 0.0;
 	}
 }
@@ -108,7 +111,7 @@ table, td, th {
 
 	100% {
 		filter: saturate(0.0);
-		transform: scale(0.0);
+		transform: scale(0.9);
 		opacity: 0.0;
 	}
 }
@@ -116,7 +119,7 @@ table, td, th {
 @keyframes nui-window-show {
 	0% {
 		filter: saturate(0.0);
-		transform: scale(0.0);
+		transform: scale(0.75);
 	}
 
 	100% {
@@ -172,6 +175,7 @@ table, td, th {
 	height: 100%;
 
 	background-color: #000;
+	scrollbar-color: var(--atl-dtop-cfg-colour-primary) var(--atl-dtop-cfg-colour-nullary);
 	z-index: 42001;
 
 	transition: opacity 200ms;
@@ -193,13 +197,23 @@ table, td, th {
 	color: var(--atl-dto-input-tc);
 }
 
-.atl-dtop-os .table {
-	--bs-table-color: var(--atl-dtop-cfg-colour-primary);
-	--bs-table-border-color: var(--atl-dtop-cfg-colour-primary);
+.atl-dtop-os .table tr {
+	border-color: var(--atl-dtop-cfg-colour-primary) !important;
+}
+
+.atl-dtop-os .table th,
+.atl-dtop-os .table td {
+	background-color: transparent !important;
+	color: var(--atl-dtop-cfg-colour-primary) !important;
+}
+
+.atl-dtop-os .table-striped tbody tr:nth-of-type(2n+1) {
+	background-color: color-mix(in srgb, var(--atl-dtop-cfg-colour-primary) 10%, transparent) !important;
 }
 
 .atl-dtop-os pre {
 	color: var(--atl-dtop-cfg-colour-primary);
+	overflow: visible;
 }
 
 /*******************************************************************************
@@ -240,6 +254,7 @@ table, td, th {
 	border-radius: var(--atl-dtop-win-br);
 
 	background-color: var(--atl-dtop-win-body-bgc);
+	box-shadow: var(--atl-dtop-win-shpos) var(--atl-dtop-win-shc);
 	color: var(--atl-dtop-win-body-tc);
 	padding: 0px;
 	overflow: hidden;
@@ -257,15 +272,15 @@ table, td, th {
 }
 
 .atl-dtop-desktop-window-inactive-dim .atl-dtop-desktop .atl-dtop-win:not(:last-child) {
-	filter: opacity(0.5) blur(0px);
+	filter: brightness(0.5) blur(0px);
 }
 
 .atl-dtop-desktop-window-inactive-dimblur .atl-dtop-desktop .atl-dtop-win:not(:last-child) {
-	filter: opacity(0.5) blur(1px);
+	filter: brightness(0.5) blur(1px);
 }
 
 .atl-dtop-desktop-window-inactive-none .atl-dtop-desktop .atl-dtop-win:not(:last-child) {
-	filter: opacity(1.0) blur(0px);
+	filter: brightness(1.0) blur(0px);
 }
 
 .atl-dtop-win > header {
@@ -286,10 +301,18 @@ table, td, th {
 
 .atl-dtop-win > section {
 	position: relative;
-
 	padding: var(--atl-dtop-win-body-pad);
-
 	flex-grow: 1;
+
+	/* this enables @container queries */
+	container-type: inline-size;
+	container-name: atl-win-body;
+}
+
+.atl-dtop-win.autosize-temp > section {
+	container-type: normal;
+	width: auto;
+	height: auto;
 }
 
 .atl-dtop-win > footer {
@@ -327,8 +350,8 @@ table, td, th {
 }
 
 .atl-dtop-win.maximise {
-	top: 0px !important;
-	left: 0px !important;
+	top: 0% !important;
+	left: 0% !important;
 	width: 100% !important;
 	height: 100% !important;
 
@@ -336,6 +359,15 @@ table, td, th {
 }
 
 .atl-dtop-win.maximise .atl-dtop-win-resizehandle {
+	display: none;
+}
+
+.atl-dtop-win.maximise header [data-win-action="win-max"]  {
+	filter: brightness(1.2);
+}
+
+.atl-dtop-win.maximise header [data-win-action="win-center"],
+.atl-dtop-win.maximise header [data-win-action="win-fit"] {
 	display: none;
 }
 
@@ -366,7 +398,7 @@ table, td, th {
 	animation-fill-mode: forwards;
 }
 
-.atl-dtop-win-init {
+.atl-dtop-win-init:not(.maximise) {
 	max-width: 88svw;
 	max-height: 88svh;
 }

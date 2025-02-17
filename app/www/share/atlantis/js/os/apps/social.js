@@ -141,6 +141,13 @@ extends NetherOS.Window {
 
 		this.addButton('OK', NetherOS.Window.ActionAccept);
 		this.showOverlay();
+
+
+		return;
+	};
+
+	onShown() {
+
 		this.fetchOverview();
 
 		return;

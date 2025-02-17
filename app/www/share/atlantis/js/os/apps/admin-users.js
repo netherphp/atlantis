@@ -257,6 +257,11 @@ extends NetherOS.Window {
 		this.setAction('search-email', this.onSearchByEmail);
 		this.setAction('edit-user', this.onEditUser);
 
+		return;
+	};
+
+	onShown() {
+
 		this.onSearchByRecent();
 
 		return;

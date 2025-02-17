@@ -18,6 +18,16 @@ let TemplateWindowHTML = `
 				<span>Window Title</span>
 			</div>
 			<div class="col-auto">
+				<button class="atl-dtop-btn atl-dtop-win-action atl-dtop-win-action-cancel" data-win-action="win-center">
+					<em class="mdi mdi-fit-to-screen"></em>
+				</button>
+			</div>
+			<div class="d-none col-auto">
+				<button class="atl-dtop-btn atl-dtop-win-action atl-dtop-win-action-cancel" data-win-action="win-fit">
+					<em class="mdi mdi-image-size-select-small"></em>
+				</button>
+			</div>
+			<div class="col-auto">
 				<button class="atl-dtop-btn atl-dtop-win-action atl-dtop-win-action-cancel" data-win-action="win-min">
 					<em class="mdi mdi-window-minimize"></em>
 				</button>
@@ -128,6 +138,7 @@ class Window {
 		this.enableMin = false;
 		this.userMoved = false;
 		this.userSized = false;
+		this.beenShown = false;
 
 		////////
 
@@ -142,6 +153,8 @@ class Window {
 		this.setAppAndBake(app);
 
 		////////
+
+		this.setInitialSizing();
 
 		this.onConstruct();
 		this.onReady();
@@ -508,6 +521,16 @@ class Window {
 			return false;
 		}
 
+		if(action === 'win-fit') {
+			this.resizeToFit();
+			return false;
+		}
+
+		if(action === 'win-center') {
+			this.centerInParent();
+			return false;
+		}
+
 		console.log(`unhandled window action: ${action}`);
 		return false;
 	};
@@ -543,18 +566,42 @@ class Window {
 		}
 
 		if(ev.animationName === 'nui-window-hide') {
+			this.onHide();
 			this.element.addClass('d-none');
 			this.element.removeClass('hiding');
+			this.onHidden();
 			return;
 		}
 
 		if(ev.animationName === 'nui-window-show') {
+			this.onShow();
 			this.element.removeClass('showing');
 			this.element.removeClass('atl-dtop-win-init');
+			this.onShown();
 			return;
 		}
 
 		////////
+
+		return;
+	};
+
+	onShow(jEv) {
+
+		return;
+	};
+
+	onShown(jEv) {
+
+		return;
+	};
+
+	onHide(jEv) {
+
+		return;
+	};
+
+	onHidden(jEv) {
 
 		return;
 	};
@@ -988,7 +1035,8 @@ class Window {
 
 	setSizeAuto() {
 
-		this.element.css({
+		(this.element)
+		.css({
 			'width': `auto`,
 			'height': `auto`
 		});
@@ -1008,6 +1056,28 @@ class Window {
 		this.userMoved = state;
 
 		return this;
+	};
+
+	setInitialSizing() {
+
+		if(this.os) {
+			let automax = this.os.fetch('OS.WindowAutoMaximise');
+
+			if(automax === 1) {
+				if(window.innerWidth < window.innerHeight)
+				this.maximise();
+				return;
+			}
+
+			if(automax === 2) {
+				this.maximise();
+				return;
+			}
+		}
+
+		this.resizeToFit();
+
+		return;
 	};
 
 	centerInParent() {
@@ -1032,8 +1102,10 @@ class Window {
 
 	resizeToFit() {
 
+		this.element.addClass('autosize-temp');
 		this.setSizeAuto();
 		this.setSize();
+		this.element.removeClass('autosize-temp');
 
 		return this;
 	};
@@ -1111,7 +1183,7 @@ class Window {
 		}
 
 		return this;
-	}
+	};
 
 	setBody(content) {
 

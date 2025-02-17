@@ -28,10 +28,36 @@ extends Atlantis\PublicAPI {
 		return;
 	}
 
+	protected function
+	NewRateLimiter(string $Endpoint):
+	Atlantis\Systems\RateLimiter\Tool {
+
+		$Tool = new Atlantis\Systems\RateLimiter\Tool(
+			$this->App,
+			$this->Request->RemoteAddr,
+			$Endpoint
+		);
+
+		return $Tool;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[RouteHandler('/api/user/session', Verb: 'LOGIN')]
 	public function
 	HandleLogin():
 	void {
+
+		$RateLimit = $this->NewRateLimiter(__METHOD__);
+
+		if($RateLimit->HasHitLimitIfNotBump())
+		$this->Quit(6, sprintf(
+			'Too many failed attempts. Please wait %s.',
+			$RateLimit->GetWhenExpires()
+		));
+
+		////////
 
 		($this->Request->Data)
 		->Username(Common\Filters\Text::TrimmedNullable(...))
@@ -63,10 +89,14 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		$User
+		($User)
 		->TransmitSession()
 		->UpdateTimeSeen()
 		->UpdateRemoteAddr();
+
+		$RateLimit->Delete();
+
+		////////
 
 		$this
 		->SetGoto($this->Request->Data->Goto ?: '/')

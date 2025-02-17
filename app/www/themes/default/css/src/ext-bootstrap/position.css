@@ -16,3 +16,8 @@
 .pos-v-center { top: 50%; transform: translateY(-50%); }
 .pos-h-center.pos-v-center,
 .pos-middle { transform: translateX(-50%) translateY(-50%); }
+
+.gridset { position: relative; width: 100%; height: 100%; }
+
+.gridbox { display: grid; }
+.gridbox > * { position: relative; }

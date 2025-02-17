@@ -1,0 +1,17 @@
+.scroll-y {
+	overflow: hidden;
+	overflow-x: auto;
+}
+
+.scroll-y {
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+.scroll-xy {
+	overflow: auto;
+}
+
+.scroll-none {
+	overflow: hidden;
+}

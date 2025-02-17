@@ -125,6 +125,9 @@ class App {
 		if(name === 'nui-window-show')
 		this.onWindowShown(jEv, win);
 
+		if(name === 'nui-window-quit')
+		this.onWindowQuit(jEv, win);
+
 		////////
 
 		return false;
@@ -190,6 +193,13 @@ class App {
 
 		return;
 	};
+
+	onWindowQuit(jEv, win) {
+
+		this.unregisterWindow(win);
+
+		return;
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////

@@ -33,7 +33,14 @@ class OS {
 		this.apps = [];
 
 		this.configDefaults = {
-			'OS.WindowInactiveClass': 'atl-dtop-desktop-window-inactive-dim'
+			// misc css classes
+			'OS.WindowInactiveClass': 'atl-dtop-desktop-window-inactive-dim',
+
+			// 0 = never, 1 = when it smells mobiley, 2 = always
+			'OS.WindowAutoMaximise': 1,
+
+			// delete this
+			'OS.WindowAutoMaxPortraitMode': true
 		};
 
 		this.styleVarDefaults = { };
@@ -41,6 +48,7 @@ class OS {
 		this.name = 'NUI Desktop';
 		this.version = 'v1';
 
+		this._pushDefaultConfig();
 		this._elementGenID();
 		this._elementBuild();
 		this._elementDock(selector);
@@ -57,6 +65,16 @@ class OS {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	_pushDefaultConfig() {
+
+		for(const k in this.configDefaults) {
+			console.log(`[OS._pushDefaultConfig] ${k}`);
+			this.define(k, this.configDefaults[k]);
+		}
+
+		return;
+	};
 
 	_elementGenID() {
 
@@ -225,6 +243,14 @@ class OS {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	define(key, value) {
+
+		if(!localStorage.hasOwnProperty(key))
+		this.save(key, value);
+
+		return;
+	};
 
 	save(key, value) {
 

@@ -7,8 +7,6 @@
 	return;
 })();
 
-chdir('/opt/tg-dev');
-
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Console;

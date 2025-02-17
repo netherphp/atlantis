@@ -10,55 +10,97 @@ await NetherOS.load();
 ////////////////////////////////////////////////////////////////////////////////
 
 let TemplateDataInputTextRow = `
-<div class="d-flex gap-2 mb-3" data-key-val-row>
+<div class="d-flex gap-2 mb-2" data-key-val-row>
 	<div class="flex-fill">
-		<input type="text" class="form-control" placeholder="Key..." data-key />
+		<input type="text" size="8" class="form-control" placeholder="Key..." data-key />
 	</div>
 	<div class="flex-fill">
-		<input type="text" class="form-control" placeholder="Value..." data-val data-val-text />
+		<input type="text" size="8" class="form-control" placeholder="Value..." data-val data-val-text />
 	</div>
 </div>
 `;
 
-let TemplateToolWindowHTML = `
-<div class="d-flex h-100 gap-4">
-	<div class="flex-grow-0">
-		<div class="d-flex flex-column h-100">
-			<div class="flex-grow-0 mb-2 fw-bold">Verb</div>
-			<div class="flex-grow-0 mb-2">
+let zTemplateToolWindowHTML = `
+<div style="display: grid; grid-template-columns: 1fr 1fr 2fr;">
+	<div>
+			<div class="mb-2">
+				<div class="fw-bold">Verb</div>
 				<input type="text" class="form-control" data-win-input="Verb" value="GET" />
 			</div>
-			<div class="flex-grow-0 mb-2 fw-bold">URL</div>
-			<div class="flex-grow-0 mb-2">
+			<div class="mb-2">
+				<div class="fw-bold">URL</div>
 				<input type="text" class="form-control" data-win-input="URL" />
 			</div>
-			<div class="flex-grow-0 mb-2 fw-bold">Dataset</div>
-			<div class="flex-grow-1 pos-relative">
-				<div class="pos-absolutely" style="overflow:scroll;">
-					${TemplateDataInputTextRow}
-
-					<button class="atl-dtop-btn atl-dtop-btn-alt btn-block" data-win-action="add-key-value">
-						<i class="mdi mdi-plus"></i>
-						Add Key/Value
-					</button>
-				</div>
-			</div>
+	</div>
+	<div>
+		<button class="atl-dtop-btn atl-dtop-btn btn-block" data-win-action="add-key-value">
+			<i class="mdi mdi-plus"></i>
+			Add Key/Value
+		</button>
+		<div class="scroll-y" data-win-output="KeyValueInput">
+			${TemplateDataInputTextRow}
 		</div>
 	</div>
-	<div class="flex-grow-1 pos-relative">
-		<div class="d-flex flex-column gap-4 h-100">
-			<div class="flex-grow-0 mb-2">
-				<button class="atl-dtop-btn btn-block" data-win-action="run">
-					Run
+	<div></div>
+</div>
+`;
+
+let TemplateToolWindowHTML = `
+<style type="text/css">
+.atl-apitool-win-grid {
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: auto fit-content(4lh) 1fr;
+	grid-template-areas: 'i i i' 'd d d' 'o o o';
+}
+
+.atl-apitool-win-input { grid-area: i; }
+.atl-apitool-win-data { grid-area: d; }
+.atl-apitool-win-output { grid-area: o; }
+
+@container atl-win-body (min-width: 576px) {
+	.atl-apitool-win-grid {
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: auto 1fr 1fr;
+		grid-template-areas: 'i o o' 'd o o' 'd o o';
+	}
+}
+</style>
+
+<div class="atl-apitool-win gridset">
+	<div class="atl-apitool-win-grid gridbox gap-2 pos-absolutely">
+		<div class="atl-apitool-win-input">
+			<div class="mb-2">
+				<div class="fw-bold">Verb</div>
+				<input type="text" class="form-control" data-win-input="Verb" value="GET" />
+			</div>
+			<div class="mb-2">
+				<div class="fw-bold">URL</div>
+				<input type="text" class="form-control" data-win-input="URL" />
+			</div>
+			<div class="mb-2">
+				<button class="atl-dtop-btn atl-dtop-btn btn-block" data-win-action="add-key-value">
+					<i class="mdi mdi-plus"></i>
+					Add Key/Value
 				</button>
 			</div>
-			<div class="flex-grow-1 pos-relative">
-				<div class="pos-absolutely" style="overflow:scroll;border-left:3px solid var(--atl-dtop-cfg-colour-primary);">
-					<pre class="pl-2" data-win-output="Output">{ API Output }</pre>
+		</div>
+		<div class="atl-apitool-win-data scroll-y" data-win-output="KeyValueInput">
+			${TemplateDataInputTextRow}
+		</div>
+		<div class="atl-apitool-win-output">
+			<div class="gridbox position-absolutely" style="grid-template-rows: auto 1fr;">
+				<div>
+					<button class="atl-dtop-btn btn-block mb-2" data-win-action="run">
+						Run
+					</button>
+				</div>
+				<div>
+					<div class="pos-absolutely scroll-xy" style="min-height:4lh;">
+						<pre class="pl-2" data-win-output="Output">{ API Output }</pre>
+					</div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 </div>
 `;
@@ -86,6 +128,7 @@ extends NetherOS.App {
 		let w = new ApiToolWindow(this);
 
 		this.registerWindow(w);
+		w.setSize(720, 480);
 		w.show();
 		w.centerInParent();
 
@@ -102,7 +145,7 @@ extends NetherOS.Window {
 
 	onConstruct() {
 
-		this.setSize(80, 75, '%');
+		//this.setSize(80, 75, '%');
 		this.setBody(TemplateToolWindowHTML);
 
 		this.elBtnAddKeyVal = this.element.find('[data-win-action="add-key-value"]');
@@ -118,7 +161,7 @@ extends NetherOS.Window {
 	readKeyValueFields() {
 
 		let output = new FormData;
-		let box = this.elBtnAddKeyVal.parent();
+		let box = this.getOutputElement('KeyValueInput');
 		let rows = box.find('[data-key-val-row]');
 
 		rows.each(function() {
@@ -165,9 +208,10 @@ extends NetherOS.Window {
 
 	onKeyValue() {
 
+		let box = this.getOutputElement('KeyValueInput');
 		let freshSet = jQuery(TemplateDataInputTextRow);
 
-		this.elBtnAddKeyVal.before(freshSet);
+		box.append(freshSet);
 
 		return;
 	};

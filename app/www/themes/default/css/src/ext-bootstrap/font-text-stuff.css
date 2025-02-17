@@ -93,6 +93,9 @@
 .tw-none { white-space: nowrap !important; }
 .tw-preline { white-space: pre-line !important; }
 .tw-pre { white-space: pre !important; }
+.tw-wrap { white-space: wrap; }
+.tw-hard { white-space: wrap; word-wrap: break-word; }
+.tw-harder { white-space: wrap; word-wrap: break-word; overflow-wrap: anywhere; }
 
 /*******************************************************************************
 ** text selection *************************************************************/

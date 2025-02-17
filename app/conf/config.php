@@ -108,5 +108,6 @@ use Nether\User;
 // MISC CONFIG.
 
 ($Config)
+->Set(Atlantis\Systems\RateLimiter\Tool::ConfStorageAPI, Atlantis\Systems\RateLimiter\StorageAPI\Database\Client::class)
 ->Set(Common\Date::ConfDefaultTimezone, 'America/Chicago')
 ->Set(Browser\Key::ConfUserAgent, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0');

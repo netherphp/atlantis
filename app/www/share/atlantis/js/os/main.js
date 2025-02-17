@@ -54,6 +54,9 @@ extends NetherOS.System {
 
 			let tbi = item.value.taskbarItem;
 
+			if(!tbi)
+			continue;
+
 			(tbi.element.parent())
 			.append(tbi.element);
 		}

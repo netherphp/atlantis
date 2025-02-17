@@ -9,16 +9,8 @@ await NetherOS.load();
 ////////////////////////////////////////////////////////////////////////////////
 
 let TemplateUserLogoutWindow = `
-<div class="container-fluid g-0">
-	<div class="row align-items-center g-2">
-		<div class="col-auto">
 			<i class="mdi mdi-bomb fs-mostest-large"></i>
-		</div>
-		<div class="col">
 			Are you sure you want to log out?
-		</div>
-	</div>
-</div>
 `;
 
 ////////////////////////////////////////////////////////////////////////////////
