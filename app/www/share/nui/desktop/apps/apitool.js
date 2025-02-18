@@ -117,8 +117,7 @@ extends NetherOS.App {
 		.setName('API Tool')
 		.setIdent('net.pegasusgate.atl.apitool')
 		.setIcon('mdi mdi-api')
-		.setListed(true)
-		.setTaskbarItem(true);
+		.setListed(true);
 
 		return;
 	};

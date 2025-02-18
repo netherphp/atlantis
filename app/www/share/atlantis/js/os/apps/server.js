@@ -47,19 +47,19 @@ extends NetherOS.App {
 		.setIdent('net.pegasusgate.atl.server')
 		.setIcon('mdi mdi-web-box')
 		.setListed(true)
-		.setSingleInstance(true)
-		.setTaskbarItem(true);
+		.setSingleInstance(true);
 
 		return;
 	};
 
 	onLaunchSingle() {
 
-		let w = new ServerAppWindow;
+		let w = new ServerAppWindow(this);
 
 		this.registerWindow(w);
 
 		w.show();
+		w.centerInParent();
 		w.maximise();
 
 		return;

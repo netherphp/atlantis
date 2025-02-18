@@ -31,9 +31,9 @@ extends NetherOS.App {
 		.setName('Log In')
 		.setIdent('net.pegasusgate.atl.login')
 		.setIcon('mdi mdi-login')
-		.setListed(false)
+		.setListed(true)
 		.setSingleInstance(true)
-		.setTaskbarItem(true);
+		.setPinToTaskbarEnd();
 
 		return;
 	};
@@ -50,6 +50,7 @@ extends NetherOS.App {
 		let w = new UserLoginWindow(this);
 
 		this.registerWindow(w);
+
 		w.show();
 		w.centerInParent();
 

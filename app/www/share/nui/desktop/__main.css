@@ -4,7 +4,7 @@
 	//////////////////////////////*/
 
 	--atl-dtop-cfg-colour-nullary:   var(--theme-black);
-	--atl-dtop-cfg-colour-primary:   var(--theme-red);
+	--atl-dtop-cfg-colour-primary:   #cd5048;
 	--atl-dtop-cfg-colour-mix-hover: var(--theme-white) 35%;
 	--atl-dtop-cfg-colour-mix-tp1:   transparent 80%;
 	--atl-dtop-cfg-corner-radius:    4px;
@@ -175,7 +175,7 @@ table, td, th {
 	height: 100%;
 
 	background-color: #000;
-	scrollbar-color: var(--atl-dtop-cfg-colour-primary) var(--atl-dtop-cfg-colour-nullary);
+	scrollbar-color: var(--atl-dtop-cfg-colour-primary) transparent;
 	z-index: 42001;
 
 	transition: opacity 200ms;
@@ -303,6 +303,8 @@ table, td, th {
 	position: relative;
 	padding: var(--atl-dtop-win-body-pad);
 	flex-grow: 1;
+	overflow: hidden;
+	overflow-y: scroll;
 
 	/* this enables @container queries */
 	container-type: inline-size;
@@ -363,7 +365,7 @@ table, td, th {
 }
 
 .atl-dtop-win.maximise header [data-win-action="win-max"]  {
-	filter: brightness(1.2);
+	color: color-mix(in srgb, var(--atl-dtop-cfg-colour-primary) 50%, white) !important;
 }
 
 .atl-dtop-win.maximise header [data-win-action="win-center"],
@@ -461,6 +463,37 @@ table, td, th {
 	gap: var(--atl-dtop-cfg-gap-primary);
 	z-index: var(--atl-dtop-cfg-z-taskbar);
 	width: calc(var(--atl-dtop-taskbar-icon-w) + calc(var(--atl-dtop-taskbar-icon-pad) * 2));
+}
+
+.atl-dtop-taskbar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: stretch;
+
+	border-right: 1px solid var(--atl-dtop-cfg-colour-nullary);
+	height: 100%;
+	width: 100%;
+}
+
+.atl-dtop-taskbar > div {
+	border-top: 1px solid color-mix(in srgb, var(--atl-dtop-cfg-colour-nullary) 30%, transparent);
+	height: 1px;
+	width: 85%;
+}
+
+.atl-dtop-taskbar > section:first-of-type {
+	width: 100%;
+}
+
+.atl-dtop-taskbar > section:last-of-type {
+	width: 100%;
+}
+
+.atl-dtop-taskbar > section:nth-of-type(2) {
+	flex-grow: 1;
+	min-height: 0;
+	width: 100%;
 }
 
 .atl-dtop-taskbar-item {

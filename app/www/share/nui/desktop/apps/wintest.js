@@ -35,8 +35,7 @@ extends NetherOS.App {
 		.setIdent('net.pegasusgate.atl.wintest')
 		.setIcon('mdi mdi-window-restore')
 		.setListed(true)
-		.setSingleInstance(false)
-		.setTaskbarItem(false);
+		.setSingleInstance(false);
 
 		return;
 	};

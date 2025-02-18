@@ -3,7 +3,15 @@
 
 let TemplateTaskbarHTML = `
 <div id="" class="atl-dtop-taskbar">
-	<div class="flex flex-column align-items-center"></div>
+	<section data-taskbar-bin="start"></section>
+	<div></div>
+	<section class="pos-relative">
+		<div class="pos-absolutely scroll-y">
+			<div data-taskbar-bin="open"></div>
+		</div>
+	</section>
+	<div></div>
+	<section data-taskbar-bin="end"></section>
 </div>
 `;
 
@@ -18,7 +26,10 @@ let TemplateTaskbarItemHTML = `
 
 class Taskbar {
 
-	static Framework = null;
+	static get EvContextName() { return 'atl-dtop-taskbar'; };
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	constructor() {
 
@@ -27,6 +38,22 @@ class Taskbar {
 		this.elIconList = null;
 		this.items = [];
 		this.os = null;
+
+		////////
+
+		this.binStart = null;
+		this.binOpen = null;
+		this.binEnd = null;
+
+		////////
+
+		this.eventHandlers = {
+			'atl-dtop-app-installed': this.onAppInstalled.bind(this),
+			'atl-dtop-window-show':   this.onWindowShow.bind(this),
+			'atl-dtop-window-quit':   this.onWindowQuit.bind(this)
+		};
+
+		////////
 
 		(this)
 		.#generateElementID()
@@ -50,7 +77,15 @@ class Taskbar {
 		this.element = jQuery(TemplateTaskbarHTML);
 		this.element.attr('id', this.id);
 
-		this.elIconList = this.element.find('div.flex');
+		this.elIconList = this.element.find('[data-taskbar-bin="start"]');
+
+		////////
+
+		this.binStart = this.element.find('[data-taskbar-bin="start"]');
+		this.binOpen = this.element.find('[data-taskbar-bin="open"]');
+		this.binEnd = this.element.find('[data-taskbar-bin="end"]');
+
+		////////
 
 		return this;
 	};
@@ -58,24 +93,96 @@ class Taskbar {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	addItem(appID, icon, name) {
+	setOS(os) {
 
-		let item = new TaskbarItem(appID, icon, name);
+		if(this.os)
+		this.unregisterAllEvents();
 
-		item.setParent(this);
+		////////
 
-		this.items.push(item);
-		this.elIconList.append(item.element);
+		this.os = os;
+		this.registerAllEvents();
 
-		return item;
+		return;
+	};
+
+	registerAllEvents() {
+
+		let origin = Taskbar.EvContextName;
+
+		////////
+
+		for(const eName in this.eventHandlers)
+		this.os.registerEvent(`${eName}.${origin}`, this.eventHandlers[eName]);
+
+		////////
+
+		return;
+	};
+
+	unregisterAllEvents() {
+
+		let origin = Taskbar.EvContextName;
+
+		////////
+
+		for(const eName in this.eventHandlers)
+		this.os.unregisterEvent(`${eName}.${origin}`);
+
+		////////
+
+		return;
 	};
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	setOS(os) {
+	onAppInstalled(jEv, { app }) {
 
-		this.os = os;
+		if(app.pinToTaskbar) {
+			let item = new TaskbarItem(this, app);
+
+			this.items.push(item);
+
+			if(app.pinToTaskbar === 'start') {
+				this.binStart.append(item.element);
+			}
+
+			if(app.pinToTaskbar === 'end') {
+				this.binEnd.append(item.element);
+			}
+		}
+
+		return;
+	};
+
+	onWindowShow(jEv, { win }) {
+
+		if(win.showOnTaskbar) {
+			let item = new TaskbarItem(this, win);
+
+			this.items.push(item);
+			this.binOpen.append(item.element);
+		}
+
+		return;
+	};3
+
+	onWindowQuit(jEv, { win }) {
+
+		if(win.showOnTaskbar) {
+			this.items = this.items.filter(function(item) {
+
+				if(item.win) {
+					if(item.win.id === win.id) {
+						item.element.remove();
+						return false;
+					}
+				}
+
+				return true;
+			});
+		}
 
 		return;
 	};
@@ -87,18 +194,29 @@ class Taskbar {
 
 class TaskbarItem {
 
-	static Framework = null;
-
-	constructor(appID, icon, name) {
+	constructor(taskbar, something) {
 
 		this.id = null;
+		this.parent = taskbar;
+		this.app = null;
+		this.win = null;
+
 		this.element = null;
-		this.parent = null;
 		this.elIcon = null;
 
-		this.app = appID;
-		this.icon = icon;
-		this.name = name;
+		////////
+
+		if(something.id.match('-dtop-window-')) {
+			this.win = something;
+			this.app = something.app;
+		}
+
+		if(something.id.match('-dtop-app-')) {
+			this.win = null;
+			this.app = something;
+		}
+
+		////////
 
 		(this)
 		.#generateElementID()
@@ -125,7 +243,12 @@ class TaskbarItem {
 
 		this.elIcon = this.element.find('em');
 		this.elIcon.removeClass('mdi mdi-television-shimmer');
-		this.elIcon.addClass(this.icon);
+
+		if(this.win)
+		this.elIcon.addClass(this.win.icon);
+
+		if(this.app)
+		this.elIcon.addClass(this.app.icon);
 
 		return this;
 	};
@@ -179,8 +302,15 @@ class TaskbarItem {
 
 		//console.log(`[Taskbar.onLeftClick] ${this.id}}`);
 
-		this.parent.os.appLaunchByIdent(this.app);
+		if(this.win) {
+			this.win.bringToTop();
+			return false;
+		}
 
+		if(this.app) {
+			this.parent.os.appLaunchByIdent(this.app.ident);
+			return false;
+		}
 
 		return false;
 	};

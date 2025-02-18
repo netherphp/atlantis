@@ -315,6 +315,38 @@ class OS {
 		return this;
 	};
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	registerEvent(eName, eFunc) {
+
+		console.log(`[OS.registerEvent] ${eName}`);
+
+		this.element.on(
+			eName,
+			function(jEv){ eFunc.call(this, jEv, jEv.originalEvent.detail); }
+		);
+
+		return this;
+	};
+
+	unregisterEvent(eName) {
+
+		this.element.off(eName);
+
+		return this;
+	};
+
+	emitEvent(eName, ...eData) {
+
+		let root = this.element[0];
+		let ev = new CustomEvent(eName, { 'detail': eData[0] });
+
+		root.dispatchEvent(ev);
+
+		return this;
+	};
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////

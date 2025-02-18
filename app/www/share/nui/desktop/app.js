@@ -20,13 +20,18 @@ class App {
 		this.windows = [];
 		this.os = null;
 
-		this.taskbarItem = null;
+		//this.taskbarItem = null;
 
 		// if this app should show up in any desktop management lists
 		// as an app the user can directly launch.
 
 		this.listed = true;
 		this.singleInstance = false;
+
+		////////
+
+		this.showInTaskbar = true;
+		this.pinToTaskbar = false;
 
 		////////
 
@@ -78,14 +83,12 @@ class App {
 
 		////////
 
-		if(this.os) {
-			if(this.taskbarItem === true)
-			this.pushToTaskbar(false);
-		}
-
-		////////
-
 		this.onInstalled();
+
+		this.os.emitEvent(
+			'atl-dtop-app-installed',
+			{ 'app': this }
+		);
 
 		return;
 	};
@@ -97,15 +100,25 @@ class App {
 		////////
 
 		if(this.singleInstance) {
-			if(this.windows.length !== 0)
-			this.windows[0].bringToTop();
+			if(this.windows.length !== 0) {
+				this.windows[0].bringToTop();
+			}
 
-			else
-			this.onLaunchSingle();
+			else {
+				this.onLaunchSingle();
+				this.os.emitEvent(
+					'atl-dtop-app-launched',
+					{ 'app': this }
+				);
+			}
 		}
 
 		else {
 			this.onLaunchInstance();
+			this.os.emitEvent(
+				'atl-dtop-app-launched',
+				{ 'app': this }
+			);
 		}
 
 		////////
@@ -122,11 +135,13 @@ class App {
 
 		console.log(`[App.onWindowAnim] ${this.name} (${this.id}) ${name}`);
 
-		if(name === 'nui-window-show')
-		this.onWindowShown(jEv, win);
+		if(name === 'nui-window-show') {
+			this.onWindowShown(jEv, win);
+		}
 
-		if(name === 'nui-window-quit')
-		this.onWindowQuit(jEv, win);
+		if(name === 'nui-window-quit') {
+			this.onWindowQuit(jEv, win);
+		}
 
 		////////
 
@@ -239,16 +254,33 @@ class App {
 		return this;
 	};
 
-	setTaskbarItem(enable) {
+	setOS(os) {
 
-		this.taskbarItem = enable;
+		this.os = os;
 
 		return this;
 	};
 
-	setOS(os) {
+	setPinToTaskbar(which) {
 
-		this.os = os;
+		this.pinToTaskbar = which;
+
+		return this;
+	};
+
+	setPinToTaskbarStart() {
+
+		return this.setPinToTaskbar('start');
+	};
+
+	setPinToTaskbarEnd() {
+
+		return this.setPinToTaskbar('end');
+	};
+
+	setShowInTaskbar(enable) {
+
+		this.showInTaskbar = enable;
 
 		return this;
 	};
@@ -259,7 +291,7 @@ class App {
 	isListed() {
 
 		return (this.listed === true);
-	}
+	};
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -300,7 +332,7 @@ class App {
 			this.bindWindowAnim(win);
 		}
 
-		console.log(`[App.registerWindow] windows: ${this.windows.length}`);
+		//console.log(`[App.registerWindow] windows: ${this.windows.length}`);
 
 		return this;
 	};
@@ -311,7 +343,7 @@ class App {
 			(w)=> w.id !== win.id
 		);
 
-		console.log(`[App.unregisterWindow] windows: ${this.windows.length}`);
+		//console.log(`[App.unregisterWindow] windows: ${this.windows.length}`);
 
 		return this;
 	};

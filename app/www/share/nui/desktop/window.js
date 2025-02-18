@@ -99,7 +99,7 @@ class Window {
 	static get SelectHandleSize() { return '.atl-dtop-win-resizehandle'; };
 	static get SelectWindowAction() { return '[data-win-action]'; }
 
-	static get PrefixElementID() { return 'atl-desktop-window'; };
+	static get PrefixElementID() { return 'atl-dtop-window'; };
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -139,6 +139,7 @@ class Window {
 		this.userMoved = false;
 		this.userSized = false;
 		this.beenShown = false;
+		this.showOnTaskbar = true;
 
 		////////
 
@@ -562,6 +563,12 @@ class Window {
 
 		if(ev.animationName === 'nui-window-quit') {
 			this.destroy();
+
+			this.os.emitEvent(
+				'atl-dtop-window-quit',
+				{ 'win': this }
+			);
+
 			return;
 		}
 
@@ -570,6 +577,12 @@ class Window {
 			this.element.addClass('d-none');
 			this.element.removeClass('hiding');
 			this.onHidden();
+
+			this.os.emitEvent(
+				'atl-dtop-window-hide',
+				{ 'win': this }
+			);
+
 			return;
 		}
 
@@ -578,6 +591,12 @@ class Window {
 			this.element.removeClass('showing');
 			this.element.removeClass('atl-dtop-win-init');
 			this.onShown();
+
+			this.os.emitEvent(
+				'atl-dtop-window-show',
+				{ 'win': this }
+			);
+
 			return;
 		}
 
@@ -948,9 +967,6 @@ class Window {
 
 	setPositionBasedOn(what=null) {
 
-		//console.log(`[Window.setPositionBasedOn] ${this.id}`);
-		//console.log(what);
-
 		if(what instanceof Window)
 		if(what.isUserMoved()) {
 			(this)
@@ -1253,6 +1269,13 @@ class Window {
 
 		else
 		handles.addClass('d-none');
+
+		return this;
+	};
+
+	setShowOnTaskbar(enable) {
+
+		this.showOnTaskbar = enable;
 
 		return this;
 	};

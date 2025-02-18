@@ -61,8 +61,7 @@ extends NetherOS.App {
 		(this)
 		.setName('Social Data')
 		.setIdent('net.pegasusgate.atl.admin.social')
-		.setIcon('mdi mdi-account-details')
-		.setTaskbarItem(true);
+		.setIcon('mdi mdi-account-details');
 
 		this.hackInTheDeps();
 

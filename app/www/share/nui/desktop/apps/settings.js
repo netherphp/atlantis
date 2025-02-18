@@ -89,7 +89,7 @@ extends NetherOS.App {
 		.setIdent('net.pegasusgate.atl.settingsapp')
 		.setIcon('mdi mdi-cog')
 		.setSingleInstance(true)
-		.setTaskbarItem(true);
+		.setPinToTaskbarEnd();
 
 		return this;
 	};

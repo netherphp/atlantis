@@ -51,7 +51,7 @@ extends NetherOS.App {
 		.setIcon('mdi mdi-star-face')
 		.setListed(false)
 		.setSingleInstance(true)
-		.setTaskbarItem(true);
+		.setPinToTaskbarStart();
 
 		return;
 	};
@@ -85,15 +85,18 @@ class StartAppWindow
 extends NetherOS.Window {
 
 	onConstruct() {
+
 		(this)
 		.setBody(TemplateWindowMainHTML)
 		.setSize(75, 75, '%')
+		.setShowOnTaskbar(false)
 		.setMaxable(true)
 		.setMinable(false)
 		.setMovable(true)
 		.setResizable(true)
 		.hideFooter();
 
+		this.maximise();
 		this.fillAppList();
 
 		return;
@@ -103,6 +106,7 @@ extends NetherOS.Window {
 
 		let box = this.getOutputElement('AppList');
 		let tpl = jQuery(TemplateWindowAppRowHTML);
+		let pile = [];
 
 		////////
 
@@ -122,13 +126,27 @@ extends NetherOS.Window {
 				);
 			}
 
+			row.attr('data-app-name', a.name);
 			row.find('[data-app-name-text]').text(a.name);
 
 			row.on('click', this.onClickItem.bind(this));
 
-			box.append(row);
+			pile.push(row);
 			continue;
 		}
+
+		pile.sort(function(a, b) {
+			if(a.attr('data-app-name') < b.attr('data-app-name'))
+			return -1;
+
+			if(a.attr('data-app-name') > b.attr('data-app-name'))
+			return 1;
+
+			return 0;
+		});
+
+		for(const a of pile)
+		box.append(a);
 
 		////////
 

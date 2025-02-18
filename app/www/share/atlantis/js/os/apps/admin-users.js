@@ -222,8 +222,7 @@ extends NetherOS.App {
 		(this)
 		.setName('User Admin')
 		.setIdent('net.pegasusgate.atl.admin.users')
-		.setIcon('mdi mdi-account-multiple')
-		.setTaskbarItem(true);
+		.setIcon('mdi mdi-account-multiple');
 
 		return;
 	};

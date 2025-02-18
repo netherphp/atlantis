@@ -25,7 +25,7 @@ extends NetherOS.App {
 		this.setIdent('net.pegasusgate.atl.logoutapp');
 		this.setIcon('mdi mdi-logout');
 		this.setSingleInstance(true);
-		this.setTaskbarItem(true);
+		this.setPinToTaskbarEnd();
 
 		return;
 	};
