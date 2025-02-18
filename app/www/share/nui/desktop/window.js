@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import Vec2  from '../units/vec2.js?v=20241216a';
-import Util  from '../util.js?v=20241216a';
+import NetherOS from './__main.js';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +21,7 @@ let TemplateWindowHTML = `
 					<em class="mdi mdi-fit-to-screen"></em>
 				</button>
 			</div>
-			<div class="d-none col-auto">
+			<div class="col-auto">
 				<button class="atl-dtop-btn atl-dtop-win-action atl-dtop-win-action-cancel" data-win-action="win-fit">
 					<em class="mdi mdi-image-size-select-small"></em>
 				</button>
@@ -77,8 +76,6 @@ let TemplateWindowHTML = `
 
 class Window {
 
-	static Framework = null;
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -110,8 +107,8 @@ class Window {
 		this.ident = null;
 		this.title = null;
 
-		this.pos = new Vec2;
-		this.size = new Vec2;
+		this.pos = new NetherOS.Vec2;
+		this.size = new NetherOS.Vec2;
 
 		this.element = null;
 		this.parent = null;
@@ -302,13 +299,13 @@ class Window {
 
 		if(typeof ev.touches !== 'undefined')
 		offset = (
-			(new Vec2(ev.touches[0].clientX, ev.touches[0].clientY))
+			(new NetherOS.Vec2(ev.touches[0].clientX, ev.touches[0].clientY))
 			.sub(this.getPosVec())
 		);
 
 		else
 		offset = (
-			(new Vec2(ev.clientX, ev.clientY))
+			(new NetherOS.Vec2(ev.clientX, ev.clientY))
 			.sub(this.getPosVec())
 		);
 
@@ -401,11 +398,11 @@ class Window {
 		////////
 
 		if(typeof ev.touches !== 'undefined') {
-			offset = new Vec2(ev.touches[0].offsetX, ev.touches[0].offsetY);
+			offset = new NetherOS.Vec2(ev.touches[0].offsetX, ev.touches[0].offsetY);
 		}
 
 		else {
-			offset = new Vec2(ev.offsetX, ev.offsetY);
+			offset = new NetherOS.Vec2(ev.offsetX, ev.offsetY);
 		}
 
 		offset = this.getOffsetClientCoords(offset.mult(0.5));
@@ -798,7 +795,7 @@ class Window {
 		// that for things nested in flexbox. figured the offset would be
 		// relative 0,0. if we are revisiting this in the future then rip.
 
-		return oVec.sub(Window.Framework.Vec2.FromOffset(offset));
+		return oVec.sub(NetherOS.Vec2.FromOffset(offset));
 	};
 
 	////////////////////////////////////////////////////////////////
@@ -929,7 +926,7 @@ class Window {
 		// i did this thinking it was wise to not make it too easy to just
 		// overwrite data in the working reference.
 
-		return new Vec2(this.pos.x, this.pos.y);
+		return new NetherOS.Vec2(this.pos.x, this.pos.y);
 	};
 
 	setPosition(x=null, y=null) {
@@ -994,7 +991,7 @@ class Window {
 		// i did this thinking it was wise to not make it too easy to just
 		// overwrite data in the working reference.
 
-		return new Vec2(this.size.w, this.size.h);
+		return new NetherOS.Vec2(this.size.w, this.size.h);
 	};
 
 	setSize(w=null, h=null, unit='px') {

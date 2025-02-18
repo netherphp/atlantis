@@ -307,8 +307,8 @@ table, td, th {
 	overflow-y: scroll;
 
 	/* this enables @container queries */
-	container-type: inline-size;
-	container-name: atl-win-body;
+	/*container-type: inline-size;
+	container-name: atl-win-body;*/
 }
 
 .atl-dtop-win.autosize-temp > section {
@@ -471,7 +471,7 @@ table, td, th {
 	align-items: center;
 	justify-content: stretch;
 
-	border-right: 1px solid var(--atl-dtop-cfg-colour-nullary);
+	border-right: var(--atl-dtop-cfg-gap-primary) solid var(--atl-dtop-cfg-colour-nullary);
 	height: 100%;
 	width: 100%;
 }

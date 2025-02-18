@@ -47,6 +47,11 @@ let zTemplateToolWindowHTML = `
 
 let TemplateToolWindowHTML = `
 <style type="text/css">
+.atl-apitool-win {
+	container-type: size;
+	container-name: atl-win-body;
+}
+
 .atl-apitool-win-grid {
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-template-rows: auto fit-content(4lh) 1fr;
@@ -73,11 +78,11 @@ let TemplateToolWindowHTML = `
 				<div class="fw-bold">Verb</div>
 				<input type="text" class="form-control" data-win-input="Verb" value="GET" />
 			</div>
-			<div class="mb-2">
+			<div class="mb-4">
 				<div class="fw-bold">URL</div>
 				<input type="text" class="form-control" data-win-input="URL" />
 			</div>
-			<div class="mb-2">
+			<div class="mb-0">
 				<button class="atl-dtop-btn atl-dtop-btn btn-block" data-win-action="add-key-value">
 					<i class="mdi mdi-plus"></i>
 					Add Key/Value
@@ -127,7 +132,7 @@ extends NetherOS.App {
 		let w = new ApiToolWindow(this);
 
 		this.registerWindow(w);
-		w.setSize(720, 480);
+		w.setSize(720, 400);
 		w.show();
 		w.centerInParent();
 

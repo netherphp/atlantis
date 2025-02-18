@@ -148,7 +148,13 @@ authourative index.
 
 		////////
 
+		if(typeof window.NetherDesktopLoader === 'object')
+		return window.NetherDesktopLoader;
+
+		////////
+
 		for(const k in this.Files) {
+
 			let url = `${this.Files[k]}?v=${this.CacheBuster}`;
 			let modlod = import(url);
 
@@ -171,10 +177,16 @@ authourative index.
 		if(typeof onReady === 'function')
 		waitzord.then(onReady);
 
+		window.NetherDesktopLoader = waitzord;
+
 		return waitzord;
 	};
 
 };
 
+if(typeof window.NetherOS === 'undefined') {
+	window.NetherOS = new Framework;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
-export default new Framework; //////////////////////////////////////////////////
+export default window.NetherOS; ////////////////////////////////////////////////
