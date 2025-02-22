@@ -1082,6 +1082,16 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	////////////////////////////////////////////////////////////////
 
 	static public function
+	GetByAlias(string $Alias):
+	?static {
+
+		return static::GetByField('Alias', $Alias);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
 	Insert(iterable $Input):
 	?static {
 
@@ -1107,6 +1117,28 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		////////
 
 		return parent::Insert($Input);
+	}
+
+	#[Common\Meta\Date('2025-02-21')]
+	#[Common\Meta\Info('Fetch a profile matching this alias, making a new one if it does not exist yet.')]
+	static public function
+	Touch(string $Alias, string $Title, int $Enabled=0):
+	static {
+
+		$Profile = static::GetByAlias($Alias);
+
+		////////
+
+		if(!$Profile)
+		$Profile = static::Insert([
+			'Alias'   => $Alias,
+			'Title'   => $Title,
+			'Enabled' => $Enabled
+		]);
+
+		////////
+
+		return $Profile;
 	}
 
 	////////////////////////////////////////////////////////////////

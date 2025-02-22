@@ -95,7 +95,7 @@ implements
 
 			Key::ConfAccessIgnoreAgentHard => (
 				// abusive bots who identify themselves.
-				'AhrefsBot|Amazonbot|Barkrowler|BLEXBot|Bytespider|Bytedance|ClaudeBot|DataForSeoBot|DotBot|FriendlyCrawler|GoogleOther|GPTBot|IonCrawl|ImagesiftBot|MJ12bot|SemrushBot|serpstatbot|PetalBot|'
+				'AhrefsBot|Amazonbot|AwarioBot|Barkrowler|BLEXBot|Bytespider|Bytedance|ClaudeBot|DataForSeoBot|DotBot|FriendlyCrawler|GoogleOther|GPTBot|IonCrawl|ImagesiftBot|MJ12bot|SemrushBot|serpstatbot|PetalBot|'
 				// abusive bots who identify themselves poorly.
 				. 'paloaltonetworks|linkfluence|internet\\-measurement|naver\\.me|'
 				// abusive libraries used by people who cant be arsed to change the ua.
