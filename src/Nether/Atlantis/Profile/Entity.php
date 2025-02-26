@@ -1122,19 +1122,36 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	#[Common\Meta\Date('2025-02-21')]
 	#[Common\Meta\Info('Fetch a profile matching this alias, making a new one if it does not exist yet.')]
 	static public function
-	Touch(string $Alias, string $Title, int $Enabled=0):
+	Touch(string $Alias, string $Title, string $Details='', ?string $ParentUUID=NULL, ?iterable $Tags=NULL, int $Enabled=0):
 	static {
 
 		$Profile = static::GetByAlias($Alias);
 
 		////////
 
-		if(!$Profile)
-		$Profile = static::Insert([
-			'Alias'   => $Alias,
-			'Title'   => $Title,
-			'Enabled' => $Enabled
-		]);
+		if(!$Profile) {
+			$Profile = static::Insert([
+				'Alias'      => $Alias,
+				'Title'      => $Title,
+				'Details'    => $Details,
+				'ParentUUID' => $ParentUUID,
+				'Enabled'    => $Enabled
+			]);
+
+			if($Tags !== NULL)
+			foreach($Tags as $T) {
+				$TagID = match(TRUE) {
+					($T instanceof Atlantis\Tag\Entity)
+					=> $T->ID,
+
+					default
+					=> (int)$T
+				};
+
+				Atlantis\Profile\EntityTagLink::InsertByPair($TagID, $Profile->UUID);
+			}
+
+		}
 
 		////////
 

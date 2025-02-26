@@ -540,6 +540,9 @@ as html pages. //*/
 		// should not do this. the rewire trick works, but only if it was
 		// a WillConfirmAnswer method and not the method itself.
 
+		if(!defined('UNIT_TEST_GO_BRRRT'))
+		throw new Error\Quit($Err, $Msg);
+
 		//if(!defined('UNIT_TEST_GO_BRRRT'))
 		//exit(0);
 

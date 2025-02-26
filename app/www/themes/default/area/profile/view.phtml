@@ -44,8 +44,6 @@ if(isset($Photos) && $Photos->Count() >= 6) {
 
 ?>
 
-<?php if(!$Embed) $Surface->Area('design/subheader'); ?>
-
 <?php $Surface->Area('profile/view-before', $__SCOPE) ?>
 
 <div class="<?php $Util->Print($Embed ? 'atl-profile-view' : 'container atl-profile-view') ?>">
