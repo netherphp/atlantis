@@ -27,7 +27,8 @@ extends Atlantis\Tag\EntityLink {
 
 		parent::FindExtendOptions($Input);
 
-		$Input['Enabled'] ??= 1;
+		$Input->Define('Enabled', 1);
+		$Input->Define('ProfileParentUUID', NULL);
 
 		return;
 	}
@@ -40,6 +41,13 @@ extends Atlantis\Tag\EntityLink {
 
 		if($Input['Enabled'] !== NULL)
 		$SQL->Where('PRO.Enabled=:Enabled');
+
+		if($Input['ProfileParentUUID'] !== NULL) {
+			if(is_array($Input['ProfileParentUUID'])) {
+				$SQL->Where('PRO.ParentUUID IN(:ProfileParentUUID)');
+				$SQL->Group('Main.TagID');
+			}
+		}
 
 		return;
 	}
