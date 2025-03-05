@@ -40,6 +40,10 @@ implements AccessTypeDefineInterface {
 			new AccessTypeDef(
 				Atlantis\Key::AccessTagAdmin, 1,
 				'Use site administration tags.'
+			),
+			new AccessTypeDef(
+				Atlantis\Blob\Entity::AccessTypeManage, 1,
+				'Manage Content Blobs'
 			)
 		];
 

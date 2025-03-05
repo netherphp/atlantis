@@ -22,6 +22,9 @@ extends Atlantis\Prototype {
 	TypeHTML     = 'html',
 	TypeEditorJS = 'json-ejs';
 
+	const
+	AccessTypeManage = 'Nether.Atlantis.Blob.Entity.Manage';
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -83,6 +86,36 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public function
+	GetEditAttributes():
+	Common\Datastore {
+
+		$Output = new Common\Datastore([
+			'data-atl-blob-cmd'  => 'edit',
+			'data-atl-blob-uuid' => $this->UUID,
+			'data-atl-blob-type' => $this->Type
+		]);
+
+		return $Output;
+	}
+
+	public function
+	GetEditAttributesForHTML():
+	string {
+
+		$Attribs = $this->GetEditAttributes();
+
+		$Attribs->RemapKeyValue(
+			fn(string $K, string $V)
+			=> sprintf('%s="%s"', $K, $V)
+		);
+
+		return $Attribs->Join(' ');
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static public function
 	TouchByUUID(string $UUID):
 	static {
@@ -93,6 +126,27 @@ extends Atlantis\Prototype {
 		$Ent = static::Insert([
 			'UUID' => $UUID
 		]);
+
+		return $Ent;
+	}
+
+	static public function
+	Touch(string $UUID, string $Type=self::TypeHTML, string $Title='', string $Content=''):
+	static {
+
+		$Ent = static::GetByUUID($UUID);
+
+		////////
+
+		if(!$Ent)
+		$Ent = static::Insert([
+			'UUID'    => $UUID,
+			'Type'    => $Type,
+			'Title'   => $Title,
+			'Content' => $Content
+		]);
+
+		////////
 
 		return $Ent;
 	}

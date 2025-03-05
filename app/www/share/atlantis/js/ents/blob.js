@@ -9,7 +9,12 @@ let BlobEditTemplate = `
 <div>
 	<input type="hidden" name="UUID" value="" />
 	<input type="hidden" name="Type" value="" />
-	<div>
+	<div class="mb-4">
+		<div class="fw-bold">Title</div>
+		<input type="text" name="Title" class="form-control" />
+	</div>
+	<div class="mb-0">
+		<div class="fw-bold">Content</div>
 		<div id="AtlBlobEditor" class="Editor"></div>
 	</div>
 </div>
@@ -26,6 +31,7 @@ extends ModalWindow {
 
 		this.elUUID = this.element.find('input[name="UUID"]');
 		this.elType = this.element.find('input[name="Type"]');
+		this.elTitle = this.element.find('input[name="Title"]');
 
 		this.elEdit = this.element.find('textarea[name="Editor"]');
 		this.editor = null;
@@ -70,11 +76,13 @@ extends ModalWindow {
 
 		let uuid = this.elUUID.val();
 		let type = this.elType.val();
+		let title = this.elTitle.val();
 		let text = this.editor.getHTML();
 
 		let api = new API.Request('PATCH', '/api/atl/blob/entity', {
-			'UUID': uuid,
-			'Type': type,
+			'UUID':    uuid,
+			'Type':    type,
+			'Title':   title,
 			'Content': text
 		});
 
@@ -99,6 +107,7 @@ extends ModalWindow {
 
 		(api.send())
 		.then(function(r){
+			self.elTitle.val(r.payload.Title);
 			self.editor.setContent(r.payload.Content);
 			return;
 		});

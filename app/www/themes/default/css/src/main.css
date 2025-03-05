@@ -470,3 +470,39 @@ table td {
 	margin-bottom: 6em;
 }
 
+.atl-pin-top-right {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	transform: translate(50%, -50%);
+}
+
+.atl-pin-top-right2 {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	transform: translate(50%, 50%);
+}
+
+@media(max-width: 576px) {
+	.atl-pin-top-right {
+		transform: translate(10%, -50%);
+	}
+	.atl-pin-top-right2 {
+		transform: translate(10%, 50%);
+	}
+}
+
+.atl-btn-sm-dark {
+	background-color: color-mix(in srgb, var(--theme-black) 75%, transparent);
+	color: var(--theme-white);
+
+	border: 0px;
+	border-radius: 4px;
+	font-size: initial;
+	font-weight: bold;
+	line-height: initial;
+	padding: 0px 4px;
+	text-transform: uppercase;
+}
+

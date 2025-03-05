@@ -1077,6 +1077,181 @@ extends ToolbarButton {
 
 };
 
+class EditorColourDialog
+extends ModalDialog {
+
+	constructor(editor) {
+		super(TemplateEditorColourModal);
+
+		this.editor = editor;
+		this.inputColour = this.body.find('input[name=Colour]');
+
+		return;
+	};
+
+	onAccept() {
+
+		let c = jQuery.trim(this.inputColour.val());
+		let attr = {};
+
+		console.log(`[EditorColourDialog.onAccept]: picked ${c}`);
+
+		if(!c) {
+			console.log('Insert Colour: no colour');
+			this.destroy();
+			return false;
+		}
+
+		if(!this.editor.isAnyTextSelected()) {
+			let current = this.getCurrentElement();
+
+			if(!current) {
+				console.log('Insert Colour: no selection and not within existing colour.');
+				this.destroy();
+				return false;
+			}
+
+			this.editor.selectNode(current);
+		}
+
+		////////
+
+		attr.style = `color:${c}`;
+		console.log(attr);
+
+		////////
+
+		// prefer the changeFormat method over the makeLink method
+		// provided as this allows to clean up preventing the user
+		// from making overlapping links which i've already done
+		// myself like 40 times.
+
+		this.editor.api.setTextColour(c);
+
+		/*
+		this.editor.api.changeFormat(
+			new SquireTag('span', attr),
+			new SquireTag('span'),
+			null,
+			true
+		);
+		*/
+
+		this.destroy();
+		return false;
+	};
+
+	getCurrentElement() {
+
+		let range = this.editor.api.getSelection();
+
+		let current = Squire.getNearest(
+			range.commonAncestorContainer,
+			this.editor._root,
+			'SPAN'
+		);
+
+		return current;
+	};
+
+	fillFromCurrent() {
+
+		let current = this.getCurrentElement();
+
+		if(current) {
+			let c = current.style.color;
+
+			if(c.match(/^rgb\(/))
+			c = this.rgbStringToHexString(c);
+
+			this.inputColour.val(c);
+		}
+
+		return this;
+	};
+
+	rgbStringToHexString(rgb) {
+		// Choose correct separator
+		let sep = rgb.indexOf(",") > -1 ? "," : " ";
+
+		// Turn "rgb(r,g,b)" into [r,g,b]
+		rgb = rgb.substr(4).split(")")[0].split(sep);
+
+		let r = (+rgb[0]).toString(16),
+			g = (+rgb[1]).toString(16),
+			b = (+rgb[2]).toString(16);
+
+		if (r.length == 1)
+		r = "0" + r;
+		if (g.length == 1)
+		g = "0" + g;
+		if (b.length == 1)
+		b = "0" + b;
+
+		return "#" + r + g + b;
+	};
+
+};
+
+class ToolbarButtonColour
+extends ToolbarButton {
+
+	constructor(editor) {
+		super(editor, 'Font Color', 'mdi mdi-fw mdi-palette');
+		return;
+	};
+
+	onClick() {
+
+		let diag = (new EditorColourDialog(this.editor))
+		.setTitle('Font Color...')
+		.addButton('Cancel', 'btn-dark', 'cancel')
+		.addButton('Save', 'btn-primary', 'accept')
+		.fillFromCurrent();
+
+		diag.show();
+
+		return false;
+	};
+
+};
+
+class ToolbarButtonFontSize
+extends ToolbarButton {
+
+	constructor(editor, level, icon) {
+
+		super(editor, `Font Size: ${level}`, icon);
+		this.size = level;
+
+		return;
+	};
+
+	onClick() {
+
+		this.editor.api.setFontSize(this.size);
+
+		return;
+	};
+
+};
+
+class ToolbarDropdownFontSize
+extends ToolbarDropdown {
+	constructor(editor) {
+		super(editor, 'Font Size', 'mdi mdi-fw mdi-format-size');
+
+		this
+		.addButton(new ToolbarButtonFontSize(editor, 12, 'mdi mdi-size-xs'))
+		.addButton(new ToolbarButtonFontSize(editor, 14, 'mdi mdi-size-s'))
+		.addButton(new ToolbarButtonFontSize(editor, 16, 'mdi mdi-size-m'))
+		.addButton(new ToolbarButtonFontSize(editor, 22, 'mdi mdi-size-l'))
+		.addButton(new ToolbarButtonFontSize(editor, 32, 'mdi mdi-size-xl'));
+
+		return;
+	};
+};
+
 class ToolbarButtonDeselectDone
 extends ToolbarButton {
 
@@ -1106,6 +1281,8 @@ extends Toolbar {
 			new ToolbarButtonItalic(this.editor),
 			new ToolbarButtonUnderline(this.editor),
 			new ToolbarDropdownHeading(this.editor),
+			new ToolbarDropdownFontSize(this.editor),
+			new ToolbarButtonColour(this.editor),
 			new ToolbarButtonBulletList(this.editor),
 			new ToolbarButtonNumberedList(this.editor),
 			new ToolbarButtonIndent(this.editor),
@@ -1200,6 +1377,18 @@ let TemplateEditorHyperlinkModal = `
 			<input type="checkbox" name="OpenNew" value="1" />
 			Open in new Tab/Window?
 		</label>
+	</div>
+</div>
+`;
+
+let TemplateEditorColourModal = `
+<div class="row">
+	<div class="col-12 mb-4">
+		<div><strong>Color:</strong></div>
+		<input type="color" name="Colour" class="form-control" />
+	</div>
+	<div class="col-12 mb-4">
+		[prefab pallete]
 	</div>
 </div>
 `;

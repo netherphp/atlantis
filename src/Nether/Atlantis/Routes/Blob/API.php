@@ -14,6 +14,7 @@ class API
 extends Atlantis\ProtectedAPI {
 
 	#[Atlantis\Meta\RouteHandler('/api/atl/blob/entity', Verb: 'GET')]
+	#[Atlantis\Meta\RouteAccessType(Atlantis\Blob\Entity::AccessTypeManage)]
 	public function
 	EntityGet():
 	void {
@@ -31,6 +32,7 @@ extends Atlantis\ProtectedAPI {
 	}
 
 	#[Atlantis\Meta\RouteHandler('/api/atl/blob/entity', Verb: 'PATCH')]
+	#[Atlantis\Meta\RouteAccessType(Atlantis\Blob\Entity::AccessTypeManage)]
 	public function
 	EntityPatch():
 	void {

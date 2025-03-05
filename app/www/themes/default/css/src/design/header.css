@@ -40,6 +40,8 @@
 }
 
 .atl-page-header-menubtn {
+	border-color: var(--theme-white);
+	color: var(--theme-white);
 	padding: 0px 0.5rem;
 }
 
@@ -47,6 +49,13 @@
 	font-size: 2.0rem;
 	line-height: 2.0rem;
 	margin: 0px 0px;
+}
+
+.atl-page-header-menubtn:hover {
+	background-color: var(--theme-white);
+	border-color: var(--theme-white);
+	color: var(--theme-black);
+	padding: 0px 0.5rem;
 }
 
 .atl-page-header nav .btn {
