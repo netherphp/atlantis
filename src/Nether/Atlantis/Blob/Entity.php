@@ -40,6 +40,12 @@ extends Atlantis\Prototype {
 	public ?string
 	$Title = NULL;
 
+	#[Database\Meta\TypeVarChar(Size: 255)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$ImageURL = NULL;
+
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
@@ -52,17 +58,22 @@ extends Atlantis\Prototype {
 	public function
 	DescribeForPublicAPI():
 	array {
+
 		return [
-			'ID'      => $this->ID,
-			'UUID'    => $this->UUID,
-			'Type'    => $this->Type,
-			'Title'   => $this->Title,
-			'Content' => $this->GetContent()
+			'ID'       => $this->ID,
+			'UUID'     => $this->UUID,
+			'Type'     => $this->Type,
+			'Title'    => $this->Title,
+			'ImageURL' => $this->ImageURL,
+			'Content'  => $this->GetContent()
 		];
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
-	HasAnything():
+	HasContent():
 	bool {
 
 		if($this->Content === NULL)
@@ -71,16 +82,52 @@ extends Atlantis\Prototype {
 		if(strlen($this->Content) === 0)
 		return FALSE;
 
+		// todo:
+		// check for that annoying condition where someone empties the
+		// wysiwyg but it leaves behind trace html that is technically
+		// not empty despite being empty.
+
 		////////
 
 		return TRUE;
 	}
 
 	public function
+	HasImageURL():
+	bool {
+
+		return ($this->ImageURL !== NULL);
+	}
+
+	public function
+	HasTitle():
+	bool {
+
+		return ($this->Title !== NULL);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
 	GetContent():
 	?string {
 
 		return $this->Content;
+	}
+
+	public function
+	GetTitle():
+	?string {
+
+		return $this->Title;
+	}
+
+	public function
+	GetImageURL():
+	?string {
+
+		return $this->ImageURL;
 	}
 
 	////////////////////////////////////////////////////////////////
