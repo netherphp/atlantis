@@ -15,7 +15,7 @@ let BlobEditTemplate = `
 	</div>
 	<div class="mb-4">
 		<div class="fw-bold">Content</div>
-		<div id="AtlBlobEditor" class="Editor"></div>
+		<div class="Editor AtlBlobEditor"></div>
 	</div>
 	<div class="mb-0">
 		<div class="fw-bold">Image URL</div>
@@ -62,7 +62,7 @@ extends ModalWindow {
 		this.elType.val(type);
 
 		if(type === 'html') {
-			this.editor = new EditorHTML('#AtlBlobEditor');
+			this.editor = new EditorHTML(this.element.find('.AtlBlobEditor').get(0));
 		}
 
 		return this;
@@ -194,7 +194,7 @@ class BlobEntity {
 	static WhenCommandEdit(jEv, btn) {
 
 		let uuid = btn.attr('data-atl-blob-uuid');
-		let type = btn.attr('data-atl-blob-type') || 'text';
+		let type = btn.attr('data-atl-blob-type') || 'html';
 
 		let win = BlobEditEntityWindow.ForUUID(uuid, type);
 
