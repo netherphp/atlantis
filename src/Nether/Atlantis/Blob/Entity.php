@@ -28,6 +28,13 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
+	#[Database\Meta\ForeignKey('AtlBlobGroups', 'ID', Update: TRUE, Delete: NULL)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
+	public int
+	$GroupID;
+
 	#[Database\Meta\TypeChar(Size: 16)]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
@@ -62,6 +69,7 @@ extends Atlantis\Prototype {
 		return [
 			'ID'       => $this->ID,
 			'UUID'     => $this->UUID,
+			'GroupID'  => $this->GroupID,
 			'Type'     => $this->Type,
 			'Title'    => $this->Title,
 			'ImageURL' => $this->ImageURL,
@@ -158,6 +166,46 @@ extends Atlantis\Prototype {
 		);
 
 		return $Attribs->Join(' ');
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static protected function
+	FindExtendOptions(Common\Datastore $Input):
+	void {
+
+		$Input->Define([
+			'GroupID' => NULL
+		]);
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if($Input['GroupID'])
+		$SQL->Where('Main.GroupID=:GroupID');
+
+		return;
+	}
+
+	static protected function
+	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		switch($Input['Sort']) {
+			case 'title-az':
+				$SQL->Sort('Main.Title', $SQL::SortDesc);
+			break;
+			case 'title-za':
+				$SQL->Sort('Main.Title', $SQL::SortAsc);
+			break;
+		}
+
+		return;
 	}
 
 	////////////////////////////////////////////////////////////////

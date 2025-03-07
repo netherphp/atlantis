@@ -495,7 +495,7 @@ table td {
 
 .atl-btn-sm-dark {
 	background-color: color-mix(in srgb, var(--theme-black) 75%, transparent);
-	color: var(--theme-white);
+	color: var(--theme-white) !important;
 
 	border: 0px;
 	border-radius: 4px;
@@ -504,5 +504,6 @@ table td {
 	line-height: initial;
 	padding: 0px 4px;
 	text-transform: uppercase;
+	text-decoration: none !important;
 }
 

@@ -5,6 +5,21 @@ import EditorHTML  from '../../../nui/modules/editor/editor.js';
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+let BlobNewTemplate = `
+<div>
+	<input type="hidden" name="GroupID" value="" />
+	<input type="hidden" name="Type" value="html" />
+	<div class="mb-4">
+		<div class="fw-bold">Title</div>
+		<input type="text" name="Title" class="form-control" />
+	</div>
+	<div class="mb-4">
+		<div class="fw-bold">Content</div>
+		<div class="Editor AtlBlobEditor"></div>
+	</div>
+</div>
+`;
+
 let BlobEditTemplate = `
 <div>
 	<input type="hidden" name="UUID" value="" />
@@ -26,6 +41,73 @@ let BlobEditTemplate = `
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+class BlobNewEntityWindow
+extends ModalWindow {
+
+	constructor(type, group=null) {
+		super(BlobNewTemplate);
+
+		this.elGroup = this.element.find('input[name="GroupID"]');
+		this.elType = this.element.find('input[name="Type"]');
+		this.elTitle = this.element.find('input[name="Title"]');
+		this.editor = null;
+
+		this.setWidth('95vw');
+		this.setTitle('New Item');
+		this.addButton('Save', 'btn-primary', 'accept');
+		this.addButton('Cancel', 'btn-secondary', 'cancel');
+
+		this.setType(type);
+		this.setGroup(group);
+
+		this.show();
+		return;
+	};
+
+	setType(type) {
+
+		this.elType.val(type);
+
+		if(type === 'html') {
+			this.editor = new EditorHTML(this.element.find('.AtlBlobEditor').get(0));
+		}
+
+		return this;
+	};
+
+	setGroup(group) {
+
+		this.elGroup.val(group);
+
+		return this;
+	};
+
+	onAccept() {
+
+		let group = this.elGroup.val() || null;
+		let type = this.elType.val() || 'html';
+		let title = this.elTitle.val();
+		let text = this.editor.getHTML();
+
+		let api = new API.Request('POST', '/api/atl/blob/entity', {
+			'GroupID':  group,
+			'Type':     type,
+			'Title':    title,
+			'Content':  text
+		});
+
+		(api.send())
+		.then(function(r){
+			location.reload();
+			return;
+		})
+		.catch(api.catch);
+
+		return;
+	};
+
+};
 
 class BlobEditEntityWindow
 extends ModalWindow {
@@ -146,6 +228,7 @@ class BlobEntity {
 
 		this.id = null;
 		this.uuid = null;
+		this.groupID = null;
 		this.type = null;
 		this.title = null;
 		this.content = null;
@@ -161,6 +244,7 @@ class BlobEntity {
 		return {
 			'ID':      ent.id,
 			'UUID':    ent.uuid,
+			'GroupID': ent.groupID,
 			'Type':    ent.type,
 			'Title':   ent.title,
 			'Content': ent.content
@@ -173,6 +257,7 @@ class BlobEntity {
 
 		output.id = payload.ID;
 		output.uuid = payload.UUID;
+		output.groupID = payload.GroupID;
 		output.type = payload.Type;
 		output.title = payload.Title;
 		output.content = payload.Content;
@@ -185,8 +270,23 @@ class BlobEntity {
 
 	static WhenDocumentReady() {
 
+		jQuery('[data-atl-blob-cmd="new"]')
+		.on('click', function(jEv){ BlobEntity.WhenCommandNew(jEv, jQuery(this)); });
+
 		jQuery('[data-atl-blob-cmd="edit"]')
 		.on('click', function(jEv){ BlobEntity.WhenCommandEdit(jEv, jQuery(this)); });
+
+		return;
+	};
+
+	static WhenCommandNew(jEv, btn) {
+
+		let group = btn.attr('data-atl-blob-group') || null;
+		let type = btn.attr('data-atl-blob-type') || 'html';
+
+		let win = new BlobNewEntityWindow(type, group);
+
+		win.show();
 
 		return;
 	};
