@@ -47,6 +47,23 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/atl/v1/file/entity', Verb: 'DELETE')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Common\Meta\DateAdded('2025-03-11')]
+	public function
+	FileEntityDelete():
+	void {
+
+		$File = $this->RequireEntityByInput();
+		$Edit = $this->RequireUserCanEdit($File);
+
+		////////
+
+		$File->Drop();
+
+		return;
+	}
+
 	#[Atlantis\Meta\RouteHandler('/api/atl/v1/file/entity', Verb: 'PATCH')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	#[Common\Meta\DateAdded('2025-03-11')]

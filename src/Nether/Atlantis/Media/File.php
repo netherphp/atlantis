@@ -233,7 +233,8 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			'Type'        => $this->Type,
 			'DateCreated' => $this->DateCreated->Get(),
 			'URL'         => $this->GetPublicURL(),
-			'ExtraFiles'  => $this->ExtraFiles->Keys()
+			'ExtraFiles'  => $this->ExtraFiles->Keys(),
+			'ExtraData'   => $this->ExtraData->Export()
 		];
 	}
 
@@ -739,6 +740,14 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		parent::FindExtendSorts($SQL, $Input);
 
 		switch($Input['Sort']) {
+			case 'name-az':
+				$SQL->Sort('Main.Name', $SQL::SortAsc);
+			break;
+
+			case 'name-za':
+				$SQL->Sort('Main.Name', $SQL::SortDesc);
+			break;
+
 			case 'newest':
 				$SQL->Sort('Main.TimeCreated', $SQL::SortDesc);
 			break;
