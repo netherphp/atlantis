@@ -14,7 +14,8 @@ use Imagick;
 #[Database\Meta\InsertUpdate]
 #[Database\Meta\InsertReuseUnique]
 class File
-extends Atlantis\Prototype {
+extends Atlantis\Prototype
+implements Atlantis\Interfaces\ExtraDataInterface {
 
 	const
 	TypeFile = 'file',
@@ -22,6 +23,9 @@ extends Atlantis\Prototype {
 
 	const
 	EntType = 'Media.Image'; // TODO make File.Entity and update all records.
+
+	use
+	Atlantis\Packages\ExtraData;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -45,6 +49,8 @@ extends Atlantis\Prototype {
 	$Size;
 
 	#[Database\Meta\TypeVarChar(Size: 128, Nullable: FALSE)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'Trimmed' ])]
 	public string
 	$Name;
 
@@ -645,7 +651,12 @@ extends Atlantis\Prototype {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
-		$Input['Sort'] ??= 'newest';
+		parent::FindExtendOptions($Input);
+
+		$Input->Define([
+			'TagsAll' => NULL,
+			'Sort'    => 'newest'
+		]);
 
 		return;
 	}
@@ -656,12 +667,76 @@ extends Atlantis\Prototype {
 
 		parent::FindExtendFilters($SQL, $Input);
 
+		if($Input['TagsAll'] !== NULL)
+		static::FindExtendFilters_ByEntityFields_TagsAll($SQL, $Input);
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_ByEntityFields_TagsAll(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		if(!is_iterable($Input['TagsAll']))
+		return;
+
+		$TLink = FileTagLink::GetTableInfo();
+
+		$GenTrainAnd = (function() use($SQL, $Input, $TLink) {
+
+			// this method generates a logical and restriction upon the
+			// main table by joining each tag over and over and honestly
+			// it is unclear if this is going to be a good idea or not.
+
+			$Key = 0;
+			$ID = NULL;
+			$TableQA = NULL;
+			$FieldQA = NULL;
+
+			$Tags = Common\Datastore::FromArray($Input['TagsAll']);
+			$Tags->Remap(function(int|Atlantis\Tag\Entity $T) {
+
+				if($T instanceof Atlantis\Tag\Entity)
+				return $T->ID;
+
+				return $T;
+			});
+
+			foreach($Tags as $ID) {
+				$Key += 1;
+
+				$TableQA = "TQA{$Key}";
+				$FieldQA = ":TagQA{$Key}";
+
+				$SQL->Join(sprintf(
+					'%s ON %s=%s',
+					$TLink->GetAliasedTable($TableQA),
+					$SQL::MkQuotedField('Main', 'UUID'),
+					$SQL::MkQuotedField($TableQA, 'EntityUUID')
+				));
+
+				$SQL->Where(sprintf(
+					'%s=%s',
+					$SQL::MkQuotedField($TableQA, 'TagID'),
+					$FieldQA
+				));
+
+				$Input[$FieldQA] = $ID;
+			}
+
+			return;
+		});
+
+		$GenTrainAnd();
+
 		return;
 	}
 
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
+
+		parent::FindExtendSorts($SQL, $Input);
 
 		switch($Input['Sort']) {
 			case 'newest':

@@ -7,7 +7,7 @@ use Nether\Common;
 use Nether\Database;
 
 class FileTagLink
-extends TagLink {
+extends Atlantis\Tag\EntityLink {
 
 	#[Atlantis\Meta\TagEntityProperty('file')]
 	public File
