@@ -193,6 +193,13 @@ extends Atlantis\ProtectedAPI {
 		->Type(Common\Filters\Text::TrimmedNullable(...))
 		->Name(Common\Filters\Text::TrimmedNullable(...));
 
+		($this->Data)
+		->FilterPush(
+			'Tags',
+			Common\Filters\Lists::CommaOfNullable(...),
+			Common\Filters\Numbers::IntType(...)
+		);
+
 		////////
 
 		$Type = $this->Data->Type ?: 'default';
@@ -203,6 +210,7 @@ extends Atlantis\ProtectedAPI {
 		$File = NULL;
 		$Done = NULL;
 		$Entity = NULL;
+		$Tags = $this->Data->Tags;
 
 		if(!$UUID)
 		$this->Quit(7);
@@ -242,7 +250,24 @@ extends Atlantis\ProtectedAPI {
 			'URL'    => $Done->GetStorageURL()
 		]);
 
+		$Entity->Update($Entity->Patch([
+			'ExtraData'=> [ 'OriginalName'=> $Name ] ]
+		));
+
 		$Entity->GenerateExtraFiles();
+
+		////////
+
+		// associate tags that were submitted along the way.
+
+		if(isset($Tags) && is_array($Tags)) {
+			foreach($Tags as $TagID)
+			Atlantis\Media\FileTagLink::InsertByPair($TagID, $Entity->UUID);
+
+			unset($TagID);
+		}
+
+		////////
 
 		// allow plugins to do follow up work.
 		// for example to upload a blog header our upload form should have

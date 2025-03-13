@@ -99,10 +99,9 @@ extends ModalDialog {
 		this.tagbin.find('span').remove();
 		this.tagbin.append(btn);
 
-		this.query.val('');
-		this.querybin.empty();
+		//this.query.val('');
+		//this.querybin.empty();
 
-		console.log(`[onSearchTagClick] tag remove: ${tid}`);
 		return;
 	};
 

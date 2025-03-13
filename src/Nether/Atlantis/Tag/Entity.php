@@ -271,6 +271,7 @@ implements
 		return parent::Insert($Input);
 	}
 
+	#[Common\Meta\Deprecated('2025-03-11')]
 	static public function
 	InsertIfMissing(iterable $Input):
 	?static {
@@ -296,6 +297,26 @@ implements
 		return static::Insert($Input);
 	}
 
+	#[Common\Meta\DateAdded('2025-03-11')]
+	static public function
+	Touch(string $Alias, string $Name, ?string $Type=NULL):
+	static {
+
+		$Ent = static::GetByAlias($Alias);
+
+		if(!$Ent) {
+			$Type ??= static::TypeTag;
+
+			$Ent = static::Insert([
+				'Name'  => $Name,
+				'Alias' => $Alias,
+				'Type'  => $Type
+			]);
+		}
+
+		return $Ent;
+	}
+
 	////////////////////////////////////////////////////////////////
 	//// OVERRIDE Common\Prototype /////////////////////////////////
 
@@ -307,7 +328,7 @@ implements
 	}
 
 	static public function
-	New(string $Type=NULL, string $Name=NULL, string $Alias=NULL):
+	New(?string $Type=NULL, ?string $Name=NULL, ?string $Alias=NULL):
 	static {
 
 		return new static([

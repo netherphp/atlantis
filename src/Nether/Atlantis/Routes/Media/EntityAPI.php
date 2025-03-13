@@ -1,4 +1,5 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 namespace Nether\Atlantis\Routes\Media;
 
@@ -6,14 +7,137 @@ use Nether\Atlantis;
 use Nether\Browser;
 use Nether\Common;
 use Nether\Storage;
+use Nether\User;
 
 use Exception;
 use Imagick;
 use GdImage;
 
+################################################################################
+################################################################################
+
+/*//
+
+Error Codes:
+	1 - file entity not found.
+	2 - user cannot edit file.
+//*/
+
+################################################################################
+################################################################################
+
 #[Common\Meta\Deprecated('2024-11-08', 'use Atlantis\Routes\FileUploadAPI instead.')]
 class EntityAPI
 extends Atlantis\Routes\UploadAPI {
+
+	#[Atlantis\Meta\RouteHandler('/api/atl/v1/file/entity', Verb: 'GET')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Common\Meta\DateAdded('2025-03-11')]
+	public function
+	FileEntityGet():
+	void {
+
+		$File = $this->RequireEntityByInput();
+		$Edit = $this->RequireUserCanEdit($File);
+
+		////////
+
+		$this->SetPayload($File->DescribeForPublicAPI());
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/atl/v1/file/entity', Verb: 'DELETE')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Common\Meta\DateAdded('2025-03-11')]
+	public function
+	FileEntityDelete():
+	void {
+
+		$File = $this->RequireEntityByInput();
+		$Edit = $this->RequireUserCanEdit($File);
+
+		////////
+
+		$File->Drop();
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/atl/v1/file/entity', Verb: 'PATCH')]
+	#[Atlantis\Meta\RouteAccessTypeUser]
+	#[Common\Meta\DateAdded('2025-03-11')]
+	public function
+	FileEntityPatch():
+	void {
+
+		$File = $this->RequireEntityByInput();
+		$Edit = $this->RequireUserCanEdit($File);
+		$Patch = $File->Patch($this->Data);
+
+		////////
+
+		if(count($Patch))
+		$File->Update($Patch);
+
+		////////
+
+		$this->SetPayload($File->DescribeForPublicAPI());
+
+		return;
+	}
+
+	#[Common\Meta\DateAdded('2025-03-11')]
+	protected function
+	RequireEntityByInput():
+	Atlantis\Media\File {
+
+		$Ent = NULL;
+
+		////////
+
+		if($Ent === NULL && $this->Data->Exists('ID'))
+		$Ent = Atlantis\Media\File::GetByID((int)$this->Data->Get('ID'));
+
+		if($Ent === NULL && $this->Data->Exists('UUID'))
+		$Ent = Atlantis\Media\File::GetByUUID((string)$this->Data->Get('UUID'));
+
+		////////
+
+		if($Ent === NULL)
+		$this->Quit(1, 'Entity Not Found');
+
+		////////
+
+		return $Ent;
+	}
+
+	protected function
+	RequireUserCanEdit(Atlantis\Media\File $File):
+	bool {
+
+		$Code = 2;
+		$Msg = 'no';
+
+		// no user no edit.
+
+		if(!$this->HasUser())
+		$this->Quit($Code, $Msg);
+
+		// require admin or file ownership
+
+		if(!$this->IsUserAdmin()) {
+			if($File->UserID !== $this->User->ID)
+			$this->Quit($Code, $Msg);
+		}
+
+		// stepping all the way through means we are ok to continue.
+
+		return TRUE;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'GET')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
@@ -281,6 +405,7 @@ extends Atlantis\Routes\UploadAPI {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Deprecated('2025-03-11', 'TAGSGET /api/prototype/entity')]
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'TAGSGET')]
 	#[Atlantis\Meta\RouteAccessTypeUser]
 	public function
@@ -318,6 +443,7 @@ extends Atlantis\Routes\UploadAPI {
 		return;
 	}
 
+	#[Common\Meta\Deprecated('2025-03-11', 'TAGSPATCH /api/prototype/entity')]
 	#[Atlantis\Meta\RouteHandler('/api/media/entity', Verb: 'TAGSPATCH')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
