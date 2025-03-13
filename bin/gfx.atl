@@ -44,7 +44,7 @@ extends Console\Client {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('genshare')]
-	#[Common\Meta\DateAdded('2023-07-13')]
+	#[Common\Meta\Date('2023-07-13')]
 	#[Console\Meta\Info('Generate the social share sized versions of a graphic. Mostly used for site logos.')]
 	#[Console\Meta\Arg('path/to/image.png')]
 	#[Console\Meta\Toggle('--force', 'Allows overwriting existing output file.')]
@@ -126,6 +126,8 @@ extends Console\Client {
 
 		////////
 
+		$Colour1 = $BgColour;
+
 		$this
 		->FormatLn(sprintf('[%s]', __METHOD__), C: $Colour1, Bd: TRUE)
 		->PrintLn("• Input File: {$Filename}")
@@ -152,8 +154,8 @@ extends Console\Client {
 
 		////////
 
-		$ImageIn->Destroy();
-		$ImageOut->Destroy();
+		$ImageIn->Clear();
+		$ImageOut->Clear();
 
 		$this->PrintLn(sprintf(
 			'>> Output Size: %s',
@@ -161,6 +163,215 @@ extends Console\Client {
 		));
 
 		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('wm')]
+	#[Common\Meta\Date('2025-03-12')]
+	#[Console\Meta\Info('Overlay a watermark on a base image.')]
+	#[Console\Meta\Arg('path/to/base.jpg')]
+	#[Console\Meta\Arg('path/to/watermark.png')]
+	#[Console\Meta\Toggle('--minv', 'Invert the watermark colours.')]
+	#[Console\Meta\Value('--mrot', 'Rotate the watermark (degrees).')]
+	#[Console\Meta\Value('--mc', 'Number of times watermark is repeated (how many columns).')]
+	#[Console\Meta\Value('--mo', 'Opacity of watermark.')]
+	public function
+	GenerateWatermarkedImage():
+	int {
+
+		$BaseFile = $this->GetInput(1);
+		$MarkFile = $this->GetInput(2);
+
+		$OutputFile = $this->GetOption('output');
+		$MarkRot = (int)$this->GetOption('mrot');
+		$MarkInv = (bool)$this->GetOption('minv');
+		$MarkCount = (int)$this->GetOption('mc') ?: 5;
+		$MarkOpacity = (float)$this->GetOption('mo') ?: 0.05;
+
+		$Line1 = $this->GetOption('l1');
+		$Line2 = $this->GetOption('l2');
+
+		if($Line1 && $Line2)
+		$Line1 .= "\n{$Line2}";
+
+		////////
+
+		if(!file_exists($BaseFile))
+		throw new Common\Error\FileNotFound($BaseFile);
+
+		if(!file_exists($MarkFile))
+		throw new Common\Error\FileNotFound($MarkFile);
+
+		////////
+
+		$OutputFile ??= Common\Filesystem\Util::ReplaceFileExtension(
+			$BaseFile, 'wm.jpg'
+		);
+
+		////////
+
+		$this->PrintBulletList([
+			'Base File'      => $BaseFile,
+			'Watermark File' => $MarkFile,
+			'Output File'    => $OutputFile
+		]);
+
+		$Base = new Imagick($BaseFile);
+		$Mark = new Imagick($MarkFile);
+
+		////////
+
+		if($MarkRot)
+		$this->ImageRotate($Mark, $MarkRot);
+
+		if($MarkInv)
+		$this->ImageInvert($Mark);
+
+		if($MarkCount)
+		$this->ImageResizeForColumns($Mark, $Base, $MarkCount);
+
+		if($MarkOpacity)
+		$this->ImageAlphaMult($Mark, $MarkOpacity);
+
+		////////
+
+		$Base = $Base->TextureImage($Mark);
+
+		if($Line1)
+		$this->ImageAnnotate($Base, $Line1);
+
+		$Base->WriteImage($OutputFile);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Info('Put text on the image.')]
+	#[Common\Meta\Date('2025-03-12')]
+	protected function
+	ImageAnnotate(Imagick $Input, string $Text):
+	Imagick {
+
+		$Draw = new ImagickDraw;
+		$TColour = new ImagickPixel('red');
+		$SColour = new ImagickPixel('black');
+		$SWidth = 2;
+
+		$Rot = 0;
+		$Pos = new Common\Units\Vec2(
+			($Input->GetImageWidth() / 2),
+			($Input->GetImageHeight())
+		);
+
+		//$Fonts = Imagick::QueryFonts('*');
+		//print_r($Fonts);
+
+		//$Draw->SetStrokeLineJoin(Imagick::LINEJOIN_ROUND);
+		//$Draw->SetStrokeLineCap(Imagick::LINEJOIN_ROUND);
+		//$Draw->SetStrokeAntialias(TRUE);
+		//$Draw->SetStrokeWidth($SWidth);
+		//$Draw->SetStrokeColor($SColour);
+		$Draw->SetFillColor($TColour);
+		$Draw->SetFont('Helvetica-Bold');
+		$Draw->SetFontSize(20);
+		$Draw->SetTextAlignment(Imagick::ALIGN_CENTER);
+
+		$Box = $Input->QueryFontMetrics($Draw, $Text, TRUE);
+		$Pos->Y -= $Box['textHeight'] - $Box['boundingBox']['y2'];
+
+
+		$Draw->SetFillColor($SColour);
+		$Input->AnnotateImage($Draw, $Pos->X+1, $Pos->Y, $Rot, $Text);
+		$Input->AnnotateImage($Draw, $Pos->X-1, $Pos->Y, $Rot, $Text);
+		$Input->AnnotateImage($Draw, $Pos->X, $Pos->Y+1, $Rot, $Text);
+		$Input->AnnotateImage($Draw, $Pos->X, $Pos->Y-1, $Rot, $Text);
+
+		$Draw->SetFillColor($TColour);
+		$Input->AnnotateImage($Draw, $Pos->X, $Pos->Y, $Rot, $Text);
+
+		//$Draw->SetStrokeColor(new ImagickPixel('red'));
+
+		//$Input->AnnotateImage($Draw, $Pos->X, $Pos->Y, $Rot, $Text);
+
+		return $Input;
+	}
+
+	#[Common\Meta\Info('Rotate an image by a specified number of degrees.')]
+	#[Common\Meta\Date('2025-03-12')]
+	protected function
+	ImageRotate(Imagick $Input, float $Degrees):
+	Imagick {
+
+		$Transparent = new ImagickPixel('transparent');
+
+		$Input->RotateImage($Transparent, $Degrees);
+
+		return $Input;
+	}
+
+	#[Common\Meta\Info('Resize image to fit as a number of columns upon a base image.')]
+	#[Common\Meta\Date('2025-03-12')]
+	protected function
+	ImageResizeForColumns(Imagick $Input, Imagick $Base, int $Columns):
+	Imagick {
+
+		$Input->ResizeImage(
+			($Base->GetImageWidth() / $Columns), -1,
+			Imagick::FILTER_LANCZOS2, 1.0,
+			FALSE
+		);
+
+		return $Input;
+	}
+
+	#[Common\Meta\Info('Invert image colours.')]
+	#[Common\Meta\Date('2025-03-12')]
+	protected function
+	ImageInvert(Imagick $Input):
+	Imagick {
+
+		$Input->NegateImage(TRUE);
+
+		return $Input;
+	}
+
+	#[Common\Meta\Info('Fade the opacity of an image by a multiplier.')]
+	#[Common\Meta\Date('2025-03-12')]
+	protected function
+	ImageAlphaMult(Imagick $Input, float $AlphaMult=1.0):
+	Imagick {
+
+		// this exists because Imagick::SetImageOpacity sets every pixel
+		// to that exact opacity, causing edges of transparent things to
+		// loose their antialiasing and looking bloomed out.
+
+		$Iter = $Input->GetPixelIterator();
+		$Row = NULL;
+		$Pixel = NULL;
+		$Value = NULL;
+
+		while($Row = $Iter->GetNextIteratorRow()) {
+			/** @var array $Row */
+
+			foreach($Row as $Pixel) {
+				/** @var ImagickPixel $Pixel */
+
+				$Value = $Pixel->GetColorValue(Imagick::COLOR_ALPHA);
+				$Value *= $AlphaMult;
+
+				$Pixel->SetColorValue(Imagick::COLOR_ALPHA, $Value);
+				continue;
+			}
+
+			$Iter->SyncIterator();
+			continue;
+		}
+
+		return $Input;
 	}
 
 	////////////////////////////////////////////////////////////////
