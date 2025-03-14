@@ -190,11 +190,13 @@ extends Console\Client {
 		$MarkCount = (int)$this->GetOption('mc') ?: 5;
 		$MarkOpacity = (float)$this->GetOption('mo') ?: 0.05;
 
-		$Line1 = $this->GetOption('l1');
-		$Line2 = $this->GetOption('l2');
+		$TextBottom = new Common\Datastore;
 
-		if($Line1 && $Line2)
-		$Line1 .= "\n{$Line2}";
+		////////
+
+		for($L = 1; $L <= 9; $L++)
+		if($this->HasOption("tb{$L}"))
+		$TextBottom->Push($this->GetOption("tb{$L}"));
 
 		////////
 
@@ -218,31 +220,35 @@ extends Console\Client {
 			'Output File'    => $OutputFile
 		]);
 
-		$Base = new Imagick($BaseFile);
-		$Mark = new Imagick($MarkFile);
+		$BaseImg = Atlantis\Media\ImageEditor::FromFile($BaseFile);
+		$MarkImg = Atlantis\Media\ImageEditor::FromFile($MarkFile);
 
-		////////
+		// edit the watermark graphic as requested.
 
 		if($MarkRot)
-		$this->ImageRotate($Mark, $MarkRot);
-
-		if($MarkInv)
-		$this->ImageInvert($Mark);
+		$MarkImg->Rotate($MarkRot);
 
 		if($MarkCount)
-		$this->ImageResizeForColumns($Mark, $Base, $MarkCount);
+		$MarkImg->FitForColumnsIn($BaseImg, $MarkCount);
+
+		if($MarkInv)
+		$MarkImg->FilterInvert();
 
 		if($MarkOpacity)
-		$this->ImageAlphaMult($Mark, $MarkOpacity);
+		$MarkImg->FilterAlphaMult($MarkOpacity);
 
-		////////
+		// overlay the base image with the modified watermark.
 
-		$Base = $Base->TextureImage($Mark);
+		$BaseImg->CompositeTiled($MarkImg);
 
-		if($Line1)
-		$this->ImageAnnotate($Base, $Line1);
+		// annotate the base image with the supplied text.
 
-		$Base->WriteImage($OutputFile);
+		if($TextBottom->Count())
+		$BaseImg->AnnotateBottom($TextBottom->Export());
+
+		// write the final file to disk.
+
+		$BaseImg->Save($OutputFile);
 
 		return 0;
 	}

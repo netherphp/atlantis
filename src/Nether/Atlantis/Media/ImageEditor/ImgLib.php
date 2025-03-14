@@ -3,7 +3,9 @@
 
 namespace Nether\Atlantis\Media\ImageEditor;
 
+use Nether\Atlantis\Media\ImageEditor;
 use Nether\Common;
+
 
 ################################################################################
 ################################################################################
@@ -30,11 +32,14 @@ abstract class ImgLib {
 		$Use ??= static::$Use;
 
 		$Output = match($Use) {
-			($Use === static::Imagick)
+			static::Imagick
 			=> new ImgLibImagick,
 
+			static::GD
+			=> new ImgLibGD,
+
 			default
-			=> new ImgLibGD
+			=> throw new Common\Error\ConfigNotFound($Use)
 		};
 
 		return $Output;
@@ -51,7 +56,7 @@ abstract class ImgLib {
 	}
 
 	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	// FILE MANAGEMENT /////////////////////////////////////////////
 
 	abstract public function
 	Open(string $Filename):
@@ -72,12 +77,70 @@ abstract class ImgLib {
 	IsOpen():
 	bool;
 
-	////////////////////////////////
-	////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	// GEOMETRY ////////////////////////////////////////////////////
 
 	abstract public function
 	Fit(int $W, int $H):
 	static;
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	FitForColumnsIn(ImageEditor $Base, int $Columns=0):
+	static;
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	Rotate(float $Degrees):
+	static;
+
+	////////////////////////////////
+	////////////////////////////////
+
+	abstract public function
+	GetRaw():
+	mixed;
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	GetHeight():
+	int;
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	GetWidth():
+	int;
+
+	////////////////////////////////////////////////////////////////
+	// COLOUR FILTERS //////////////////////////////////////////////
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	FilterInvert():
+	static;
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	FilterAlphaMult(float $Mult):
+	static;
+
+	////////////////////////////////////////////////////////////////
+	// COMPOSITION /////////////////////////////////////////////////
+
+	abstract public function
+	OverlayTiled(ImageEditor $Overlay):
+	static;
+
+	////////////////////////////////////////////////////////////////
+	// TEXT STUFF //////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2025-03-13')]
+	abstract public function
+	AnnotateBottom(string|array $Text, int $TSize, int $TPad, string $TColour):
+	static;
+
+	////////////////////////////////////////////////////////////////
+	// METADATA ////////////////////////////////////////////////////
 
 	abstract public function
 	RemoveMetadata():
