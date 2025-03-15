@@ -83,7 +83,7 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'details' ], TRUE)
 		))
 		->Shove(static::EditItemAddress, Atlantis\Struct\DropdownItem::New(
-			Title: 'Addresss',
+			Title: 'Address & Contact',
 			Icon: 'mdi-pencil',
 			Attr: $Profile->GetDataAttr([ 'profile-cmd' => 'address' ], TRUE)
 		))

@@ -72,5 +72,19 @@ $MapURL = $Profile->GetMapURL();
 		</div>
 		<?php endif; ?>
 
+		<?php if($Profile->ContactPhone): ?>
+		<div class="font-size-large">
+			<span class="tt-upper fw-bold">Phone:</span>
+			<a href="tel:<?php $Util->Print(preg_replace('/[^\d]/', '', $Profile->ContactPhone)) ?>"><?php $Util->Print($Profile->ContactPhone) ?></a>
+		</div>
+		<?php endif; ?>
+
+		<?php if($Profile->ContactEmail): ?>
+		<div class="font-size-large">
+			<span class="tt-upper fw-bold">Email:</span>
+			<a href="mailto:<?php $Util->Print($Profile->ContactEmail) ?>"><?php $Util->Print($Profile->ContactEmail) ?></a>
+		</div>
+		<?php endif; ?>
+
 	</div>
 </div>

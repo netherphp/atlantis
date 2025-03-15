@@ -238,7 +238,9 @@ class Profile {
 				new DialogUtil.Field('text', 'AddressStreet2', 'Street Address 2'),
 				new DialogUtil.Field('text', 'AddressCity', 'City'),
 				new DialogUtil.Field('text', 'AddressState', 'State'),
-				new DialogUtil.Field('text', 'AddressPostalCode', 'Zip')
+				new DialogUtil.Field('text', 'AddressPostalCode', 'Zip'),
+				new DialogUtil.Field('text', 'ContactPhone', 'Phone'),
+				new DialogUtil.Field('text', 'ContactEmail', 'Email')
 			],
 			onAccept: function() {
 

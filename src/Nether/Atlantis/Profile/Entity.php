@@ -107,6 +107,20 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	public ?string
 	$AddressPostalCode;
 
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	#[Database\Meta\TypeVarChar(Size: 32)]
+	public ?string
+	$ContactPhone;
+
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	#[Database\Meta\TypeVarChar(Size: 128)]
+	public ?string
+	$ContactEmail;
+
 	#[Database\Meta\TypeText]
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
