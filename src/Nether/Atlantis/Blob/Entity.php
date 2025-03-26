@@ -90,6 +90,13 @@ extends Atlantis\Prototype {
 		if(strlen($this->Content) === 0)
 		return FALSE;
 
+		if(strlen($this->Content) <= 16) {
+			if(strip_tags($this->Content) === '')
+			return FALSE;
+		}
+
+
+
 		// todo:
 		// check for that annoying condition where someone empties the
 		// wysiwyg but it leaves behind trace html that is technically
@@ -120,6 +127,9 @@ extends Atlantis\Prototype {
 	public function
 	GetContent():
 	?string {
+
+		if(!$this->HasContent())
+		return NULL;
 
 		return $this->Content;
 	}
