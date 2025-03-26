@@ -1,5 +1,5 @@
 /*//
-@date 2025-03-07 03:13:48 UTC
+@date 2025-03-25 01:28:22 UTC
 @files 47 [
     "src\/imports.css",
     "src\/main.css",
@@ -2536,7 +2536,7 @@ code.cli {
 
 .si {
 	display: inline-block;
-	vertical-align: middle;
+	vertical-align: initial;
 	width: 1.0em;
 }
 
@@ -3252,43 +3252,79 @@ is being used and then prefixing all these with that theme name, if i recall. */
 //// src/elements/collapser.css //////////////////////////////////////////////*/
 
 .Collapser {
-		margin-bottom: 1.5em;
-	}
+	margin-bottom: 1.5em;
+}
 
-	.Collapser > header {
-		background-color: var(--bs-secondary-bg);
-		border-radius: 6px;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		font-size: 1.5em;
-		font-weight: bold;
-		margin-bottom: 0.75em;
-		padding: 6px 6px 6px 12px;
-		user-select: none;
-	}
+.Collapser > header {
+	background-color: var(--bs-secondary-bg);
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-bottom: 0.75em;
+	padding: 6px 6px 6px 12px;
+	user-select: none;
+}
 
-	.Collapser > header .Indicator {
-		font-size: 1.3em;
-		margin-left: 0.5em;
-		transform: rotate(0deg);
-		transition: transform 400ms;
-	}
+.Collapser > header .Indicator {
+	font-size: 1.3em;
+	margin-left: 0.5em;
+	transform: rotate(0deg);
+	transition: transform 400ms;
+}
 
-	.Collapser > section {
-		border-left: 4px solid var(--bs-secondary-bg);
-		display: none;
-		padding-left: 8px;
-	}
+.Collapser > section {
+	border-left: 4px solid var(--bs-secondary-bg);
+	display: none;
+	padding-left: 8px;
+}
 
-	.Collapser.Open > section {
-		display: block;
-	}
+.Collapser.Open > section {
+	display: block;
+}
 
-	.Collapser.Open > header .Indicator {
-		transform: rotate(225deg);
-	}
+.Collapser.Open > header .Indicator {
+	transform: rotate(225deg);
+}
+
+/*******************************************************************************
+** Boxy Stack Style ***********************************************************/
+
+.CollapserStack.Boxy {
+	border-top: 1px solid #00000066;
+}
+
+.CollapserStack.Boxy .Collapser {
+	margin: 0px;
+	padding: 0px;
+	border-bottom: 1px solid #00000066;
+}
+
+.CollapserStack.Boxy .Collapser header {
+	background-color: transparent;
+	border-radius: 0px;
+	padding: 1rem 0px;
+	margin: 0px;
+	font-size: 1.2em;
+}
+
+.CollapserStack.Boxy .Collapser section {
+	border: 0px;
+	padding: 0px 0px 1rem 0px;
+	margin: 0px;
+}
+
+.CollapserStack.Boxy .Collapser header .Indicator {
+	font-size: 1.6em;
+	transform: scaleY(1) rotate(0deg);
+}
+
+.CollapserStack.Boxy .Collapser.Open header .Indicator {
+	transform: scaleY(-1) rotate(0deg);
+}
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/dropsort.css ///////////////////////////////////////////////*/

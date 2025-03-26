@@ -25,11 +25,11 @@ $PAfter = Atlantis\Routes\Profile\ProfileWeb::ProfileViewExtraSectionsAfter(
 	$App, $Video->Profile
 );
 
-$PExtra = Atlantis\Routes\Profile\ProfileWeb::ProfileViewExtraData(
+$PExtra = Atlantis\Profile\Entity::FetchProfileExtraData(
 	$App, $Video->Profile
 );
 
-$PMenu = Atlantis\Routes\Profile\ProfileWeb::ProfileViewAdminMenu(
+$PMenu = Atlantis\Profile\Entity::FetchProfileAdminMenu(
 	$App, $Video->Profile, $PExtra
 );
 

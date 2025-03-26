@@ -1,0 +1,51 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Profile\Entity $Profile
+ * @var Common\Datastore $Photos
+ */
+
+################################################################################
+############################################################################# ?>
+
+<div class="mb-8">
+
+	<div class="row align-items-center">
+		<div class="col">
+			<h2 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Total) ?>)</h2>
+		</div>
+
+		<?php if($Route->IsUserAdmin()): ?>
+		<div class="col-auto">
+			<button class="btn btn-dark btn-thinner" <?php echo $Profile->GetDataAttrForHTML([ 'profile-cmd'=> 'photo' ]) ?>>
+				<i class="mdi mdi-plus"></i>
+				Upload
+			</button>
+		</div>
+		<?php endif; ?>
+	</div>
+
+	<hr class="mt-1 mb-3" />
+
+	<?php echo Atlantis\UI\Gallery::FromSurfaceWith($Surface, [
+		'ItemArea' => '~/item-photo',
+		'Items'    => $Photos,
+		'Parent'   => $Profile
+	]); ?>
+
+</div>

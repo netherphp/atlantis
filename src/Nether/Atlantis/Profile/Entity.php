@@ -9,11 +9,16 @@ use Nether\Database;
 
 use ArrayAccess;
 use Exception;
+
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindOptionsInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindFiltersInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendFindSortsInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetPageURLInterface;
 use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetTitleInterface;
+
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAuditInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraDataInterface;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
 class Entity
@@ -1358,6 +1363,99 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		]);
 
 		return $Profiles;
+	}
+
+	////////////////////////////////////////////////////////////////
+	// Plugin API Methods //////////////////////////////////////////
+
+	#[Common\Meta\Date('2025-03-24')]
+	static public function
+	FetchProfileExtraData(Atlantis\Engine $App, Entity $Profile):
+	Common\Datastore {
+
+		$Plugins = $App->Plugins->GetInstanced(
+			ExtraDataInterface::class
+		);
+
+		$Output = $Plugins->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, ExtraDataInterface $P)
+			=> $C->MergeRight($P->GetExtraData( $Profile ))
+		));
+
+		return $Output;
+	}
+
+	#[Common\Meta\Date('2025-03-24')]
+	static public function
+	FetchProfileAdminMenu(Atlantis\Engine $App, Entity $Profile, Common\Datastore $ExtraData):
+	Atlantis\Struct\DropdownMenu {
+
+		$AdminMenu = Atlantis\Struct\DropdownMenu::New();
+
+		if(!$App->User || !$App->User->IsAdmin())
+		return $AdminMenu;
+
+		////////
+
+		$Plugins = $App->Plugins->GetInstanced(AdminMenuSectionInterface::class);
+		$Audits = $App->Plugins->GetInstanced(AdminMenuAuditInterface::class);
+
+		$Sections = Common\Datastore::FromArray([
+			'before'  => NULL,
+			'editing' => NULL,
+			'tagging' => NULL,
+			'media'   => NULL,
+			'danger'  => NULL,
+			'after'   => NULL
+		]);
+
+		// have the plugins prepare their button lists merging them all down
+		// into one list. plugins loaded later can override plugins loaded
+		// earlier if the aliases collide. this is on purpose.
+
+		$Sections->RemapKeyValue(function(string $Key) use($Profile, $Plugins, $ExtraData) {
+			return $Plugins->Compile(
+				fn(Common\Datastore $C, AdminMenuSectionInterface $S)
+				=> $C->MergeRight($S->GetItemsForSection( $Profile, $Key, $ExtraData ) ?? [])
+			);
+		});
+
+		// allow plugins to audit menu items in case they wanted to replace
+		// or remove something.
+
+		$Audits->Each(function(AdminMenuAuditInterface $Audit) use($Profile, $Sections, $ExtraData) {
+			$Audit->AuditItems($Profile, $Sections, $ExtraData);
+			return;
+		});
+
+		// cook the buttons into the admin menu.
+
+		$Sections->EachKeyValue(function(string $Key, Common\Datastore $Items) use($AdminMenu) {
+
+			if(!$Items->Count())
+			return;
+
+			////////
+
+			if($Key === 'danger') {
+				$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '~'));
+				$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '-'));
+			}
+
+			else {
+				$AdminMenu->Items->Push(Atlantis\Struct\DropdownItem::New(Title: '~'));
+			}
+
+			////////
+
+			$AdminMenu->Items->MergeRight($Items);
+
+			return;
+		});
+
+		////////
+
+		return $AdminMenu;
 	}
 
 }

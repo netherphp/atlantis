@@ -1,0 +1,71 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Profile\Entity $Profile
+ * @var Common\Datastore $Links
+ */
+
+################################################################################
+################################################################################
+
+$CanUserEdit = $Route->IsUserAdmin();
+
+################################################################################
+############################################################################# ?>
+
+<div class="mb-8">
+	<h3 class="text-uppercase mb-0">Related Links (<?php $Util->Print($Links->Count()) ?>)</h3>
+	<hr class="mt-1 mb-3" />
+
+	<?php foreach($Links as $Rel): ?>
+		<?php if($Rel instanceof Atlantis\Struct\Item): ?>
+		<div class="row tight align-items-center">
+			<div class="col">
+				<div>
+					<a class="fw-bold" href="<?php $Util->Print($Rel->URL) ?>">
+						<?php $Util->Print($Rel->Title) ?>
+					</a>
+					- <?php $Util->Print($Rel->Info) ?>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<?php endif; ?>
+
+		<?php if($Rel instanceof Atlantis\Media\RelatedLink): ?>
+		<div class="row tight align-items-center">
+			<div class="col">
+				<div>
+					<a href="<?php $Util->Print($Rel->URL) ?>" target="_blank" class="fw-bold"><?php $Util->Print($Rel->Title) ?></a>
+					- <?php $Util->Print(Atlantis\Util::DomainFromURL($Rel->URL)) ?>
+				</div>
+			</div>
+			<?php if($CanUserEdit): ?>
+			<div class="col-auto">
+				<button class="btn btn-outline-light btn-sm py-0 px-1" data-link-cmd="edit" data-id="<?php $Util->Print($Rel->ID) ?>" data-uuid="<?php $Util->Print($Rel->UUID) ?>">Edit</button>
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-danger btn-sm py-0 px-1" data-link-cmd="delete" data-id="<?php $Util->Print($Rel->ID) ?>" data-uuid="<?php $Util->Print($Rel->UUID) ?>"><i class="mdi mdi-delete"></i></button>
+			</div>
+			<?php endif; ?>
+		</div>
+		<hr />
+		<?php endif; ?>
+
+	<?php endforeach; unset($Rel); ?>
+</div>

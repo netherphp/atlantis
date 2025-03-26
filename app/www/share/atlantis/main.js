@@ -24,7 +24,7 @@ jQuery(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 export default {
-	"Blob":    AtlBlobEntity,
+	"Blob":    { 'Entity': AtlBlobEntity, 'Group': AtlBlobGroup },
 	"Photo":   Photo,
 	"Profile": Profile,
 	"VideoTP": VideoTP

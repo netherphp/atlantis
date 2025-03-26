@@ -48,13 +48,8 @@ extends Atlantis\PublicWeb {
 			$this->App, $Profile
 		);
 
-		$ExtraData = static::ProfileViewExtraData(
-			$this->App, $Profile
-		);
-
-		$AdminMenu = static::ProfileViewAdminMenu(
-			$this->App, $Profile, $ExtraData
-		);
+		$ExtraData = Atlantis\Profile\Entity::FetchProfileExtraData($this->App, $Profile);
+		$AdminMenu = Atlantis\Profile\Entity::FetchProfileAdminMenu($this->App, $Profile, $ExtraData);
 
 		////////
 
@@ -129,7 +124,7 @@ extends Atlantis\PublicWeb {
 	#[Common\Meta\Info('Allow plugins add things to the Profile Admin Menu.')]
 	#[Avenue\Meta\ExtraDataArgs]
 	static public function
-	ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
+	_Old_ProfileViewAdminMenu(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile, Common\Datastore $ExtraData):
 	Atlantis\Struct\DropdownMenu {
 
 		$AdminMenu = Atlantis\Struct\DropdownMenu::New();
@@ -203,7 +198,7 @@ extends Atlantis\PublicWeb {
 	#[Common\Meta\Date('2023-12-26')]
 	#[Common\Meta\Info('Allow plugins fill a Datastore with additional info custom templates might need.')]
 	static public function
-	ProfileViewExtraData(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
+	_Old_ProfileViewExtraData(Atlantis\Engine $App, Atlantis\Profile\Entity $Profile):
 	Common\Datastore {
 
 		$Plugins = $App->Plugins->GetInstanced(ExtraDataInterface::class);

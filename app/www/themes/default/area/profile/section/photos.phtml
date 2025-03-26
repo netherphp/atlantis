@@ -1,0 +1,63 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Profile\Entity $Profile
+ * @var Common\Datastore $Photos
+ */
+
+################################################################################
+################################################################################
+
+$PhotoItemClasses = 'col-12 col-md-3 mb-4';
+
+if(isset($Photos) && $Photos->Count() >= 6) {
+	$PhotoItemClasses = 'col-6 col-md-3 mb-4';
+}
+
+################################################################################
+############################################################################# ?>
+
+<div class="mb-8">
+	<h2 class="text-uppercase mb-0">Photos (<?php $Util->Print($Photos->Count()) ?>)</h2>
+	<hr class="mt-1 mb-3" />
+
+	<div class="row">
+		<?php foreach($Photos as $Photo): /** @var Atlantis\Media\File $Photo */ ?>
+		<div class="<?php $Util->Print($PhotoItemClasses) ?>">
+			<div class="cursor-pointer ratiobox photo wallpapered contained rounded bg-dark PhotoGalleryItem" style="background-image:url(<?php $Util->Print($Photo->GetPublicURL()) ?>); background-position: top center; background-size: cover;" data-url-lg="<?php $Util->Print($Photo->GetPublicURL()) ?>">
+
+				<div class="position-absolute position-bottom position-left p-1">
+					<a onclick="href.location=this.href;event.stopPropagation();" href="/photo/<?php $Util->Print($Photo->ID) ?>" data-bs-toggle="tooltip" title="View Photo Page" class="btn btn-dark font-size-large p-0 pl-2 pr-2" style="text-shadow:none;"><i class="mdi mdi-image-album mr-0"></i></a>
+					<button data-bs-toggle="tooltip" title="View Slideshow" class="btn <?php $Util->Print($Profile->CoverImageID === $Photo->ID ? 'btn-success' : 'btn-dark') ?> font-size-large p-0 pl-2 pr-2"><i class="mdi mdi-magnify mr-0"></i></button>
+				</div>
+
+				<div class="position-absolute position-bottom position-right p-1">
+					<?php if($Route->IsUserAdmin()): ?>
+					<button data-bs-toggle="tooltip" title="Set Primary Photo" class="btn <?php $Util->Print($Profile->CoverImageID === $Photo->ID ? 'btn-success' : 'btn-dark') ?> font-size-large p-0 pl-2 pr-2" <?php echo $Profile->GetDataAttrForHTML(['profile-cmd'=> 'photoset', 'photo-id'=> $Photo->ID]) ?>><i class="mdi mdi-account-star mr-0"></i></button>
+					<button data-bs-toggle="tooltip" title="Linked Profiles" class="btn btn-dark font-size-large p-0 pl-2 pr-2" <?php echo $Photo->GetDataAttrForHTML([ 'profile-cmd'=> 'erlink', 'parent-type'=> 'Media.Image', 'parent-child'=> 1 ]) ?>>
+						<i class="mdi mdi-account-multiple-plus mr-0"></i>
+					</button>
+					<button data-bs-toggle="tooltip" title="Delete" class="btn btn-danger font-size-large p-0 pl-2 pr-2" <?php echo $Photo->GetDataAttrForHTML(['photolib-cmd'=> 'delete']) ?>><i class="mdi mdi-trash-can mr-0"></i></button>
+					<?php endif; ?>
+				</div>
+
+			</div>
+		</div>
+		<?php endforeach; unset($Photo); ?>
+	</div>
+</div>

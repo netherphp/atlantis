@@ -80,33 +80,36 @@ class Profile {
 	onEditDetails(ev) {
 
 		let self = this;
+		let api = new API.Request('GET', '/api/profile/entity', { 'ID': self.id });
 
-		let diag = new DialogUtil.Window({
-			maximise: true,
-			title: 'Edit Profile Description',
-			labelAccept: 'Save',
-			fields: [
-				new DialogUtil.Field('hidden', 'ID', null, self.id),
-				new DialogUtil.Field('editor-html', 'Details', 'Description', jQuery('#EditorContent').html())
-			],
-			onAccept: function() {
+		(api.send())
+		.then(function(r) {
 
-				let data = this.getFieldData();
-				let api = new API.Request('PATCH', self.endpoint, data);
+			let diag = new DialogUtil.Window({
+				maximise: true,
+				title: 'Edit Profile Description',
+				labelAccept: 'Save',
+				fields: [
+					new DialogUtil.Field('hidden', 'ID', null, self.id),
+					new DialogUtil.Field('editor-html', 'Details', 'Description', r.payload.Details)
+				],
+				onAccept: function() {
 
-				(api.send())
-				.then(api.reload)
-				.catch(api.catch);
+					let data = this.getFieldData();
+					let api = new API.Request('PATCH', self.endpoint, data);
 
-				return;
-			}
-		});
+					(api.send())
+					.then(api.reload)
+					.catch(api.catch);
 
-		diag.fillByRequest(
-			'GET', self.endpoint,
-			{ ID: self.id },
-			true
-		);
+					return;
+				}
+			});
+
+			diag.show();
+			return;
+		})
+		.catch(api.catch);
 
 		return false;
 	};
@@ -310,19 +313,68 @@ class Profile {
 
 	onEditAdminNotes(ev) {
 
+
+		let self = this;
+		let api = new API.Request('GET', '/api/profile/entity', { 'ID': self.id });
+
+		(api.send())
+		.then(function(r) {
+
+			let diag = new DialogUtil.Window({
+				show: true,
+				maximise: true,
+				title: 'Edit Admin Notes',
+				labelAccept: 'Save',
+				fields: [
+					new DialogUtil.Field('hidden', 'ID', null, self.id),
+					new DialogUtil.Field('editor-html', 'ExtraData[AdminNotes]', "Admin Notes", r.payload.ExtraData.AdminNotes)
+				],
+				onAccept: function() {
+
+					let data = self.getFieldData();
+					let api = new API.Request('PATCH', '/api/profile/entity', data);
+
+					(api.send())
+					.then(api.reload)
+					.catch(api.catch);
+
+					return;
+				}
+			});
+
+			diag.show();
+			return;
+		})
+		.catch(api.catch);
+
+		return false;
+	};
+
+	onEditRelatedLink() {
+
+		let that = jQuery(this);
+		let id = this.id
+		let uuid = this.uuid;
+		let endpoint = '/api/media/link';
+
+		let parentType = 'Profile.Entity';
+		let parentUUID = this.uuid;
+
 		let diag = new DialogUtil.Window({
-			show: true,
-			maximise: true,
-			title: 'Edit Admin Notes',
+			title: 'New Related Link',
 			labelAccept: 'Save',
 			fields: [
-				new DialogUtil.Field('hidden', 'ID', null, this.id),
-				new DialogUtil.Field('editor-html', 'ExtraData[AdminNotes]', "Admin Notes", jQuery('#EntityAdminNotes').html())
+				new DialogUtil.Field('hidden', 'ID', null, id),
+				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('text', 'URL', 'URL'),
+				new DialogUtil.Field('date', 'DateCreated', 'Date'),
+				new DialogUtil.Field('hidden', 'ParentType', null, parentType),
+				new DialogUtil.Field('hidden', 'ParentUUID', null, parentUUID)
 			],
 			onAccept: function() {
 
 				let data = this.getFieldData();
-				let api = new API.Request('PATCH', '/api/profile/entity', data);
+				let api = new API.Request('POST', endpoint, data);
 
 				(api.send())
 				.then(api.reload)
@@ -332,7 +384,9 @@ class Profile {
 			}
 		});
 
-		return false;
+		diag.show();
+
+		return;
 	};
 
 	////////////////
@@ -428,7 +482,8 @@ class Profile {
 			"enable":      new DocReadyFunc((i, u)=> Profile.WhenEditEnable(i, u, 1), true),
 			"delete":      new DocReadyFunc((i, u)=> Profile.WhenDelete(i, u), true),
 			"address":     new DocReadyFunc((i, u)=> Profile.WhenEditAddress(i, u), true),
-			"admin-notes": new DocReadyFunc((i, u)=> Profile.WhenEditAdminNotes(i, u), true)
+			"admin-notes": new DocReadyFunc((i, u)=> Profile.WhenEditAdminNotes(i, u), true),
+			"related-link": new DocReadyFunc((i, u)=> Profile.WhenEditRelatedLink(i, u), true)
 		};
 
 		for(let key in map) {
@@ -453,6 +508,82 @@ class Profile {
 				return false;
 			});
 		}
+
+	jQuery('[data-link-cmd="edit"]')
+	.on('click', function(){
+
+		let that = jQuery(this);
+		let id = that.attr('data-id');
+		let uuid = that.attr('data-uuid');
+		let endpoint = '/api/media/link';
+
+		let diag = new DialogUtil.Window({
+			title: 'Edit Related Link',
+			labelAccept: 'Save',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, id),
+				new DialogUtil.Field('text', 'Title', 'Title'),
+				new DialogUtil.Field('text', 'URL', 'URL'),
+				new DialogUtil.Field('date', 'DateCreated', 'Date')
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('PATCH', endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', endpoint,
+			{ ID: id },
+			true
+		);
+
+		return false;
+	});
+
+	jQuery('[data-link-cmd="delete"]')
+	.on('click', function(){
+
+		let that = jQuery(this);
+		let id = that.attr('data-id');
+		let uuid = that.attr('data-uuid');
+		let endpoint = '/api/media/link';
+
+		let diag = new DialogUtil.Window({
+			title: 'Delete Releated Link',
+			body: 'Really delete this link?',
+			labelAccept: 'Yes',
+			fields: [
+				new DialogUtil.Field('hidden', 'ID', null, id)
+			],
+			onAccept: function() {
+
+				let data = this.getFieldData();
+				let api = new API.Request('DELETE', endpoint, data);
+
+				(api.send())
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+
+		diag.fillByRequest(
+			'GET', endpoint,
+			{ ID: id },
+			true
+		);
+
+		return false;
+	});
 
 		return;
 	};
@@ -648,6 +779,15 @@ class Profile {
 		let pho = element.attr('data-photo-id');
 
 		pro.onSetPhoto(null, pho);
+
+		return;
+	};
+
+	static WhenEditRelatedLink(id, uuid) {
+
+		let pro = new Profile(id, uuid);
+
+		pro.onEditRelatedLink();
 
 		return;
 	};

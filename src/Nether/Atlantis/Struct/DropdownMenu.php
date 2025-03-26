@@ -21,6 +21,25 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	SetIcon(?string $Icon):
+	static {
+
+		$this->Icon = $Icon;
+		return $this;
+	}
+
+	public function
+	SetTitle(?string $Title):
+	static {
+
+		$this->Title = $Title;
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
 	GetIcon():
 	string {
 
