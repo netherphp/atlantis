@@ -177,6 +177,7 @@ extends Console\Client {
 	#[Console\Meta\Value('--mrot', 'Rotate the watermark (degrees).')]
 	#[Console\Meta\Value('--mc', 'Number of times watermark is repeated (how many columns).')]
 	#[Console\Meta\Value('--mo', 'Opacity of watermark.')]
+	#[Console\Meta\Value('--tb[1-9]', 'Lines of text at the bottom of the image.')]
 	public function
 	GenerateWatermarkedImage():
 	int {
@@ -191,6 +192,8 @@ extends Console\Client {
 		$MarkOpacity = (float)$this->GetOption('mo') ?: 0.05;
 
 		$TextBottom = new Common\Datastore;
+		$TextSize = (int)$this->GetOption('tbsize') ?: 20;
+		$TextPad = (int)$this->GetOption('tbpad') ?: 10;
 
 		////////
 
@@ -244,7 +247,7 @@ extends Console\Client {
 		// annotate the base image with the supplied text.
 
 		if($TextBottom->Count())
-		$BaseImg->AnnotateBottom($TextBottom->Export());
+		$BaseImg->AnnotateBottom($TextBottom->Export(), $TextSize, $TextPad);
 
 		// write the final file to disk.
 
