@@ -17,7 +17,11 @@ does not do any additional access checking.
 
 	#[Common\Meta\PropertyFactory('FromArray')]
 	const
-	QuitMsg = [];
+	QuitMsg = [
+		403 => 'Forbidden',
+		404 => 'Not Found',
+		501 => 'Not Implemented'
+	];
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////

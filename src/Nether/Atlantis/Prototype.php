@@ -453,6 +453,15 @@ implements
 	////////////////////////////////////////////////////////////////
 	//// LOCAL STATIC API //////////////////////////////////////////
 
+	static public function
+	Empty():
+	static {
+
+		return new static([
+			'UUID' => Common\Values::NullUUID
+		]);
+	}
+
 	#[Common\Meta\Date('2023-05-23')]
 	#[Common\Meta\Info('Fetch an object by UUID.')]
 	static public function
