@@ -1,6 +1,6 @@
 /*//
-@date 2025-03-25 01:28:22 UTC
-@files 47 [
+@date 2025-04-03 22:34:50 UTC
+@files 48 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -47,7 +47,8 @@
     "src\/elements\/sitemenu.css",
     "src\/elements\/statebtn.css",
     "src\/elements\/swiper.css",
-    "src\/elements\/timeline.css"
+    "src\/elements\/timeline.css",
+    "src\/elements\/togglebtn.css"
 ]
 //*/
 
@@ -4295,5 +4296,32 @@ makes the pager bullets be square instead of circle.
 	left:0px;
 	transform: translateX(-100%) translateY(-50%);
 	clip-path: polygon(100% 0%, 100% 100%, 50% 50%);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/togglebtn.css //////////////////////////////////////////////*/
+
+.atl-togglebtn {
+	padding: 0.15rem 0.50rem;
+	text-align: left !important;
+}
+
+.atl-togglebtn i {
+	display: none;
+	margin-right: 0.25rem !important;
+	font-size: 1.3rem;
+
+}
+
+.atl-togglebtn.atl-togglebtn-loading .atl-togglebtn-icon-loading {
+	display: inline;
+}
+
+.atl-togglebtn.atl-togglebtn-on .atl-togglebtn-icon-on {
+	display: inline;
+}
+
+.atl-togglebtn.atl-togglebtn-off .atl-togglebtn-icon-off {
+	display: inline;
 }
 

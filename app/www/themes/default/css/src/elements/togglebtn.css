@@ -1,0 +1,23 @@
+.atl-togglebtn {
+	padding: 0.15rem 0.50rem;
+	text-align: left !important;
+}
+
+.atl-togglebtn i {
+	display: none;
+	margin-right: 0.25rem !important;
+	font-size: 1.3rem;
+
+}
+
+.atl-togglebtn.atl-togglebtn-loading .atl-togglebtn-icon-loading {
+	display: inline;
+}
+
+.atl-togglebtn.atl-togglebtn-on .atl-togglebtn-icon-on {
+	display: inline;
+}
+
+.atl-togglebtn.atl-togglebtn-off .atl-togglebtn-icon-off {
+	display: inline;
+}
