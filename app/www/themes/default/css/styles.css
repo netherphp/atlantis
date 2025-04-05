@@ -1,5 +1,5 @@
 /*//
-@date 2025-04-03 22:34:50 UTC
+@date 2025-04-04 23:41:13 UTC
 @files 48 [
     "src\/imports.css",
     "src\/main.css",
@@ -4313,7 +4313,7 @@ makes the pager bullets be square instead of circle.
 
 }
 
-.atl-togglebtn.atl-togglebtn-loading .atl-togglebtn-icon-loading {
+.atl-togglebtn .atl-togglebtn-icon-loading {
 	display: inline;
 }
 
@@ -4323,5 +4323,10 @@ makes the pager bullets be square instead of circle.
 
 .atl-togglebtn.atl-togglebtn-off .atl-togglebtn-icon-off {
 	display: inline;
+}
+
+.atl-togglebtn.atl-togglebtn-on .atl-togglebtn-icon-loading,
+.atl-togglebtn.atl-togglebtn-off .atl-togglebtn-icon-loading {
+	display: none;
 }
 
