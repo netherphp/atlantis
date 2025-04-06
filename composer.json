@@ -52,6 +52,7 @@
 		"bin/cron.atl",
 		"bin/date.atl",
 		"bin/dev.atl",
+		"bin/dhd.atl",
 		"bin/gfx.atl",
 		"bin/nether.atl",
 		"bin/project.atl",

@@ -1,0 +1,88 @@
+<?php ##########################################################################
+################################################################################
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+################################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Browser;
+use Nether\Common;
+use Nether\Console;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#[Console\Meta\Application('CodeServerTool', '5.0.0-dev')]
+#[Common\Meta\Info('Manage running a local code-server for remote development.')]
+class DHDTool
+extends Atlantis\TerminalApp {
+
+	#[Console\Meta\Command('update')]
+	#[Console\Meta\Info('Update the routes.phson file.')]
+	public function
+	HandleRouteGenerator():
+	int {
+
+		$Outfile = $this->GetOption('Outfile') ?: './routes.phson';
+
+		$App = new Nether\Atlantis\Engine(
+			getcwd(),
+			(new Common\Datastore([ Avenue\Library::ConfRouteFile => NULL ]))
+		);
+
+		$VerbHandlers = new Common\Datastore;
+		$VerbReport = new Common\Datastore;
+		$ErrorHandlers = new Common\Datastore;
+		$Final = new Common\Datastore;
+
+		$Verb = NULL;
+		$Handlers = NULL;
+		$Handler = NULL;
+
+		////////
+
+		$App->Router->SortHandlers();
+		$VerbHandlers = $App->Router->GetHandlers();
+		$ErrorHandlers = $App->Router->GetErrorHandlers();
+
+		foreach($VerbHandlers as $Verb => $Handlers) {
+			$this->PrintH3($Verb);
+
+			$VerbReport->Clear();
+
+			foreach($Handlers as $Handler) {
+				/** @var Avenue\Meta\RouteHandler $Handler */
+				$VerbReport->Push([
+					$Handler->Sort,
+					$Handler->Domain,
+					$Handler->Path,
+					sprintf('%s::%s', $Handler->Class, $Handler->Method),
+				]);
+			};
+
+			$this->PrintTable(
+				[ 'Sort', 'Domain', 'Path', 'Route' ],
+				$VerbReport->Export()
+			);
+
+			static::PrintLn();
+		}
+
+		// @todo 2025-04-04 avenue should get a class that strongly defines
+		// the route file structure and that should be used instead of this.
+
+		($Final)
+		->Shove('Verbs', $VerbHandlers)
+		->Shove('Errors', $ErrorHandlers)
+		->Write($Outfile);
+
+		return 0;
+	}
+
+};
