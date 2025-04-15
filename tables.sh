@@ -23,5 +23,10 @@ ndb sql-create Nether.Atlantis.Page.Section --drop -y
 ndb sql-create Nether.Atlantis.ShortURL.Entity --drop -y
 
 ndb sql-create Nether.Atlantis.Profile.Entity --drop -y
+ndb sql-create Nether.Atlantis.Media.RelatedLink --drop -y
 
 ndb sql-create Nether.Atlantis.Systems.RateLimiter.StorageAPI.Database.Row --drop -y
+
+ndb sql-create Nether.Atlantis.Blob.Group --drop -y
+ndb sql-create Nether.Atlantis.Blob.Entity --drop -y
+
