@@ -16,6 +16,8 @@ use Nether\User;
  * ...
  */
 
+$ShowTags ??= TRUE;
+
 //$TagFilter = fn(Atlantis\Tag\Entity $T)=> $T->ID !== $TagPrimary->ID;
 
 ?>
@@ -35,6 +37,7 @@ use Nether\User;
 
 		<div class="mb-2">
 			<?php
+			if($ShowTags)
 			$Surface->Area(
 				'widgets/tag-buttons',
 				[ 'Tags'=> $Profile->GetTags() ]
