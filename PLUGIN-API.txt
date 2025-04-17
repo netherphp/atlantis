@@ -1,0 +1,31 @@
+################################################################################
+## Plugin API ##################################################################
+
+All plugins must extend from Atlantis\Plugin.
+
+## File Uploads ################################################################
+
+Upload dataset must include field `Type` with a unique string specifying the
+task the plugin is trying to achieve.
+
+	1) implement: Atlantis\Plugin\Interfaces\Engine\FileUploadInterface
+	2) implement: WillHandleUpload($Type, $File, $Data)
+	3) implmeent: OnHandleUpload($Type, $File, $Data)
+
+// Example: Use upload as product image. ///////////////////////////////////////
+
+	* Include extra post data with upload:
+		* Type = "Product.Image.Set"
+		* ProductID = "42"
+
+	* Implement Atlantis\Plugin\Interfaces\Engine\FileUploadInterface
+
+	* WillHandleUpload($Type, $File, $Data): bool
+		* return true if $Type === "Product.Image.Set"
+		* otherwise false
+
+	* OnHandleUpload($Type, $File, $Data): void
+		* if $Type === "Product.Image.Set"
+		* if $Data['ProductID] is a valid product
+			* Set the product image to $File->ID
+
