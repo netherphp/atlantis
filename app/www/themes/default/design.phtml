@@ -36,7 +36,7 @@ $PageDomain = $Router->Request->Domain;
 ////////
 
 $ShowPageHeader = !($Surface->Get('Page.SkipHeader') ?? FALSE);
-$ShowPageSubheader = ($PageSubheader !== NULL);
+$ShowPageSubheader = ($PageSubheader !== NULL && $PageSubheader !== FALSE);
 $ShowPageContent = !($Surface->Get('Page.SkipContent') ?? FALSE);
 $ShowPageFooter = !($Surface->Get('Page.SkipFooter') ?? FALSE);
 $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
@@ -98,7 +98,7 @@ $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 if($ShowPageHeader)
 $Surface->Area('design/header');
 
-if($ShowPageHeader && $ShowPageSubheader)
+if($ShowPageSubheader)
 $Surface->Area($PageSubheader, $__SCOPE);
 
 if($ShowPageContent)
