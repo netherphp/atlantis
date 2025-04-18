@@ -48,6 +48,7 @@ $ThemeSettings->FilterPush('Grad1Left', Common\Filters\Text::Trimmed(...));
 $ThemeSettings->FilterPush('Grad1Right', Common\Filters\Text::Trimmed(...));
 $ThemeSettings->FilterPush('Grad2Left', Common\Filters\Text::Trimmed(...));
 $ThemeSettings->FilterPush('Grad2Right', Common\Filters\Text::Trimmed(...));
+$ThemeSettings->FilterPush('ShowPostCount', Common\Filters\Numbers::BoolNullable(...));
 
 $Grad1Left = $ThemeSettings->Get('Grad1Left') ?: '--theme-orange' ;
 $Grad1Right = $ThemeSettings->Get('Grad1Right') ?: '--theme-grey-lt' ;
@@ -86,7 +87,6 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
 			<div class="col">
 				<h2 class="text-uppercase">
 					Posts
-					<sup class="fs-smallerest fw-normal o-30">(<?php $Util->Print($Posts->Total) ?>)</sup>
 				</h2>
 			</div>
 

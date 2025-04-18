@@ -23,7 +23,7 @@ use Nether\User;
 ////////////////////////////////////////////////////////////////////////////////
 
 $TKHeaderContainer = 'Page.Theme.Header.Container';
-$TKLogoImageURL = 'Page.Theme.Header.LogoURL';
+$TKLogoImageURL = Surface\Theme::KeyLogoURL;
 $TKHeaderShowSpacer = 'Page.Theme.Header.Spacer';
 $TKHeaderMenuBtnLbl = 'Page.Theme.Header.MenuBtn.Label';
 
@@ -40,6 +40,7 @@ $ShowDemoNote = $App->IsEnvType('demo');
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////// ?>
+
 <?php if($ShowDevNote): ?>
 <div class="atl-page-note-dev">
 	<div class="bg-gold"></div>

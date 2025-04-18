@@ -1,7 +1,10 @@
 <?php
 
+use Nether\Atlantis;
+use Nether\Surface;
+
 /**
- * @var Nether\Surface\Engine $Surface
+ * @var Surface\Engine $Surface
  */
 
 // this file if exists gets loaded when the surface engine is done
@@ -9,7 +12,7 @@
 // not the entire scope that the application may have built, unlike the
 // design.phtml file which can access all the things scoped in.
 
-$Surface->QueueOnce('Atlantis.Config', function(Nether\Atlantis\Engine $App) {
+$Surface->QueueOnce(Atlantis\Engine::EvConfig, function(Atlantis\Engine $App) {
 
 	$PageThemeMode = match(TRUE) {
 		(isset($_COOKIE['theme']))

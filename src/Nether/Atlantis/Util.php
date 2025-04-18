@@ -5,6 +5,7 @@ namespace Nether\Atlantis;
 use ReCaptcha;
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Surface;
 
 use FilesystemIterator;
 use Generator;
@@ -273,7 +274,7 @@ implements Atlantis\Plugin\Interfaces\Engine\AppInstanceStaticInterface {
 	}
 
 	static public function
-	GetBinProjectDirectory(string $Origin=NULL):
+	GetBinProjectDirectory(?string $Origin=NULL):
 	string {
 
 		$Origin ??= __FILE__;
@@ -578,6 +579,25 @@ implements Atlantis\Plugin\Interfaces\Engine\AppInstanceStaticInterface {
 		}
 
 		return $URL;
+	}
+
+	static public function
+	RetroloadParentThemeConfig(Atlantis\Engine $App, string $Theme='default'):
+	Surface\Engine {
+
+		$Retroloader = function(Atlantis\Engine $App, Surface\Engine $Surface, string $__THEME) {
+			require($App->Surface->GetPathToDesignFile($__THEME));
+
+			$Surface->Flow(Atlantis\Engine::EvConfig, [
+				'App' => $App
+			]);
+
+			return;
+		};
+
+		$Retroloader($App, $App->Surface, $Theme);
+
+		return $App->Surface;
 	}
 
 }
