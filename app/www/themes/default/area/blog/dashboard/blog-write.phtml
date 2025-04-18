@@ -23,8 +23,8 @@ use Nether\User;
 $Surface
 ->Set('Page.Title', 'Write Blog Post - Dashboard')
 ->Area('dashboard/nav', [ 'Trail' => [
-	'Blog'   => '/dashboard/blog/list',
-	'Editor' => '/dashboard/blog/write'
+	'Blog'   => NULL,
+	'Editor' => NULL
 ]])
 ->Area(
 	sprintf('blog/dashboard/editor/%s', $Editor ?? 'index'),
