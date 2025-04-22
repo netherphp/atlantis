@@ -28,6 +28,11 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	const
 	EntType = 'Profile.Entity';
 
+	const
+	Disabled = 0,
+	Enabled  = 1,
+	Hidden   = 2;
+
 	use
 	Atlantis\Packages\ExtraData;
 
@@ -598,7 +603,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		$Input['SearchLocation'] ??= FALSE;
 
-		$Input->Define('Enabled', 1);
+		$Input->Define('Enabled', static::Enabled);
 
 		$Input['ProfileID'] ??= NULL;
 
@@ -658,8 +663,21 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		}
 
 		if($Input['Enabled'] !== NULL) {
-			if(is_int($Input['Enabled']))
-			$SQL->Where('Main.Enabled=:Enabled');
+			if(is_int($Input['Enabled'])) {
+				$SQL->Where('Main.Enabled=:Enabled');
+			}
+
+			elseif(is_bool($Input['Enabled'])) {
+				$Input['Enabled'] = match($Input['Enabled']) {
+					TRUE
+					=> static::Enabled,
+
+					default
+					=> static::Disabled
+				};
+
+				$SQL->Where('Main.Enabled=:Enabled');
+			}
 		}
 
 		////////
