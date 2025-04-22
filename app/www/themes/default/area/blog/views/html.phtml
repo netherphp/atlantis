@@ -35,7 +35,7 @@ $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 $Full ??= TRUE;
 $BlogUser ??= NULL;
-$ShowTags ??= TRUE;
+$ShowTags ??= FALSE;
 
 ?>
 
@@ -47,9 +47,12 @@ $ShowTags ??= TRUE;
 	<div class="atl-blog-title">
 		<h3><a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>" class="border-0"><?php $Printer($Post->Title) ?></a></h3>
 	</div>
+
+	<?php if($ShowTags): ?>
 	<div class="atl-blog-tags">
 		<?php $Surface->Area('widgets/tag-buttons', [ 'Pre'=> $GetPreTags($Post), 'Tags'=> $Post->GetTags() ]) ?>
 	</div>
+	<?php endif; ?>
 
 	<?php $Surface->Area('blog/widgets/view-heading-extend', [ 'BlogUser'=> $BlogUser, 'Post'=> $Post ]) ?>
 

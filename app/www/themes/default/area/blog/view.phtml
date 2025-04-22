@@ -30,6 +30,8 @@ $PostTags = $Post->GetTags();
 $PostURL = $App->RewriteURL($Post->GetURL(), $PostTags);
 $PostDateFancy = Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate);
 
+$ShowTags ??= FALSE;
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -101,7 +103,7 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
 				<div class="atl-blog-post-title">
 					<h3><a href="<?php $Util->Print($PostURL) ?>" class="border-0"><?php $Util->Print($Post->Title) ?></a></h3>
 				</div>
-				<?php if($PostTags->Count()): ?>
+				<?php if($ShowTags && $PostTags->Count()): ?>
 				<div class="atl-blog-post-tags">
 					<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $PostTags ]) ?>
 				</div>
