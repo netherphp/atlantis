@@ -2,6 +2,7 @@ import API          from '../nui/api/json.js';
 import DialogUtil   from '../nui/util/dialog.js';
 import TagDialog    from '../atlantis/tag-dialog.js';
 import UploadButton from '../nui/modules/uploader/uploader.js';
+import SimpleLightbox from '/themes/default/lib/js/simplelightbox.js';
 
 class DocReadyFunc {
 	constructor(func, data=false) {
@@ -125,6 +126,19 @@ class Photo {
 				return false;
 			});
 		}
+
+		jQuery(function(){
+
+			new SimpleLightbox('.PhotoGalleryItem', {
+				captions: true,
+				captionSelector: 'self',
+				scrollZoom: false,
+				fileExt: false,
+				sourceAttr: 'data-url-lg'
+			});
+
+			return;
+		});
 
 		return;
 	};
