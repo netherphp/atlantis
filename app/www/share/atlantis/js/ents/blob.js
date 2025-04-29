@@ -276,6 +276,9 @@ class BlobEntity {
 		jQuery('[data-atl-blob-cmd="edit"]')
 		.on('click', function(jEv){ BlobEntity.WhenCommandEdit(jEv, jQuery(this)); });
 
+		jQuery('[data-atl-blob-cmd="delete"]')
+		.on('click', function(jEv){ BlobEntity.WhenCommandDelete(jEv, jQuery(this)); });
+
 		return;
 	};
 
@@ -297,6 +300,29 @@ class BlobEntity {
 		let type = btn.attr('data-atl-blob-type') || 'html';
 
 		let win = BlobEditEntityWindow.ForUUID(uuid, type);
+
+		win.show();
+
+		return;
+	};
+
+	static WhenCommandDelete(jEv, btn) {
+
+		let uuid = btn.attr('data-atl-blob-uuid');
+		let type = btn.attr('data-atl-blob-type') || 'html';
+
+		if(confirm('Really delete this?')) {
+			let api = new API.Request('DELETE', '/api/atl/blob/entity', {
+				'UUID':  uuid
+			});
+
+			(api.send())
+			.then(function(r){
+				location.reload();
+				return;
+			})
+			.catch(api.catch);
+		}
 
 		return;
 	};

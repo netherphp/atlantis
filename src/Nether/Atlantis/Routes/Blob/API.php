@@ -71,6 +71,24 @@ extends Atlantis\ProtectedAPI {
 		return;
 	}
 
+	#[Atlantis\Meta\RouteHandler('/api/atl/blob/entity', Verb: 'DELETE')]
+	#[Atlantis\Meta\RouteAccessType(Atlantis\Blob\Entity::AccessTypeManage)]
+	public function
+	EntityDelete():
+	void {
+
+		$Ent = $this->FetchBlobEntityBasedOnInput();
+
+		if(!$Ent)
+		$this->Quit(1, 'no blob entity found');
+
+		////////
+
+		$Ent->Drop();
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

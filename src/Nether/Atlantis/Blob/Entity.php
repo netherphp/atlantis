@@ -178,6 +178,33 @@ extends Atlantis\Prototype {
 		return $Attribs->Join(' ');
 	}
 
+	public function
+	GetDeleteAttributes():
+	Common\Datastore {
+
+		$Output = new Common\Datastore([
+			'data-atl-blob-cmd'  => 'delete',
+			'data-atl-blob-uuid' => $this->UUID,
+			'data-atl-blob-type' => $this->Type
+		]);
+
+		return $Output;
+	}
+
+	public function
+	GetDeleteAttributesForHTML():
+	string {
+
+		$Attribs = $this->GetDeleteAttributes();
+
+		$Attribs->RemapKeyValue(
+			fn(string $K, string $V)
+			=> sprintf('%s="%s"', $K, $V)
+		);
+
+		return $Attribs->Join(' ');
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

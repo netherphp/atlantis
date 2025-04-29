@@ -61,7 +61,8 @@ extends Atlantis\Prototype {
 
 		return Entity::Find([
 			'GroupID' => $this->ID,
-			'Limit'   => 0
+			'Limit'   => 0,
+			'Sort'    => 'title-az'
 		]);
 	}
 
