@@ -59,6 +59,12 @@ extends Atlantis\Prototype {
 	public ?string
 	$Content = NULL;
 
+	#[Database\Meta\TypeVarChar(Size: 64)]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$SortKey;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
