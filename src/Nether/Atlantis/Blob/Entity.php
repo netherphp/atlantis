@@ -63,7 +63,7 @@ extends Atlantis\Prototype {
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	public ?string
-	$SortKey;
+	$SortKey = NULL;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
