@@ -780,16 +780,33 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	CopyFileToUpload(Storage\File $Temp, Storage\Adaptor $Box):
+	CopyFileToUpload(Storage\File $Temp, Storage\Adaptor $Box, ?string $UUID=NULL):
 	Storage\File {
 
-		$UUID = Common\UUID::V7();
+		$UUID ??= Common\UUID::V7();
 		$UPath = join('/', explode('-', $UUID, 2));
 		$Outpath = sprintf('upl/%s/original.%s', $UPath, $Temp->GetExtension());
 
 		////////
 
 		$Box->Put($Outpath, $Temp->Read());
+		$Copy = $Box->GetFileObject($Outpath);
+
+		return $Copy;
+	}
+
+	static public function
+	CopyUploadedToUpload(array $UploadData, Storage\Adaptor $Box, ?string $UUID=NULL):
+	Storage\File {
+
+		$UUID ??= Common\UUID::V7();
+		$Ext = Common\Filesystem\Util::FileExtension($UploadData['tmp_name']) ?? 'file';
+		$UPath = join('/', explode('-', $UUID, 2));
+		$Outpath = sprintf('upl/%s/original.%s', $UPath, $Ext);
+
+		////////
+
+		$Box->Put($Outpath, file_get_contents($UploadData['tmp_name']));
 		$Copy = $Box->GetFileObject($Outpath);
 
 		return $Copy;
