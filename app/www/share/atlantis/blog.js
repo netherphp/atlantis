@@ -214,6 +214,23 @@ class Post {
 		return post;
 	};
 
+	static FromElementUnique({ el='#PostInfo', bindify=false } = {}) {
+
+		let that = jQuery(el);
+		let blog = Blog.FromElement({ el: el, bindify: bindify });
+
+		let post = new Post(
+			that.attr('data-id'),
+			that.attr('data-uuid'),
+			blog
+		);
+
+		if(bindify)
+		post.bindify();
+
+		return post;
+	};
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////
