@@ -95,7 +95,7 @@ extends Atlantis\TerminalApp {
 			'Password' => sprintf('string(%d)', strlen($Pass1))
 		]);
 
-		if(!$this->PromptTrue('Create User?')) {
+		if(!$this->PromptForBool('Create User?', 'Y/N')) {
 			$this->PrintStatus('Aboring');
 			return 0;
 		}
