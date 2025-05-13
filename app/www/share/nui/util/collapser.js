@@ -66,6 +66,19 @@ class Collapser {
 		return;
 	};
 
+	static WhenDocumentReady() {
+
+		let cdef = this.prototype;
+
+		jQuery('.atl-collapser')
+		.each(function(){
+			new cdef.constructor(this);
+			return;
+		});
+
+		return;
+	};
+
 };
 
 export default Collapser;

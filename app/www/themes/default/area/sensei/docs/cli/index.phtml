@@ -3,6 +3,7 @@
 
 use Nether\Atlantis;
 use Nether\Avenue;
+use Nether\Common;
 use Nether\Surface;
 use Nether\User;
 
@@ -19,21 +20,53 @@ use Nether\User;
 
 $Heading = $Route->FetchHeading('Command Line Reference');
 
+$Path = dirname($Surface->GetPathToArea('sensei/docs/cli/helps/index'));
+$Indexer = Common\Filesystem\Indexer::FromPath($Path);
+
+$Files = $Indexer->ToDatastore();
+$Files->Remap(fn(string $Filename)=> preg_replace('/.*?\/helps\/(.*?)\.phtml$/', '\\1', $Filename));
+$Files->Sort();
+
+################################################################################
+################################################################################
+
+$GetCollapserFor = function(string $Filename) use($Surface): Surface\Element {
+
+	$Content = $Surface->GetArea(sprintf(
+		'sensei/docs/cli/helps/%s', $Filename
+	));
+
+	$Collapser = Atlantis\UI\Collapser::FromSurfaceWithContent(
+		$Surface, $Filename, sprintf('<pre>%s</pre>', $Content)
+	);
+
+	return $Collapser;
+};
+
 ################################################################################
 ############################################################################# ?>
 
 <div class="cargobay">
+
 	<section>
 		<div class="container">
 			<?php echo $Heading ?>
 			<hr />
-
-			<div class="row g-4">
-				<div class="col-12">
-					<h3><a href="/docs/cli/user">user.atl</a></h3>
-					Manage users within the system.
-				</div>
-			</ul>
+			Command line utilities available from the project root.
 		</div>
 	</section>
+
+	<section>
+		<div class="container">
+			<h3>Quick Helps</h3>
+			<hr />
+
+			<?php foreach($Files as $Filename): ?>
+			<div>
+				<?php echo $GetCollapserFor($Filename); ?>
+			</div>
+			<?php endforeach; unset($Filename); ?>
+		</div>
+	</section>
+
 </div>

@@ -18,18 +18,19 @@ use Nether\Console;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#[Console\Meta\Application('CodeServerTool', '5.0.0-dev')]
-#[Common\Meta\Info('Manage running a local code-server for remote development.')]
+#[Console\Meta\Application('DHDTool', '5.0.0-dev')]
+#[Common\Meta\Info('Manage the route generation.')]
 class DHDTool
 extends Atlantis\TerminalApp {
 
 	#[Console\Meta\Command('update')]
 	#[Console\Meta\Info('Update the routes.phson file.')]
+	#[Console\Meta\Value('--outfile', 'File to update. (Default: ./routes.phson)')]
 	public function
 	HandleRouteGenerator():
 	int {
 
-		$Outfile = $this->GetOption('Outfile') ?: './routes.phson';
+		$Outfile = $this->GetOption('outfile') ?: './routes.phson';
 
 		$App = new Nether\Atlantis\Engine(
 			getcwd(),
@@ -86,3 +87,5 @@ extends Atlantis\TerminalApp {
 	}
 
 };
+
+exit(DHDTool::Realboot());
