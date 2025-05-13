@@ -2,42 +2,38 @@
 ################################################################################
 
 use Nether\Atlantis;
-use Nether\Common;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Routes\Docs $Route
+ * ...
+ */
+
+$Heading = $Route->FetchHeading('Command Line Reference');
 
 ################################################################################
-################################################################################
+############################################################################# ?>
 
-$Surface->Area('sensei/docs/__header', [
-	'Title' => 'Command Line Utilities',
-	'Trail' => [
-		Atlantis\Struct\Item::New(Title: 'CLI')
-	]
-]);
+<div class="cargobay">
+	<section>
+		<div class="container">
+			<?php echo $Heading ?>
+			<hr />
 
-$Pages = Common\Datastore::FromArray([
-	Atlantis\Struct\Item::New(Title: 'codeserver.atl', URL: '/docs/cli/codeserver'),
-	Atlantis\Struct\Item::New(Title: 'project.atl', URL: '/docs/cli/project')
-]);
-
-?>
-
-<div class="container pb-6">
-
-	<div class="jumbotron rounded hr-hide-last">
-		<?php foreach($Pages as $Page): /** @var Atlantis\Struct\Item $Page */ ?>
-		<div class="row align-items-center">
-			<div class="col">
-				<a href="<?php $Util->Print($Page->GetURL()) ?>"><?php $Util->Print($Page->GetTitle()) ?></a>
-			</div>
-			<div class="col-auto">
-				<a class="btn btn-primary" href="<?php $Util->Print($Page->GetURL()) ?>">
-					View Docs
-					<i class="mdi mdi-chevron-right mr-0"></i>
-				</a>
-			</div>
+			<div class="row g-4">
+				<div class="col-12">
+					<h3><a href="/docs/cli/user">user.atl</a></h3>
+					Manage users within the system.
+				</div>
+			</ul>
 		</div>
-		<hr class="opacity-20" />
-		<?php endforeach; unset($Title, $URL); ?>
-	</div>
-
+	</section>
 </div>

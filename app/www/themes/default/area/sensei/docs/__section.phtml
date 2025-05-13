@@ -1,0 +1,32 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Surface;
+
+/**
+ * @var Surface\Engine $Surface
+ */
+
+$Title ??= 'Title';
+
+$Items = Common\Datastore::NewMerged(
+	[ Atlantis\Struct\Item::New(Title: 'Docs', URL: '/docs', Classes: [ 'tag' ]) ],
+	($Trail ?? [])
+);
+
+$Pathbar = Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
+	'Classes' => [ 'fs-smaller' ],
+	'Items'   => $Items->Export()
+]);
+
+################################################################################
+############################################################################# ?>
+
+<div class="mb-2">
+	<?php echo $Pathbar; ?>
+</div>
+<div>
+	<h2><?php $Util->Print($Title) ?></h2>
+</div>

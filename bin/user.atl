@@ -16,6 +16,7 @@ Nether\User;
 ////////////////////////////////////////////////////////////////////////////////
 
 #[Console\Meta\Application('UserTool', '5.0.0-dev')]
+#[Console\Meta\Info('Manage user accounts within the system.')]
 class UserTool
 extends Atlantis\TerminalApp {
 
@@ -37,11 +38,13 @@ extends Atlantis\TerminalApp {
 
 	#[Common\Meta\Date('2025-05-12')]
 	#[Console\Meta\Command('new')]
+	#[Console\Meta\Info('Launch user creation wizard.')]
 	public function
 	HandleUserNew():
 	int {
 
 		$Email = $this->GetOption('email');
+		$EmailTry = FALSE;
 		$Pass1 = NULL;
 		$Pass2 = NULL;
 
@@ -49,7 +52,9 @@ extends Atlantis\TerminalApp {
 
 		////////
 
-		while(!$Email) {
+		while(!$Email || !$EmailTry) {
+
+			if(!$Email)
 			$Email = $this->PromptForValue('Email', 'string', TRUE);
 
 			if(!strpos($Email, '@')) {

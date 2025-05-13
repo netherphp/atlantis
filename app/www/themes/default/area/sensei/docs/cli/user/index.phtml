@@ -17,27 +17,30 @@ use Nether\User;
  * ...
  */
 
-$Heading = $Route->FetchHeading('RateLimiter');
+$Heading = $Route->FetchHeading('user.atl', [
+	Atlantis\Struct\Item::New(Title: 'CLI', URL: '/docs/cli')
+]);
 
 ################################################################################
 ############################################################################# ?>
 
 <div class="cargobay">
+
 	<section>
 		<div class="container">
 			<?php echo $Heading ?>
 			<hr />
-
-			<div class="row g-4">
-				<div class="col-12">
-					<h3><a href="/docs/systems/password-tester">PasswordTester</a></h3>
-					Check if a password fits the configured rule requirements for password complexity.
-				</div>
-				<div class="col-12">
-					<h3><a href="/docs/systems/rate-limiter">RateLimiter</a></h3>
-					Check if a client has been requesting things too frequently.
-				</div>
-			</ul>
+			<div>
+				Manage users within the system.
+			</div>
 		</div>
 	</section>
+
+	<section>
+		<div class="container">
+			<pre><?php $Surface->Area('sensei/docs/cli/user/help') ?></pre>
+		</div>
+	</section>
+
+
 </div>

@@ -13,38 +13,25 @@ use Nether\User;
  * @var Surface\Engine $Surface
  * @var User\EntitySession $User
  *
- * @var Atlantis\PublicWeb $Route
+ * @var Routes\Docs $Route
  * ...
  */
 
-$SectionBar = Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
-	'Classes' => [ 'fs-smaller' ],
-	'Items'   => [
-		Atlantis\Struct\Item::New(Title: 'Docs', URL: '/docs', Classes: [ 'tag' ]),
-		Atlantis\Struct\Item::New(Title: 'Systems', URL: '/docs/systems')
-	]
+$Heading = $Route->FetchHeading('RateLimiter', [
+	Atlantis\Struct\Item::New(Title: 'Systems', URL: '/docs/systems')
 ]);
 
-$Example1 = Atlantis\UI\AceEditor::FromSurfaceWithContent(
-	$Surface, file_get_contents(sprintf('%s/example1.txt', dirname(__FILE__))), 'php'
-);
-
-$Example2 = Atlantis\UI\AceEditor::FromSurfaceWithContent(
-	$Surface, file_get_contents(sprintf('%s/example2.txt', dirname(__FILE__))), 'php'
-);
+$Example1 = $Route->FetchExamplePHP(sprintf('%s/example1.txt', dirname(__FILE__)));
+$Example2 = $Route->FetchExamplePHP(sprintf('%s/example2.txt', dirname(__FILE__)));
 
 ################################################################################
 ############################################################################# ?>
 
 <div class="cargobay">
+
 	<section>
 		<div class="container">
-			<div class="mb-2">
-				<?php echo $SectionBar ?>
-			</div>
-			<div>
-				<h2>RateLimiter</h2>
-			</div>
+			<?php echo $Heading ?>
 			<hr />
 			<div>
 				Check if a specific client has been hitting a specific endpoint too frequently.
@@ -53,6 +40,7 @@ $Example2 = Atlantis\UI\AceEditor::FromSurfaceWithContent(
 			</div>
 		</div>
 	</section>
+
 	<section>
 		<div class="container">
 			<div class="row g-4">
@@ -69,7 +57,7 @@ $Example2 = Atlantis\UI\AceEditor::FromSurfaceWithContent(
 				</div>
 				<div class="col-12">
 					<p>
-						The <code>HasHitLimitIfNotBump(string)</code> all-in-one method will return TRUE if this client needs to
+						The <code>HasHitLimitIfNotBump()</code> all-in-one method will return TRUE if this client needs to
 						be throttled, otherwise it will return FALSE and bump that client's hit count up for the next
 						time they hit this resource. The <code>GetWhenExpires()</code> method returns a string describing the
 						timeframe when this user can hit this resource again.
@@ -79,6 +67,7 @@ $Example2 = Atlantis\UI\AceEditor::FromSurfaceWithContent(
 			</div>
 		</div>
 	</section>
+
 	<section>
 		<div class="container">
 			<div class="row g-4">
@@ -99,4 +88,5 @@ $Example2 = Atlantis\UI\AceEditor::FromSurfaceWithContent(
 			</div>
 		</div>
 	</section>
+
 </div>
