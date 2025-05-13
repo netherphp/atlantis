@@ -48,7 +48,7 @@ class Tool {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	__Construct(Atlantis\Engine $App, string $UserKey, string $Endpoint, int $TimeWindow=60, int $MaxAttempts=3) {
+	__Construct(Atlantis\Engine $App, string $UserKey, string $Endpoint, int $TimeWindow, int $MaxAttempts) {
 
 		$this->SetApp($App);
 		$this->SetUserKey($UserKey);
@@ -349,6 +349,24 @@ class Tool {
 		$this->MaxAttempts = max(1, $Count);
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	New(Atlantis\Engine $App, string $UserKey, string $Endpoint, int $TimeWindow=60, int $MaxAttempts=3):
+	static {
+
+		$Output = new static(
+			$App,
+			$UserKey,
+			$Endpoint,
+			$TimeWindow,
+			$MaxAttempts
+		);
+
+		return $Output;
 	}
 
 };

@@ -32,7 +32,7 @@ extends Atlantis\PublicAPI {
 	NewRateLimiter(string $Endpoint):
 	Atlantis\Systems\RateLimiter\Tool {
 
-		$Tool = new Atlantis\Systems\RateLimiter\Tool(
+		$Tool = Atlantis\Systems\RateLimiter\Tool::New(
 			$this->App,
 			$this->Request->RemoteAddr,
 			$Endpoint
@@ -342,7 +342,7 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		$Tester = new Atlantis\Util\PasswordTester;
+		$Tester = new Atlantis\Systems\PasswordTester\Tool;
 
 		if(!$Tester->IsOK($this->Data->Password1))
 		$this->Quit(7, sprintf(
@@ -381,7 +381,7 @@ extends Atlantis\PublicAPI {
 		if(!$AllowSignup)
 		$this->Quit(10, 'Not right now');
 
-		$PasswordTester = new Atlantis\Util\PasswordTester;
+		$PasswordTester = new Atlantis\Systems\PasswordTester\Tool;
 		$User = NULL;
 		$RemoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : NULL;
 

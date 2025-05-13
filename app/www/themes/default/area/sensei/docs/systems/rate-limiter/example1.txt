@@ -1,0 +1,3 @@
+<?php
+
+$Limiter = Atlantis\Systems\RateLimiter\Tool::New($App, $UserID, $EndpointKey);

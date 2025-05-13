@@ -45,7 +45,7 @@ extends Atlantis\TerminalApp {
 		$Pass1 = NULL;
 		$Pass2 = NULL;
 
-		$Checker = Atlantis\Util\PasswordTester::FromApp($this->App);
+		$Checker = Atlantis\Systems\PasswordTester\Tool::New($this->App);
 
 		////////
 

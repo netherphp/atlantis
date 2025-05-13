@@ -144,7 +144,7 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		$Tester = new Atlantis\Util\PasswordTester;
+		$Tester = new Atlantis\Systems\PasswordTester\Tool;
 
 		if(!$Tester->IsOK($this->Data->Password1))
 		$this->Quit(4, sprintf(

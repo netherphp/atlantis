@@ -1,0 +1,7 @@
+<?php
+
+$Password = $this->Data->Get('Pass1');
+$Checker = Atlantis\Systems\PasswordTester\Tool::New($App);
+
+if(!$Checker->IsOK($Password))
+throw new Exception($Checker->GetDescription());

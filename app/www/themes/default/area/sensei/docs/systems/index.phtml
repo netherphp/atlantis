@@ -1,0 +1,51 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+$SectionBar = Atlantis\UI\Pathbar::FromSurfaceWith($Surface, [
+	'Classes' => [ 'fs-smaller' ],
+	'Items'   => [
+		Atlantis\Struct\Item::New(Title: 'Docs', URL: '/docs', Classes: [ 'tag' ])
+	]
+]);
+
+################################################################################
+############################################################################# ?>
+
+<div class="cargobay">
+	<section>
+		<div class="container">
+			<div class="mb-2">
+				<?php echo $SectionBar ?>
+			</div>
+			<h2>Subsystem Reference</h2>
+			<hr class="mb-4" />
+
+			<div class="row g-4">
+				<div class="col-12">
+					<h3><a href="/docs/systems/password-tester">PasswordTester</a></h3>
+					Check if a password fits the configured rule requirements for password complexity.
+				</div>
+				<div class="col-12">
+					<h3><a href="/docs/systems/rate-limiter">RateLimiter</a></h3>
+					Check if a client has been requesting things too frequently.
+				</div>
+			</ul>
+		</div>
+	</section>
+</div>
