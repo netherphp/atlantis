@@ -77,6 +77,11 @@ $Link = (
 				</div>
 
 				<div class="mb-6">
+					<div class="fw-bold text-uppercase">Source Name</div>
+					<input type="text" name="SiteName" class="form-control" value="<?php $Printer($Util->ValueFrom('SiteName', $Link, $Values)) ?>" />
+				</div>
+
+				<div class="mb-6">
 					<div class="fw-bold text-uppercase">Source Released Date</div>
 					<div class="mb-2">
 						<input type="date" name="Date" pattern="\d{4}-\d{2}-\d{2}" class="form-control" value="<?php $Printer($Util->ValueFrom('Date', $Link, $Values)) ?>" />
