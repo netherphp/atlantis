@@ -1,0 +1,92 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Routes\Docs $Route
+ * ...
+ */
+
+$Heading = $Route->FetchHeading('RateLimiter', [
+	Atlantis\Struct\Item::New(Title: 'Systems', URL: '/docs/systems')
+]);
+
+$Example1 = $Route->FetchExamplePHP(sprintf('%s/example1.txt', dirname(__FILE__)));
+$Example2 = $Route->FetchExamplePHP(sprintf('%s/example2.txt', dirname(__FILE__)));
+
+################################################################################
+############################################################################# ?>
+
+<div class="cargobay">
+
+	<section>
+		<div class="container">
+			<?php echo $Heading ?>
+			<hr />
+			<div>
+				Check if a specific client has been hitting a specific endpoint too frequently.
+				It is able to use a database MEMORY table, or use local filesystem to allow
+				use without database.
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-12">
+					<h3>Usage</h3>
+					<hr />
+					<p>
+						Use the <code>New(Atlantis\Engine, string, string)</code> factory method to get a fresh tool instance.
+						The UserID can be any string that identifies a user or client. This is usually a User ID, UUID, or HitHash.
+						The EndpointKey can be any string that identifies the current process that is being executed. This is usually
+						something made up specific to describe the current flow, and could even just be __METHOD__ within simple routes.
+					</p>
+					<div><?php echo $Example1 ?></div>
+				</div>
+				<div class="col-12">
+					<p>
+						The <code>HasHitLimitIfNotBump()</code> all-in-one method will return TRUE if this client needs to
+						be throttled, otherwise it will return FALSE and bump that client's hit count up for the next
+						time they hit this resource. The <code>GetWhenExpires()</code> method returns a string describing the
+						timeframe when this user can hit this resource again.
+					</p>
+					<div><?php echo $Example2 ?></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-12">
+					<h3>Application Settings</h3>
+					<hr />
+					<dl>
+						<dt class="ff-mono">Atlantis\Systems\RateLimiter\Tool::ConfStorageAPI</dt>
+						<dd>
+							<p class="o-50">string: FQCN of RateLimiter StorageAPI class to use for tracking.</p>
+							<ul>
+								<li class="ff-mono">Atlantis\Systems\RateLimiter\StorageAPI\Database\Client::class</li>
+								<li class="ff-mono">Atlantis\Systems\RateLimiter\StorageAPI\Filesystem\Client::class</li>
+							</ul>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</div>

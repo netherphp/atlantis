@@ -1,0 +1,46 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Routes\Docs $Route
+ * ...
+ */
+
+$Heading = $Route->FetchHeading('user.atl', [
+	Atlantis\Struct\Item::New(Title: 'CLI', URL: '/docs/cli')
+]);
+
+################################################################################
+############################################################################# ?>
+
+<div class="cargobay">
+
+	<section>
+		<div class="container">
+			<?php echo $Heading ?>
+			<hr />
+			<div>
+				Manage users within the system.
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<pre><?php $Surface->Area('sensei/docs/cli/user/help') ?></pre>
+		</div>
+	</section>
+
+
+</div>

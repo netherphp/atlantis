@@ -10,7 +10,7 @@
 $PasswordTester = NULL;
 
 if($ResetCode) {
-	$PasswordTester = new Nether\Atlantis\Util\PasswordTester;
+	$PasswordTester = Nether\Atlantis\Systems\PasswordTester\Tool::New($App);
 }
 
 ?>

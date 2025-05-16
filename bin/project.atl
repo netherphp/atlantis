@@ -1079,7 +1079,21 @@ extends Atlantis\TerminalApp {
 				return;
 			}
 
-			symlink(realpath($Dir->Source), $Dir->Path);
+			////////
+
+			// a link that exists on disk but is broken will report
+			// false to things like file_exists, while refusing to be
+			// overwritten by a new link.
+
+			if(is_link($Dir->Path))
+			unlink($Dir->Path);
+
+			////////
+
+			symlink(
+				realpath($Dir->Source),
+				$Dir->Path
+			);
 
 			if(!is_link($Dir->Path)) {
 				$Report[$Dir->Path] = "ERROR: Permission Denied";

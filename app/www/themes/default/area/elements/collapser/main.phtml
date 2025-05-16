@@ -1,0 +1,27 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Surface;
+
+/**
+ * @var Atlantis\UI\Collapser $Element
+ */
+
+$Title ??= $Element->Title;
+$Content ??= $Element->Content;
+
+################################################################################
+############################################################################# ?>
+
+<div class="atl-collapser Collapser">
+	<header>
+		<div>
+			<?php echo $Title ?>
+		</div>
+		<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+	</header>
+	<section>
+		<?php echo $Content ?>
+	</section>
+</div>

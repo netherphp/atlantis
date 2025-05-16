@@ -1,0 +1,9 @@
+<?php
+
+$Limiter = Atlantis\Systems\RateLimiter\Tool::New($App, $UserID, $EndpointKey);
+
+if($Limiter->HasHitLimitIfNotBump())
+$this->Quit(6, sprintf(
+	'Too many failed attempts. Please wait %s.',
+	$RateLimit->GetWhenExpires()
+));

@@ -16,6 +16,7 @@ Nether\User;
 ////////////////////////////////////////////////////////////////////////////////
 
 #[Console\Meta\Application('UserTool', '5.0.0-dev')]
+#[Console\Meta\Info('Manage user accounts within the system.')]
 class UserTool
 extends Atlantis\TerminalApp {
 
@@ -30,6 +31,94 @@ extends Atlantis\TerminalApp {
 		$this->Commands->Sort();
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2025-05-12')]
+	#[Console\Meta\Command('new')]
+	#[Console\Meta\Info('Launch user creation wizard.')]
+	public function
+	HandleUserNew():
+	int {
+
+		$Email = $this->GetOption('email');
+		$EmailTry = FALSE;
+		$Pass1 = NULL;
+		$Pass2 = NULL;
+
+		$Checker = Atlantis\Systems\PasswordTester\Tool::New($this->App);
+
+		////////
+
+		while(!$Email || !$EmailTry) {
+
+			if(!$Email)
+			$Email = $this->PromptForValue('Email', 'string', TRUE);
+
+			if(!strpos($Email, '@')) {
+				$Email = NULL;
+				$this->PrintError('Invalid Email');
+				continue;
+			}
+
+			$Existing = User\Entity::GetByEmail($Email);
+
+			if($Existing !== NULL) {
+				$Email = NULL;
+				$this->PrintError('Email Already Exists');
+				continue;
+			}
+
+			continue;
+		}
+
+		while(!$Pass1) {
+			$Pass1 = $this->PromptForValue('Password', 'string', TRUE);
+			$Pass2 = $this->PromptForValue('Confirm', 'string', TRUE);
+
+			if($Pass1 !== $Pass2) {
+				$Pass1 = NULL;
+				$this->PrintError('Passwords did not match.');
+				continue;
+			}
+
+			if(!$Checker->IsOK($Pass1)) {
+				$Pass1 = NULL;
+				$this->PrintError($Checker->GetDescription());
+				continue;
+			}
+
+			continue;
+		}
+
+		////////
+
+		$this->PrintBulletList([
+			'Email'    => $Email,
+			'Password' => sprintf('string(%d)', strlen($Pass1))
+		]);
+
+		if(!$this->PromptForBool('Create User?', 'Y/N')) {
+			$this->PrintStatus('Aboring');
+			return 0;
+		}
+
+		$User = User\EntitySession::Insert([
+			'Email' => $Email,
+			'PHash' => User\Entity::GeneratePasswordHash($Pass1)
+		]);
+
+		$this->PrintBulletList([
+			'ID'    => $User->ID,
+			'UUID'  => $User->UUID,
+			'Email' => $User->Email
+		]);
+
+		////////
+
+		return 0;
 	}
 
 	////////////////////////////////////////////////////////////////

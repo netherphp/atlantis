@@ -1,0 +1,3 @@
+<?php
+
+$Checker = Atlantis\Systems\PasswordTester\Tool::New($App);

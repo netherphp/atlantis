@@ -813,6 +813,9 @@ extends Atlantis\TerminalApp {
 				continue;
 			}
 
+			if(is_link($Lnk))
+			unlink($Lnk);
+
 			symlink($Tgt, $Lnk);
 		}
 

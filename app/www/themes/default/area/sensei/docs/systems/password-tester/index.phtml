@@ -1,0 +1,102 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Routes\Docs $Route
+ * ...
+ */
+
+$Heading = $Route->FetchHeading('PasswordTester', [
+	Atlantis\Struct\Item::New(Title: 'Systems', URL: '/docs/systems')
+]);
+
+$Example1 = $Route->FetchExamplePHP(sprintf('%s/example1.txt', dirname(__FILE__)));
+$Example2 = $Route->FetchExamplePHP(sprintf('%s/example2.txt', dirname(__FILE__)));
+
+################################################################################
+############################################################################# ?>
+
+<div class="cargobay">
+
+	<section>
+		<div class="container">
+			<?php echo $Heading ?>
+			<hr />
+			<div>
+				Check if a password fits the configured rule requirements for password complexity.
+				It is also able to explain why the password failed to be good enough.
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-12">
+					<h3>Usage:</h3>
+					<hr />
+					<p>
+						Use the <code>New(Atlantis\Engine)</code> factory method to get a fresh tool instance
+						automatically configured to the framework's settings.
+					</p>
+					<div><?php echo $Example1 ?></div>
+				</div>
+				<div class="col-12">
+					<p>
+						The <code>IsOK(string)</code> method will return if the provided string is
+						good enough to be used as a password. If not, <code>GetDescription()</code>
+						will explain in words why it failed.
+					</p>
+					<div><?php echo $Example2 ?></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-12">
+					<h3>Application Settings</h3>
+					<hr />
+					<dl>
+						<dt class="ff-mono">Atlantis\Key::ConfPassMinLen</dt>
+						<dd>
+							<p class="o-50">int = 10</p>
+						</dd>
+						<dt class="ff-mono">Atlantis\Key::ConfPassReqAlphaLower</dt>
+						<dd>
+							<p class="o-50">bool = TRUE</p>
+						</dd>
+						<dt class="ff-mono">Atlantis\Key::ConfPassReqAlphaUpper</dt>
+						<dd>
+							<p class="o-50">bool = TRUE</p>
+						</dd>
+						<dt class="ff-mono">Atlantis\Key::ConfPassReqNumeric</dt>
+						<dd>
+							<p class="o-50">bool = TRUE</p>
+						</dd>
+						<dt class="ff-mono">Atlantis\Key::ConfPassReqSpecial</dt>
+						<dd>
+							<p class="o-50">bool = TRUE</p>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</div>

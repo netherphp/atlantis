@@ -14,6 +14,7 @@ use Nether\Console;
 ################################################################################
 ################################################################################
 
+#[Console\Meta\Application('Tags')]
 class App
 extends Atlantis\TerminalApp {
 
@@ -105,6 +106,117 @@ extends Atlantis\TerminalApp {
 		));
 
 		$Old->Drop();
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Console\Meta\Command('list')]
+	#[Console\Meta\Toggle('uuid', 'Include a UUID column in the report.')]
+	#[Console\Meta\Toggle('glomp', 'Dump one giant list no pagination.')]
+	public function
+	HandleTagList():
+	int {
+
+		$this->PrintAppHeader('Listing');
+
+		////////
+
+		$ShowUUID = $this->GetOption('uuid') ?? NULL;
+		$GlompEm = $this->GetOption('glomp') ?? FALSE;
+		$GrepName = $this->GetOption('name') ?? NULL;
+		$GrepAlias = $this->GetOption('alias') ?? NULL;
+
+		$Sorting = $this->GetOption('sort') ?? 'title-az';
+		$Limit = $this->GetOption('limit') ?? 25;
+		$Page = $this->GetOption('page') ?? 1;
+		$Pager = NULL;
+
+		$Table = Console\Elements\Table::New($this);
+		$Table->SetHeaders('UUID', 'ID', 'Alias', 'Name', 'URL');
+
+		////////
+
+		$Tags = Atlantis\Tag\Entity::Find([
+			'Sort'  => $Sorting,
+			'Limit' => $Limit,
+			'Page'  => $Page
+		]);
+
+		$Pager = ($GlompEm ? $Tags->Walkinator() : $Tags);
+
+		////////
+
+		$this->PrintH3(sprintf(
+			'Found %d %s',
+			$Tags->Total(),
+			Common\Values::IfOneElse($Tags->Total(), 'Tag', 'Tags')
+		));
+
+		foreach($Pager as $T) {
+			/** @var Atlantis\Tag\Entity $T */
+
+			$Table->Push(
+				$T->UUID,
+				$T->ID,
+				$T->Alias,
+				$T->Name,
+				$this->Formatter->Link($T->GetPageURL())
+			);
+
+			continue;
+		}
+
+		////////
+
+		if(!$ShowUUID)
+		$Table->HideColumn(0);
+
+		$Table->PrintHeaders();
+		$Table->PrintRows();
+		$this->PrintLn();
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('z-import-geo-us')]
+	public function
+	HandleTagImportGeoTagsUS():
+	int {
+
+		$States = Atlantis\Struct\GeoTagsUS::FetchJSON($this->App);
+		$AliasMode = $this->GetOption('alias') ?? 'full';
+		$Prefix = 'us';
+
+		////////
+
+		$Abbr = NULL;
+		$Name = NULL;
+		$Alias = NULL;
+		$TDef = [];
+		$Tag = NULL;
+
+		foreach($States as $Abbr => $Name) {
+			$Alias = match($AliasMode) {
+				'key'   => sprintf('%s-%s', $Prefix, Common\Filters\Text::SlottableKey($Abbr)),
+				'abbr'  => Common\Filters\Text::SlottableKey($Abbr),
+				default => Common\Filters\Text::SlottableKey($Name)
+			};
+
+			$TDef['Alias'] = $Alias;
+			$TDef['Name'] = $Name;
+			$TDef['Type'] = Atlantis\Tag\Entity::TypeNormal;
+
+			$Tag = Atlantis\Tag\Entity::Touch(...$TDef);
+
+			$this->PrintLn(json_encode([
+				'ID'    => $Tag->ID,
+				'Alias' => $Tag->Alias,
+				'Name'  => $Tag->Name
+			]));
+		}
 
 		return 0;
 	}
