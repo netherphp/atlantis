@@ -275,5 +275,20 @@ $Surface->Area('sensei/docs/__header', [
 		</div>
 	</section>
 
+	<section>
+		<div class="container">
+			<h2>Route Generation</h2>
+			<hr />
+			<p>Without doing anything by default the framework will scan for routes each request. This is fine on small projects and dev but it sucks for performance. The following command will generate a static <code>routes.phson</code> file to speed things up.</p>
+			<code class="d-block cli mb-4">$ dhd.atl update</code>
+			<p>This command will need to be re-run to add new routes later.</p>
+			<p>On my Macbook just this static site this is the performance difference:</p>
+			<ul>
+				<li>Live: <code>cpu[ 0.023s ] mem[ 1.99 MiB ]</code></li>
+				<li>Static: <code>cpu[ 0.009s ] mem[ 1.06 MiB ]</code></li>
+			</ul>
+		</div>
+	</section>
+
 </div>
 

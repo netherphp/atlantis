@@ -135,6 +135,12 @@ if(isset($Photos) && $Photos->Count() >= 6) {
 	if(isset($Links) && $Links->Total)
 	$Surface->Area('profile/section/related-links', [ 'Profile'=> $Profile, 'Links'=> $Links ]);
 
+	if(isset($Related) && $Related->Total) {
+		echo '<h2 class="text-uppercase mb-0">Related Profiles</h2>';
+		echo '<hr class="mt-1 mb-3" />';
+		$Surface->Area('widgets/profile-list-lite', [ 'Profiles'=> $Related ]);
+	}
+
 	?>
 
 	<!-- SECTIONS: AFTER -->

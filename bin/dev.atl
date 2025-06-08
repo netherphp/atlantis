@@ -677,6 +677,26 @@ extends Atlantis\TerminalApp {
 		return 0;
 	}
 
+	#[Console\Meta\Command('phpinfo')]
+	#[Console\Meta\Info('Create an obscure PHPINFO file that deletes itself after one use.')]
+	public function
+	HandlePHPInfoFile():
+	int {
+
+		$Filename = sprintf('%s.php', md5(random_bytes(128)));
+		$Filepath = $this->App->FromProjectRoot(sprintf('www/%s', $Filename));
+		$URL = $this->App->RewriteURL(sprintf('/%s', $Filename));
+
+		Common\Filesystem\Util::TryToWriteFile(
+			$Filepath,
+			'<?php phpinfo(); unlink(__FILE__);'
+		);
+
+		$this->PrintStatus($URL);
+
+		return 0;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
