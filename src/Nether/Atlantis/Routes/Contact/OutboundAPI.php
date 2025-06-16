@@ -42,7 +42,7 @@ extends Atlantis\PublicAPI {
 
 		//$SendTo = Atlantis\Library::Get(Atlantis\Key::ConfContactTo);
 		$SendBCC = Atlantis\Library::Get(Atlantis\Key::ConfContactBCC);
-		$SendSubject = Atlantis\Library::Get(Atlantis\Key::ConfContactSubject);
+		//$SendSubject = Atlantis\Library::Get(Atlantis\Key::ConfContactSubject);
 
 		//if($SendTo && !is_array($SendTo))
 		//$SendTo = [ $SendTo ];
@@ -95,7 +95,7 @@ extends Atlantis\PublicAPI {
 			'Name'    => $InputName,
 			'Email'   => $InputEmail,
 			'Phone'   => $InputPhone,
-			'Subject' => $SendSubject,
+			'Subject' => $ConfSubject,
 			'Message' => $InputMessage
 		]);
 
@@ -112,7 +112,8 @@ extends Atlantis\PublicAPI {
 			'Name'    => $InputName,
 			'Email'   => $InputEmail,
 			'Phone'   => $InputPhone,
-			'Subject' => $SendSubject,
+			'Subject' => $Email->Subject,
+			'SentTo'  => $Email->To->Join(', '),
 			'Message' => $InputMessage
 		]);
 

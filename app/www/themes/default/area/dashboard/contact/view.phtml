@@ -8,34 +8,36 @@ use Nether\Database;
  * @var Atlantis\Struct\ContactEntry $Message
  */
 
-$Surface
-->Set('Page.Title', "Contact Us Message #{$Message->ID}")
-->Area('dashboard/nav', [ 'Trail' => [
-	'Contact Us'
-	=> '/dashboard/contact/list',
+$Trail = [
+	Atlantis\Struct\Item::New(UUID: 'contact', Title: 'Contact Log', URL: '/dashboard/contact/list'),
+	Atlantis\Struct\Item::New(UUID: 'contact', Title: sprintf('Message #%d', $Message->ID), URL: sprintf('/dashboard/contact/view/%d', $Message->ID)),
+];
 
-	"Message #{$Message->ID}"
-	=> NULL
-]]);
-
+$Surface->Area('dashboard/__header', [ 'Trail'=> $Trail ]);
 ?>
 
-<div class="jumbotron rounded p-4 mb-4">
-	<div>
-		<strong>Date:</strong>
-		<?php $Printer($Message->DateSent->Get(Common\Values::DateFormatFancyDateTime)) ?>
+<div class="container pb-6">
+	<div class="jumbotron rounded p-4 mb-4">
+		<div>
+			<strong>Date:</strong>
+			<?php $Printer($Message->DateSent->Get(Common\Values::DateFormatFancyDateTime)) ?>
+		</div>
+		<div>
+			<strong>Sent To:</strong>
+			<?php $Printer($Message->SentTo) ?>
+		</div>
+		<div>
+			<strong>From:</strong>
+			<?php $Printer($Message->Name) ?>
+			<?php $Printer($Message->Email) ?>
+		</div>
+		<div>
+			<strong>Phone:</strong>
+			<a href="tel:<?php $Printer(preg_replace('/[^0-9]/', '', $Message->Phone)) ?>"><?php $Printer($Message->Phone) ?></a>
+		</div>
 	</div>
-	<div>
-		<strong>From:</strong>
-		<?php $Printer($Message->Name) ?>
-		<?php $Printer($Message->Email) ?>
-	</div>
-	<div>
-		<strong>Phone:</strong>
-		<a href="tel:<?php $Printer(preg_replace('/[^0-9]/', '', $Message->Phone)) ?>"><?php $Printer($Message->Phone) ?></a>
-	</div>
-</div>
 
-<div class="jumbotron rounded p-4">
-	<?php $Printer(nl2br($Message->Message)) ?>
+	<div class="jumbotron rounded p-4">
+		<?php $Printer(nl2br($Message->Message)) ?>
+	</div>
 </div>

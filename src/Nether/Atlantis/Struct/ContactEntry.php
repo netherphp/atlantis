@@ -40,6 +40,10 @@ extends Database\Prototype {
 
 	#[Database\Meta\TypeText]
 	public ?string
+	$SentTo;
+
+	#[Database\Meta\TypeText]
+	public ?string
 	$Message;
 
 	////////

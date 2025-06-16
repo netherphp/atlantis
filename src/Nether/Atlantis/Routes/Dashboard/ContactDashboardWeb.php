@@ -22,7 +22,8 @@ extends Atlantis\ProtectedWeb {
 		]);
 
 		($this->Surface)
-		->Wrap('dashboard/contact/index', [
+		->Set('Page.Title', 'Contact Log')
+		->Area('dashboard/contact/index', [
 			'Items' => $Items
 		]);
 
@@ -46,7 +47,8 @@ extends Atlantis\ProtectedWeb {
 		////////
 
 		($this->Surface)
-		->Wrap('dashboard/contact/view', [
+		->Set('Page.Title', sprintf('Contact Log: Message #%d', $Message->ID))
+		->Area('dashboard/contact/view', [
 			'Message' => $Message
 		]);
 
