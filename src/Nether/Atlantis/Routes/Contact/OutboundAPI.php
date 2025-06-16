@@ -22,6 +22,7 @@ extends Atlantis\PublicAPI {
 	//*/
 
 		($this->Request->Data)
+		->Subject(Common\Filters\Numbers::IntType(...))
 		->Email(Common\Filters\Text::Email(...))
 		->Phone(Common\Filters\Text::TrimmedNullable(...))
 		->Message(Common\Filters\Text::TrimmedNullable(...));
@@ -39,18 +40,19 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		$SendTo = Atlantis\Library::Get(Atlantis\Key::ConfContactTo);
+		//$SendTo = Atlantis\Library::Get(Atlantis\Key::ConfContactTo);
 		$SendBCC = Atlantis\Library::Get(Atlantis\Key::ConfContactBCC);
 		$SendSubject = Atlantis\Library::Get(Atlantis\Key::ConfContactSubject);
 
-		if($SendTo && !is_array($SendTo))
-		$SendTo = [ $SendTo ];
+		//if($SendTo && !is_array($SendTo))
+		//$SendTo = [ $SendTo ];
 
 		if($SendBCC && !is_array($SendBCC))
 		$SendBCC = [ $SendBCC ];
 
 		////////
 
+		$InputSubject = $this->Request->Data->Subject;
 		$InputName = $this->Request->Data->Name;
 		$InputEmail = $this->Request->Data->Email;
 		$InputPhone = $this->Request->Data->Phone;
@@ -69,14 +71,24 @@ extends Atlantis\PublicAPI {
 		////////
 
 		$Email = new Email\Outbound;
-		$Email->Subject = $SendSubject;
+		//$Email->Subject = $SendSubject;
 		$Email->ReplyTo = $InputEmail;
 
-		if($SendTo && count($SendTo))
-		$Email->To->MergeLeft($SendTo);
+		//if($SendTo && count($SendTo))
+		//$Email->To->MergeLeft($SendTo);
 
 		if($SendBCC && count($SendBCC))
 		$Email->BCC->MergeLeft($SendBCC);
+
+		////////
+
+		$ConfSubject = $this->ChooseContactSubject($InputSubject);
+		$ConfSendTo = $this->ChooseContactSendTo($InputSubject);
+
+		$Email->Subject = $ConfSubject;
+		$Email->To->MergeRight($ConfSendTo);
+
+		////////
 
 		$Email->Render('email/contact-form', [
 			'IP'      => $InputIP,
@@ -116,6 +128,60 @@ extends Atlantis\PublicAPI {
 		]);
 
 		return;
+	}
+
+	public function
+	FetchContactSubjectEndpoints():
+	Common\Datastore {
+
+		$Configured = $this->App->Config->Get(Email\Library::ConfSubjectEndpoints);
+
+		if(!is_countable($Configured) || !count($Configured))
+		$Configured = [
+			Atlantis\Key::ConfContactSubject
+			=> [ $this->App->Config->Get(Atlantis\Key::ConfContactTo) ]
+		];
+
+		////////
+
+		$Output = new Common\Datastore($Configured);
+
+		return $Output;
+	}
+
+	public function
+	ChooseContactSubject(int $Subject):
+	string {
+
+		$Valids = $this->FetchContactSubjectEndpoints()->Keys();
+
+		return match(TRUE) {
+			array_key_exists($Subject, $Valids)
+			=> $Valids[$Subject],
+
+			default
+			=> $Valids[0]
+		};
+	}
+
+	public function
+	ChooseContactSendTo(int $Subject):
+	array {
+
+		$Valids = $this->FetchContactSubjectEndpoints()->Values(TRUE);
+
+		$Choose = match(TRUE) {
+			array_key_exists($Subject, $Valids)
+			=> $Valids[$Subject],
+
+			default
+			=> $Valids[0]
+		};
+
+		if(!is_array($Choose))
+		$Choose = [ $Choose ];
+
+		return $Choose;
 	}
 
 }
