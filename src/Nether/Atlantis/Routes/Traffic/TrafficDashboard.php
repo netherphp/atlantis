@@ -5,6 +5,7 @@ namespace Nether\Atlantis\Routes\Traffic;
 
 use Nether\Atlantis;
 use Nether\Common;
+use Nether\Database;
 
 ################################################################################
 ################################################################################
@@ -23,40 +24,32 @@ extends Atlantis\ProtectedWeb {
 		->FilterPush('Path', Common\Filters\Text::TrimmedNullable(...))
 		->FilterPush('Query', Common\Filters\Text::TrimmedNullable(...));
 
-		$RangeToday = Common\Units\Timeframe::Today();
+		////////
 
-		$RangeWeek = Common\Units\Timeframe::Today();
-		$RangeWeek->GetStart()->Modify('-7 days');
+		$InputTitle = $this->Data->Get('Title') ?? 'Traffic Overview';
+		$InputPath = $this->Data->Get('Path');
+		$InputQuery = $this->Data->Get('Query');
 
-		$RangeMonth = Common\Units\Timeframe::Today();
-		$RangeMonth->GetStart()->Modify('-30 days');
+		$RangeToday = $this->GetTimeframeToday();
+		$RangeWeek = $this->GetTimeframeDays(7);
+		$RangeMonth = $this->GetTimeframeDays(30);
+		$RangeAll = NULL;
 
-		$ResultToday = Atlantis\Struct\TrafficRow::Find([
-			'Timeframe' => $RangeToday,
-			'Limit'     => 1
-		]);
+		////////
 
-		$ResultWeek = Atlantis\Struct\TrafficRow::Find([
-			'Timeframe' => $RangeWeek,
-			'Limit'     => 1
-		]);
+		$ResultToday = $this->GetResultsTimeframe($RangeToday);
+		$ResultWeek = $this->GetResultsTimeframe($RangeWeek);
+		$ResultMonth = $this->GetResultsTimeframe($RangeMonth);
+		$ResultAll = $this->GetResultsTimeframe($RangeAll);
 
-		$ResultMonth = Atlantis\Struct\TrafficRow::Find([
-			'Timeframe' => $RangeMonth,
-			'Limit'     => 1
-		]);
-
-		$ResultAll = Atlantis\Struct\TrafficRow::Find([
-			'Timeframe' => NULL,
-			'Limit'     => 1
-		]);
+		////////
 
 		($this->Surface)
 		->Set('Page.Title', 'Traffic Overview')
 		->Area('atlantis/dashboard/traffic/overview', [
-			'Title'        => $this->Data->Get('Title'),
-			'Path'         => $this->Data->Get('Path'),
-			'Query'        => $this->Data->Get('Query'),
+			'Title'        => $InputTitle,
+			'Path'         => $InputPath,
+			'Query'        => $InputQuery,
 			'TotalToday'   => $ResultToday->Total(),
 			'TotalWeek'    => $ResultWeek->Total(),
 			'TotalMonth'   => $ResultMonth->Total(),
@@ -64,6 +57,35 @@ extends Atlantis\ProtectedWeb {
 		]);
 
 		return;
+	}
+
+	protected function
+	GetTimeframeToday():
+	Common\Units\Timeframe {
+
+		return Common\Units\Timeframe::Today();
+	}
+
+	protected function
+	GetTimeframeDays(int $Days):
+	Common\Units\Timeframe {
+
+		$Range = Common\Units\Timeframe::Today();
+		$Range->GetStart()->Modify(sprintf('-%d days', $Days));
+
+		return $Range;
+	}
+
+	protected function
+	GetResultsTimeframe(?Common\Units\Timeframe $Range):
+	Database\ResultSet {
+
+		$Results = Atlantis\Struct\TrafficRow::Find([
+			'Timeframe' => $Range,
+			'Limit'     => 1
+		]);
+
+		return $Results;
 	}
 
 };
