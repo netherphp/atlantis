@@ -1,6 +1,7 @@
 import API         from '../../../nui/api/json.js';
 import ModalWindow from '../../../nui/modules/modal/modal.js';
 import EditorHTML  from '../../../nui/modules/editor/editor.js';
+import UploadBtn   from '../../../nui/modules/uploader/uploader.js';
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,8 +34,24 @@ let BlobEditTemplate = `
 		<div class="Editor AtlBlobEditor"></div>
 	</div>
 	<div class="mb-0">
-		<div class="fw-bold">Image URL</div>
-		<input type="text" name="ImageURL" class="form-control" />
+		<div class="row">
+			<div class="col">
+				<div class="fw-bold mb-2">Image</div>
+				<div class="row g-2">
+					<div class="col-auto">
+						<button name="ImageUploadBtn" class="btn btn-primary">
+							<i class="mdi mdi-upload"></i>
+							Upload Image
+						</button>
+					</div>
+					<div class="col"><input type="text" name="ImageURL" class="form-control" /></div>
+				</div>
+
+			</div>
+			<div class="col-2">
+				<div name="ImagePreview" class="ratiobox square wallpapered contained bg-transparent border rounded"></div>
+			</div>
+		</div>
 	</div>
 </div>
 `;
@@ -119,9 +136,15 @@ extends ModalWindow {
 		this.elType = this.element.find('input[name="Type"]');
 		this.elTitle = this.element.find('input[name="Title"]');
 		this.elImage = this.element.find('input[name="ImageURL"]');
+		this.elUpload = this.element.find('button[name="ImageUploadBtn"]');
+		this.elPreview = this.element.find('div[name="ImagePreview"]');
 
 		this.elEdit = this.element.find('textarea[name="Editor"]');
 		this.editor = null;
+
+		new UploadBtn(this.elUpload, {
+			onSuccess: this.onUploaded.bind(this)
+		});
 
 		this.setWidth('95vw');
 		this.setTitle('Edit Content');
@@ -156,6 +179,13 @@ extends ModalWindow {
 			return this.editor.getHTML();
 		}
 
+		return;
+	};
+
+	onUploaded(r, dialog) {
+		this.elImage.val(r.payload.URL);
+		this.elPreview.css({ 'background-image': `url(${r.payload.URL})` });
+		dialog.destroy();
 		return;
 	};
 
@@ -198,6 +228,7 @@ extends ModalWindow {
 		.then(function(r){
 			self.elTitle.val(r.payload.Title);
 			self.elImage.val(r.payload.ImageURL);
+			self.elPreview.css({ 'background-image': `url(${r.payload.ImageURL})` });
 			self.editor.setContent(r.payload.Content);
 			return;
 		});
