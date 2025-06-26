@@ -21,10 +21,38 @@ extends Atlantis\PublicAPI {
 	contact.
 	//*/
 
+		// error codes
+		// 1 - email required
+		// 2 - message required
+		// 3 - name required
+		// 4 - recaptcha invalid
+		// 5 - recaptcha api error
+		// 6 - phone required
+		// 7 - email api error
+
 		($this->Request->Data)
-		->Email(Common\Filters\Text::Email(...))
-		->Phone(Common\Filters\Text::TrimmedNullable(...))
-		->Message(Common\Filters\Text::TrimmedNullable(...));
+		->FilterPush('Subject', Common\Filters\Numbers::IntType(...))
+		->FilterPush('Email', Common\Filters\Text::Email(...))
+		->FilterPush('Phone', Common\Filters\Text::TrimmedNullable(...))
+		->FilterPush('Message', Common\Filters\Text::TrimmedNullable(...));
+
+		$RequireName  = $this->App->Config->Get(Atlantis\Key::ConfContactRequireName);
+		$RequireEmail = $this->App->Config->Get(Atlantis\Key::ConfContactRequireEmail);
+		$RequirePhone = $this->App->Config->Get(Atlantis\Key::ConfContactRequirePhone);
+
+		$InputSubject = $this->Request->Data->Get('Subject');
+		$InputName    = $this->Request->Data->Get('Name');
+		$InputEmail   = $this->Request->Data->Get('Email');
+		$InputPhone   = $this->Request->Data->Get('Phone');
+		$InputMessage = $this->Request->Data->Get('Message');
+		$InputIP      = $this->Request->RemoteAddr;
+
+		$ConfSubject  = $this->ChooseContactSubject($InputSubject);
+		$ConfSendTo   = $this->ChooseContactSendTo($InputSubject);
+		$ConfReplyTo  = $this->ChooseContactReplyTo($InputEmail, $ConfSendTo);
+		$ConfBCC      = $this->ChooseContactBCC();
+
+		$Email = NULL;
 
 		////////
 
@@ -39,60 +67,40 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		$SendTo = Atlantis\Library::Get(Atlantis\Key::ConfContactTo);
-		$SendBCC = Atlantis\Library::Get(Atlantis\Key::ConfContactBCC);
-		$SendSubject = Atlantis\Library::Get(Atlantis\Key::ConfContactSubject);
+		if($RequireName && !$InputName)
+		$this->Quit(3, 'Name is required.');
 
-		if($SendTo && !is_array($SendTo))
-		$SendTo = [ $SendTo ];
+		if($RequireEmail && !$InputEmail)
+		$this->Quit(1, 'Email is required.');
 
-		if($SendBCC && !is_array($SendBCC))
-		$SendBCC = [ $SendBCC ];
-
-		////////
-
-		$InputName = $this->Request->Data->Name;
-		$InputEmail = $this->Request->Data->Email;
-		$InputPhone = $this->Request->Data->Phone;
-		$InputMessage = $this->Request->Data->Message;
-		$InputIP = $this->Request->RemoteAddr;
-
-		if(!$InputName)
-		$this->Quit(3, 'Name is required');
-
-		if(!$InputEmail)
-		$this->Quit(1, 'Email is required');
+		if($RequirePhone && !$InputPhone)
+		$this->Quit(6, 'Phone is required.');
 
 		if(!$InputMessage)
-		$this->Quit(2, 'Message is required');
+		$this->Quit(2, 'Message is required.');
 
 		////////
 
 		$Email = new Email\Outbound;
-		$Email->Subject = $SendSubject;
-		$Email->ReplyTo = $InputEmail;
 
-		if($SendTo && count($SendTo))
-		$Email->To->MergeLeft($SendTo);
-
-		if($SendBCC && count($SendBCC))
-		$Email->BCC->MergeLeft($SendBCC);
+		$Email->Subject = $ConfSubject;
+		$Email->ReplyTo = $ConfReplyTo;
+		$Email->To->MergeRight($ConfSendTo);
+		$Email->BCC->MergeRight($ConfBCC);
 
 		$Email->Render('email/contact-form', [
 			'IP'      => $InputIP,
 			'Name'    => $InputName,
 			'Email'   => $InputEmail,
 			'Phone'   => $InputPhone,
-			'Subject' => $SendSubject,
+			'Subject' => $ConfSubject,
 			'Message' => $InputMessage
 		]);
 
 		////////
 
 		try { $Email->Send(); }
-		catch(Exception $E) {
-
-		}
+		catch(Exception $E) { /* $this->Quit(7); */ }
 
 		if(Atlantis\Struct\ContactEntry::HasDB())
 		Atlantis\Struct\ContactEntry::Insert([
@@ -100,7 +108,8 @@ extends Atlantis\PublicAPI {
 			'Name'    => $InputName,
 			'Email'   => $InputEmail,
 			'Phone'   => $InputPhone,
-			'Subject' => $SendSubject,
+			'Subject' => $Email->Subject,
+			'SentTo'  => $Email->To->Join(', '),
 			'Message' => $InputMessage
 		]);
 
@@ -109,13 +118,102 @@ extends Atlantis\PublicAPI {
 		$this->SetPayload([
 			'Subject' => $Email->Subject,
 			'From'    => $Email->From,
-			'ReplyTo' => $Email->ReplyTo,
-			'To'      => join(', ', $Email->To->GetData()) ?: NULL,
-			'BCC'     => join(', ', $Email->BCC->GetData()) ?: NULL,
 			'Content' => $Email->Content
 		]);
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	FetchContactSubjectEndpoints():
+	Common\Datastore {
+
+		$Configured = $this->App->Config->Get(Email\Library::ConfSubjectEndpoints);
+
+		if(!is_countable($Configured) || !count($Configured))
+		$Configured = [
+			Atlantis\Key::ConfContactSubject
+			=> [ $this->App->Config->Get(Atlantis\Key::ConfContactTo) ]
+		];
+
+		////////
+
+		$Output = new Common\Datastore($Configured);
+
+		return $Output;
+	}
+
+	public function
+	ChooseContactSubject(int $Subject):
+	string {
+
+		$Valids = $this->FetchContactSubjectEndpoints()->Keys();
+
+		return match(TRUE) {
+			array_key_exists($Subject, $Valids)
+			=> $Valids[$Subject],
+
+			default
+			=> $Valids[0]
+		};
+	}
+
+	public function
+	ChooseContactSendTo(int $Subject):
+	array {
+
+		$Valids = $this->FetchContactSubjectEndpoints()->Values(TRUE);
+
+		$Choose = match(TRUE) {
+			array_key_exists($Subject, $Valids)
+			=> $Valids[$Subject],
+
+			default
+			=> $Valids[0]
+		};
+
+		if(!is_array($Choose))
+		$Choose = [ $Choose ];
+
+		return $Choose;
+	}
+
+	public function
+	ChooseContactBCC():
+	array {
+
+		$Who = $this->App->Config->Get(Atlantis\Key::ConfContactBCC);
+
+		// handle invalid configs.
+
+		if(!$Who)
+		return [];
+
+		if(!is_string($Who) && !is_array($Who))
+		return [];
+
+		// handle valid configs.
+
+		if(is_string($Who))
+		return [ $Who ];
+
+		return $Who;
+	}
+
+	public function
+	ChooseContactReplyTo(?string $Email, array $SendTo):
+	string {
+
+		return match(TRUE) {
+			(is_string($Email) && strlen($Email))
+			=> $Email,
+
+			default
+			=> current($SendTo)
+		};;
 	}
 
 }

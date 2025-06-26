@@ -14,8 +14,8 @@ use Nether\User;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-class DevTool
-extends Console\Client {
+class TrafficTool
+extends Atlantis\TerminalApp {
 
 	const
 	AppName    = 'Nether Atlantis Traffic Tools',
@@ -23,21 +23,53 @@ extends Console\Client {
 	AppVersion = '5.0.0-dev',
 	AppDebug   = TRUE;
 
-	protected Atlantis\Engine
-	$App;
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	protected function
-	OnReady():
-	void {
+	#[Console\Meta\Command('get')]
+	public function
+	HandleGetStats():
+	int {
 
-		$this->App = new Atlantis\Engine(
-			Atlantis\Util::GetBinProjectDirectory(__FILE__)
-		);
+		$Query = $this->GetOption('query');
+		$DateZone = $this->GetOption('tz') ?? 'GMT';
+		$DateSingle = $this->GetOption('date');
+		$DateStart = $this->GetOption('dstart');
+		$DateStop = $this->GetOption('dstop');
 
-		return;
+		if($DateSingle) {
+			$DateStart = $DateSingle;
+			$DateStop = $DateSingle;
+		}
+
+		////////
+
+		$Timeframe = match(TRUE) {
+			($DateStart && $DateStop)
+			=> new Common\Units\Timeframe(
+				Start: sprintf('%s 00:00:00 %s', $DateStart, $DateZone),
+				Stop: sprintf('%s 23:59:59 %s', $DateStart, $DateZone)
+			),
+
+			default
+			=> Common\Units\Timeframe::Today($DateZone)
+		};
+
+		////////
+
+		$Results = Atlantis\Struct\TrafficRow::Find([
+			'Timeframe' => $Timeframe,
+			'Query'     => $Query
+		]);
+
+		$this->PrintBulletList([
+			'Date Start'    => $Timeframe->GetStartFormat(Common\Values::DateFormatYMDT24VO),
+			'Date Stop'     => $Timeframe->GetStopFormat(Common\Values::DateFormatYMDT24VO),
+			'Query'         => $Query,
+			'Total Traffic' => (int)$Results->Count()
+		]);
+
+		return 0;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -115,4 +147,4 @@ extends Console\Client {
 
 }
 
-exit((new DevTool)->Run());
+exit((new TrafficTool)->Run());

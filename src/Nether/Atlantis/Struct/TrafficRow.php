@@ -101,14 +101,20 @@ extends Atlantis\Prototype {
 	FindExtendOptions(Common\Datastore $Input):
 	void {
 
+		$Input['Timeframe'] ??= NULL;
 		$Input['Since'] ??= NULL;
 		$Input['Before'] ??= NULL;
 		$Input['Domain'] ??= NULL;
 
 		$Input['Hash'] ??= NULL;
 		$Input['PathStart'] ??= NULL;
-
 		$Input['Group'] ??= NULL;
+
+		// these current support sql like syntax i haven't fully thought
+		// through any security issues so only for admin use atm.
+
+		$Input['Path'] ??= NULL;
+		$Input['Query'] ??= NULL;
 
 		return;
 	}
@@ -119,6 +125,18 @@ extends Atlantis\Prototype {
 
 		if($Input['Hash'] !== NULL)
 		$SQL->Where('Main.Hash=:Hash');
+
+		if($Input['Path'] !== NULL)
+		$SQL->Where('Main.Path LIKE :Path');
+
+		if($Input['Query'] !== NULL)
+		$SQL->Where('Main.Query LIKE :Query');
+
+		if($Input['Timeframe'] instanceof Common\Units\Timeframe) {
+			$SQL->Where('Main.TimeCreated >= :TimeframeStart AND Main.TimeCreated <= :TimeframeStop');
+			$Input[':TimeframeStart'] = $Input['Timeframe']->GetStartTime();
+			$Input[':TimeframeStop'] = $Input['Timeframe']->GetStopTime();
+		}
 
 		if($Input['Since'] !== NULL)
 		$SQL->Where('Main.TimeCreated > :Since');

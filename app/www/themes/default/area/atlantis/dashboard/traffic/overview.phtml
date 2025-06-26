@@ -1,0 +1,64 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var string $Title
+ * @var int $TotalToday
+ * @var int $TotalWeek
+ * @var int $TotalMonth
+ * @var int $TotalAllTime
+ */
+
+$Surface->Area('dashboard/__header', [
+	'Trail' => [
+		Atlantis\Struct\Item::New(Title: 'Traffic'),
+		Atlantis\Struct\Item::New(Title: 'Overview')
+	]
+]);
+
+?>
+
+<div class="container mb-6">
+	<h2 class="tt-upper"><?php $Util->Print($Title) ?></h2>
+	<hr />
+
+	<div class="row g-4">
+		<div class="col-6 col-md-4">
+			<div class="jumbotron rounded p-2">
+				<div class="fs-largerer fw-bold"><?php $Util->Print($TotalToday) ?></div>
+				<div>Today</div>
+			</div>
+		</div>
+		<div class="col-6 col-md-4">
+			<div class="jumbotron rounded p-2">
+				<div class="fs-largerer fw-bold"><?php $Util->Print($TotalWeek) ?></div>
+				<div>Past 7 Days</div>
+			</div>
+		</div>
+		<div class="col-6 col-md-4">
+			<div class="jumbotron rounded p-2">
+				<div class="fs-largerer fw-bold"><?php $Util->Print($TotalMonth) ?></div>
+				<div>Past 30 Days</div>
+			</div>
+		</div>
+		<div class="col-6 col-md-12">
+			<div class="jumbotron rounded p-2">
+				<div class="fs-largerer fw-bold"><?php $Util->Print($TotalAllTime) ?></div>
+				<div>All Time</div>
+			</div>
+		</div>
+	</div>
+</div>

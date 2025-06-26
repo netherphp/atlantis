@@ -40,6 +40,10 @@ extends Database\Prototype {
 
 	#[Database\Meta\TypeText]
 	public ?string
+	$SentTo;
+
+	#[Database\Meta\TypeText]
+	public ?string
 	$Message;
 
 	////////
@@ -47,6 +51,35 @@ extends Database\Prototype {
 	#[Common\Meta\PropertyFactory('FromTime', 'TimeSent')]
 	public Common\Date
 	$DateSent;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetAdminURL():
+	string {
+
+		return sprintf(
+			'/dashboard/contact/view/%d',
+			$this->ID
+		);
+	}
+
+	public function
+	GetFromString():
+	string {
+
+		if($this->Name && $this->Email)
+		return sprintf('%s <%s>', $this->Name, $this->Email);
+
+		if($this->Email)
+		return $this->Email;
+
+		if($this->Name)
+		return $this->Name;
+
+		return 'Unknown';
+	}
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////

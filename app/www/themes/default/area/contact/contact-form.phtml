@@ -1,3 +1,9 @@
+<?php
+
+$SubjectNum ??= 0;
+
+?>
+
 <div id="ContactOutput" class="d-none mb-4"></div>
 
 <form id="ContactForm" method="post">
@@ -11,7 +17,7 @@
 		<input type="text" name="Email" class="form-control" />
 	</div>
 	<div class="col-12 mb-4">
-		<div class="mb-2"><span class="fw-bold">Phone (optional)</span></div>
+		<div class="mb-2"><span class="fw-bold">Phone</span></div>
 		<input type="text" name="Phone" class="form-control" />
 	</div>
 	<div class="col-12 mb-4">
@@ -22,6 +28,7 @@
 		<?php $Surface->Area('widgets/recaptcha') ?>
 	</div>
 	<div class="col-12">
+		<input type="hidden" name="Subject" value="<?php $Util->Print($SubjectNum) ?>" />
 		<button type="submit" class="btn btn-primary fs-larger fw-bold">Send Message</button>
 	</div>
 </div>
