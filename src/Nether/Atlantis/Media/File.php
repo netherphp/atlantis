@@ -84,7 +84,13 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	HasProfile():
 	bool {
 
-		return ($this->ProfileID !== NULL && $this->ProfileID > 0);
+		if($this->ProfileID === NULL)
+		return FALSE;
+
+		if($this->ProfileID === 0)
+		return FALSE;
+
+		return TRUE;
 	}
 
 	public function
@@ -110,7 +116,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		// there is already a profile bound and loaded.
 
-		if(isset($this->Profile))
+		if(isset($this->Profile) && $this->Profile->ID !== 0)
 		return TRUE;
 
 		// there is a profile bound but not loaded.
@@ -132,13 +138,14 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	BootProfileExistingUnbound():
 	bool {
 
-		$this->Profile = Atlantis\Profile\Entity::GetByField(
+		$Found = Atlantis\Profile\Entity::GetByField(
 			'ParentUUID', $this->UUID
 		);
 
 		////////
 
-		if(isset($this->Profile)) {
+		if(isset($Found)) {
+			$this->Profile = $Found;
 			$this->Update([ 'ProfileID'=> $this->Profile->ID ]);
 			return TRUE;
 		}
@@ -154,10 +161,10 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		$this->Profile = Atlantis\Profile\Entity::Insert([
 			'ParentUUID' => $this->UUID,
-			'Title'      => '',
-			'Alias'      => sprintf('photo-profile-%d', $this->ID),
+			'Title'      => $this->Name,
+			'Alias'      => sprintf('file-profile-%d', $this->ID),
 			'Details'    => '',
-			'Enabled'    => 0
+			'Enabled'    => 1
 		]);
 
 		$this->Update([ 'ProfileID'=> $this->Profile->ID ]);

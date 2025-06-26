@@ -1,0 +1,18 @@
+<div class="jumbotron rounded mb-8">
+
+	<div class="row align-items-center g-2">
+		<div class="col-12 col-md">
+			<div><a href="<?php $Util->Print($File->GetPublicURL()) ?>" class="fw-bold td-under"><?php $Util->Print($File->Name) ?></a></div>
+			<div><?php $Util->Print($File->GetExtraData('SourceName')) ?></div>
+		</div>
+		<div class="col-12 col-md-auto ta-center">
+			<div class="mb-1">
+				<a href="<?php $Util->Print($File->GetPublicURL()) ?>" class="btn btn-primary btn-block">
+					<span class="fs-most-large fw-bold">Download</span>
+				</a>
+			</div>
+			<span class="fw-normal fs-smaller">(<?php $Util->Print($File->GetSizeReadable()) ?>)</span>
+		</div>
+	</div>
+
+</div>

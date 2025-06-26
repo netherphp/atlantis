@@ -196,7 +196,7 @@ extends Atlantis\ProtectedAPI {
 		////////
 
 		($this)
-		->SetGoto($Goto)
+		->SetGoto('reload')
 		->SetPayload($Ent->DescribeForPublicAPI());
 
 		return;
