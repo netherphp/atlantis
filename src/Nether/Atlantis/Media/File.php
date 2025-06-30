@@ -58,6 +58,10 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	public string
 	$Type;
 
+	#[Database\Meta\TypeVarChar(Size: 255, Nullable: TRUE)]
+	public ?string
+	$MimeType;
+
 	#[Database\Meta\TypeVarChar(Size: 255, Nullable: FALSE)]
 	public string
 	$URL;
@@ -374,6 +378,47 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		throw new Exception("storage {$Found[1]} not defined");
 
 		return $Storage->GetPublicURL(ltrim($Found[2], '/'));
+	}
+
+	public function
+	GetMimeType():
+	?string {
+
+		if(!$this->MimeType) {
+			$File = $this->GetFile();
+			$MimeType = $File->ReadMimeType();
+			$this->Update([ 'MimeType'=> $MimeType ]);
+		}
+
+		return $this->MimeType;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	IsGoodImage():
+	bool {
+
+		$Is = match($this->GetMimeType()) {
+			'image/png'  => TRUE,
+			'image/jpeg' => TRUE,
+			default      => FALSE
+		};
+
+		return $Is;
+	}
+
+	public function
+	IsPDF():
+	bool {
+
+		$Is = match($this->GetMimeType()) {
+			'application/pdf' => TRUE,
+			default           => FALSE
+		};
+
+		return $Is;
 	}
 
 	////////////////////////////////////////////////////////////////

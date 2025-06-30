@@ -1,5 +1,41 @@
-<div class="jumbotron rounded mb-8">
+<?php
 
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Media\File $File
+ */
+
+?>
+
+<?php if($File->IsPDF()): ?>
+
+<div class="jumbotron jumbotron-outline rounded mb-4">
+	<div id="DocumentViewer" data-uuid="<?php $Util->Print($File->UUID) ?>">
+		<header>
+
+		</header>
+		<section>
+			<i class="mdi mdi-dots-circle mdi-spin"></i>
+			Loading PDF...
+		</section>
+		<footer></footer>
+	</div>
+</div>
+
+<div class="jumbotron rounded mb-8">
 	<div class="row align-items-center g-2">
 		<div class="col-12 col-md">
 			<div><a href="<?php $Util->Print($File->GetPublicURL()) ?>" class="fw-bold td-under"><?php $Util->Print($File->Name) ?></a></div>
@@ -14,5 +50,170 @@
 			<span class="fw-normal fs-smaller">(<?php $Util->Print($File->GetSizeReadable()) ?>)</span>
 		</div>
 	</div>
-
 </div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+
+class LocalViewerPDF {
+
+	constructor(selector) {
+
+		this.selector = selector;
+		this.element = jQuery(selector);
+		this.elNav = this.element.find('header');
+		this.elMain = this.element.find('section');
+		this.elPager = this.element.find('footer');
+		this.pages = null;
+
+		this.elNav.addClass('row justify-content-center align-items-center g-2');
+		this.elPager.addClass('row align-items-center');
+
+		if(this.element.is('[data-uuid]'))
+		this.load(this.element.attr('data-uuid'));
+
+		return;
+	};
+
+	load(uuid) {
+
+		let api = new API.Request('GET', `/api/media/v1/pdf/${uuid}`);
+
+		(api.send())
+		.then(this.onLoad.bind(this))
+		.catch(api.catch);
+
+		return;
+	};
+
+	onLoad(r) {
+
+		this.pages = r.payload.Pages;
+
+		this.onLoadRenderNav();
+		this.onLoadRenderMain();
+
+		for(const p of this.pages) {
+			let page = jQuery('<div />');
+			page.addClass('col-4 col-md-2');
+			page.append(
+					jQuery('<img />')
+					.attr('src', p)
+			);
+
+			this.elPager.append(page);
+		}
+
+		return;
+	};
+
+	onLoadRenderNav() {
+
+		let template = `
+		<div class="bg-grey-lt rounded-less p-2">
+			<div class="row justify-content-center align-items-center g-2">
+				<div class="col-auto tt-upper fw-bold">
+					<span class="tt-upper fw-bold">Page</span>
+				</div>
+				<div class="col-auto"><input class="form-control" size="3" /></div>
+				<div class="col-auto tt-upper fw-bold">
+					of
+					<span class="fw-bold">#</span>
+				</div>
+			</div>
+		</div>
+		`;
+
+
+
+		(this.elNav)
+		.empty()
+		.append(template);
+
+		return;
+	};
+
+	onLoadRenderMain() {
+
+		this.elMain.empty();
+
+		(this.elMain)
+		.append(
+			jQuery('<img />')
+			.attr('src', this.pages[0])
+		);
+
+		return;
+	};
+
+};
+
+jQuery(function() {
+
+	let pdf = new LocalViewerPDF('#DocumentViewer');
+
+	return;
+});
+</script>
+
+<script type="module">
+/*
+var url = '/share/local/docs/test.pdf';
+let PDFJS = pdfjsLib;
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.mjs';
+
+function renderPdfByUrl(url) {
+	var currPage = 1;
+	var numPages = 0;
+	var thePDF = null;
+
+	PDFJS.getDocument(url).promise.then(function(pdf) {
+		thePDF = pdf;
+		numPages = pdf.numPages;
+		pdf.getPage(1).then(handlePages);
+	});
+
+
+	function handlePages(page) {
+		//This gives us the page's dimensions at full scale
+		var viewport = page.getViewport({ scale: 1.6 });
+		console.log(viewport.height);
+
+		//We'll create a canvas for each page to draw it on
+		var canvas = document.createElement("canvas");
+		//canvas.style.display = "block";
+		var context = canvas.getContext('2d');
+		canvas.height = viewport.height;
+		canvas.width = viewport.width;
+		//canvas.style.maxHeight = `${viewport.height}px`;
+		//canvas.style.maxWidth = `${viewport.width}px`;
+		//canvas.width = '100%';
+		canvas.classList.add('img-fluid');
+
+		//Draw it on the canvas
+		page.render({
+			canvasContext: context,
+			viewport: viewport
+		});
+
+		//Add it to the web page
+		//document.body.appendChild(canvas);
+		jQuery('#ViewPDF').append(
+			jQuery('<div />')
+			.addClass('col-12 ta-center')
+			.append(canvas)
+		);
+
+		//Move to next page
+		currPage++;
+		if (thePDF !== null && currPage <= numPages) {
+			thePDF.getPage(currPage).then(handlePages);
+		}
+	}
+};
+
+renderPdfByUrl(url);
+*/
+</script>
+<?php endif; // /* IsPDF */ ?>
