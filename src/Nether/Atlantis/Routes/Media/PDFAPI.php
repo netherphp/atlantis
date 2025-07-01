@@ -15,10 +15,26 @@ use Imagick;
 class PDFAPI
 extends Atlantis\ProtectedAPI {
 
+	// directly effects the quality of the pdf when its loaded. higher
+	// values will make crisper fonts but take more time and ram.
+
+	static
+	$Resolution = 144;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Atlantis\Meta\RouteHandler('/api/media/v1/pdf/:UUID:')]
 	public function
 	HandleGet(string $UUID):
 	void {
+
+		// big documents take time but if we bust that time its likely
+		// apache or the browser is still going to give up anyway.
+
+		set_time_limit(0);
+
+		////////
 
 		$MaxFilesize = pow(Common\Values::BitsPerUnit, 2) * 5; // 5mb
 
@@ -76,10 +92,6 @@ extends Atlantis\ProtectedAPI {
 		// in testing on the current system this is somehow 25% slower than
 		// loading each page one at a time.
 
-		$Res = 200;
-
-		////////
-
 		$Output = new Common\Datastore;
 		$Dir = dirname($Filepath);
 		$PDF = NULL;
@@ -98,7 +110,7 @@ extends Atlantis\ProtectedAPI {
 
 		$PDF = new Imagick;
 		$PDF->SetAntiAlias(TRUE);
-		$PDF->SetResolution($Res, $Res);
+		$PDF->SetResolution(static::$Resolution, static::$Resolution);
 		$PDF->SetColorspace(Imagick::COLORSPACE_SRGB);
 		$PDF->ReadImage($Filepath);
 
@@ -136,9 +148,8 @@ extends Atlantis\ProtectedAPI {
 		// on large documents. but this also somehow ended up being faster
 		// than the one shot version.
 
-		$Res = 144;
-
-		////////
+		// in the event the server killed the process for taking too long
+		// it will pick up where it left off next time it tries.
 
 		$Output = new Common\Datastore;
 		$Dir = dirname($Filepath);
@@ -164,7 +175,7 @@ extends Atlantis\ProtectedAPI {
 			if(!file_exists($PageOutput) || $Force) {
 				$Page = new Imagick;
 				$Page->SetAntiAlias(TRUE);
-				$Page->SetResolution($Res, $Res);
+				$Page->SetResolution(static::$Resolution, static::$Resolution);
 				$Page->SetColorspace(Imagick::COLORSPACE_SRGB);
 
 				$Page->ReadImage(sprintf('%s[%d]', $Filepath, $PageCur));
