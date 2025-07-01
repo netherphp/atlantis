@@ -135,7 +135,7 @@ extends Atlantis\PublicAPI {
 
 		if(!is_countable($Configured) || !count($Configured))
 		$Configured = [
-			Atlantis\Key::ConfContactSubject
+			$this->App->Config->Get(Atlantis\Key::ConfContactSubject)
 			=> [ $this->App->Config->Get(Atlantis\Key::ConfContactTo) ]
 		];
 
