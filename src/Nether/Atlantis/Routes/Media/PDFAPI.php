@@ -55,7 +55,7 @@ extends Atlantis\ProtectedAPI {
 		////////
 
 		if(filesize($Path) > $MaxFilesize)
-		$this->Quit(2, 'File To Large');
+		$this->Quit(2, 'File Too Large');
 
 		////////
 
