@@ -36,7 +36,7 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		$MaxFilesize = pow(Common\Values::BitsPerUnit, 2) * 5; // 5mb
+		$MaxFilesize = pow(Common\Values::BitsPerUnit, 2) * 10; // 10mb
 
 		($this->Data)
 		->FilterPush('Force', Common\Filters\Numbers::BoolNullable(...));
