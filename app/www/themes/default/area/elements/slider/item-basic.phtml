@@ -14,9 +14,16 @@ $URL ??= $Item->GetItemURL();
 $ImageURL ??= $Item->GetItemImageURL();
 $ExtraData ??= $Item->GetItemExtraData();
 $StyleTile = NULL;
+$LabelPosition = 'pos-bottom';
+$ShowGradient = TRUE;
 
 if($ExtraData instanceof Common\Datastore) {
 	$StyleTile = $ExtraData->Get('StyleTile');
+}
+
+if(!$Item->GetItemImageURL()) {
+	$LabelPosition = 'pos-v-center';
+	$ShowGradient = FALSE;
 }
 
 ?>
@@ -24,7 +31,7 @@ if($ExtraData instanceof Common\Datastore) {
 <div class="swiper-slide">
 	<div class="ratiobox widescreen wallpapered rounded" style="background-image:url(<?php $Util->Print($ImageURL) ?>); <?php $Util->Print($StyleTile) ?>">
 		<div class="position-absolutely grad-bottom-normal"></div>
-		<div class="position-absolute position-bottom w-100 text-align-center">
+		<div class="position-absolute <?php $Util->Print($LabelPosition) ?> w-100 text-align-center">
 			<span class="fw-bold"><?php $Util->Print($Title) ?></span>
 		</div>
 		<a href="<?php $Util->Print($URL) ?>" class="position-absolutely"></a>

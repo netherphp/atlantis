@@ -116,10 +116,23 @@ extends Atlantis\ProtectedAPI {
 	GroupPost():
 	void {
 
-		$Temp = new Atlantis\Blob\Group;
-		$Data = $Temp->Patch($this->Data);
+		($this->Data)
+		->FilterPush('Title', Common\Filters\text::TrimmedNullable(...));
 
-		$this->SetPayload($Data);
+		$UUID = Common\UUID::V7();
+		$Title = $this->Data->Get('Title');
+		$Group = NULL;
+
+		////////
+
+		if(!$Title)
+		$this->Quit(1, 'Title is required.');
+
+		////////
+
+		$Group = Atlantis\Blob\Group::Touch($UUID, $Title);
+
+		$this->SetPayload($Group->DescribeForPublicAPI());
 
 		return;
 	}

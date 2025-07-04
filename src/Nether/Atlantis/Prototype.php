@@ -366,6 +366,18 @@ implements
 		return $Output;
 	}
 
+	public function
+	HasTagAlias(string $Alias):
+	bool {
+
+		$Tags = $this->GetTagsIndexedByAlias();
+
+		if($Tags->HasKey($Alias))
+		return TRUE;
+
+		return FALSE;
+	}
+
 	#[Common\Meta\Date('2023-07-25')]
 	#[Common\Meta\Info('Get a list of common attributes used with external systems.')]
 	public function

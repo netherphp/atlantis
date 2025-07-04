@@ -27,5 +27,5 @@ use Nether\User;
 	<h2 class="text-uppercase mb-0">Videos (<?php $Util->Print($Videos->Count()) ?>)</h2>
 	<hr class="mt-1 mb-3" />
 
-	<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos, 'ParentUUID'=> $Profile->UUID ]) ?>
+	<?php $Surface->Area('widgets/media/video-tp-list', [ 'Videos'=> $Videos, 'ParentUUID'=> $Profile->UUID, 'ShowTags'=> FALSE ]) ?>
 </div>
