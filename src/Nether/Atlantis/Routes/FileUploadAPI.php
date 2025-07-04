@@ -242,12 +242,13 @@ extends Atlantis\ProtectedAPI {
 		$Done = $this->Storage->GetFileObject($Outpath);
 
 		$Entity = Atlantis\Media\File::Insert([
-			'UUID'   => $UUID,
-			'UserID' => $this->User->ID,
-			'Name'   => $Name,
-			'Type'   => $Done->GetType(),
-			'Size'   => $Done->GetSize(),
-			'URL'    => $Done->GetStorageURL()
+			'UUID'     => $UUID,
+			'UserID'   => $this->User->ID,
+			'Name'     => $Name,
+			'Type'     => $Done->GetType(),
+			'MimeType' => $Done->ReadMimeType(),
+			'Size'     => $Done->GetSize(),
+			'URL'      => $Done->GetStorageURL()
 		]);
 
 		$Entity->Update($Entity->Patch([

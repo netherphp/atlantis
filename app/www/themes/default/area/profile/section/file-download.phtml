@@ -1,0 +1,277 @@
+<?php
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\Media\File $File
+ */
+
+?>
+
+<?php if($File->IsPDF()): ?>
+<div class="mb-4 p-0">
+	<div id="DocumentViewer" data-uuid="<?php $Util->Print($File->UUID) ?>">
+		<header>
+
+		</header>
+		<section class="ta-center">
+			<i class="mdi mdi-dots-circle mdi-spin"></i>
+			Please Wait, Loading PDF...
+		</section>
+		<footer></footer>
+	</div>
+</div>
+
+<div class="jumbotron rounded mb-8">
+	<div class="row align-items-center g-2">
+		<div class="col-12 col-md">
+			<div><a href="<?php $Util->Print($File->GetPublicURL()) ?>" class="fw-bold td-under"><?php $Util->Print($File->Name) ?></a></div>
+			<div><?php $Util->Print($File->GetExtraData('SourceName')) ?></div>
+		</div>
+		<div class="col-12 col-md-auto ta-center">
+			<div class="mb-1">
+				<a href="<?php $Util->Print($File->GetPublicURL()) ?>" class="btn btn-primary btn-block">
+					<span class="fs-most-large fw-bold">Download</span>
+				</a>
+			</div>
+			<span class="fw-normal fs-smaller">(<?php $Util->Print($File->GetSizeReadable()) ?>)</span>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import NUIUtil from '/share/nui/util.js';
+
+class LocalViewerPDF {
+
+	constructor(selector) {
+
+		this.selector = selector;
+		this.element = jQuery(selector);
+		this.elNav = this.element.find('header');
+		this.elMain = this.element.find('section');
+		this.elPager = this.element.find('footer');
+		this.elPageNum = null;
+		this.pages = null;
+
+		this.tplNav = `
+		<div class="rounded-less p-2 mb-2" style="background:#dadada;">
+			<div class="row justify-content-center align-items-center g-2">
+				<div class="col-auto">
+					<button class="btn btn-primary local-viewer-page-prev"><i class="mdi mdi-chevron-left"></i></button>
+				</div>
+				<div class="col-auto tt-upper fw-bold">
+					<span class="tt-upper fw-bold">Page</span>
+				</div>
+				<div class="col-auto"><input class="form-control local-viewer-page-num ta-center" size="2" /></div>
+				<div class="col-auto tt-upper fw-bold">
+					of
+					<span class="fw-bold local-viewer-page-count">#</span>
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-primary local-viewer-page-next"><i class="mdi mdi-chevron-right"></i></button>
+				</div>
+				<div class="col-12 ta-center">
+					<button class="btn btn-secondary local-viewer-copy-url" data-nui-copy-value="test">
+					Copy Link to this Page in this PDF
+					</button>
+				</div>
+			</div>
+		</div>
+		`;
+
+		this.tplMain = `
+		<div class="border border-2 rounded-less">
+			<img src="" alt="PDF Page" />
+		</div>
+		`;
+
+		return;
+	};
+
+	load(uuid) {
+
+		if(!uuid && this.element.is('[data-uuid]'))
+		uuid = this.element.attr('data-uuid');
+
+		if(!uuid) {
+			console.log('no Atlantis\\Media\\File UUID provided.');
+			return;
+		}
+
+		////////
+
+		let api = new API.Request('GET', `/api/media/v1/pdf/${uuid}`);
+
+		(api.send())
+		.then(this.onLoad.bind(this))
+		.catch(api.catch);
+
+		return;
+	};
+
+	onLoad(r) {
+
+		this.pages = r.payload.Pages;
+
+		this.onLoadRenderNav();
+		this.onLoadRenderMain();
+		this.onLoadRenderPager();
+
+		return;
+	};
+
+	onLoadRenderNav() {
+
+		let url = new URL(location.href);
+
+		this.elNav.empty().append(this.tplNav);
+
+		this.element.find('.local-viewer-page-count').text(this.pages.length);
+
+		this.elPageNum = this.elNav.find('.local-viewer-page-num');
+		this.elPageNum.val(url.searchParams.get('page') ? url.searchParams.get('page') : 1);
+		this.elPageNum.on('change', this.onPageChange.bind(this));
+
+		this.element.find('.local-viewer-page-prev').on('click', this.onPagePrev.bind(this));
+		this.element.find('.local-viewer-page-next').on('click', this.onPageNext.bind(this));
+		this.element.find('[data-nui-copy-value]').on('click', NUIUtil.elementCopyValueToClipboard);
+
+		this.onPageUpdate();
+
+		return;
+	};
+
+	onCopyValue(jEv) {
+
+		return;
+	};
+
+	onLoadRenderMain() {
+
+		return false;
+	};
+
+	onLoadRenderPager() {
+
+		(this.elPager)
+		.empty()
+		.addClass('row align-items-center d-none');
+
+		for(const p of this.pages) {
+			let page = jQuery('<div />');
+			page.addClass('col-4 col-md-2');
+			page.append(
+					jQuery('<img />')
+					.attr('src', p)
+			);
+
+			this.elPager.append(page);
+		}
+
+		return false;
+	};
+
+	onPagePrev() {
+
+		let num = parseInt(this.elPageNum.val()) - 1;
+
+		if(!num || num < 1)
+		num = 1;
+
+		if(num > this.pages.length)
+		num = this.pages.length;
+
+		////////
+
+		this.elPageNum.val(num);
+		this.onPageUpdate();
+
+		return false;
+	};
+
+	onPageNext() {
+
+
+		let num = parseInt(this.elPageNum.val()) + 1;
+
+		if(!num || num < 1)
+		num = 1;
+
+		if(num > this.pages.length)
+		num = this.pages.length;
+
+		////////
+
+		this.elPageNum.val(num);
+		this.onPageUpdate();
+
+		return false;
+	};
+
+	onPageChange() {
+
+		this.onPageUpdate();
+
+		return false;
+	};
+
+	onPageUpdate() {
+
+		let pagenum = parseInt(this.elPageNum.val());
+		let url = new URL(location.href);
+
+		////////
+
+		if(!pagenum || pagenum < 1)
+		pagenum = 1;
+
+		if(pagenum > this.pages.length)
+		pagenum = this.pages.length;
+
+		////////
+
+		url.searchParams.set('page', pagenum);
+		window.history.pushState('pdfpage', null, url);
+		this.elPageNum.val(pagenum);
+
+		(this.element)
+		.find('.local-viewer-copy-url')
+		.attr('data-nui-copy-value', url);
+
+		////////
+
+		let page = jQuery(this.tplMain);
+		page.find('img').attr('src', this.pages[pagenum - 1]);
+
+		(this.elMain)
+		.empty()
+		.append(page);
+
+		return false;
+	};
+
+};
+
+jQuery(function() {
+
+	let pdf = new LocalViewerPDF('#DocumentViewer');
+	pdf.load();
+
+	return;
+});
+</script>
+<?php endif; /* IsPDF */ ?>

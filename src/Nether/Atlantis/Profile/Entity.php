@@ -19,6 +19,8 @@ use Nether\Atlantis\Plugin\Interfaces\Profile\ExtendGetTitleInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\AdminMenuAuditInterface;
 use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraDataInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsBeforeInterface;
+use Nether\Atlantis\Plugin\Interfaces\ProfileView\ExtraSectionsAfterInterface;
 
 #[Database\Meta\TableClass('Profiles', 'PRO')]
 class Entity
@@ -75,7 +77,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	public string
 	$Alias;
 
-	#[Database\Meta\TypeVarChar(Size: 100)]
+	#[Database\Meta\TypeVarChar(Size: 200)]
 	#[Common\Meta\PropertyListable]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
@@ -1474,6 +1476,40 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		////////
 
 		return $AdminMenu;
+	}
+
+	#[Common\Meta\Date('2025-06-25')]
+	static public function
+	FetchExtraSectionsBefore(Atlantis\Engine $App, Entity $Profile):
+	Common\Datastore {
+
+		$Plugins = $App->Plugins->GetInstanced(
+			ExtraSectionsBeforeInterface::class
+		);
+
+		$Output = $Plugins->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, ExtraSectionsBeforeInterface $P)
+			=> $C->MergeRight($P->GetExtraSectionsBefore( $Profile ))
+		));
+
+		return $Output;
+	}
+
+	#[Common\Meta\Date('2025-06-25')]
+	static public function
+	FetchExtraSectionsAfter(Atlantis\Engine $App, Entity $Profile):
+	Common\Datastore {
+
+		$Plugins = $App->Plugins->GetInstanced(
+			ExtraSectionsAfterInterface::class
+		);
+
+		$Output = $Plugins->Accumulate(new Common\Datastore, (
+			fn(Common\Datastore $C, ExtraSectionsAfterInterface $P)
+			=> $C->MergeRight($P->GetExtraSectionsAfter( $Profile ))
+		));
+
+		return $Output;
 	}
 
 }

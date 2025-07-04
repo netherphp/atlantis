@@ -405,7 +405,7 @@ extends ModalDialog {
 			}
 
 			if(typeof self.onSuccess === 'function') {
-				(self.onSuccess)(result);
+				(self.onSuccess)(result, self);
 			}
 
 			if(typeof self.onSuccess === 'string') {

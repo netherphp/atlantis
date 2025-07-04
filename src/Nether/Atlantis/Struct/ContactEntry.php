@@ -55,6 +55,35 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	public function
+	GetAdminURL():
+	string {
+
+		return sprintf(
+			'/dashboard/contact/view/%d',
+			$this->ID
+		);
+	}
+
+	public function
+	GetFromString():
+	string {
+
+		if($this->Name && $this->Email)
+		return sprintf('%s <%s>', $this->Name, $this->Email);
+
+		if($this->Email)
+		return $this->Email;
+
+		if($this->Name)
+		return $this->Name;
+
+		return 'Unknown';
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	static protected function
 	FindExtendSorts(Database\Verse $SQL, Common\Datastore $Input):
 	void {
