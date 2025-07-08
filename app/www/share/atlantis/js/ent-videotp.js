@@ -5,6 +5,7 @@ class Video {
 	constructor({
 		ID=null, UUID=null,
 		Title=null, URL=null,
+		DatePosted=null,
 		AdminNotes=null, PageURL=null, ImageURL=null,
 
 		Tags=null
@@ -23,6 +24,7 @@ class Video {
 		this.uuid = UUID;
 		this.title = Title;
 		this.url = URL;
+		this.datePosted = DatePosted;
 		this.adminNotes = AdminNotes;
 
 		this.tags = Tags;
@@ -38,6 +40,7 @@ class Video {
 		fdat.append('UUID', this.uuid);
 		fdat.append('Title', this.title);
 		fdat.append('URL', this.url);
+		fdat.append('DatePosted', this.datePosted);
 		fdat.append('AdminNotes', this.adminNotes);
 
 		return fdat;

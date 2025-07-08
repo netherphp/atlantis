@@ -93,7 +93,7 @@ extends Atlantis\ProtectedAPI {
 		($this->Data)
 		->URL(Common\Filters\Text::TrimmedNullable(...))
 		->Title(Common\Filters\Text::TrimmedNullable(...))
-		->Date(Common\Filters\Text::TrimmedNullable(...))
+		->DatePosted(Common\Filters\Text::TrimmedNullable(...))
 		->OtherType(Common\Filters\Text::TrimmedNullable(...))
 		->OtherUUID(Common\Filters\Text::TrimmedNullable(...));
 
@@ -102,7 +102,7 @@ extends Atlantis\ProtectedAPI {
 		$URL = $this->Data->URL;
 		$Title = $this->Data->Title;
 		$TimePosted = (
-			Common\Date::FromDateString($this->Data->Date ?: 'now')
+			Common\Date::FromDateString($this->Data->DatePosted ?: 'now')
 			->GetUnixtime()
 		);
 
