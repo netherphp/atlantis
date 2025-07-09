@@ -130,6 +130,7 @@ extends Atlantis\Prototype {
 		$Output = parent::DescribeForPublicAPI();
 		$Output['PageURL'] = $this->GetPageURL(FALSE);
 		$Output['ImageURL'] = $this->GetCoverImageURL();
+		$Output['DatePosted'] = $this->DatePosted->Get(Common\Values::DateFormatYMD);
 
 		return $Output;
 	}

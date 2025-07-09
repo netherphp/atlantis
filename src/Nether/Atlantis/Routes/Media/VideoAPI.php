@@ -310,6 +310,13 @@ extends Atlantis\ProtectedAPI {
 
 		$Vid->Update($Vid->Patch($this->Data));
 
+		if($this->Data->Exists('Title')) {
+			if($Vid->Profile)
+			$Vid->Profile->Update($Vid->Profile->Patch([
+				'Title'=> $this->Data->Title
+			]));
+		}
+
 		$this->SetPayload($Vid->DescribeForPublicAPI());
 		return;
 	}
