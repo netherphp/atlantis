@@ -400,7 +400,7 @@ class Video {
 			</div>
 			<div class="col-12 mb-2">
 				<div class="fw-bold">Date:</div>
-				<input type="date" name="Date" class="form-control dialog-video-new-date" pattern="\d{4}-\d{2}-\d{2}" />
+				<input type="date" name="DatePosted" class="form-control dialog-video-new-date" pattern="\d{4}-\d{2}-\d{2}" />
 			</div>
 			<div class="col-12 dialog-video-new-output">
 
@@ -688,7 +688,7 @@ class Video {
 					let date = jQuery.trim(this.newDate.val());
 
 					let api = new API.Request('POST', '/api/video/entity', {
-						"URL": url, "Title": title, "Date": date,
+						"URL": url, "Title": title, "DatePosted": date,
 						"OtherType": otherType, "OtherUUID": otherUUID
 					});
 
@@ -706,7 +706,7 @@ class Video {
 					let date = jQuery.trim(row.attr('data-video-date'));
 
 					let api = new API.Request('POST', '/api/video/entity', {
-						"URL": url, "Title": title, "Date": date,
+						"URL": url, "Title": title, "DatePosted": date,
 						"OtherType": otherType, "OtherUUID": otherUUID
 					});
 
