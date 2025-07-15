@@ -80,6 +80,11 @@ extends Atlantis\Routes\UploadAPI {
 		if(count($Patch))
 		$File->Update($Patch);
 
+		if(array_key_exists('Name', $Patch)) {
+			if($File->HasProfile())
+			$File->Profile->Update([ 'Title'=> $Patch['Name'] ]);
+		}
+
 		////////
 
 		$this->SetPayload($File->DescribeForPublicAPI());
@@ -108,6 +113,8 @@ extends Atlantis\Routes\UploadAPI {
 		$this->Quit(1, 'Entity Not Found');
 
 		////////
+
+		$Ent->BootProfile();
 
 		return $Ent;
 	}
