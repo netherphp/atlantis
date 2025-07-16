@@ -23,13 +23,13 @@ use Nether\User;
 <?php if($File->IsPDF()): ?>
 <div class="mb-4 p-0">
 	<div class="mb-6">
-		<?php if($File->HasExtraData('SourceName')): ?>
+		<?php if($File->HasExtraData('SourceName', TRUE)): ?>
 		<div><b>Source:</b> <?php $Util->Print($File->GetExtraData('SourceName')) ?></div>
 		<?php endif; ?>
-		<?php if($File->HasExtraData('SourceDate')): ?>
+		<?php if($File->HasExtraData('SourceDate', TRUE)): ?>
 		<div><b>Date:</b> <?php $Util->Print($File->GetExtraData('SourceDate')) ?></div>
 		<?php endif; ?>
-		<?php if($File->HasExtraData('SourceNum')): ?>
+		<?php if($File->HasExtraData('SourceNum', TRUE)): ?>
 		<div><b>Document Number:</b> <?php $Util->Print($File->GetExtraData('SourceNum')) ?></div>
 		<?php endif; ?>
 	</div>
