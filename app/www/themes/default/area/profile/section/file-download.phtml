@@ -22,6 +22,18 @@ use Nether\User;
 
 <?php if($File->IsPDF()): ?>
 <div class="mb-4 p-0">
+	<div class="mb-6">
+		<?php if($File->HasExtraData('SourceName')): ?>
+		<div><b>Source:</b> <?php $Util->Print($File->GetExtraData('SourceName')) ?></div>
+		<?php endif; ?>
+		<?php if($File->HasExtraData('SourceDate')): ?>
+		<div><b>Date:</b> <?php $Util->Print($File->GetExtraData('SourceDate')) ?></div>
+		<?php endif; ?>
+		<?php if($File->HasExtraData('SourceNum')): ?>
+		<div><b>Document Number:</b> <?php $Util->Print($File->GetExtraData('SourceNum')) ?></div>
+		<?php endif; ?>
+	</div>
+
 	<div id="DocumentViewer" data-uuid="<?php $Util->Print($File->UUID) ?>">
 		<header>
 
