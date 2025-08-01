@@ -38,7 +38,7 @@ $GetLetterURL = (fn(string $Val)=> sprintf(
 
 <style type="text/css">
 	.atl-ui-alphabar { --bs-gutter-x: 0.0rem; justify-content: center; }
-	.atl-ui-alphabar-item { width: 3.846% !important; }
+	.atl-ui-alphabar-item { width: 3.4% !important; }
 
 	.atl-ui-alphabar-item .btn {
 		background-color: var(--theme-light-fg);
@@ -47,7 +47,7 @@ $GetLetterURL = (fn(string $Val)=> sprintf(
 		border-radius: 0px;
 		color: var(--theme-light);
 		margin: 0.25rem 0px;
-		padding: 0px 0px;
+		padding: 4px 0px;
 		text-align: center;
 	}
 
@@ -57,6 +57,10 @@ $GetLetterURL = (fn(string $Val)=> sprintf(
 
 	.atl-ui-alphabar-item.selected {
 		color: var(--theme-light);
+	}
+
+	.atl-ui-alphabar-item.disabled .btn {
+		color: var(--theme-grey-lt);
 	}
 
 	.atl-ui-alphabar-item.selected .btn {
@@ -74,20 +78,28 @@ $GetLetterURL = (fn(string $Val)=> sprintf(
 		border-bottom: 3px solid var(--theme-primary) !important;
 	}
 
+	.atl-ui-alphabar-item:nth-of-type(27) .btn {
+		-border-left: 0px;
+	}
+
 	@media(max-width: 1199.99px) {
-		.atl-ui-alphabar-item { width: 7.692% !important; }
+		.atl-ui-alphabar-item { width: 9% !important; }
+		.atl-ui-alphabar-item:nth-of-type(14) .btn,
+		.atl-ui-alphabar-item:nth-of-type(27) .btn {
+			border-left: 0px;
+		}
 	}
 
 	@media(max-width: 767.99px) {
-		.atl-ui-alphabar-item { width: 7.692% !important; }
+		.atl-ui-alphabar-item { width: 9% !important; }
 	}
 </style>
 
 <div id="<?php $Util->Print($Element->GetID()) ?>" class="row gx-1 gy-2 atl-ui-alphabar" data-field="<?php $Util->Print($Element->Field) ?>">
-	<?php foreach($Items as $L): ?>
-	<div class="atl-ui-alphabar-item <?php $Util->Print($Element->IsSelected($L) ? 'selected' : '') ?>">
+	<?php foreach($Items as $K=> $L): ?>
+	<div class="atl-ui-alphabar-item <?php $Util->Print($Element->IsSelected($L) ? 'selected' : '') ?> <?php $Util->Print($Element->ItemIsDisabled($L) ? 'disabled' : '') ?> ">
 		<a class="btn btn-block" href="<?php $Util->Print($GetLetterURL($L)) ?>">
-			<?php $Util->Print($L) ?>
+			<?php $Util->Print(is_string($K) ? $K : $L) ?>
 		</a>
 	</div>
 	<?php endforeach; unset($L); ?>

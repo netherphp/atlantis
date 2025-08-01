@@ -26,9 +26,16 @@ extends Surface\Element {
 	public bool
 	$Uppercase = TRUE;
 
+	public bool
+	$Numbers = FALSE;
+
 	#[Common\Meta\PropertyFactory('FromArray', 'Items')]
 	public array|Common\Datastore
 	$Items = [];
+
+	#[Common\Meta\PropertyFactory('FromArray', 'Disabled')]
+	public array|Common\Datastore
+	$Disabled = [];
 
 	public function
 	OnWith(iterable $Props):
@@ -40,13 +47,16 @@ extends Surface\Element {
 
 		if($this->Uppercase)
 		$Bounds = array_map(
-			(fn(string $L)=> strtolower($L)),
+			(fn(string $L)=> strtoupper($L)),
 			$Bounds
 		);
 
 		////////
 
 		$this->Items->SetData(range($Bounds[0], $Bounds[1]));
+
+		if($this->Numbers)
+		$this->Items->MergeRight(range(0, 9));
 
 		return $this;
 	}
@@ -57,6 +67,89 @@ extends Surface\Element {
 
 		return $Val === $this->Selected;
 	}
+
+	public function
+	Recase(string $Val):
+	string {
+
+		$V = match(TRUE) {
+			$this->Uppercase => strtoupper($Val),
+			default          => strtolower($Val)
+		};
+
+		return $V;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	ItemIsEnabled(string $Key):
+	bool {
+
+		$K = $this->Recase($Key);
+
+		// not found means enabled.
+
+		if(!$this->Disabled->HasKey($K))
+		return TRUE;
+
+		// found but false means enabled.
+
+		if($this->Disabled->IsFalseEnough($K))
+		return TRUE;
+
+		////////
+
+		return FALSE;
+	}
+
+	public function
+	ItemIsDisabled(string $Key):
+	bool {
+
+		return !$this->ItemIsEnabled($Key);
+	}
+
+	public function
+	ItemEnable(string $Key, bool $Enabled=TRUE):
+	static {
+
+		$K = $this->Recase($Key);
+		$this->Disabled->Set($K, !$Enabled);
+
+		return $this;
+	}
+
+	public function
+	ItemEnableAll():
+	static {
+
+		foreach($this->Items as $I)
+		$this->ItemEnable($I, TRUE);
+
+		return $this;
+	}
+
+	public function
+	ItemDisable(string $Key):
+	static {
+
+		return $this->ItemEnable($Key, FALSE);
+	}
+
+	public function
+	ItemDisableAll():
+	static {
+
+		foreach($this->Items as $I)
+		$this->ItemEnable($I, FALSE);
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	public function
 	GetQueryBroth(string $Val):
