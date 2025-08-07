@@ -1385,6 +1385,23 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		return $Profiles;
 	}
 
+	#[Common\Meta\Date('2025-08-05')]
+	public function
+	FetchRelatedProfilesExcept(array $ExceptUUID=[]):
+	Database\ResultSet {
+
+		$Found = $this->GetRelatedEntityIndex();
+		$Found->Filter(fn(string $UUID)=> in_array($UUID, $ExceptUUID));
+
+		$Profiles = static::Find([
+			'UseSiteTags' => FALSE,
+			'UUID'        => $Found->Export(),
+			'Limit'       => 0
+		]);
+
+		return $Profiles;
+	}
+
 	////////////////////////////////////////////////////////////////
 	// Plugin API Methods //////////////////////////////////////////
 
