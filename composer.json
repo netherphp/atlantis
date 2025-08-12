@@ -55,6 +55,7 @@
 		"bin/dhd.atl",
 		"bin/gfx.atl",
 		"bin/nether.atl",
+		"bin/profile.atl",
 		"bin/project.atl",
 		"bin/social.atl",
 		"bin/ssl.atl",

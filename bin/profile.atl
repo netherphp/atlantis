@@ -1,0 +1,37 @@
+#!/usr/bin/env php
+<?php ##########################################################################
+################################################################################
+
+(function(){
+	require(sprintf('%s/autoload.php', dirname(__DIR__, 3)));
+	return;
+})();
+
+use Nether\Atlantis;
+use Nether\Common;
+use Nether\Console;
+
+################################################################################
+################################################################################
+
+#[Console\Meta\Application('Profiles')]
+class App
+extends Atlantis\TerminalApp {
+
+	#[Console\Meta\Command('enable')]
+	public function
+	HandleProfileEnable():
+	int {
+
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+
+};
+
+exit(App::Realboot([]));
+
