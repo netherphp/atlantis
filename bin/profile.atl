@@ -18,11 +18,103 @@ use Nether\Console;
 class App
 extends Atlantis\TerminalApp {
 
-	#[Console\Meta\Command('enable')]
+	#[Console\Meta\Command('set')]
+	#[Console\Meta\Value('--enabled', '0 or 1')]
+	#[Console\Meta\Value('--alias', 'Comma seperated list of aliases to pull.')]
+	#[Console\Meta\Value('--aliaspre', 'Search for profiles with an alias that starts with this.')]
 	public function
-	HandleProfileEnable():
+	ProfileSetValue():
 	int {
 
+		$OptEnabled = Common\Filters\Numbers::BoolNullable($this->GetOption('enabled'));
+		$Profiles = $this->FetchProfilesByInput();
+		$Values = [];
+
+		////////
+
+		if($OptEnabled !== NULL)
+		$Values['Enabled'] = $OptEnabled;
+
+		////////
+
+		if(count($Values)) {
+			$this->PrintStatus('Updating Profiles...');
+
+			$Profiles->Each(
+				fn(Atlantis\Profile\Entity $P)
+				=> $P->Update($Values)
+			);
+		}
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('tagadd')]
+	#[Console\Meta\Value('--alias', 'Comma seperated list of aliases to pull.')]
+	#[Console\Meta\Value('--aliaspre', 'Search for profiles with an alias that starts with this.')]
+	#[Console\Meta\Error(1, 'no tag alias specified')]
+	#[Console\Meta\Error(2, 'no tag %s found')]
+	public function
+	ProfileTagAdd():
+	int {
+
+		$TAlias = $this->GetInput(1);
+
+		if(!$TAlias)
+		$this->Quit(1);
+
+		////////
+
+		$Tag = Atlantis\Tag\Entity::GetByAlias($TAlias);
+
+		if(!$Tag)
+		$this->Quit(2, $TAlias);
+
+		////////
+
+		$Profiles = $this->FetchProfilesByInput();
+
+		$Profiles->Each(
+			fn(Atlantis\Profile\Entity $P)
+			=> Atlantis\Profile\EntityTagLink::InsertByPair(
+				$Tag->ID, $P->UUID
+			)
+		);
+
+		return 0;
+	}
+
+	#[Console\Meta\Command('tagdel')]
+	#[Console\Meta\Value('--alias', 'Comma seperated list of aliases to pull.')]
+	#[Console\Meta\Value('--aliaspre', 'Search for profiles with an alias that starts with this.')]
+	#[Console\Meta\Error(1, 'no tag alias specified')]
+	#[Console\Meta\Error(2, 'no tag %s found')]
+	public function
+	ProfileTagDel():
+	int {
+
+		$TAlias = $this->GetInput(1);
+
+		if(!$TAlias)
+		$this->Quit(1);
+
+		////////
+
+		$Tag = Atlantis\Tag\Entity::GetByAlias($TAlias);
+
+		if(!$Tag)
+		$this->Quit(2, $TAlias);
+
+		////////
+
+		$Profiles = $this->FetchProfilesByInput();
+
+		$Profiles->Each(
+			fn(Atlantis\Profile\Entity $P)
+			=> Atlantis\Profile\EntityTagLink::DeleteByPair(
+				$Tag->ID, $P->UUID
+			)
+		);
 
 		return 0;
 	}
@@ -30,6 +122,59 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	protected function
+	FetchProfilesByInput():
+	Common\Datastore {
+
+		$OptAliasFull = $this->GetOption('alias');
+		$OptAliasPrefix = $this->GetOption('aliaspre');
+		$Profiles = new Common\Datastore;
+
+		////////
+
+		if($OptAliasFull) {
+			$OptAliasFull = Common\Datastore::FromString($OptAliasFull, ',');
+			$OptAliasFull->Remap(fn(string $Alias)=> trim($Alias));
+
+			$OptAliasFull = $OptAliasFull->Export();
+		}
+
+		////////
+
+		if($OptAliasPrefix || $OptAliasFull) {
+			$this->PrintH3('Find Profiles Like...');
+			$this->PrintBulletList([
+				'Alias'       => $OptAliasFull ? join(', ', $OptAliasFull) : '-- none --',
+				'AliasPrefix' => $OptAliasPrefix ? $OptAliasPrefix : '-- none --'
+			]);
+
+			$Profiles = Atlantis\Profile\Entity::Find([
+				'UseSiteTags' => FALSE,
+				'Enabled'     => NULL,
+				'ParentUUID'  => NULL,
+				'Alias'       => $OptAliasFull ?: NULL,
+				'AliasPrefix' => $OptAliasPrefix ?: NULL,
+				'Limit'       => 0
+			]);
+		}
+
+		////////
+
+		$this->PrintH3(sprintf(
+			'Found %d Profiles...', $Profiles->Count()
+		));
+
+		$Profiles->Each(
+			fn(Atlantis\Profile\Entity $P)
+			=> $this->PrintLn(sprintf('* %s', $P->Title))
+		);
+
+		$this->PrintLn();
+
+		////////
+
+		return $Profiles;
+	}
 
 };
 
