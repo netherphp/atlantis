@@ -81,7 +81,7 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	$ExtraFiles;
 
 	#[Database\Meta\TableJoin('ProfileID')]
-	public Atlantis\Profile\Entity
+	public ?Atlantis\Profile\Entity
 	$Profile;
 
 	public function

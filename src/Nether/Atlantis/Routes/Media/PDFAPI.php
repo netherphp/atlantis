@@ -36,7 +36,7 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		$MaxFilesize = pow(Common\Values::BitsPerUnit, 2) * 10; // 10mb
+		$MaxFilesize = pow(Common\Values::BitsPerUnit, 2) * 25; // 25mb
 
 		($this->Data)
 		->FilterPush('Force', Common\Filters\Numbers::BoolNullable(...));
@@ -54,8 +54,8 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
-		if(filesize($Path) > $MaxFilesize)
-		$this->Quit(2, 'File Too Large');
+		//if(filesize($Path) > $MaxFilesize)
+		//$this->Quit(2, 'File Too Large');
 
 		////////
 

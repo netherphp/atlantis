@@ -53,9 +53,13 @@ extends Atlantis\PublicWeb {
 
 		////////
 
+		$ImageURL = $Profile->GetCoverImageURL('lg');
+
+		if(!str_contains($ImageURL, 'no-image'))
+		$this->Surface->Set('Page.ImageURL', $ImageURL);
+
 		($this->Surface)
 		->Set('Page.Title', $Profile->Title)
-		->Set('Page.ImageURL', $Profile->GetCoverImageURL('lg'))
 		->Area($this->GetViewArea(), [
 			'Profile'        => $Profile,
 			'AdminMenu'      => $AdminMenu,
