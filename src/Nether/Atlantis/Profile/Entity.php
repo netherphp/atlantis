@@ -687,8 +687,14 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		if($Input['ParentUUID'] === FALSE)
 		$SQL->Where('Main.ParentUUID IS NULL');
 
+		if($Input['ParentUUID'] === TRUE)
+		$SQL->Where('Main.ParentUUID IS NOT NULL');
+
 		elseif(is_string($Input['ParentUUID']))
 		$SQL->Where('Main.ParentUUID=:ParentUUID');
+
+		elseif(is_array($Input['ParentUUID']))
+		$SQL->Where('Main.ParentUUID IN(:ParentUUID)');
 
 		////////
 
@@ -1381,6 +1387,32 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 			'UUID'        => $UUIDS->GetData(),
 			'Limit'       => 0
 		]);
+
+		return $Profiles;
+	}
+
+	#[Common\Meta\Date('2023-12-15')]
+	public function
+	FetchRelatedFiles():
+	Database\ResultSet {
+
+		$UUIDS = $this->GetRelatedEntityIndex();
+
+		$Profiles = static::Find([
+			'UseSiteTags' => FALSE,
+			'ParentUUID'  => TRUE,
+			'UUID'        => $UUIDS->Export(),
+			'Enabled'     => NULL,
+			'Limit'       => 0
+		]);
+
+		$Files = Atlantis\Media\File::Find([
+			'ProfileID' => $Profiles->Map(fn($P)=> $P->ID)->Export()
+		]);
+
+		//Common\Dump::Var($UUIDS->Export(), TRUE);
+		//Common\Dump::Var($Profiles->Count());
+		//Common\Dump::Var($Files->Count());
 
 		return $Profiles;
 	}

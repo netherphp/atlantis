@@ -711,8 +711,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		parent::FindExtendOptions($Input);
 
 		$Input->Define([
-			'TagsAll' => NULL,
-			'Sort'    => 'newest'
+			'ProfileID' => NULL,
+			'TagsAll'   => NULL,
+			'Sort'      => 'newest'
 		]);
 
 		return;
@@ -726,6 +727,14 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		if($Input['TagsAll'] !== NULL)
 		static::FindExtendFilters_ByEntityFields_TagsAll($SQL, $Input);
+
+		if($Input['ProfileID'] !== NULL) {
+			if(is_array($Input['ProfileID']) && count($Input['ProfileID']))
+			$SQL->Where('Main.ProfileID IN(:ProfileID)');
+
+			if(Common\Values::IsNumericDec($Input['ProfileID']))
+			$SQL->Where('Main.ProfileID=:ProfileID');
+		}
 
 		return;
 	}

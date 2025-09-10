@@ -22,6 +22,7 @@ use Nether\User;
  * @var Database\ResultSet $Photos
  * @var Database\ResultSet $Videos
  * @var Database\ResultSet $Related
+ * @var Database\ResultSet $Files
  */
 
 $AdminMenu ??= NULL;
@@ -136,9 +137,19 @@ if(isset($Photos) && $Photos->Count() >= 6) {
 	$Surface->Area('profile/section/related-links', [ 'Profile'=> $Profile, 'Links'=> $Links ]);
 
 	if(isset($Related) && $Related->Count()) {
+		echo '<div class="mb-8">';
 		echo '<h2 class="text-uppercase mb-0">Related Profiles</h2>';
 		echo '<hr class="mt-1 mb-3" />';
 		$Surface->Area('widgets/profile-list-lite', [ 'Profiles'=> $Related ]);
+		echo '</div>';
+	}
+
+	if(isset($Files) && $Files->Count()) {
+		echo '<div class="mb-8">';
+		echo '<h2 class="text-uppercase mb-0">Related Documents</h2>';
+		echo '<hr class="mt-1 mb-3" />';
+		$Surface->Area('widgets/file-profile-list', [ 'Profiles'=> $Files ]);
+		echo '</div>';
 	}
 
 	?>
