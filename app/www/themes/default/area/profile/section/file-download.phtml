@@ -18,6 +18,8 @@ use Nether\User;
  * @var Atlantis\Media\File $File
  */
 
+$FileAllowDownload = !$File->Profile->HasTagAlias('file-view-only');
+
 ?>
 
 <?php if($File->IsPDF()): ?>
@@ -35,17 +37,17 @@ use Nether\User;
 	</div>
 
 	<div id="DocumentViewer" data-uuid="<?php $Util->Print($File->UUID) ?>">
-		<header>
-
-		</header>
-		<section class="fs-largerer fw-bold ta-center">
+		<header></header>
+		<section class="fs-largerer fw-bold ta-center mb-2">
 			<i class="mdi mdi-dots-circle mdi-spin tc-blue"></i>
 			Please Wait, Loading PDF...
 		</section>
+		<header></header>
 		<footer></footer>
 	</div>
 </div>
 
+<?php if($FileAllowDownload): ?>
 <div class="jumbotron rounded mb-8">
 	<div class="row align-items-center g-2">
 		<div class="col-12 col-md">
@@ -62,6 +64,7 @@ use Nether\User;
 		</div>
 	</div>
 </div>
+<?php endif; ?>
 
 <script type="module">
 import API from '/share/nui/api/json.js';

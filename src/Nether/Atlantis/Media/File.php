@@ -130,6 +130,10 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 				$this->ProfileID
 			);
 
+			// was the profile deleted or something?
+			if(!$this->Profile)
+			return FALSE;
+
 			return TRUE;
 		}
 
