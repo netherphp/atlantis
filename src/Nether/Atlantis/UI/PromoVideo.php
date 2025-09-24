@@ -46,6 +46,9 @@ extends Surface\Element {
 	public ?string
 	$VideoURL = NULL;
 
+	public ?string
+	$ImageURL = NULL;
+
 	public bool
 	$Typeify = FALSE;
 

@@ -21,6 +21,7 @@ $UUID ??= Common\UUID::ForElementHTML();
 $Ratio ??= $Element->Ratio;
 $BackgroundURL ??= $Element->BackgroundURL;
 $VideoURL ??= $Element->VideoURL;
+$ImageURL ??= $Element->ImageURL;
 $Overlay ??= $Element->Overlay ?? '';
 $Title ??= $Element->Title ?? '';
 $Subline ??= $Element->Subline ?? '';
@@ -36,11 +37,16 @@ $Justify ??= $Element->Justify;
 ?>
 
 <div id="<?php $Util->Print($UUID) ?>" class="ratiobox wallpapered <?php $Util->Print($Ratio) ?>" style="background-image:url(<?php $Util->Print($BackgroundURL) ?>);">
+	<?php if($ImageURL): ?>
+	<div class="pos-absolutely wallpapered" style="object-fit:cover;background-image:url(<?php $Util->Print($ImageURL) ?>);"></div>
+	<?php endif; ?>
+
+	<?php if($VideoURL): ?>
 	<video class="position-absolutely" style="object-fit:cover;" muted autoplay loop playsinline>
-		<?php if($VideoURL): ?>
 		<source src="<?php $Util->Print($VideoURL) ?>" type="video/mp4" />
-		<?php endif; ?>
 	</video>
+	<?php endif; ?>
+
 	<div class="position-absolutely <?php $Util->Print($Overlay) ?>"></div>
 	<div class="position-absolutely">
 		<div class="container h-100">
