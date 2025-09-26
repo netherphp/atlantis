@@ -214,7 +214,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	FromArray(iterable $Data):
+	FromArray(iterable|object $Data):
 	static {
 
 		$Output = new static([ 'Data'=> $Data ]);
