@@ -121,6 +121,11 @@ $Link = (
 			<div id="EditorContent" class="Editor d-none"><?php echo $Link ? $Link->Content : '' ?></div>
 		</div>
 
+		<div class="mb-6">
+			<div class="fw-bold text-uppercase">Admin Notes</div>
+			<textarea name="ExtraData[AdminNotes]" class="form-control" rows="10" placeholder=""><?php $Util->Print($Post->GetExtraData('AdminNotes')) ?></textarea>
+		</div>
+
 		<?php if($Post): ?>
 		<!-- POST DATE -->
 		<div class="mb-6">
