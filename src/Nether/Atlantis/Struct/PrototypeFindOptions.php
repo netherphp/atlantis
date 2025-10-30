@@ -147,7 +147,7 @@ implements
 
 	#[Common\Meta\Date('2024-11-16')]
 	static public function
-	FromArray(iterable $Input):
+	FromArray(mixed $Input):
 	static {
 
 		$Output = new static;
