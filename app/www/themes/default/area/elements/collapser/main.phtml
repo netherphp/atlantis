@@ -10,11 +10,12 @@ use Nether\Surface;
 
 $Title ??= $Element->Title;
 $Content ??= $Element->Content;
+$Open ??= $Element->Open;
 
 ################################################################################
 ############################################################################# ?>
 
-<div class="atl-collapser Collapser">
+<div class="atl-collapser Collapser <?php $Util->Print($Open ? 'Open' : '') ?>">
 	<header>
 		<div>
 			<?php echo $Title ?>

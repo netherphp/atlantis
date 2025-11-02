@@ -18,7 +18,13 @@ extends Surface\Element {
 	$Area = 'elements/collapser/main';
 
 	public string
+	$Title = 'Click to Open';
+
+	public string
 	$Content = '';
+
+	public bool
+	$Open = FALSE;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
