@@ -17,6 +17,7 @@ use Nether\User;
  */
 
 $ShowTags ??= TRUE;
+$ShowProfilePhoto ??= TRUE;
 
 //$TagFilter = fn(Atlantis\Tag\Entity $T)=> $T->ID !== $TagPrimary->ID;
 
@@ -24,6 +25,8 @@ $ShowTags ??= TRUE;
 
 <?php foreach($Profiles as $PK=> $Profile): ?>
 <div class="row">
+
+	<?php if($ShowProfilePhoto): ?>
 	<div class="col-12 col-md-3 mb-4 mb-md-0">
 		<div class="ratiobox widescreen rounded">
 			<div class="position-absolutely wallpapered covered rounded" style="transform:scale(1.1);filter:blur(26px);background-image:url(<?php $Util->Print($Profile->GetCoverImageURL()) ?>);"></div>
@@ -32,6 +35,8 @@ $ShowTags ??= TRUE;
 			</div>
 		</div>
 	</div>
+	<?php endif; ?>
+
 	<div class="col">
 		<h3><a href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>"><?php $Util->Print($Profile->Title) ?></a></h3>
 

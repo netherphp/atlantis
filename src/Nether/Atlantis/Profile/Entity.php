@@ -602,8 +602,9 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		$Input['Search'] ??= NULL;
 		$Input['SearchTitle'] ??= TRUE;
 		$Input['SearchDetails'] ??= FALSE;
-
 		$Input['SearchLocation'] ??= FALSE;
+
+		$Input['TitleStartsWith'] ??= NULL;
 
 		$Input->Define('Enabled', static::Enabled);
 
@@ -713,6 +714,13 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		if($Input['AliasPrefix'] !== NULL) {
 			$Input[':AliasPrefixLike'] = sprintf('%s%%', $Input['AliasPrefix']);
 			$SQL->Where('Main.Alias LIKE :AliasPrefixLike');
+		}
+
+		////////
+
+		if($Input['TitleStartsWith'] !== NULL) {
+			$Input[':TitleStartsWithRegex'] = sprintf('%s%%', $Input['TitleStartsWith']);
+			$SQL->Where('Main.Title LIKE :TitleStartsWithRegex');
 		}
 
 		////////
