@@ -119,6 +119,7 @@ implements
 		$Data = parent::DescribeForPublicAPI();
 		$Data['PageURL'] = $this->GetPageURL();
 		$Data['CoverImageURL'] = $this->GetCoverImageURL();
+		$Data['ExtraData'] = $this->ExtraData;
 
 		return $Data;
 	}
