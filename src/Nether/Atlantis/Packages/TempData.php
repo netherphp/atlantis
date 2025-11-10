@@ -14,7 +14,6 @@ trait TempData {
 	// and whatnot.
 
 	#[Common\Meta\PropertyFactory('FromArray')]
-	#[Common\Meta\PropertyListable('DescribeForPublicAPI')]
 	public array|Common\Datastore
 	$TempData = [];
 

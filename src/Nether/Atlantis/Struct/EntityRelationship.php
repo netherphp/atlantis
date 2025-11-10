@@ -21,7 +21,7 @@ extends Atlantis\Prototype {
 
 	#[Common\Meta\Date('2023-07-31')]
 	static public function
-	Register(string $Type, string $Class):
+	Register(?string $Type=NULL, ?string $Class=NULL):
 	void {
 
 		if(!isset(static::$Types))
@@ -31,6 +31,16 @@ extends Atlantis\Prototype {
 
 		if(!class_exists($Class))
 		throw new Exception("class not found: {$Class}");
+
+		if($Type === NULL) {
+			if(!is_a($Class, Atlantis\Prototype::class, TRUE))
+			throw new Exception(sprintf('%s not %s', $Class, Atlantis\Prototype::class));
+
+			if(!defined(sprintf('%s::EntType', $Class)))
+			throw new Exception(sprintf('%s has no EntType', $Class));
+
+			$Type = $Class::EntType;
+		}
 
 		////////
 
