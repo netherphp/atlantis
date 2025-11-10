@@ -38,7 +38,7 @@ extends Surface\Element {
 	$Disabled = [];
 
 	public function
-	OnWith(iterable $Props):
+	OnFromWith(iterable $Props):
 	static {
 
 		$Bounds = [ 'a', 'z' ];
