@@ -144,6 +144,7 @@ implements
 		($Input)
 		->Define('Alias', NULL)
 		->Define('Type', [ 'tag', 'site' ])
+		->Define('Subtype', NULL)
 		->Define('NameLike', NULL)
 		->Define('ParentID', NULL);
 
@@ -161,6 +162,10 @@ implements
 			$SQL->Where('Main.Type IN(:Type)');
 			else
 			$SQL->Where('Main.Type=:Type');
+		}
+
+		if($Input['Subtype'] !== NULL) {
+			$SQL->Where('Main.Subtype=:Subtype');
 		}
 
 		if($Input['Alias'] !== NULL) {
@@ -300,18 +305,20 @@ implements
 
 	#[Common\Meta\DateAdded('2025-03-11')]
 	static public function
-	Touch(string $Alias, string $Name, ?string $Type=NULL):
+	Touch(string $Alias, string $Name, ?string $Type=NULL, ?string $Subtype=NULL):
 	static {
 
 		$Ent = static::GetByAlias($Alias);
 
 		if(!$Ent) {
 			$Type ??= static::TypeTag;
+			$Subtype ??= static::SubtypeNormal;
 
 			$Ent = static::Insert([
-				'Name'  => $Name,
-				'Alias' => $Alias,
-				'Type'  => $Type
+				'Name'    => $Name,
+				'Alias'   => $Alias,
+				'Type'    => $Type,
+				'Subtype' => $Subtype
 			]);
 		}
 
