@@ -145,6 +145,27 @@ build and manage a modal popup.
 		return this;
 	};
 
+	maximise(val) {
+
+		if(val === null)
+		val = '';
+
+		(this.element.find('.modal-dialog'))
+		.css({
+			'height': '95vh',
+			'max-height': '95vh',
+			'width':  '95vw',
+			'max-width':  '95vw'
+		});
+
+		(this.element.find('.modal-content'))
+		.css({
+			'height': '100%'
+		});
+
+		return this;
+	};
+
 	onCancel() {
 
 		this.destroy();
