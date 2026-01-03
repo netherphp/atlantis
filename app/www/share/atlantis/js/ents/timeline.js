@@ -145,15 +145,15 @@ class Timeline {
 
 	static WhenClickNew(el) {
 
-		el.toggleClass('d-none');
+		el.removeClass('d-none');
 
 		return;
 	};
 
 	static WhenClickItemNew(el) {
 
-		el.toggleClass('d-none');
-		jQuery('.atl-dropsort-cmd-save').toggleClass('d-none');
+		el.removeClass('d-none');
+		jQuery('.atl-dropsort-cmd-save').removeClass('d-none');
 
 		el[0].scrollIntoView();
 
