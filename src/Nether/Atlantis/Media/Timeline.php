@@ -52,7 +52,7 @@ extends Atlantis\Prototype {
 
 		$Rows->Sort(function(TimelineItem $A, TimelineItem $B) {
 
-			return $A->Date <=> $A->Date;
+			return $A->Date <=> $B->Date;
 		});
 
 		return $Rows;
