@@ -50,6 +50,11 @@ extends Atlantis\Prototype {
 			Sort: 'sort-asc'
 		));
 
+		$Rows->Sort(function(TimelineItem $A, TimelineItem $B) {
+
+			return $B->Date <=> $A->Date;
+		});
+
 		return $Rows;
 	}
 
@@ -100,7 +105,7 @@ extends Atlantis\Prototype {
 	GetAddItemURL():
 	string {
 
-		return '';
+		return sprintf('%s#new', $this->GetEditURL());
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -129,6 +134,26 @@ extends Atlantis\Prototype {
 		}
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	Touch(string $UUID, string $Title=''):
+	?static {
+
+		$Old = static::GetByUUID($UUID);
+
+		if($Old)
+		return $Old;
+
+		////////
+
+		return static::Insert([
+			'UUID'  => $UUID,
+			'Title' => $Title
+		]);
 	}
 
 	////////////////////////////////////////////////////////////////

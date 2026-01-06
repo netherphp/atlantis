@@ -84,6 +84,25 @@ extends Atlantis\Prototype {
 		return sprintf('Item #%d', $this->ID);
 	}
 
+	public function
+	GetURL():
+	string {
+
+		if($this->URL)
+		return $this->URL;
+
+		return '#';
+	}
+
+	public function
+	GetDateBasic():
+	string {
+
+		$Date = Common\Date::FromDateString($this->Date);
+
+		return $Date->Get(Common\Values::DateFormatBasicDate);
+	}
+
 	////////////////
 	////////////////
 
