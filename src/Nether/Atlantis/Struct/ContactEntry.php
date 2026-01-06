@@ -40,7 +40,7 @@ extends Database\Prototype {
 
 	#[Database\Meta\TypeText]
 	public ?string
-	$SentTo;
+	$SentTo = NULL;
 
 	#[Database\Meta\TypeText]
 	public ?string
