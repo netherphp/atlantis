@@ -117,8 +117,7 @@ extends Atlantis\PublicAPI {
 
 		$this->SetPayload([
 			'Subject' => $Email->Subject,
-			'From'    => $Email->From,
-			'Content' => $Email->Content
+			'From'    => $Email->From
 		]);
 
 		return;
