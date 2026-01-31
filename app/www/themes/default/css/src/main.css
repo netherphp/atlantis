@@ -213,7 +213,8 @@ a:visited:not(.btn) {
 
 code,
 a > code,
-pre {
+pre,
+.code {
 	color: var(--bs-code-color);
 	font-family: var(--theme-font-mono-family);
 	font-weight: var(--theme-font-mono-weight);

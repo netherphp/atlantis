@@ -3,6 +3,7 @@
 
 	background-color: var(--theme-body-bg) !important;
 	font-family: 'FiraCode', 'Consolas', monospace !important;
+	line-height: 160%;
 	white-space: pre;
 }
 
@@ -18,11 +19,6 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	font-style: normal;
 	font-weight: normal;
 	text-decoration: none;
-}
-
-.aace_editor {
-	background-color: var(--theme-body-bg) !important;
-	font-family: 'FiraCode', 'Consolas', monospace !important;
 }
 
 .ace_line {
