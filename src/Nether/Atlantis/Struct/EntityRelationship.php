@@ -155,6 +155,19 @@ extends Atlantis\Prototype {
 		return $Data;
 	}
 
+	public function
+	Fill():
+	static {
+
+		// if(!$this->Parent)
+		// $this->Parent =
+
+		// if(!$this->Child)
+		// $this->Child =
+
+		return $this;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

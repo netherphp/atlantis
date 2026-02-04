@@ -12,10 +12,12 @@ extends Common\Prototype {
 
 	const
 	StatusFailure         = -1,
-	StatusExpired         = 0,
+	StatusError           = 0,
 	StatusOK              = 1,
 	StatusExpireSoon      = 2,
-	StatusExpireWarning   = 3;
+	StatusExpireWarning   = 3,
+	StatusExpireImminent  = 3,
+	StatusExpired         = 4;
 
 	const
 	StatusWords = [
@@ -23,7 +25,7 @@ extends Common\Prototype {
 		self::StatusExpired        => 'EXPIRED',
 		self::StatusOK             => 'OK',
 		self::StatusExpireSoon     => 'SOON',
-		self::StatusExpireWarning  => 'IMMINENT'
+		self::StatusExpireImminent => 'IMMINENT'
 	];
 
 	////////
@@ -54,10 +56,17 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	GetSource():
+	string {
+
+		return $this->Source;
+	}
+
+	public function
 	GetStatusCode():
 	int {
 
-		$Diff = $this->GetTimeframe();
+		$Diff = $this->GetWhenExpire();
 		$Dist = $Diff->GetTimeDiff();
 
 		////////
@@ -89,7 +98,47 @@ extends Common\Prototype {
 	}
 
 	public function
-	GetTimeframe():
+	GetTimeIssued():
+	int {
+
+		return $this->TimeStart;
+	}
+
+	public function
+	GetTimeExpire():
+	int {
+
+		return $this->TimeExpire;
+	}
+
+	public function
+	GetDateIssued():
+	string {
+
+		return $this->DateStart->Get(Common\Values::DateFormatYMDT24VO);
+	}
+
+	public function
+	GetDateExpire():
+	string {
+
+		return $this->DateExpire->Get(Common\Values::DateFormatYMDT24VO);
+	}
+
+	public function
+	GetWhenIssued():
+	Common\Units\Timeframe {
+
+		return new Common\Units\Timeframe(
+			$this->DateStart->GetUnixtime(),
+			(new Common\Date)->GetUnixtime(),
+			Common\Units\Timeframe::FormatShorter,
+			Precision: 2
+		);
+	}
+
+	public function
+	GetWhenExpire():
 	Common\Units\Timeframe {
 
 		return new Common\Units\Timeframe(
@@ -104,7 +153,7 @@ extends Common\Prototype {
 	IsExpired():
 	bool {
 
-		$Diff = $this->GetTimeframe();
+		$Diff = $this->GetWhenExpire();
 		$Dist = $Diff->GetTimeDiff();
 
 		if($Dist <= 0)

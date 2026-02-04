@@ -589,4 +589,32 @@ as html pages. //*/
 		return sprintf('?%s', $this->QueryBlender($Input));
 	}
 
+	////////////////////////////////////////////////////////////////
+	// Surface Interaction API /////////////////////////////////////
+
+	public function
+	Area(string $Area, iterable $Data, ?string $Masquerade=NULL, array|string|NULL $Themes=NULL):
+	static {
+
+		$this->Surface->Area($Area, $Data, $Masquerade, $Themes);
+
+		return $this;
+	}
+
+	public function
+	GetPageTitle():
+	string {
+
+		return $this->App->Surface->Get('Page.Title') ?: '';
+	}
+
+	public function
+	SetPageTitle(string $What):
+	static {
+
+		$this->App->Surface->Set('Page.Title', $What);
+
+		return $this;
+	}
+
 }

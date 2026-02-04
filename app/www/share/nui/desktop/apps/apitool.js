@@ -98,6 +98,9 @@ let TemplateToolWindowHTML = `
 					<button class="atl-dtop-btn btn-block mb-2" data-win-action="run">
 						Run
 					</button>
+					<div class="fs-smaller o-50 px-2 py-1 tt-upper rounded-less ta-center mb-2" style="border: 1px solid var(--atl-dtop-btn-bgc);color:">
+						Request #
+					</div>
 				</div>
 				<div>
 					<div class="pos-absolutely scroll-xy" style="min-height:4lh;">

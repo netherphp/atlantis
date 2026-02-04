@@ -9,7 +9,8 @@ use
 Nether\Atlantis,
 Nether\Atlantis\Struct\ProjectJSON,
 Nether\Common,
-Nether\Console;
+Nether\Console,
+Nether\Dye;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,6 +18,135 @@ Nether\Console;
 #[Console\Meta\Application('CertTool', '5.0.0-dev')]
 class CertTool
 extends Atlantis\TerminalApp {
+
+	const FormatJSON = 'json';
+	const FormatJSRN = 'jsrn';
+	const FormatCLI  = 'cli';
+
+	const ViaOpenSSL = 'openssl';
+	const ViaCURL    = 'curl';
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2023-11-14')]
+	#[Console\Meta\Command('lookup')]
+	#[Console\Meta\Info('Check the status of an SSL cert for any domain on the internet.')]
+	#[Console\Meta\Arg('domain')]
+	#[Console\Meta\Error(1, 'no domain specified')]
+	public function
+	HandleLookupCert():
+	int {
+
+		$Domain = strtoupper($this->GetInput(1));
+		$ShowCaughtError = $this->GetOption('errors');
+		$Result = NULL;
+
+		$Format = match(TRUE) {
+			($this->GetOption('json')) => 'json',
+			($this->GetOption('jsrn')) => 'jsrn',
+			default                    => 'cli'
+		};
+
+		$Via = match(TRUE) {
+			($this->GetOption('curl')) => 'curl',
+			default                    => 'openssl'
+		};
+
+		////////
+
+		if(!$Domain)
+		$this->Quit(1);
+
+		try {
+			$Result = match($Via) {
+				static::ViaCURL
+				=> Atlantis\Util\CertInfo::FetchViaCurl($Domain),
+
+				default
+				=> Atlantis\Util\CertInfo::FetchViaOpenSSL($Domain)
+			};
+		}
+
+		catch(Throwable $Error) {
+			if($ShowCaughtError)
+			$this->PrintStatusMuted(sprintf(
+				'Note: Caught %s',
+				$Error::class
+			));
+		}
+
+		////////
+
+		$Output = Common\Datastore::FromArray([
+			'Domain'          => $Domain,
+			'Status'          => ($Result ? $Result->GetStatusWord() : 'ERROR'),
+			'IssuedTime'      => ($Result ? $Result->GetTimeIssued() : NULL),
+			'IssuedDate'      => ($Result ? $Result->GetDateIssued() : NULL),
+			'IssuedWhen'      => ($Result ? (string)$Result->GetWhenIssued() : NULL),
+			'ExpireTime'      => ($Result ? $Result->GetTimeExpire() : NULL),
+			'ExpireDate'      => ($Result ? $Result->GetDateExpire() : NULL),
+			'ExpireWhen'      => ($Result ? (string)$Result->GetWhenExpire() : NULL),
+			'Source'          => ($Result ? $Result->GetSource() : NULL),
+			'Code'            => ($Result ? $Result->GetStatusCode() : -1)
+		]);
+
+		////////
+
+		$Output->Filter(fn(mixed $D)=> $D !== NULL);
+
+		if($Format === 'json') {
+			$this->PrintLn(json_encode($Output));
+			return 0;
+		}
+
+		if($Format === 'jsrn') {
+			$this->PrintLn(Common\Filters\Text::ReadableJSON($Output));
+			return 0;
+		}
+
+		////////
+
+		$Colour = match(TRUE) {
+			($Output['Code'] === Atlantis\Util\CertInfo::StatusOK)
+			=> '#88cc88',
+
+			($Output['Code'] === Atlantis\Util\CertInfo::StatusExpireSoon)
+			=> '#eebb88',
+
+			($Output['Code'] === Atlantis\Util\CertInfo::StatusExpireImminent)
+			=> '#dd8844',
+
+			default
+			=> '#cc4444'
+		};
+
+		Console\Elements\H1::New(
+			Client: $this,
+			Text: sprintf('Certificate: %s', $Output['Status']),
+			BorderColour: Dye\Colour::From($Colour),
+			Print: 2
+		);
+
+		Console\Elements\ListNamed::New(
+			Client: $this,
+			Items: $Output->Export(),
+			Print: 2
+		);
+
+		return 0;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// ssl cert support is being removed from the web components
+	// to be replaced with ashbox installs. everything after this
+	// is therefore pointless now.
 
 	use
 	Atlantis\Packages\DevTool\QuerySelectProjectConfig,
@@ -141,104 +271,6 @@ extends Atlantis\TerminalApp {
 		$this->PrintOK();
 		else
 		$this->PrintError();
-
-		return 0;
-	}
-
-	#[Common\Meta\Date('2023-11-14')]
-	#[Console\Meta\Command('lookup')]
-	#[Console\Meta\Info('Check the status of an SSL cert for any domain on the internet.')]
-	#[Console\Meta\Arg('domain')]
-	#[Console\Meta\Error(1, 'no domain specified')]
-	public function
-	HandleLookupCert():
-	int {
-
-		$Domain = strtoupper($this->GetInput(1));
-		$Via = 'openssl';
-		$Format = 'cli';
-		$Result = NULL;
-
-		////////
-
-		if(!$Domain)
-		$this->Quit(1);
-
-		////////
-
-		$this->PrintLn($this->FormatH1(sprintf(
-			'%s: Lookup %s',
-			$this->AppInfo->Name,
-			$Domain
-		)));
-
-		if($this->GetOption('json')) {
-			if($this->GetOption('pretty'))
-			$Format = 'json-pretty';
-			else
-			$Format = 'json';
-		}
-
-		if($this->GetOption('openssl'))
-		$Via = 'openssl';
-
-		if($this->GetOption('curl'))
-		$Via = 'curl';
-
-		////////
-
-		try {
-			$Result = match($Via) {
-				'curl'
-				=> Atlantis\Util\CertInfo::FetchViaCurl($Domain),
-
-				default
-				=> Atlantis\Util\CertInfo::FetchViaOpenSSL($Domain)
-			};
-		}
-
-		catch(Throwable $Error) { }
-
-		$Output = Common\Datastore::FromArray([
-			'Domain'          => $Domain,
-			'Status'          => ($Result ? $Result->GetStatusWord() : 'ERROR'),
-			'Date'            => ($Result ? (string)($Result->DateStart) : NULL),
-			'ExpireDate'      => ($Result ? (string)($Result->DateExpire) : NULL),
-			'ExpireTimeframe' => ($Result ? (string)($Result->GetTimeframe()) : NULL),
-			'Source'          => ($Result ? (string)($Result->Source) : NULL),
-			'Code'            => ($Result ? $Result->GetStatusCode() : -1)
-		]);
-
-		////////
-
-		$Output->Filter(fn(mixed $D)=> $D !== NULL);
-
-		if($Format === 'json') {
-			$this->PrintLn(json_encode($Output));
-			return 0;
-		}
-
-		if($Format === 'json-pretty') {
-			$this->PrintLn(Common\Filters\Text::ReadableJSON($Output));
-			return 0;
-		}
-
-		////////
-
-		$Codes = [
-			-1 => Console\Theme::Error,
-			0  => Console\Theme::Error,
-			1  => Console\Theme::OK,
-			2  => Console\Theme::Warning,
-			3  => Console\Theme::Alert
-		];
-
-		if(isset($Codes[$Output['Code']])) {
-			$Output['Domain'] = $this->Format($Output['Domain'], $Codes[$Output['Code']]);
-			$Output['Status'] = $this->Format($Output['Status'], $Codes[$Output['Code']]);
-		}
-
-		$this->PrintLn($this->FormatBulletList($Output), 2);
 
 		return 0;
 	}
