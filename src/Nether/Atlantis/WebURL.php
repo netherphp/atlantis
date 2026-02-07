@@ -65,7 +65,7 @@ implements Stringable {
 	}
 
 	public function
-	Set(string $Path='/', string $Host=NULL, string $Proto=NULL):
+	Set(string $Path='/', ?string $Host=NULL, ?string $Proto=NULL):
 	static {
 
 		if(str_starts_with($Path, '/'))
