@@ -108,8 +108,10 @@ extends PublicWeb {
 	PageActivate():
 	void {
 
-		if($this->User && $this->User->Activated)
-		$this->Goto('/');
+		if($this->User && $this->User->Activated) {
+			$this->Goto('/dashboard');
+			return;
+		}
 
 		($this->App->Surface)
 		->Wrap('user/activate',[

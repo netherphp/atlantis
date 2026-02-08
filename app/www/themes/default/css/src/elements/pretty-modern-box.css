@@ -41,8 +41,8 @@
 	margin: 0px 0px 0px 0.5em;
 }
 
-.PrettyModernBox a:link:not(.underdot),
-.PrettyModernBox a:visited:not(.underdot) {
+.PrettyModernBox a:link:not(.underdot):not(.btn),
+.PrettyModernBox a:visited:not(.underdot):not(.btn) {
 	border-bottom: 0px !important;
 }
 

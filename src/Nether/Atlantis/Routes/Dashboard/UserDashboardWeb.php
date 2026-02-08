@@ -100,7 +100,7 @@ extends Atlantis\ProtectedWeb {
 				$Confirm->Drop();
 			}
 
-			$this->Goto('/dashboard/settings/email');
+			$this->Goto('/dashboard');
 		}
 
 		////////

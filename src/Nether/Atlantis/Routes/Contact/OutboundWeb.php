@@ -13,8 +13,9 @@ extends PublicWeb {
 	PageContact():
 	void {
 
-		($this->App->Surface)
-		->Area('contact/index');
+		($this)
+		->SetPageTitle('Contact Us')
+		->Area('contact/index', []);
 
 		return;
 	}

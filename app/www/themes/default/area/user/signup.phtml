@@ -27,13 +27,13 @@ $Captcha = new Nether\Atlantis\Util\Captcha($App);
 
 <div>
 	<div class="<?php $Printer($TitleCSS) ?> mb-4">
-		<h4>Log In</h4>
+		<h4>Sign Up</h4>
 	</div>
 
 	<div class="row <?php $Printer($ShiftyColumnCSS) ?> align-items-stretch">
 		<div class="col-12 col-md-5 mb-4">
 			<form id="JoinForm" method="post">
-				<div class="row justify-content-center mb-2">
+				<div class="row justify-content-center mb-6">
 					<div class="col-12 mb-4">
 						<input type="text" class="form-control" name="Email" placeholder="Email..." />
 						<div class="text-muted font-size-smaller">You will be sent a link to activate the account.</div>
@@ -75,7 +75,13 @@ $Captcha = new Nether\Atlantis\Util\Captcha($App);
 
 					(req.send(form.read()))
 					.then(req.goto)
-					.catch(req.catch);
+					.catch(function(r){
+						if(typeof grecaptcha !== 'undefined')
+						grecaptcha.reset();
+
+						alert(r.message);
+						return;
+					});
 
 					return false;
 				});
