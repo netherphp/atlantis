@@ -28,6 +28,7 @@ $PageBodyClasses = $Surface->Get('Page.Body.Classes');
 $PageSubheader = $Surface->Get(Surface\Theme::KeyThemeSubheader);
 $PageThemeMainCSS = $Surface->Get('Theme.Page.MainCSS');
 $PageTitle = $Surface->Get('Page.Title');
+$PageDesc = $App->Config->Get(Atlantis\Key::ConfProjectDesc) ?? $App->Config->Get(Atlantis\Key::ConfProjectDescShort);
 $PageFeedURL = $Surface->Get('Page.FeedURL');
 $PageImageURL = $Surface->Get('Page.ImageURL');
 $PageURL = $Router->Request->GetURL();
@@ -70,7 +71,7 @@ $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 	<meta property="og:url" content="<?php $Util->Print($PageURL) ?>" />
 	<meta property="og:title" content="<?php $Util->Print($PageTitle) ?>" />
 	<meta property="og:image" content="<?php $Util->Print($PageImageURL) ?>" />
-	<meta property="og:description" content="" />
+	<meta property="og:description" content="<?php $Util->Print($PageDesc) ?>" />
 
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:domain" content="<?php $Util->Print($PageDomain) ?>" />
