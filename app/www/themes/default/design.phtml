@@ -66,7 +66,7 @@ $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 	<?php if($PageFeedURL): ?><link rel="alternate" type="application/rss+xml" href="<?php $Util->Print($PageFeedURL) ?>" />
 	<?php endif; ?>
 
-	<meta property="og:type" content="article" />
+	<meta property="og:type" content="website" />
 	<meta property="og:url" content="<?php $Util->Print($PageURL) ?>" />
 	<meta property="og:title" content="<?php $Util->Print($PageTitle) ?>" />
 	<meta property="og:image" content="<?php $Util->Print($PageImageURL) ?>" />

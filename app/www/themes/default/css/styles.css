@@ -1,5 +1,5 @@
 /*//
-@date 2025-04-04 23:41:13 UTC
+@date 2026-02-10 02:38:50 UTC
 @files 48 [
     "src\/imports.css",
     "src\/main.css",
@@ -275,7 +275,8 @@ a:visited:not(.btn) {
 
 code,
 a > code,
-pre {
+pre,
+.code {
 	color: var(--bs-code-color);
 	font-family: var(--theme-font-mono-family);
 	font-weight: var(--theme-font-mono-weight);
@@ -2916,6 +2917,7 @@ code.cli {
 
 	background-color: var(--theme-body-bg) !important;
 	font-family: 'FiraCode', 'Consolas', monospace !important;
+	line-height: 160%;
 	white-space: pre;
 }
 
@@ -2931,11 +2933,6 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	font-style: normal;
 	font-weight: normal;
 	text-decoration: none;
-}
-
-.aace_editor {
-	background-color: var(--theme-body-bg) !important;
-	font-family: 'FiraCode', 'Consolas', monospace !important;
 }
 
 .ace_line {
@@ -3857,8 +3854,8 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	margin: 0px 0px 0px 0.5em;
 }
 
-.PrettyModernBox a:link:not(.underdot),
-.PrettyModernBox a:visited:not(.underdot) {
+.PrettyModernBox a:link:not(.underdot):not(.btn),
+.PrettyModernBox a:visited:not(.underdot):not(.btn) {
 	border-bottom: 0px !important;
 }
 
