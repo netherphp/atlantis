@@ -56,8 +56,12 @@ $Captcha = new Nether\Atlantis\Util\Captcha($App);
 					</div>
 					<?php endif; ?>
 					<div class="col-12">
+						<div class="d-none ta-center fw-bold loading-indicator">
+							<i class="mdi mdi-loading mdi-spin"></i>
+							Loading...
+						</div>
 						<input type="hidden" name="Session" value="1" />
-						<button type="submit" class="btn btn-primary d-block w-100">Create Account</button>
+						<button type="submit" class="btn btn-primary d-block w-100 go-btn">Create Account</button>
 					</div>
 				</div>
 			</form>
@@ -73,11 +77,17 @@ $Captcha = new Nether\Atlantis\Util\Captcha($App);
 					let form = new NUI.Form(this);
 					let req = new NUI.Request('POST', '/api/user/create');
 
+					jQuery('.go-btn').addClass('d-none');
+					jQuery('.loading-indicator').removeClass('d-none');
+
 					(req.send(form.read()))
 					.then(req.goto)
 					.catch(function(r){
 						if(typeof grecaptcha !== 'undefined')
 						grecaptcha.reset();
+
+						jQuery('.go-btn').removeClass('d-none');
+						jQuery('.loading-indicator').addClass('d-none');
 
 						alert(r.message);
 						return;
