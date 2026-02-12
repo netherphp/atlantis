@@ -39,19 +39,22 @@ $Captcha = new Nether\Atlantis\Util\Captcha($App);
 			<form id="JoinForm" method="post">
 				<div class="row justify-content-center mb-6">
 					<div class="col-12 mb-4">
-						<input type="text" class="form-control" name="Email" placeholder="Email..." />
+						<div class="fw-bold">Email:</div>
+						<input type="text" class="form-control mb-2" name="Email" placeholder="..." />
 						<div class="text font-size-smaller">You will be sent a link to activate the account.</div>
 					</div>
 					<?php if($RequireAlias): ?>
 					<div class="col-12 mb-2">
-						<input type="text" class="form-control" name="Alias" placeholder="Username..." />
+						<input type="text" class="form-control" name="Alias" placeholder="..." />
 					</div>
 					<?php endif; ?>
 					<div class="col-12 mb-2">
-						<input type="password" class="form-control" name="Password1" placeholder="Password..." />
+						<div class="fw-bold">Password:</div>
+						<input type="password" class="form-control" name="Password1" placeholder="..." />
 					</div>
 					<div class="col-12 mb-4">
-						<input type="password" class="form-control" name="Password2" placeholder="Confirm Password..." />
+						<div class="fw-bold">Confirm Password:</div>
+						<input type="password" class="form-control mb-2" name="Password2" placeholder="..." />
 						<div class="text font-size-smaller"><?php $Printer($PasswordTester->GetDescription()) ?></div>
 					</div>
 					<?php if($Captcha->IsConfigured()): ?>
