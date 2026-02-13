@@ -81,6 +81,7 @@ extends Atlantis\TerminalApp {
 		$Output = Common\Datastore::FromArray([
 			'Domain'          => $Domain,
 			'Status'          => ($Result ? $Result->GetStatusWord() : 'ERROR'),
+			'Issuer'          => ($Result ? $Result->GetIssuer() : 'ERROR'),
 			'IssuedTime'      => ($Result ? $Result->GetTimeIssued() : NULL),
 			'IssuedDate'      => ($Result ? $Result->GetDateIssued() : NULL),
 			'IssuedWhen'      => ($Result ? (string)$Result->GetWhenIssued() : NULL),

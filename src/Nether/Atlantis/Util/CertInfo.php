@@ -40,6 +40,9 @@ extends Common\Prototype {
 	$TimeExpire;
 
 	public string
+	$Issuer;
+
+	public string
 	$Source;
 
 	////////
@@ -150,6 +153,13 @@ extends Common\Prototype {
 	}
 
 	public function
+	GetIssuer():
+	string {
+
+		return $this->Issuer;
+	}
+
+	public function
 	IsExpired():
 	bool {
 
@@ -196,6 +206,8 @@ extends Common\Prototype {
 		$Cert = stream_context_get_params($Client);
 		$Info = openssl_x509_parse($Cert['options']['ssl']['peer_certificate']);
 
+		//var_dump($Info);
+
 		////////
 
 		if(!is_array($Info))
@@ -210,12 +222,16 @@ extends Common\Prototype {
 		if(!isset($Info['validTo_time_t']))
 		throw new Atlantis\Error\CertLookupUnexpectedFormat($Domain, 'no [validTo_time_t] in openssl result');
 
+		if(!isset($Info['issuer']) || !isset($Info['issuer']['O']))
+		throw new Atlantis\Error\CertLookupUnexpectedFormat($Domain, 'no [issuer] in openssl result');
+
 		/////////
 
 		$Output = new static([
 			'Domain'     => $Info['subject']['CN'],
 			'TimeStart'  => $Info['validFrom_time_t'],
 			'TimeExpire' => $Info['validTo_time_t'],
+			'Issuer'     => $Info['issuer']['O'],
 			'Source'     => 'OpenSSL'
 		]);
 
@@ -254,10 +270,25 @@ extends Common\Prototype {
 		if(!isset($Info[0]['Expire date']))
 		throw new Atlantis\Error\CertLookupUnexpectedFormat($Domain, 'no [Expire date] in curl result');
 
+		if(!isset($Info[0]['Issuer']))
+		throw new Atlantis\Error\CertLookupUnexpectedFormat($Domain, 'no [Issuer] in curl result');
+
+		$Issuer = Common\Datastore::FromString($Info[0]['Issuer'], ',');
+		$Issuer->Remap(Common\Filters\Text::Trimmed(...));
+		$Issuer->RemapKeys(function(int $K, string $V) {
+			$D = Common\Datastore::FromString($V, '=');
+			$D->Remap(Common\Filters\Text::Trimmed(...));
+			return [ $D[0]=> $D[1] ];
+		});
+
+		if(!$Issuer->HasKey('O'))
+		throw new Atlantis\Error\CertLookupUnexpectedFormat($Domain, 'no O= found in [Issuer] curl result');
+
 		////////
 
 		$Output = new static([
 			'Domain'     => $Domain,
+			'Issuer'     => $Issuer->Get('O'),
 			'TimeStart'  => (new Common\Date($Info[0]['Start date']))->GetUnixtime(),
 			'TimeExpire' => (new Common\Date($Info[0]['Expire date']))->GetUnixtime(),
 			'Source'     => 'cURL'
