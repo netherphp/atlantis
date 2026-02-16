@@ -110,11 +110,9 @@ extends Atlantis\Prototype {
 		$Input['PathStart'] ??= NULL;
 		$Input['Group'] ??= NULL;
 
-		// these current support sql like syntax i haven't fully thought
-		// through any security issues so only for admin use atm.
-
 		$Input['Path'] ??= NULL;
 		$Input['Query'] ??= NULL;
+		$Input['UserAgentLike'] ??= NULL;
 
 		return;
 	}
@@ -154,6 +152,11 @@ extends Atlantis\Prototype {
 			$SQL->Where('Main.Domain IS NOT NULL');
 			else
 			$SQL->Where('Main.Domain=:Domain');
+		}
+
+		if($Input['UserAgentLike']) {
+			$Input['UserAgentLikeLike'] = "%{$Input['UserAgentLike']}%";
+			$SQL->Where('UserAgent LIKE :UserAgentLikeLike');
 		}
 
 		if($Input['Group'] !== NULL) {
