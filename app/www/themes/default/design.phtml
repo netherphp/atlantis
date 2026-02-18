@@ -52,6 +52,7 @@ $ShowPageShutdown = !($Surface->Get('Page.SkipShutdown') ?? FALSE);
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title><?php $Util->Print($PageTitle) ?></title>
+	<meta name="description" content="<?php $Util->Print($PageDesc) ?>" />
 	<link rel="shortcut icon" href="<?php $Util->Print($PageFavIconURL) ?>" type="image/x-icon" />
 
 	<script type="text/javascript" src="<?php $Util->ThemeURL('lib/js/jquery.min.js', 'default') ?>"></script>
