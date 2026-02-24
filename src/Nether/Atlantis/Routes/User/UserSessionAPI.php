@@ -381,7 +381,7 @@ extends Atlantis\PublicAPI {
 		if(!$AllowSignup)
 		$this->Quit(10, 'Not right now');
 
-		$PasswordTester = new Atlantis\Systems\PasswordTester\Tool;
+		$PasswordTester = Atlantis\Systems\PasswordTester\Tool::New($this->App);
 		$User = NULL;
 		$RemoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : NULL;
 
