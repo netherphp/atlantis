@@ -48,6 +48,10 @@ extends Atlantis\Prototype {
 	$Title = NULL;
 
 	#[Database\Meta\TypeVarChar(Size: 255)]
+	protected ?string
+	$TitleKey = NULL;
+
+	#[Database\Meta\TypeVarChar(Size: 255)]
 	#[Common\Meta\PropertyPatchable]
 	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
 	public ?string
@@ -69,6 +73,16 @@ extends Atlantis\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	public function
+	Update(iterable $Data):
+	static {
+
+		if(array_key_exists('Title', $Data))
+		$Data['TitleKey'] = static::MakeTitleKey($Data['Title']);
+
+		return parent::Update($Data);
+	}
+
+	public function
 	DescribeForPublicAPI():
 	array {
 
@@ -81,6 +95,19 @@ extends Atlantis\Prototype {
 			'ImageURL' => $this->ImageURL,
 			'Content'  => $this->GetContent()
 		];
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	GetTitleKey():
+	string {
+
+		if(!isset($this->TitleKey))
+		$this->TitleKey = static::MakeTitleKey($this->Title);
+
+		return $this->TitleKey;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -287,6 +314,19 @@ extends Atlantis\Prototype {
 		////////
 
 		return $Ent;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	MakeTitleKey(?string $Title):
+	?string {
+
+		if(!$Title)
+		return NULL;
+
+		return Common\Filters\Text::SlottableKey($Title);
 	}
 
 };
