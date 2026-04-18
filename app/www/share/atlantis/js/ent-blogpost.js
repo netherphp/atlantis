@@ -26,6 +26,7 @@ class BlogPost {
 		this.editor = Editor;
 		this.alias = Alias;
 		this.title = Title;
+		this.enabled = Enabled;
 		this.pageURL = PageURL;
 		this.coverImageURL = CoverImageURL;
 		this.adminNotes = AdminNotes;
@@ -50,7 +51,14 @@ class BlogPost {
 		fdat.append('Editor', this.editor);
 		fdat.append('Alias', this.alias);
 		fdat.append('Title', this.title);
+		fdat.append('Enabled', this.enabled);
 		fdat.append('AdminNotes', this.adminNotes);
+
+		//fdat.append('ExtraData[SourceURL]', this.sourceURL);
+		//fdat.append('ExtraData[SourceDate]', this.sourceDate);
+		//fdat.append('ExtraData[SourceDateSort]', this.sourceDateSort);
+		//fdat.append('ExtraData[SourceExcerpt]', this.sourceExcerpt);
+
 
 		if(this.editor === 'link') {
 			fdat.append('URL', this.sourceURL);
