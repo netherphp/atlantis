@@ -30,7 +30,7 @@ extends Atlantis\PublicWeb {
 	#[Avenue\Meta\ConfirmWillAnswerRequest]
 	#[Avenue\Meta\ExtraDataArgs]
 	public function
-	View(string $Alias, Atlantis\Profile\Entity $Profile):
+	View(string $Alias, Atlantis\Profile\Entity $Profile, array $AreaDataEx=[]):
 	void {
 
 		$Tags = $Profile->GetTags();
@@ -59,9 +59,7 @@ extends Atlantis\PublicWeb {
 		if(!str_contains($ImageURL, 'no-image'))
 		$this->Surface->Set('Page.ImageURL', $ImageURL);
 
-		($this->Surface)
-		->Set('Page.Title', $Profile->Title)
-		->Area($this->GetViewArea(), [
+		$AreaData = [
 			'Profile'        => $Profile,
 			'AdminMenu'      => $AdminMenu,
 			'SectionsBefore' => $SectionsBefore,
@@ -75,7 +73,13 @@ extends Atlantis\PublicWeb {
 			'Related' => $Related,
 			'News'    => $News,
 			'Files'   => $Files
-		]);
+		];
+
+		$AreaData = array_merge($AreaData, $AreaDataEx);
+
+		($this->Surface)
+		->Set('Page.Title', $Profile->Title)
+		->Area($this->GetViewArea(), $AreaData);
 
 		return;
 	}
