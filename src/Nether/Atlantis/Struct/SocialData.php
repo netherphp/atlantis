@@ -24,6 +24,7 @@ implements
 	Website   = 'Website',
 	Facebook  = 'Facebook',
 	Instagram = 'Instagram',
+	GoFundMe  = 'GoFundMe',
 	LinkedIn  = 'LinkedIn',
 	Threads   = 'Threads',
 	TikTok    = 'TikTok',
@@ -38,6 +39,7 @@ implements
 	Icons = [
 		self::Website   => 'mdi-web',
 		self::Facebook  => 'si-facebook',
+		self::GoFundMe  => 'si-gofundme',
 		self::Instagram => 'si-instagram',
 		self::LinkedIn  => 'si-linkedin',
 		self::Threads   => 'si-threads',

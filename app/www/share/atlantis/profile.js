@@ -278,6 +278,7 @@ class Profile {
 				new DialogUtil.Field('hidden', 'ID', null, self.id),
 				new DialogUtil.Field('text2', 'SocialDataWebsite', 'Website'),
 				new DialogUtil.Field('text2', 'SocialDataFacebook', 'Facebook'),
+				new DialogUtil.Field('text2', 'SocialDataGoFundMe', 'GoFundMe'),
 				new DialogUtil.Field('text2', 'SocialDataInstagram', 'Instagram'),
 				new DialogUtil.Field('text2', 'SocialDataLinkedIn', 'LinkedIn'),
 				new DialogUtil.Field('text2', 'SocialDataTikTok', 'TikTok'),
