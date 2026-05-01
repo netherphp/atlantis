@@ -65,8 +65,17 @@ $ShowTags ??= FALSE;
 				}; ?>
 			</div>
 
-			<div>
-				<a href="<?php $Util->Print($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>" class="btn btn-primary">Read More...</a>
+
+			<div class="row g-2">
+				<div class="col-auto">
+					<a href="<?php $Util->Print($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>" class="btn btn-primary">Read More...</a>
+				</div>
+
+				<?php if($Route->IsUserAdmin()): ?>
+				<div class="col-auto">
+					<a href="<?php $Util->Print($App->RewriteURL($Post->GetEditURL(), $Post->GetTags())) ?>" class="btn btn-outline-dark">Edit Post</a>
+				</div>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>

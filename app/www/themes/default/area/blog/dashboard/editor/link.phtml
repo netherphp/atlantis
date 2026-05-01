@@ -144,7 +144,8 @@ $Link = (
 			<div class="fw-bold text-uppercase">Post Visibility</div>
 			<select name="Enabled" class="form-select">
 				<option value="0" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 0)) ?>>Draft: Only Admins Can See</option>
-				<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 1)) ?>>Published</option>
+				<option value="1" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 1)) ?>>Published as Article</option>
+				<option value="2" <?php $Util->Print($Util->GetSelectedHTML($Post && $Post->Enabled === 2)) ?>>Published as News Link</option>
 			</select>
 		</div>
 
