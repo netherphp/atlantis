@@ -38,14 +38,22 @@ $ShowTags ??= FALSE;
 <?php foreach($Posts as $PK=> $Post): /** @var Blog\Post $Post */ ?>
 <div>
 	<div class="row align-items-start <?php $Util->Print($Post->Enabled ? '' : 'opacity-60') ?>">
+		<?php if($Post->Enabled !== 2): ?>
 		<div class="col-12 col-md-2 mb-4 mb-md-0">
+
 			<div class="ratiobox widescreen rounded wallpapered" style="background-image:url(<?php $Util->Print($Post->GetCoverImageURL()) ?>);">
 				<a class="position-absolutely" href="<?php $Util->Print($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"></a>
 			</div>
 		</div>
+		<?php endif; ?>
+
 		<div class="col-12 col-md mb-0 mb-md-0">
 
 			<h3 class="mb-3">
+				<?php if($Post->Enabled === 2): ?>
+				<i class="mdi mdi-open-in-new"></i>
+				<?php endif; ?>
+
 				<a href="<?php $Printer($App->RewriteURL($Post->GetURL(), $Post->GetTags())) ?>"><?php $Printer($Post->Title) ?></a>
 			</h3>
 
