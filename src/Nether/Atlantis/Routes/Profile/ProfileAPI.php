@@ -176,6 +176,14 @@ extends Atlantis\ProtectedAPI {
 
 		// there needs to be an after update plugin system.
 
+		if($Ent->ParentUUID) {
+			$File = Atlantis\Media\File::GetByUUID($Ent->ParentUUID);
+
+			if($File) {
+				$File->Update([ 'Name'=> $Ent->Title ]);
+			}
+		}
+
 		if($Ent->IsAddressMappable() && !$Ent->HasGeoCoords()) {
 			$MapKitTokFile = $this->App->FromConfEnv('keys/apple-mapkit.txt');
 			$MapKitToken = NULL;
