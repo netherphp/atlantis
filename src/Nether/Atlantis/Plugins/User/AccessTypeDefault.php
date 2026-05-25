@@ -21,6 +21,19 @@ implements AccessTypeDefineInterface {
 	iterable {
 
 		$Output = [
+
+			new AccessTypeDef(
+				Atlantis\Key::PrivManageCMS, 1,
+				'Access CMS Dashboard'
+			),
+			new AccessTypeDef(
+				Atlantis\Key::PrivManageSystem, 1,
+				'Access System Dashboard'
+			),
+
+			////////////////////////////////////////////////////////////////
+			////////////////////////////////////////////////////////////////
+
 			new AccessTypeDef(
 				Atlantis\Key::AccessContentLog, 1,
 				'Access the basic CMS info.'
@@ -45,6 +58,7 @@ implements AccessTypeDefineInterface {
 				Atlantis\Blob\Entity::AccessTypeManage, 1,
 				'Manage Content Blobs'
 			)
+
 		];
 
 		return $Output;

@@ -94,6 +94,10 @@ class Key {
 	AccessTagAdmin         = 'Nether.Atlantis.Tags.Admin';
 
 	const
+	PrivManageCMS    = 'Atlantis.Priv.CMS',
+	PrivManageSystem = 'Atlantis.Priv.System';
+
+	const
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',
 	PageTagViewURL  = 'Nether.Atlantis.Tag.PageViewURL';
 

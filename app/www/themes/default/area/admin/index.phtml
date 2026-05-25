@@ -1,17 +1,33 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
-use Nether\Email;
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
 
 /**
- * @var Email\Struct\LibraryConfigInfo $EmailConfigInfo
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $UserPrivList
  */
 
+################################################################################
+################################################################################
 
 $Breadcrumbs = function() use($Surface) {
 	return $Surface->GetArea('admin/breadcrumbs', [ 'Trail' => [ ]]);
 };
 
-?>
+################################################################################
+############################################################################# ?>
 
 <div class="container">
 	<?php echo $Breadcrumbs() ?>
@@ -19,6 +35,7 @@ $Breadcrumbs = function() use($Surface) {
 
 <div class="container mb-6">
 
+	<?php if($UserPrivList->IsTrue('CMS')): ?>
 	<div class="glassbox rounded p-3 mb-4">
 		<div class="row g-2">
 			<div class="col-12">
@@ -39,7 +56,9 @@ $Breadcrumbs = function() use($Surface) {
 			</div>
 		</div>
 	</div>
+	<?php endif; ?>
 
+	<?php if($UserPrivList->IsTrue('System')): ?>
 	<div class="glassbox rounded p-3 mb-6">
 		<div class="row g-2">
 			<div class="col-12">
@@ -66,6 +85,7 @@ $Breadcrumbs = function() use($Surface) {
 			</div>
 		</div>
 	</div>
+	<?php endif; ?>
 
 </div>
 

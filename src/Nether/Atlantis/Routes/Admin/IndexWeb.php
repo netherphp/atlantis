@@ -1,34 +1,56 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 namespace Nether\Atlantis\Routes\Admin;
 
 use Nether\Atlantis;
 use Nether\Common;
-use Nether\Email;
-use Nether\Storage;
+
+################################################################################
+################################################################################
 
 class IndexWeb
 extends Atlantis\ProtectedWeb {
+
+	protected function
+	FetchUserPrivList():
+	Common\Datastore {
+		return new Common\Datastore([
+			'CMS'    => $this->User->HasAccessTypeOrAdmin(
+				Atlantis\Key::PrivManageCMS, 1, 1
+			),
+			'System' => $this->User->HasAccessTypeOrAdmin(
+				Atlantis\Key::PrivManageCMS, 1, 9000
+			)
+		]);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Atlantis\Meta\RouteHandler('/ops')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Atlantis\Meta\TrafficReportSkip]
 	public function
-	MainGet():
+	Index():
 	void {
+
+		$UserPrivList = $this->FetchUserPrivList();
 
 		($this)
 		->SetPageTitle('Operations')
 		->Area('admin/index', [
-			'EmailConfigInfo'   => new Email\Struct\LibraryConfigInfo,
-			'StorageConfigInfo' => new Storage\Struct\LibraryConfigInfo
+			'UserPrivList' => $UserPrivList
 		]);
 
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Atlantis\Meta\RouteHandler('/ops/api')]
-	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	#[Atlantis\Meta\RouteAccessTypeAdmin(9000)]
 	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	ApiGet():
