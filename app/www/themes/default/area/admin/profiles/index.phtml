@@ -234,29 +234,16 @@ function FormFieldClearLocal(el) {
 	return false;
 };
 
-function ProfileFreshDialog(row) {
+function FetchProfileThen(id, func) {
 
-	let d = new Dialog.Window({
-		'title': 'Profile Created!',
-		'show': true,
-		'labelCancel': null,
-		'body': (`
-			<div class="mb-2">
-				${row.Title}
-			</div>
-			<div>
-				<a href="${row.PageURL}" target="_blank" class="btn btn-outline-light btn-block">Open Profile</a>
-			</div>
-		`),
-		'onAccept': function() {
+	let api = new API.Request('GET', '/api/profile/entity');
+	let dat = { 'ID': id };
 
-			location.href = `?uuid=${row.UUID}`;
+	(api.send(dat))
+	.then(func)
+	.catch(api.catch);
 
-			return;
-		}
-	});
-
-	return false;
+	return;
 };
 
 function ProfileNewDialog(el) {
@@ -292,13 +279,8 @@ function ProfileDeleteDialog(el) {
 
 	let that = jQuery(el);
 	let id = that.attr('data-id');
-	let api = new API.Request('GET', '/api/profile/entity');
-	let dat = { 'ID': id };
 
-	////////
-
-	(api.send(dat))
-	.then(function(r) {
+	FetchProfileThen(id, function(r) {
 		new Dialog.Window({
 			'title': 'Confirm...',
 			'body': (`
@@ -319,8 +301,7 @@ function ProfileDeleteDialog(el) {
 			}
 		});
 		return;
-	})
-	.catch(api.catch);
+	});
 
 	return false;
 };
@@ -329,8 +310,6 @@ function ProfilePublishDialog(el, value) {
 
 	let that = jQuery(el);
 	let id = that.attr('data-id');
-	let api = new API.Request('GET', '/api/profile/entity');
-	let dat = { 'ID': id };
 	let msg = '';
 
 	////////
@@ -343,8 +322,7 @@ function ProfilePublishDialog(el, value) {
 
 	////////
 
-	(api.send(dat))
-	.then(function(r) {
+	FetchProfileThen(id, function(r) {
 		return new Dialog.Window({
 			'title': 'Confirm...',
 			'body': (`
@@ -364,13 +342,12 @@ function ProfilePublishDialog(el, value) {
 				return;
 			}
 		});
-	})
-	.catch(api.catch);
+	});
 
 	return false;
 };
 
-jQuery(function(){
+jQuery(function() {
 
 	jQuery('[data-profile-new]')
 	.on('click', (jEv)=> ProfileNewDialog(jEv.currentTarget));
@@ -391,24 +368,23 @@ jQuery(function(){
 	.each(function(jEv) {
 
 		let tags = new FieldTagSearch(this);
-		let selected = <?php echo $TagFieldData($Tags) ?>;
+		let selection = <?php echo $TagFieldData($Tags) ?>;
 
-		// prefill the selected tags already.
+		////////
 
 		tags.allowNewTags = false;
-
 		tags.onSelectionChange = function(btn) {
-
-			let selected = tags.getSelectedTags();
 
 			(tags.element.parent())
 			.find('input[type=hidden]')
-			.each((idx, field)=> (field.value = selected.join('-')));
+			.each((idx, field)=> (field.value = tags.getSelectedTags().join('-')));
 
 			return;
 		};
 
-		selected.forEach((sel)=> tags.onSelectItemsPrefillTag(sel));
+		////////
+
+		selection.forEach((selected)=> tags.onSelectItemsPrefillTag(selected));
 
 		return;
 	});
