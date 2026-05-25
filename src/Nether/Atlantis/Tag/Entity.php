@@ -147,6 +147,10 @@ implements
 		->Define('NameLike', NULL)
 		->Define('ParentID', NULL);
 
+		($Input)
+		->Define('Search', NULL)
+		->Define('SearchName', TRUE);
+
 		return;
 	}
 
@@ -185,6 +189,7 @@ implements
 		}
 
 		static::FindExtendFilters_ParentID($SQL, $Input);
+		static::FindExtendFilters_SearchBasic($SQL, $Input);
 
 		return;
 	}
@@ -211,6 +216,31 @@ implements
 		$SQL
 		->Join("{$Table->Name} TPL ON (Main.ID=TPL.TagID)")
 		->Where('TPL.EntityUUID=:ParentUUID');
+
+		return;
+	}
+
+	static protected function
+	FindExtendFilters_SearchBasic(Database\Verse $SQL, Common\Datastore $Input):
+	void {
+
+		$Where = new Common\Datastore;
+
+		////////
+
+		if($Input->IsNull('Search'))
+		return;
+
+		////////
+
+		$Input[':SearchLike'] = "%{$Input['Search']}%";
+
+		if($Input->IsTrue('SearchName'))
+		$Where->Push('Main.Name LIKE :SearchLike');
+
+		////////
+
+		$SQL->Where($Where->Join(' OR '));
 
 		return;
 	}

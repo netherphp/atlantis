@@ -1,4 +1,5 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 namespace Nether\Atlantis\Routes\Admin;
 
@@ -6,23 +7,43 @@ use Nether\Atlantis;
 use Nether\Avenue;
 use Nether\Common;
 
+################################################################################
+################################################################################
+
 class TagWeb
 extends Atlantis\ProtectedWeb {
 
-	#[Avenue\Meta\RouteHandler('/ops/tag/view/:TagID:')]
+	#[Atlantis\Meta\RouteHandler('/ops/tags')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Atlantis\Meta\TrafficReportSkip]
 	public function
-	HandleView(string $TagID):
+	Index():
 	void {
 
-		if(Common\Values::IsNumericDec($TagID))
-		$Tag = Atlantis\Tag\Entity::GetByID($TagID);
-		else
-		$Tag = Atlantis\Tag\Entity::GetByAlias($TagID);
+		$Query = Common\Filters\Text::TrimmedNullable($this->Data->Get('q'));
+		$UUID = Common\Filters\Text::TrimmedNullable($this->Data->Get('uuid'));
+		$Page = Common\Filters\Numbers::Page($this->Data->Get('page'));
+		$Limit = Common\Filters\Numbers::IntRange($this->Data->Get('limit'), 0, 100) ?: 25;
 
-		Common\Dump::Var($Tag, TRUE);
+		$Tags = Atlantis\Tag\Entity::Find([
+			'UUID'       => $UUID,
+			'Search'     => $Query,
+			'SearchName' => TRUE,
+			'Page'       => $Page,
+			'Limit'      => $Limit,
+			'Sort'       => 'name-az'
+		]);
+
+		////////
+
+		($this)
+		->SetPageTitle('Tags // Operations')
+		->Area('admin/tags/index', [
+			'Query' => $Query,
+			'Tags'  => $Tags
+		]);
 
 		return;
 	}
 
-}
+};

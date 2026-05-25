@@ -54,9 +54,9 @@ extends Atlantis\ProtectedWeb {
 			->Sort()
 		);
 
-		($this->Surface)
-		->Set('Page.Title', 'API Tool')
-		->Wrap('admin/apitool/index', [
+		($this)
+		->SetPageTitle('API Tool // Operations')
+		->Area('admin/apitool/index', [
 			'Index'     => $Index,
 			'Verbs'     => $Verbs,
 			'Endpoints' => $Endpoints

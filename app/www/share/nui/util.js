@@ -131,6 +131,36 @@ class Util {
 		return (thing instanceof ToBe);
 	};
 
+	static ClearLocalFormFields(el) {
+	/*//
+	@date 2026-05-25
+	searches the parent element of the item that triggered this function
+	and clears those form fields for fresh user input. it is meant for buttons
+	next to text fields to clear that one field.
+	//*/
+
+		// <div>
+		// 	<div>
+		//		<input nested anywhere in trigger's parent. />
+		//	</div>
+		//	<button triggering this></button>
+		// </div>
+
+		// clear basic form fields.
+
+		(el.parentElement)
+		.querySelectorAll('input[type=text], input[type=hidden], textarea')
+		.forEach((field)=> (field.value = ''));
+
+		// clear the tag field search widget.
+
+		(el.parentElement)
+		.querySelectorAll('.atl-field-tag-search-selected .is-an-item')
+		.forEach((field)=> (field.click()));
+
+		return false;
+	};
+
 };
 
 export default Util;

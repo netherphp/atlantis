@@ -1,0 +1,134 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var string $Query
+ * @var Common\Datastore<Atlantis\Tag\Entity> $Tags
+ */
+
+################################################################################
+################################################################################
+
+$Breadcrumbs = (fn()=>
+	$Surface->GetArea('admin/breadcrumbs', [ 'Trail' => [
+		'Tags' => '/ops/tags'
+	]])
+);
+
+$Pager = (fn()=>
+	(string)Atlantis\UI\Pager::FromSurfaceWithResultSet($Surface, $Tags)
+);
+
+?>
+
+<div class="container">
+
+	<?php echo $Breadcrumbs() ?>
+
+	<div id="TagSearchForm" class="glassbox rounded p-3 mb-4">
+		<form method="get">
+		<div class="row align-items-center g-2">
+			<div class="col-12 pos-relative">
+				<div class="input-group">
+					<div class="form-floating">
+						<input type="text" name="q" class="form-control" placeholder="..." value="<?php $Util->Print($Query) ?>" />
+						<label>Tag Search...</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12">
+				<hr class="bc-grey-dk my-2" />
+			</div>
+			<div class="col"></div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-outline-light btn-lg fs-large" data-tag-new>
+					<i class="mdi mdi-plus-thick"></i>
+					New
+				</button>
+			</div>
+			<div class="col-auto o-25">|</div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-light btn-lg fs-large">Search</button>
+			</div>
+		</div>
+		</form>
+	</div>
+
+	<div id="ProfileSearchResults" class="glassbox rounded p-3">
+		<div class="fs-large fw-bold tt-upper mb-0">
+			<?php $Util->Print($Tags->Count()) ?> Found
+		</div>
+		<hr class="mt-2 mb-3 bc-grey-dk" />
+		<div class="row">
+
+			<?php foreach($Tags as $T): /** @var Atlantis\Tag\Entity $T */ ?>
+			<div class="col-12">
+				<div class="row align-items-center g-2">
+					<div class="col-auto">
+						<div class="ratiobox square wallpapered rounded-less border border-2 bc-grey-dk" style="width:50px;">
+							<div class="pos-absolute pos-v-center pos-h-center tc-white">
+								<i class="mdi mdi-note-outline"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="fs-large fw-bold">
+							<a href="<?php $Util->Print($T->GetPageURL()) ?>" target="_blank"><?php $Util->Print($T->Name) ?></a>
+						</div>
+					</div>
+					<div class="col-auto">
+						<a href="<?php $Util->Print($T->GetPageURL()) ?>" target="_blank" class="btn btn-outline-white rounded-less">Open</a>
+					</div>
+					<div class="col-auto">
+						<div class="dropdown">
+							<button class="btn btn-outline-light rounded-less dropdown-toggle" type="button" data-bs-toggle="dropdown">
+								<i class="mdi mdi-cog"></i>
+								Options
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end dropdown-menu-fancy rounded-less">
+								<button class="btn btn-block btn-light rounded-less ta-left" <?php echo $T->GetDataAttrForHTML() ?> data-tag-delete>
+									<i class="mdi mdi-trash-can"></i> Delete
+								</button>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12">
+				<hr class="my-3 bc-grey-dk" />
+			</div>
+			<?php endforeach; ?>
+
+		</div>
+
+		<?php echo $Pager() ?>
+	</div>
+
+	<div class="mb-6">
+	</div>
+
+</div>
+
+<script type="module">
+import TagEntityUtil from '/share/atlantis/js/util-tag-entity.js';
+
+jQuery(function() {
+	TagEntityUtil.WhenDocumentReady();
+	return;
+});
+</script>

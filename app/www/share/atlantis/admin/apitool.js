@@ -6,8 +6,8 @@ import Form from '../../nui/util/form.js';
 
 let TemplateApiToolDataItem = `
 <div class="row tight align-items-center mb-2">
-	<div class="col"><input type="text" name="DataKey" class="form-control" placeholder="Key..." /></div>
-	<div class="col"><input type="text" name="DataValue" class="form-control" placeholder="Value..." /></div>
+	<div class="col"><input type="text" name="DataKey" class="form-control ff-mono" placeholder="Key..." /></div>
+	<div class="col"><input type="text" name="DataValue" class="form-control ff-mono" placeholder="Value..." /></div>
 	<div class="col-auto">
 		<button type="button" class="btn btn-link btn-sm link-danger font-size-large p-0 BtnDataDelete">
 			<i class="mdi mdi-close-circle mr-0"></i>
@@ -33,12 +33,18 @@ class ApiTool {
 		this.inputVerb = this.element.find('[name=Verb]');
 		this.inputEndpoint = this.element.find('[name=Endpoint]');
 		this.inputData = this.element.find('[name=Dataset]');
+		this.btnExpand = this.element.find('[data-tool-expand]');
+		this.btnCollapse = this.element.find('[data-tool-collapse]');
 
 		////////
+
+		console.log(this.btnCollapse);
 
 		(this.element)
 		.on('click', '.BtnDataAppend', function() { return self.onDatasetAppend(); })
 		.on('click', '.BtnDataDelete', function() { return self.onDatasetDelete(this); })
+		.on('click', '[data-tool-collapse]', function() { return self.onCollapse.call(self); })
+		.on('click', '[data-tool-expand]', function() { return self.onExpand.call(self); })
 		.on('submit', this.onSendSubmit.bind(this));
 
 		return;
@@ -109,7 +115,7 @@ class ApiTool {
 
 		(api.send())
 		.then(this.onSendResult.bind(this))
-		.catch(api.catch);
+		.catch(this.onSendResult.bind(this));
 
 		return false;
 	};
@@ -118,7 +124,34 @@ class ApiTool {
 
 		this.output.empty();
 
-		this.output.text(JSON.stringify(result.payload.User, null, '\t'));
+		this.output.text(JSON.stringify(result, null, '\t'));
+
+		return false;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	onCollapse() {
+
+		console.log(this);
+
+		this.element.find('[data-tool-hidable]').addClass('d-none');
+
+		this.btnCollapse.addClass('d-none');
+		this.btnExpand.removeClass('d-none');
+
+		return false;
+	};
+
+	onExpand() {
+
+		console.log(this);
+
+		this.element.find('[data-tool-hidable]').removeClass('d-none');
+
+		this.btnExpand.addClass('d-none');
+		this.btnCollapse.removeClass('d-none');
 
 		return false;
 	};

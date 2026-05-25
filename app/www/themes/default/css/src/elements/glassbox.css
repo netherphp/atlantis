@@ -1,0 +1,7 @@
+
+.glassbox {
+	border: 0.2rem solid var(--theme-grey-dk);
+
+	background: #0004;
+	backdrop-filter: blur(6px);
+}

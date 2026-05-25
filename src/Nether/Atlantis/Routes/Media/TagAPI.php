@@ -30,6 +30,7 @@ extends Atlantis\Routes\UploadAPI {
 	void {
 
 		($this->Data)
+		->ID(Common\Filters\Lists::ArrayOfNullable(...), Common\Filters\Numbers::IntType(...))
 		->Query(Common\Filters\Text::Trimmed(...))
 		->Type(Common\Filters\Misc::OneOfTheseNullable(...), [ 'site', 'tag' ])
 		->ParentID(Common\Filters\Numbers::IntNullable(...));
@@ -50,6 +51,7 @@ extends Atlantis\Routes\UploadAPI {
 		////////
 
 		$Result = Atlantis\Tag\Entity::Find([
+			'ID'       => $this->Data->Get('ID'),
 			'Type'     => $TagTypes,
 			'ParentID' => $this->Data->ParentID,
 			'NameLike' => $this->Data->Query,
@@ -61,6 +63,8 @@ extends Atlantis\Routes\UploadAPI {
 			/** @var Atlantis\Tag\Entity $Tag */
 			$Tags[] = $Tag->DescribeForPublicAPI();
 		}
+
+		echo json_encode($this->Data->Get('ID'));
 
 		$this->SetPayload([
 			'Query' => $this->Data->Query,

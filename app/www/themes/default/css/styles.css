@@ -1,6 +1,6 @@
 /*//
-@date 2026-02-10 02:38:50 UTC
-@files 48 [
+@date 2026-05-25 21:33:12 UTC
+@files 49 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -37,6 +37,7 @@
     "src\/elements\/editor-html.css",
     "src\/elements\/field-tag-search.css",
     "src\/elements\/gallery.css",
+    "src\/elements\/glassbox.css",
     "src\/elements\/misc.css",
     "src\/elements\/nether-sensei.css",
     "src\/elements\/pager.css",
@@ -573,7 +574,7 @@ table td {
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap.css ///////////////////////////////////////////////////*/
 
-:root {
+-:root {
 	--DropdownMaxHeight: 300px;
 }
 
@@ -737,6 +738,23 @@ grouped are to be considered depreciated. */
 .dropdown-menu {
 	z-index: 9011;
 	backdrop-filter: blur(6px);
+}
+
+.dropdown-menu-gapped {
+	margin-top: 0.5rem !important;
+}
+
+.dropdown-menu-kissed {
+	margin-top: 0 !important;
+}
+
+.dropdown-menu-fancy {
+	margin: 0.35rem 0px 0.35rem 0px !important;
+	padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+	background: #fff4;
+	border: 0px;
+	border-right: 4px solid #fff;
+	box-shadow: 0px 0px 5px #000;
 }
 
 .dropdown-menu > hr:first-child,
@@ -1212,6 +1230,23 @@ grouped are to be considered depreciated. */
 	-webkit-backdrop-filter: var(--theme-glass-filter-frost-thin);
 
 	opacity: 1.0;
+}
+
+/* form floating tweaks */
+
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after {
+	background-color: transparent !important;
+	text-transform: uppercase;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+	background-color: transparent !important;
+	font-size: 0.85em !important;
+	opacity: 0.50 !important;
+	text-transform: uppercase;
+	z-index: auto !important;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
@@ -3526,6 +3561,16 @@ is being used and then prefixing all these with that theme name, if i recall. */
 
 .atl-ui-gallery-item:hover .atl-ui-gallery-item-tools {
 	display: block;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/glassbox.css ///////////////////////////////////////////////*/
+
+.glassbox {
+	border: 0.2rem solid var(--theme-grey-dk);
+
+	background: #0004;
+	backdrop-filter: blur(6px);
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

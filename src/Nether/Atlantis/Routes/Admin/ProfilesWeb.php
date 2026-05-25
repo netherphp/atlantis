@@ -58,7 +58,9 @@ extends Atlantis\ProtectedWeb {
 
 		////////
 
-		$this->Area('admin/profiles/index', [
+		($this)
+		->SetPageTitle('Profiles // Operations')
+		->Area('admin/profiles/index', [
 			'Profiles' => $Profiles,
 			'Tags'     => $Tags,
 			'Query'    => $Query
