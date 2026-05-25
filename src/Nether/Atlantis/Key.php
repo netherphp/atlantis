@@ -94,8 +94,12 @@ class Key {
 	AccessTagAdmin         = 'Nether.Atlantis.Tags.Admin';
 
 	const
-	PrivManageCMS    = 'Atlantis.Priv.CMS',
-	PrivManageSystem = 'Atlantis.Priv.System';
+	PrivLevelAdmin      = 1,                      // typically gets you in a door for later checks.
+	PrivLevelSuperAdmin = 100,                    // for all content management functions
+	PrivLevelDeveloper  = 9000,                   // for all system related functions
+	PrivLevelRoot       = 65535,                  // god mode
+	PrivManageCMS       = 'Atlantis.Priv.CMS',    // unlock cms dashboard
+	PrivManageSystem    = 'Atlantis.Priv.System'; // unlock system dashboard
 
 	const
 	PageTagIndexURL = 'Nether.Atlantis.Tag.PageIndexURL',

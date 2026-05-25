@@ -16,11 +16,13 @@ extends Atlantis\ProtectedWeb {
 	FetchUserPrivList():
 	Common\Datastore {
 		return new Common\Datastore([
-			'CMS'    => $this->User->HasAccessTypeOrAdmin(
-				Atlantis\Key::PrivManageCMS, 1, 1
+			'CMS' => $this->User->HasAccessTypeOrAdmin(
+				Atlantis\Key::PrivManageCMS, 1,
+				Atlantis\Key::PrivLevelSuperAdmin
 			),
 			'System' => $this->User->HasAccessTypeOrAdmin(
-				Atlantis\Key::PrivManageCMS, 1, 9000
+				Atlantis\Key::PrivManageCMS, 1,
+				Atlantis\Key::PrivLevelDeveloper
 			)
 		]);
 	}
