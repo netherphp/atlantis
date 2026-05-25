@@ -95,7 +95,8 @@ application instance.
 		->LoadProjectConfig()
 		->LoadEnvironmentConfig()
 		->LoadProjectJSON()
-		->SetupEnvironment();
+		->SetupEnvironment()
+		->LoadDefaultPlugins();
 
 		if($Conf !== NULL)
 		$this->Config->MergeRight($Conf->GetData());
@@ -724,6 +725,16 @@ application instance.
 
 			$this->Library->Shove($Class, new $Class(Config: $this->Config, App: $this));
 		}
+
+		return $this;
+	}
+
+	protected function
+	LoadDefaultPlugins():
+	static {
+
+		($this->Plugins)
+		->Register(Atlantis\Plugins\Profile\EntityUpdateDefault::class);
 
 		return $this;
 	}

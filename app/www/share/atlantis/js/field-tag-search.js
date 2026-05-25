@@ -46,7 +46,7 @@ class FieldTagSearch {
 
 		////////
 
-		if(typeof el === 'string')
+		//if(typeof el === 'string')
 		el = jQuery(el);
 
 		// elements.
@@ -57,6 +57,10 @@ class FieldTagSearch {
 
 		// misc.
 		this.searchTimer = null;
+		this.allowNewTags = true;
+
+		this.onSelectionChange = null;
+		this.onRemoved = null;
 
 		////////
 
@@ -196,6 +200,7 @@ class FieldTagSearch {
 
 			////////
 
+			if(self.allowNewTags)
 			if(self.searchBin.find(`button[data-tag-match="${result.payload.Query.toLowerCase()}"]`).length === 0) {
 				let row = self.prepareSearchNew(result);
 				self.addToSearchBin(row);
@@ -243,6 +248,9 @@ class FieldTagSearch {
 		this.element.val('');
 		(self.searchBin.find('.mdi-close').parent()).trigger('click');
 
+		if(typeof this.onSelectionChange === 'function')
+		this.onSelectionChange.call(this, btn);
+
 		return;
 	};
 
@@ -277,7 +285,6 @@ class FieldTagSearch {
 
 		row.find('button')
 		.attr('data-tag-id', tag.ID)
-		//.attr('data-tag-name', tag.Name)
 		.text(`${tag.Name}`)
 		.on('click', function() {
 			self.onSelectItemRemove(jQuery(this));
@@ -287,6 +294,9 @@ class FieldTagSearch {
 		this.selectBin.find('.row').append(row);
 		this.toggleSelectBin();
 		this.toggleSearchBin();
+
+		if(typeof this.onSelectionChange === 'function')
+		this.onSelectionChange.call(this, row.find('button'));
 
 		return;
 	};
@@ -300,6 +310,11 @@ class FieldTagSearch {
 		// hide or show the drawer.
 
 		this.toggleSelectBin();
+
+		////////
+
+		if(typeof this.onSelectionChange === 'function')
+		this.onSelectionChange.call(this, btn);
 
 		return;
 	};

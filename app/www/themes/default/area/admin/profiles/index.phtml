@@ -1,0 +1,418 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore<Atlantis\Tag\Entity> $Tags
+ * @var Common\Datastore<Atlantis\Profile\Entity> $Profiles
+ */
+
+################################################################################
+################################################################################
+
+$Breadcrumbs = (
+	fn()=> $Surface->Area('admin/breadcrumbs', [ 'Trail' => [
+		'Profiles' => '/ops/profiles'
+	]])
+);
+
+$PublishStatusWord = (
+	fn(Atlantis\Profile\Entity $P)
+	=> match(TRUE) {
+		($P->IsEnabled())
+		=> 'PUBLISHED',
+
+		default
+		=> 'DRAFT'
+	}
+);
+
+$TagFieldData = function(Common\Datastore $Tags) {
+
+	$Output = new Common\Datastore;
+
+	$Tags->Each(
+		fn(Atlantis\Tag\Entity $T)
+		=> $Output->Push([ 'ID'=> $T->ID, 'Name'=> $T->Name ])
+	);
+
+	return json_encode($Output->Export());
+};
+
+$TagFieldValue = function(Common\Datastore $Tags) {
+
+	$Output = $Tags->Map(fn(Atlantis\Tag\Entity $T)=> $T->ID);
+
+	return $Output->Join('-');
+};
+
+$Pager = (
+	fn()=> print(Atlantis\UI\Pager::FromSurfaceWithResultSet($Surface, $Profiles))
+);
+
+$Searched = TRUE;
+
+################################################################################
+############################################################################# ?>
+
+<style type="text/css">
+.dropdown-menu {
+	margin: 0.5rem 0px 0.5rem 0px !important;
+	padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+	background: #fff4;
+	border: 0px;
+	border-right: 4px solid #fff;
+}
+</style>
+
+<div class="container">
+
+	<?php $Breadcrumbs() ?>
+
+	<div id="ProfileSearchForm" class="border border-2 bc-grey-dk rounded p-3 mb-4">
+		<form method="get">
+		<div class="row align-items-center g-2">
+			<div class="col-12 pos-relative">
+				<div class="input-group">
+					<div class="form-floating">
+						<input type="text" name="q" class="form-control" placeholder="..." value="<?php $Util->Print($Query) ?>" />
+						<label>Search For...</label>
+					</div>
+					<button type="button" class="btn btn-outline-light" data-form-field-clear-local>
+						<i class="mdi mdi-backspace mx-2"></i>
+					</button>
+				</div>
+			</div>
+			<div class="col-12 pos-relative">
+				<hr class="bc-grey-dk my-2" />
+			</div>
+			<div class="col-12 pos-relative">
+				<div class="input-group">
+					<div class="form-floating">
+						<input type="text" class="form-control" placeholder="..." data-field-tag-search />
+						<label>Tags...</label>
+						<input type="hidden" name="tags" value="" />
+					</div>
+					<button type="button" class="btn btn-outline-light" data-form-field-clear-local>
+						<i class="mdi mdi-backspace mx-2"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="col-12">
+				<hr class="bc-grey-dk my-2" />
+			</div>
+			<div class="col"></div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-outline-light btn-lg fs-large" data-profile-new>
+					<i class="mdi mdi-plus-thick"></i>
+					New
+				</button>
+			</div>
+			<div class="col-auto o-25">|</div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-light btn-lg fs-large">Search</button>
+			</div>
+			<div class="col-auto">
+				<a href="?" class="btn btn-outline-light btn-lg fs-large">
+					<i class="mdi mdi-close-thick mr-0"></i>
+				</a>
+			</div>
+		</div>
+		</form>
+	</div>
+
+	<div id="ProfileSearchResults" class="border border-2 bc-grey-dk rounded p-3">
+		<div class="fs-large fw-bold tt-upper mb-0">
+			<?php $Util->Print($Profiles->Count()) ?> Found
+		</div>
+		<hr class="mt-2 mb-3 bc-grey-dk" />
+		<div class="row">
+
+			<?php foreach($Profiles as $P): /** @var Atlantis\Profile\Entity $P */ ?>
+			<div class="col-12">
+				<div class="row align-items-center g-2">
+					<div class="col-auto">
+						<div class="ratiobox square wallpapered rounded-less border border-2 bc-grey-dk" style="width:50px;">
+							<div class="pos-absolute pos-v-center pos-h-center tc-white">
+								<i class="mdi mdi-note-outline"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="fs-large fw-bold">
+							<a href="<?php $Util->Print($P->GetPageURL()) ?>" target="_blank"><?php $Util->Print($P->GetTitle()) ?></a>
+						</div>
+						<div class="row align-items-center g-2 fs-small o-50">
+							<div class="col-auto">
+								<?php $Util->Print($P->Alias) ?>
+							</div>
+							<div class="col-auto fs-smallerer o-50">//</div>
+							<div class="col-auto">
+								<?php $Util->Print($PublishStatusWord($P)) ?>
+							</div>
+							<?php if($P->ParentUUID): ?>
+							<div class="col-auto fs-smallerer o-50">//</div>
+							<div class="col-auto">
+								<i class="mdi mdi-paperclip"></i>
+							</div>
+							<?php endif; ?>
+						</div>
+					</div>
+					<div class="col-auto">
+						<a href="<?php $Util->Print($P->GetPageURL()) ?>" target="_blank" class="btn btn-outline-white rounded-less">Open</a>
+					</div>
+					<div class="col-auto">
+						<div class="dropdown">
+							<button class="btn btn-outline-light rounded-less dropdown-toggle" type="button" data-bs-toggle="dropdown">
+								<i class="mdi mdi-cog"></i>
+								Options
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end rounded-less">
+								<?php if($P->Enabled !== 1): ?>
+								<button class="btn btn-block btn-light rounded-less ta-left" <?php echo $P->GetDataAttrForHTML() ?> data-profile-set-published>
+									<i class="mdi mdi-check"></i> Set To Published
+								</button>
+								<?php endif; ?>
+								<?php if($P->Enabled !== 0): ?>
+								<button class="btn btn-block btn-light rounded-less ta-left" <?php echo $P->GetDataAttrForHTML() ?> data-profile-set-draft>
+									<i class="mdi mdi-eye-off"></i> Set To Draft Mode
+								</button>
+								<?php endif; ?>
+								<hr class="my-2" />
+								<button class="btn btn-block btn-light rounded-less ta-left" <?php echo $P->GetDataAttrForHTML() ?> data-profile-delete>
+									<i class="mdi mdi-trash-can"></i> Delete
+								</button>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12">
+				<hr class="my-3 bc-grey-dk" />
+			</div>
+			<?php endforeach; ?>
+
+		</div>
+
+		<?php $Pager() ?>
+	</div>
+
+	<div class="mb-6">
+	</div>
+
+</div>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+import Dialog from '/share/nui/util/dialog.js';
+import FieldTagSearch from '/share/atlantis/js/field-tag-search.js';
+
+function FormFieldClearLocal(el) {
+
+	(el.parentElement)
+	.querySelectorAll('input[type=text], input[type=hidden], textarea')
+	.forEach((field)=> (field.value = ''));
+
+	(el.parentElement)
+	.querySelectorAll('.atl-field-tag-search-selected .is-an-item')
+	.forEach((field)=> (field.click()));
+
+	return false;
+};
+
+function ProfileFreshDialog(row) {
+
+	let d = new Dialog.Window({
+		'title': 'Profile Created!',
+		'show': true,
+		'labelCancel': null,
+		'body': (`
+			<div class="mb-2">
+				${row.Title}
+			</div>
+			<div>
+				<a href="${row.PageURL}" target="_blank" class="btn btn-outline-light btn-block">Open Profile</a>
+			</div>
+		`),
+		'onAccept': function() {
+
+			location.href = `?uuid=${row.UUID}`;
+
+			return;
+		}
+	});
+
+	return false;
+};
+
+function ProfileNewDialog(el) {
+
+	let d = new Dialog.Window({
+		'title': 'New Profile...',
+		'show': true,
+		'fields': [
+			new Dialog.Field({
+				type: 'text', title: 'Title', name: 'Title'
+			})
+		],
+		'onAccept': function() {
+			let input = this.getFieldData();
+			let api = new API.Request('POST', '/api/profile/entity');
+			let dat = { 'Title': input['Title'] };
+
+			(api.send(dat))
+			.then(function(r){
+				location.href = `?uuid=${r.payload.UUID}`;
+				return;
+			})
+			.catch(api.catch);
+
+			return;
+		}
+	});
+
+	return false;
+};
+
+function ProfileDeleteDialog(el) {
+
+	let that = jQuery(el);
+	let id = that.attr('data-id');
+	let api = new API.Request('GET', '/api/profile/entity');
+	let dat = { 'ID': id };
+
+	////////
+
+	(api.send(dat))
+	.then(function(r) {
+		new Dialog.Window({
+			'title': 'Confirm...',
+			'body': (`
+				<div class="mb-4">Really delete this profile? This cannot be undone.</div>
+				<blockquote class="quotron fs-larger fw-bold">${r.payload.Title}</blockquote>
+			`),
+			'show': true,
+			'classAccept': 'btn-red tc-white',
+			'onAccept': function() {
+				let api = new API.Request('DELETE', '/api/profile/entity');
+				let dat = { 'ID': id };
+
+				(api.send(dat))
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+		return;
+	})
+	.catch(api.catch);
+
+	return false;
+};
+
+function ProfilePublishDialog(el, value) {
+
+	let that = jQuery(el);
+	let id = that.attr('data-id');
+	let api = new API.Request('GET', '/api/profile/entity');
+	let dat = { 'ID': id };
+	let msg = '';
+
+	////////
+
+	if(value === 1)
+	msg = 'Publish this profile?';
+
+	if(value === 0)
+	msg = 'Set this profile to draft mode?';
+
+	////////
+
+	(api.send(dat))
+	.then(function(r) {
+		return new Dialog.Window({
+			'title': 'Confirm...',
+			'body': (`
+				<div class="mb-4">${msg}</div>
+				<blockquote class="quotron fs-larger fw-bold">${r.payload.Title}</blockquote>
+			`),
+			'show': true,
+			'classAccept': 'btn-red tc-white',
+			'onAccept': function() {
+				let api = new API.Request('PATCH', '/api/profile/entity');
+				let dat = { 'ID': id, 'Enabled': value };
+
+				(api.send(dat))
+				.then(api.reload)
+				.catch(api.catch);
+
+				return;
+			}
+		});
+	})
+	.catch(api.catch);
+
+	return false;
+};
+
+jQuery(function(){
+
+	jQuery('[data-profile-new]')
+	.on('click', (jEv)=> ProfileNewDialog(jEv.currentTarget));
+
+	jQuery('[data-profile-delete]')
+	.on('click', (jEv)=> ProfileDeleteDialog(jEv.currentTarget));
+
+	jQuery('[data-profile-set-published]')
+	.on('click', (jEv)=> ProfilePublishDialog(jEv.currentTarget, 1));
+
+	jQuery('[data-profile-set-draft]')
+	.on('click', (jEv)=> ProfilePublishDialog(jEv.currentTarget, 0));
+
+	jQuery('[data-form-field-clear-local]')
+	.on('click', (jEv)=> FormFieldClearLocal(jEv.currentTarget));
+
+	jQuery('[data-field-tag-search]')
+	.each(function(jEv) {
+
+		let tags = new FieldTagSearch(this);
+		let selected = <?php echo $TagFieldData($Tags) ?>;
+
+		// prefill the selected tags already.
+
+		tags.allowNewTags = false;
+
+		tags.onSelectionChange = function(btn) {
+
+			let selected = tags.getSelectedTags();
+
+			(tags.element.parent())
+			.find('input[type=hidden]')
+			.each((idx, field)=> (field.value = selected.join('-')));
+
+			return;
+		};
+
+		selected.forEach((sel)=> tags.onSelectItemsPrefillTag(sel));
+
+		return;
+	});
+
+	return;
+});
+</script>

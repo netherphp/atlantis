@@ -11,6 +11,21 @@ use Exception;
 class ProfileAPI
 extends Atlantis\ProtectedAPI {
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2026-05-24')]
+	#[Common\Meta\Info('testing to see how i feel about the $this(...) shorthand.')]
+	public function
+	__invoke(string $Key):
+	mixed {
+
+		return $this->Data->Get($Key);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	OnReady(?Common\Datastore $Input):
 	void {
@@ -18,7 +33,9 @@ extends Atlantis\ProtectedAPI {
 		parent::OnReady($Input);
 
 		($this->Data)
-		->ID(Common\Filters\Numbers::IntType(...));
+		->FilterPush('ID', Common\Filters\Numbers::IntType(...))
+		->FilterPush('Goto', Common\Filters\Text::TrimmedNullable(...))
+		->FilterPush('Page', Common\Filters\Numbers::Page(...));
 
 		return;
 	}
@@ -153,60 +170,58 @@ extends Atlantis\ProtectedAPI {
 	EntityPatch():
 	void {
 
-		$Ent = $this->DemandEntityByID($this->Data->ID);
+		$Ent = $this->DemandEntityByID($this->Data->Get('ID'));
+		$Goto = $this->Data->Get('Goto');
+		$Patchset = new Common\Datastore($Ent->Patch($this->Data));
 
-		static::PluginEntityPatch($this->App, $Ent, $this->Data);
+		////////
 
-		$Patchset = $Ent->Patch($this->Data);
+		// allow plugins to fuss with the patchset.
 
-		if(count($Patchset))
+		Atlantis\Profile\EntityEventHelper::Patchset(
+			$this->App, $Ent, $Patchset
+		);
+
+		// apply the patchset.
+
+		if($Patchset->Count())
 		$Ent->Update($Patchset);
 
-		////////
+		// allow plugins to take notes after an update.
 
-		$Goto = $Ent->GetPageURL();
-
-		if(str_starts_with($Ent->Alias, 'video-profile-'))
-		$Goto = 'reload';
-
-		if(str_starts_with($Ent->Alias, 'photo-profile-'))
-		$Goto = 'reload';
+		Atlantis\Profile\EntityEventHelper::Updated(
+			$this->App, $Ent, $Patchset
+		);
 
 		////////
 
-		// there needs to be an after update plugin system.
+		if($Goto === NULL) {
+			$Goto = $Ent->GetPageURL();
 
-		if($Ent->ParentUUID) {
-			$File = Atlantis\Media\File::GetByUUID($Ent->ParentUUID);
+			if(str_starts_with($Ent->Alias, 'video-profile-'))
+			$Goto = 'reload';
 
-			if($File) {
-				$File->Update([ 'Name'=> $Ent->Title ]);
-			}
-		}
-
-		if($Ent->IsAddressMappable() && !$Ent->HasGeoCoords()) {
-			$MapKitTokFile = $this->App->FromConfEnv('keys/apple-mapkit.txt');
-			$MapKitToken = NULL;
-			$MapKitAPI = NULL;
-			$MapKitCoord = NULL;
-
-			if(file_exists($MapKitTokFile)) {
-				$MapKitToken = trim(file_get_contents($this->App->FromConfEnv('keys/apple-mapkit.txt')));
-				$MapKitAPI = Browser\Clients\AppleMap::FromMapKitToken($MapKitToken);
-				$MapKitCoord = $MapKitAPI->LookupAddressCoords($Ent->GetAddressConcat());
-
-				if($MapKitCoord)
-				$Ent->Update($Ent->Patch([
-					'ExtraData' => [ 'GeoCoord'=> $MapKitCoord ]
-				]));
-			}
+			if(str_starts_with($Ent->Alias, 'photo-profile-'))
+			$Goto = 'reload';
 		}
 
 		////////
 
 		($this)
-		->SetGoto('reload')
+		->SetGoto($Goto)
 		->SetPayload($Ent->DescribeForPublicAPI());
+
+		return;
+
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+
+
+
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+
+
 
 		return;
 	}
@@ -306,6 +321,43 @@ extends Atlantis\ProtectedAPI {
 				=> $P->DescribeForPublicAPI()
 			)
 		]);
+
+		$this->SetPayload($Results->GetData());
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/api/profile/entity.v2', Verb: 'SEARCH')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	EntitySearch2():
+	void {
+
+		$Query = Common\Filters\Text::TrimmedNullable($this('Query'));
+		$Limit = Common\Filters\Numbers::IntRange($this('Limit'), 1, 100, 25);
+		$Sort = Common\Filters\Misc::OneOfTheseFirst($this('Sort'), [ 'name-az', 'name-za' ]);
+		$Enabled = Common\Filters\Numbers::BoolNullable($this('Enabled'));
+		$Page = Common\Filters\Numbers::Page($this('Page'));
+
+		////////
+
+		$Results = Atlantis\Profile\Entity::Find([
+			'Search'         => $Query,
+			'SearchTitle'    => TRUE,
+
+			'UseSiteTags'    => FALSE,
+			'Enabled'        => $Enabled,
+			'Page'           => $Page,
+			'Limit'          => $Limit,
+			'Sort'           => $Sort,
+
+			'Remappers'      => (
+				fn(Atlantis\Profile\Entity $P)
+				=> $P->DescribeForPublicAPI()
+			)
+		]);
+
+		////////
 
 		$this->SetPayload($Results->GetData());
 

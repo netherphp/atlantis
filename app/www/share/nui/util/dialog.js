@@ -16,6 +16,7 @@ constructor dumped in object form.
 	constructor({
 		title, fields=[], body=null,
 		labelAccept='OK', labelCancel='Cancel',
+		classAccept='btn-primary', classCancel='btn-dark',
 		onAccept=null, onReady=null, onCancel=null,
 		show=false, maximise=false, width=null
 	}) {
@@ -24,7 +25,9 @@ constructor dumped in object form.
 		this.fields = Array.isArray(fields) ? fields : [];
 		this.body = body;
 		this.labelAccept = labelAccept;
+		this.classAccept = classAccept;
 		this.labelCancel = labelCancel;
+		this.classCancel = classCancel;
 		this.onAccept = onAccept;
 		this.onCancel = onCancel;
 		this.onReady = onReady;
@@ -77,10 +80,10 @@ in-page dialog windows.
 		this.buildFields(this.config.fields);
 
 		if(this.config.labelCancel !== null)
-		this.addButton(this.config.labelCancel, 'btn-dark', 'cancel');
+		this.addButton(this.config.labelCancel, this.config.classCancel, 'cancel');
 
 		if(this.config.labelAccept !== null)
-		this.addButton(this.config.labelAccept, 'btn-primary', 'accept');
+		this.addButton(this.config.labelAccept, this.config.classAccept, 'accept');
 
 		this.onAcceptFunc = this.config.onAccept;
 		this.onCancelFunc = this.config.onCancel;
@@ -173,8 +176,6 @@ in-page dialog windows.
 		for(const item of input)
 		output[item.name] = item.value ? item.value : '';
 
-		console.log(output);
-
 		return output;
 	};
 
@@ -258,11 +259,11 @@ inside the dialog window.
 	constructor(type, name, title, value, list) {
 
 		if(typeof type === 'object') {
-			type = type.type;
 			name = type.name;
 			title = type.title;
 			value = type.value;
 			list = type.list;
+			type = type.type;
 		}
 
 		this.type = type;

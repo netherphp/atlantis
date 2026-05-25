@@ -1,4 +1,4 @@
-:root {
+-:root {
 	--DropdownMaxHeight: 300px;
 }
 
@@ -162,6 +162,14 @@ grouped are to be considered depreciated. */
 .dropdown-menu {
 	z-index: 9011;
 	backdrop-filter: blur(6px);
+}
+
+.dropdown-menu-gapped {
+	margin-top: 0.5rem !important;
+}
+
+.dropdown-menu-kissed {
+	margin-top: 0 !important;
 }
 
 .dropdown-menu > hr:first-child,
@@ -638,3 +646,21 @@ grouped are to be considered depreciated. */
 
 	opacity: 1.0;
 }
+
+/* form floating tweaks */
+
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after {
+	background-color: transparent !important;
+	text-transform: uppercase;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+	background-color: transparent !important;
+	font-size: 0.85em !important;
+	opacity: 0.50 !important;
+	text-transform: uppercase;
+	z-index: auto !important;
+}
+
