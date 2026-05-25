@@ -7,22 +7,59 @@ use Nether\Email;
  */
 
 
-$Surface->Area('admin/breadcrumbs', [ 'Trail' => [ ]]);
+$Breadcrumbs = function() use($Surface) {
+	return $Surface->GetArea('admin/breadcrumbs', [ 'Trail' => [ ]]);
+};
 
 ?>
 
-<div class="hr-hide-last mb-4">
-	<?php $Surface->Area('admin/index/lib-email', $__SCOPE) ?>
-	<hr />
-	<?php $Surface->Area('admin/index/lib-storage', $__SCOPE) ?>
-	<hr />
+<div class="container">
+	<?php echo $Breadcrumbs() ?>
 </div>
 
-<script type="module">
-jQuery(function(){
+<div class="container mb-6">
 
+	<div class="border border-2 bc-grey-dk rounded p-3 mb-6">
+		<div class="row g-2">
+			<div class="col-12">
+				<div class="fw-bold fs-larger">CMS</div>
+				<hr class="my-2" />
+			</div>
+			<div class="col-12 col-md-4">
+				<a href="/ops/profiles" class="btn btn-block btn-outline-light">
+					<div class="ta-center fs-most-large"><i class="mdi mdi-note-multiple-outline"></i></div>
+					Profiles
+				</a>
+			</div>
+		</div>
+	</div>
 
-	return;
-});
-</script>
+	<div class="border border-2 bc-grey-dk rounded p-3 mb-6">
+		<div class="row g-2">
+			<div class="col-12">
+				<div class="fw-bold fs-larger">System</div>
+				<hr class="my-2" />
+			</div>
+			<div class="col-12 col-md-4">
+				<a href="/ops/api" class="btn btn-block btn-outline-light">
+					<div class="ta-center fs-most-large"><i class="mdi mdi-api"></i></div>
+					API
+				</a>
+			</div>
+			<div class="col-12 col-md-4">
+				<a href="/ops/email/test" class="btn btn-block btn-outline-light">
+					<div class="ta-center fs-most-large"><i class="mdi mdi-email-arrow-right-outline"></i></div>
+					Email
+				</a>
+			</div>
+			<div class="col-12 col-md-4">
+				<a href="/ops/users/list" class="btn btn-block btn-outline-light">
+					<div class="ta-center fs-most-large"><i class="mdi mdi-account-multiple-outline"></i></div>
+					Users
+				</a>
+			</div>
+		</div>
+	</div>
+
+</div>
 

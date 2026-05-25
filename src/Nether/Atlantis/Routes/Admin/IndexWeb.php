@@ -17,9 +17,9 @@ extends Atlantis\ProtectedWeb {
 	MainGet():
 	void {
 
-		$this->Surface
-		->Set('Page.Title', 'Admin')
-		->Wrap('admin/index', [
+		($this)
+		->SetPageTitle('Operations')
+		->Area('admin/index', [
 			'EmailConfigInfo'   => new Email\Struct\LibraryConfigInfo,
 			'StorageConfigInfo' => new Storage\Struct\LibraryConfigInfo
 		]);
