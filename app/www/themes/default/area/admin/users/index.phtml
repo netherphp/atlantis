@@ -59,6 +59,12 @@ $GetUserLink = (function(User\Entity $U) {
 			<div class="col-12">
 				<hr class="bc-grey-dk my-2" />
 			</div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-outline-light btn-lg fs-large" data-user-new>
+					<i class="mdi mdi-plus-thick mr-0"></i>
+					New User...
+				</button>
+			</div>
 			<div class="col"></div>
 			<div class="col-auto">
 				<button type="submit" class="btn btn-light btn-lg fs-large">Search</button>
@@ -69,6 +75,7 @@ $GetUserLink = (function(User\Entity $U) {
 
 	<div id="UserSearchResults" class="glassbox rounded p-3">
 
+		<!-- SEARCH SUMMARY -->
 		<div class="fs-large fw-bold tt-upper mb-0">
 			<?php $Util->Print($Users->Count()) ?> Found
 
@@ -78,6 +85,7 @@ $GetUserLink = (function(User\Entity $U) {
 		</div>
 		<hr class="mt-2 mb-3 bc-grey-dk" />
 
+		<!-- USER TABLE -->
 		<div class="row">
 			<?php foreach($Users as $U): /** @var User\Entity $U */ ?>
 
@@ -96,7 +104,12 @@ $GetUserLink = (function(User\Entity $U) {
 						<div class="fs-large fw-bold">
 							<a href="<?php $Util->Print($GetUserLink($U)) ?>"><?php $Util->Print($U->GetEmail()) ?></a>
 						</div>
-						<div class="fs-small">
+						<div class="fs-small o-50">
+							<?php if($U->Alias): ?>
+							<i class="mdi mdi-account"></i>
+							<?php else: ?>
+							<i class="mdi mdi-account-outline"></i>
+							<?php endif; ?>
 							<?php $Util->Print($U->GetAlias(TRUE)) ?>
 						</div>
 					</div>
@@ -107,12 +120,18 @@ $GetUserLink = (function(User\Entity $U) {
 								<i class="mdi mdi-cog"></i>
 								Options
 							</button>
-							<ul class="dropdown-menu dropdown-menu-end dropdown-menu-fancy rounded-less">
+							<div class="dropdown-menu dropdown-menu-end dropdown-menu-fancy rounded-less">
+								<div>
+									<a href="<?php $Util->Print($GetUserLink($U)) ?>" class="btn btn-block btn-light rounded-less ta-left">
+										<i class="mdi mdi-cog"></i>
+										Manage
+									</a>
+								</div>
 								<hr class="my-2" />
 								<button class="btn btn-block btn-light rounded-less ta-left" data-user-delete <?php echo $U->GetDataAttrForHTML() ?>>
 									<i class="mdi mdi-trash-can"></i> Delete
 								</button>
-							</ul>
+							</div>
 						</div>
 					</div>
 

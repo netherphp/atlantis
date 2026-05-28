@@ -14,6 +14,9 @@ use Nether\Common\Prototype\PropertyInfo;
 class UserEntityAPI
 extends Atlantis\ProtectedAPI {
 
+	protected Common\Databox
+	$Input;
+
 	public function
 	OnReady(?Common\Datastore $Input):
 	void {
@@ -26,6 +29,13 @@ extends Atlantis\ProtectedAPI {
 		->FilterPush('ID', Common\Filters\Numbers::IntNullable(...))
 		->FilterPush('UUID', Common\Filters\Text::TrimmedNullable(...))
 		->FilterPush('Page', Common\Filters\Numbers::Page(...));
+
+		$this->Input = new Common\Databox($this->Data->GetIterator());
+
+		($this->Input)
+		->SetFilters('Input', Common\Filters\Numbers::IntNullable(...))
+		->SetFilters('UUID', Common\Filters\Text::TrimmedNullable(...))
+		->SetFilters('Page', Common\Filters\Numbers::Page(...));
 
 		return;
 	}
@@ -53,6 +63,71 @@ extends Atlantis\ProtectedAPI {
 				=> $T->DescribeForPublicAPI()
 			)
 		]);
+
+		return;
+	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'POST')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntityPost():
+	void {
+
+		// this is only meant for use via the admin dashboard to create an
+		// account quickly and just tell someone the password.
+
+		($this->Input)
+		('Email', Common\Filters\Text::Email(...))
+		('Password', Common\Filters\Text::TrimmedNullable(...));
+
+		$PTester = Atlantis\Systems\PasswordTester\Tool::New($this->App);
+		$Email = Common\Filters\Text::Email($this->Data->Get('Email'));
+		$Password = Common\Filters\Text::TrimmedNullable($this->Data->Get('Password'));
+
+		if(!$PTester->IsOK($Password))
+		$Password = NULL;
+
+		////////
+
+		if(!$Email)
+		$this->Quit(1, 'email invalid');
+
+		if(!$Password)
+		$this->Quit(2, sprintf('password invalid: %s', $PTester->GetDescription()));
+
+		////////
+
+		$Who = User\EntitySession::Insert([
+			'Email'     => $Email,
+			'PHash'     => User\EntitySession::GeneratePasswordHash($Password),
+			'TimeSeen'  => NULL,
+			'Activated' => 1
+		]);
+
+		$this->SetPayload([
+			'User' => $Who->DescribeForPublicAPI()
+		]);
+
+		return;
+	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'DELETE')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntityDelete():
+	void {
+
+		$Who = $this->DemandEntityByID($this->Data->Get('ID'));
+
+		if($Who->ID === $this->User->ID)
+		$this->Quit(3, 'DURRR DONT DELETE YOURSELF IDIOT');
+
+		////////
+
+		// @TODO 2026-05-28 plugin system to allow things to happen before
+		// the user is really deleted.
+
+		$Who->Drop();
 
 		return;
 	}
@@ -138,17 +213,6 @@ extends Atlantis\ProtectedAPI {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[RouteHandler('/api/user/entity', Verb: 'POST')]
-	#[RouteAccessTypeAdmin]
-	public function
-	EntityPost():
-	void {
-
-		$this->SetMessage('POST');
-
-		return;
-	}
-
 	#[RouteHandler('/api/user/entity', Verb: 'PATCH')]
 	#[RouteAccessTypeAdmin]
 	public function
@@ -218,39 +282,6 @@ extends Atlantis\ProtectedAPI {
 		}
 
 		$this->SetPayload($Dataset);
-		return;
-	}
-
-	#[RouteHandler('/api/user/entity', Verb: 'DELETE')]
-	#[RouteAccessTypeAdmin]
-	public function
-	EntityDelete():
-	void {
-
-		$ID = Common\Filters\Numbers::IntNullable($this->Data->Get('ID'));
-
-		if(!$ID)
-		$this->Quit(1, 'no ID specified');
-
-		////////
-
-		$Who = User\Entity::GetByID($ID);
-
-		if(!$Who)
-		$this->Quit(2, 'user not found');
-
-		////////
-
-		if($Who->ID === $this->User->ID)
-		$this->Quit(3, 'DURRR DONT DELETE YOURSELF IDIOT');
-
-		////////
-
-		// before implementing the delete also implement the
-		// on delete plugin api.
-
-		$this->SetMessage('DELETE');
-
 		return;
 	}
 

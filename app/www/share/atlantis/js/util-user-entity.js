@@ -29,10 +29,38 @@ class UserEntityUtil {
 	////////////////////////////////
 	////////////////////////////////
 
+	static DialogNew(el) {
+		return new Dialog.Window({
+			'title': 'New User...',
+			'show': true,
+			'fields': [
+				new Dialog.Field({ 'type': 'text3', 'title':'Email', 'name':'Email' }),
+				new Dialog.Field({ 'type': 'text3', 'title':'Password', 'name':'Password' })
+			],
+			'onAccept': function() {
+
+				let email = this.element.find('[name=Email]').val();
+				let password = this.element.find('[name=Password]').val();
+				let api = new API.Request('POST', '/api/user/entity');
+				let data = { 'Email': email, 'Password': password };
+
+				(api.send(data))
+				.then(function(r){
+					location.href = `/ops/users/${r.payload.User.ID}`;
+					return;
+				})
+				.catch(api.catch);
+
+				return false;
+			}
+		});
+	};
+
 	static DialogDelete(el) {
 
 		let that = jQuery(el);
 		let id = that.attr('data-id');
+		let goto = that.attr('data-goto');
 
 		return this.FetchThen(id, function(r) {
 			return new Dialog.Window({
@@ -48,7 +76,15 @@ class UserEntityUtil {
 					let dat = { 'ID': id };
 
 					(api.send(dat))
-					.then(api.reload)
+					.then(function(r) {
+
+						if(goto)
+						location.href = goto;
+						else
+						location.reload();
+
+						return;
+					})
 					.catch(api.catch);
 
 					return;
@@ -101,6 +137,9 @@ class UserEntityUtil {
 
 		jQuery('[data-user-priv-grant-form]')
 		.on('submit', (jEv)=> this.FormPrivGrant(jEv.currentTarget));
+
+		jQuery('[data-user-new]')
+		.on('click', (jEv)=> this.DialogNew(jEv.currentTarget));
 
 		jQuery('[data-user-delete]')
 		.on('click', (jEv)=> this.DialogDelete(jEv.currentTarget));

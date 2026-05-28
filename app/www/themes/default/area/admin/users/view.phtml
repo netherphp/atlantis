@@ -77,11 +77,10 @@ $DefinedAccessTypes->Sort(
 				</div>
 			</div>
 			<div class="col">
-				<div class="fs-largerer fw-bold">
+				<div class="fs-larger fw-bold">
 					<?php $Util->Print($Who->Email) ?>
-					(<?php $Util->Print($Who->GetAlias()) ?>)
 				</div>
-				<hr class="my-2" />
+				<hr class="mt-1 mb-2" />
 				<div>
 					<div class="row align-items-center g-2 mb-2">
 						<div class="col-auto tt-upper fw-bold">Login via:</div>
@@ -102,15 +101,25 @@ $DefinedAccessTypes->Sort(
 						<?php endif; ?>
 					</div>
 					<div class="ff-mono">
+						<?php if($Who->Alias): ?>
+						<i data-bs-toggle="tooltip" title="User Alias (Set)" class="mdi mdi-account"></i>
+						<?php else: ?>
+						<i data-bs-toggle="tooltip" title="User Alias (Auto)" class="mdi mdi-account-outline"></i>
+						<?php endif; ?>
+						<?php $Util->Print($Who->GetAlias()) ?>
+					</div>
+					<div class="ff-mono">
 						<i data-bs-toggle="tooltip" title="Date Created" class="mdi mdi-clock-plus"></i>
 						<?php $Util->Print($Who->DateCreated->Get()) ?>
 						(<?php $Util->Print($Who->GetSinceCreated()) ?>)
 					</div>
+					<?php if($Who->HasBeenSeen()): ?>
 					<div class="ff-mono">
 						<i data-bs-toggle="tooltip" title="Date Last Seen" class="mdi mdi-clock-check"></i>
 						<?php $Util->Print($Who->DateSeen->Get()) ?>
 						(<?php $Util->Print($Who->GetSinceSeen()) ?>)
 					</div>
+					<?php endif; ?>
 					<?php if($Who->IsBanned()): ?>
 					<div class="ff-mono">
 						<i data-bs-toggle="tooltip" title="Date Banned" class="mdi mdi-clock-remove"></i>
@@ -123,7 +132,7 @@ $DefinedAccessTypes->Sort(
 		</div>
 
 		<!-- ACCESS TYPES -->
-		<div class="glassbox rounded p-3">
+		<div class="glassbox rounded p-4 mb-4">
 
 			<div class="row align-items-center">
 				<div class="col-12">
@@ -219,6 +228,18 @@ $DefinedAccessTypes->Sort(
 			</div>
 			</form>
 
+		</div>
+
+		<!-- MISC ADMIN -->
+		<div class="glassbox rounded p-4">
+			<div class="row justify-content-center align-items-center g-4">
+				<div class="col-12 col-md-4">
+					<button class="btn btn-block btn-outline-danger fs-larger rounded-less" data-user-delete data-goto="/ops/users" <?php echo $Who->GetDataAttrForHTML(); ?>>
+						<i class="mdi mdi-delete"></i>
+						Delete
+					</button>
+				</div>
+			</div>
 		</div>
 
 	</div>
