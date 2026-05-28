@@ -1,0 +1,145 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore<User\Entity> $Users
+ * @var string $Query
+ */
+
+################################################################################
+################################################################################
+
+$Trail = [ 'Users' => '/ops/users' ];
+
+$Breadcrumbs = (fn()=> $Surface->GetArea('admin/breadcrumbs',[
+	'Trail'=> $Trail
+]));
+
+$Pager = (fn()=> Atlantis\UI\Pager::FromSurfaceWithResultSet(
+	$Surface,
+	$Users
+));
+
+$GetUserLink = (function(User\Entity $U) {
+	return sprintf('/ops/users/%s', $U->ID);
+});
+
+################################################################################
+############################################################################# ?>
+
+<div class="container">
+
+	<?php echo $Breadcrumbs() ?>
+
+	<div id="UserSearchForm" class="glassbox rounded p-3 mb-4">
+		<form method="get">
+		<div class="row align-items-center g-2">
+			<div class="col-12 pos-relative">
+				<div class="input-group">
+					<div class="form-floating">
+						<input type="text" name="q" class="form-control" placeholder="..." value="<?php $Util->Print($Query) ?>" />
+						<label>User Search...</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-12">
+				<hr class="bc-grey-dk my-2" />
+			</div>
+			<div class="col"></div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-light btn-lg fs-large">Search</button>
+			</div>
+		</div>
+		</form>
+	</div>
+
+	<div id="UserSearchResults" class="glassbox rounded p-3">
+
+		<div class="fs-large fw-bold tt-upper mb-0">
+			<?php $Util->Print($Users->Count()) ?> Found
+
+			<?php if($Route->Data->Get('UUID')): ?>
+			[ UUID: <?php $Util->Print($Route->Data->Get('UUID')) ?> ]
+			<?php endif; ?>
+		</div>
+		<hr class="mt-2 mb-3 bc-grey-dk" />
+
+		<div class="row">
+			<?php foreach($Users as $U): /** @var User\Entity $U */ ?>
+
+			<div class="col-12">
+				<div class="row align-items-center g-2">
+
+					<div class="col-auto">
+						<div class="ratiobox square wallpapered rounded-less border border-2 bc-grey-dk" style="width:50px;">
+							<div class="pos-absolute pos-v-center pos-h-center tc-white">
+								<i class="mdi mdi-account"></i>
+							</div>
+						</div>
+					</div>
+
+					<div class="col">
+						<div class="fs-large fw-bold">
+							<a href="<?php $Util->Print($GetUserLink($U)) ?>"><?php $Util->Print($U->GetEmail()) ?></a>
+						</div>
+						<div class="fs-small">
+							<?php $Util->Print($U->GetAlias(TRUE)) ?>
+						</div>
+					</div>
+
+					<div class="col-auto">
+						<div class="dropdown">
+							<button class="btn btn-outline-light rounded-less dropdown-toggle" type="button" data-bs-toggle="dropdown">
+								<i class="mdi mdi-cog"></i>
+								Options
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end dropdown-menu-fancy rounded-less">
+								<hr class="my-2" />
+								<button class="btn btn-block btn-light rounded-less ta-left" data-user-delete <?php echo $U->GetDataAttrForHTML() ?>>
+									<i class="mdi mdi-trash-can"></i> Delete
+								</button>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="col-12">
+				<hr class="my-3 bc-grey-dk" />
+			</div>
+
+			<?php endforeach; ?>
+		</div>
+
+		<?php echo $Pager() ?>
+	</div>
+
+	<div class="mb-6">
+	</div>
+
+</div>
+
+<script type="module">
+import UserEntityUtil from '/share/atlantis/js/util-user-entity.js';
+
+jQuery(function() {
+
+	UserEntityUtil.WhenDocumentReady();
+
+	return;
+});
+</script>

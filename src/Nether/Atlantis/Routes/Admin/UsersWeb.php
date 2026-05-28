@@ -9,83 +9,77 @@ use Nether\User;
 class UsersWeb
 extends Atlantis\ProtectedWeb {
 
-	#[Atlantis\Meta\RouteHandler('/ops/users/list')]
+	use Atlantis\Packages\RouteInvokeForData;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Atlantis\Meta\RouteHandler('/ops/users')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Atlantis\Meta\TrafficReportSkip]
 	public function
-	HandleList():
+	Index():
 	void {
 
-		($this->Data)
-		->Q(Common\Filters\Text::TrimmedNullable(...))
-		->AccessType(Common\Filters\Numbers::IntNullable(...))
-		->Sort(Common\Filters\Text::TrimmedNullable(...));
+		$Query = Common\Filters\Text::TrimmedNullable($this('q'));
 
 		////////
 
-		$Filters = [ ];
+		$Users = User\Entity::Find([
+			'Search'      => $Query,
+			'SearchAlias' => TRUE,
+			'SearchEmail' => TRUE,
 
-		if($this->Data->Q) {
-			$Filters['Search'] = $this->Data->Q;
-			$Filters['SearchAlias'] = TRUE;
-			$Filters['SearchEmail'] = TRUE;
-		}
+			'Page'        => 1,
+			'Limit'       => 25,
+			'Sort'        => 'newest'
+		]);
 
-		if($this->Data->AccessType) {
-			$Filters['WithAccessType'] = $this->Data->AccessType;
-		}
+		$Defined = Atlantis\User\AccessTypeList::Fetch($this->App);
 
-		$Filters['Sort'] = match($this->Data->Sort) {
-			'oldest', 'newest', 'alias', 'email'
-			=> $this->Data->Sort,
-			default
-			=> 'oldest'
-		};
-
-		////////
-
-		$Users = User\EntitySession::Find($Filters);
-		$AccessTypes = User\EntityAccessType::Find([ 'Index'=> TRUE ]);
-
-		$Searched = (
-			TRUE
-			&& $this->Data->Exists('Q')
-			&& $this->Data->Exists('AccessType')
-			&& $this->Data->Exists('Sort')
-		);
-
-		($this->App->Surface)
-		->Wrap('admin/users/list', [
-			'Searched'    => $Searched,
-			'Users'       => $Users,
-			'AccessTypes' => $AccessTypes
+		($this)
+		->SetPageTitle('Users // Operations')
+		->Area('admin/users/index', [
+			'Users' => $Users,
+			'Query' => $Query,
+			'DefinedAccessTypes' => $Defined
 		]);
 
 		return;
 	}
 
-	#[Atlantis\Meta\RouteHandler('/ops/users/:UserID:')]
+	#[Atlantis\Meta\RouteHandler('/ops/users/:ID:')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Atlantis\Meta\TrafficReportSkip]
 	public function
-	HandleView(int $UserID):
+	View(string $ID):
 	void {
 
-		$Who = User\EntitySession::GetByID($UserID);
-		$AccessTypes = $Who->GetAccessTypes();
-		//$UsedAccessTypes = User\EntityAccessType::Find([ 'Index'=> TRUE ]);
-		$DefinedAccessTypes = Atlantis\User\AccessTypeList::Fetch($this->App);
+		$Entity = User\EntitySession::GetByID($ID);
+		$Access = $Entity->GetAccessTypes();
+		$Defined = Atlantis\User\AccessTypeList::Fetch($this->App);
 
-		($this->App->Surface)
-		->Wrap('admin/users/view', [
-			'Who'                => $Who,
-			'AccessTypes'        => $AccessTypes,
-			//'UsedAccessTypes'    => $UsedAccessTypes,
-			'DefinedAccessTypes' => $DefinedAccessTypes
+		if(!$Entity)
+		$this->Quit(404);
+
+		$Auths = new Common\Datastore([
+			'Apple'    => (!!$Entity->AuthAppleID),
+			'Github'   => (!!$Entity->AuthGitHubID),
+			'Discord'  => (!!$Entity->AuthDiscordID),
+			'Google'   => (!!$Entity->AuthGoogleID),
+			'Password' => (!!$Entity->PHash),
+		]);
+
+		($this)
+		->SetPageTitle(sprintf('%s // Users // Operations', $Entity->Email))
+		->Area('admin/users/view', [
+			'Who'                => $Entity,
+			'Access'             => $Access,
+			'AuthList'           => $Auths,
+			'DefinedAccessTypes' => $Defined
 		]);
 
 		return;
 	}
-
 
 }

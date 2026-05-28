@@ -1,7 +1,9 @@
+.atl-collapser,
 .Collapser {
 	margin-bottom: 1.5em;
 }
 
+.atl-collapser > header,
 .Collapser > header {
 	background-color: var(--bs-secondary-bg);
 	border-radius: 6px;
@@ -16,6 +18,7 @@
 	user-select: none;
 }
 
+.atl-collapser  > header .Indicator,
 .Collapser > header .Indicator {
 	font-size: 1.3em;
 	margin-left: 0.5em;
@@ -23,16 +26,19 @@
 	transition: transform 400ms;
 }
 
+.atl-collapser  > section,
 .Collapser > section {
 	border-left: 4px solid var(--bs-secondary-bg);
 	display: none;
 	padding-left: 8px;
 }
 
+.atl-collapser .Open > section,
 .Collapser.Open > section {
 	display: block;
 }
 
+.atl-collapser .Open > header .Indicator,
 .Collapser.Open > header .Indicator {
 	transform: rotate(225deg);
 }

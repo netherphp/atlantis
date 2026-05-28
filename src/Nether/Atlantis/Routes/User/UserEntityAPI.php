@@ -14,34 +14,129 @@ use Nether\Common\Prototype\PropertyInfo;
 class UserEntityAPI
 extends Atlantis\ProtectedAPI {
 
+	public function
+	OnReady(?Common\Datastore $Input):
+	void {
+
+		parent::OnReady($Input);
+
+		////////
+
+		($this->Data)
+		->FilterPush('ID', Common\Filters\Numbers::IntNullable(...))
+		->FilterPush('UUID', Common\Filters\Text::TrimmedNullable(...))
+		->FilterPush('Page', Common\Filters\Numbers::Page(...));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	// 2026-05 audit
+
 	#[RouteHandler('/api/user/entity', Verb: 'GET')]
 	#[RouteAccessTypeAdmin]
 	public function
 	EntityGet():
 	void {
 
-		$ID = Common\Filters\Numbers::IntType($this->Data->ID);
-
-		if(!$ID)
-		$this->Quit(1, 'no user id provided');
+		$Entity = $this->DemandEntityByID($this->Data->Get('ID'));
+		$Access = $Entity->GetAccessTypes();
 
 		////////
 
-		$Entity = User\Entity::GetByID($ID);
-
-		if(!$Entity)
-		$this->Quit(2, 'no user entity found');
-
-		$Access = $Entity->GetAccessTypes();
-		$Access->Remap(fn(User\EntityAccessType $T)=> $T->DescribeForPublicAPI());
-
 		$this->SetPayload([
-			'User'   => $Entity,
-			'Access' => $Access->Export()
+			'User'   => $Entity->DescribeForPublicAPI(),
+			'Access' => $Access->Map(
+				fn(User\EntityAccessType $T)
+				=> $T->DescribeForPublicAPI()
+			)
 		]);
 
 		return;
 	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'GRANT')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntityAccessGrant():
+	void {
+
+		$Entity = $this->DemandEntityByID($this->Data->Get('ID'));
+		$Access = $Entity->GetAccessTypes();
+
+		$Key = Common\Filters\Text::Trimmed($this->Data->Get('Key'));
+		$Val = Common\Filters\Numbers::IntType($this->Data->Get('Value'));
+		$New = NULL;
+
+		////////
+
+		$Access->Filter(fn(User\EntityAccessType $A)
+			=> strtolower($Key) === strtolower($A->Key)
+		);
+
+		// update existing entry.
+
+		if($Access->Count()) {
+			$New = $Access->Current();
+			$New->Update([
+				'TimeCreated' => Common\Date::Unixtime(),
+				'Value'       => $Val
+			]);
+		}
+
+		// insert new entry.
+
+		else {
+			$New = User\EntityAccessType::Insert([
+				'EntityID' => $Entity->ID,
+				'Key'      => $Key,
+				'Value'    => $Val
+			]);
+		}
+
+		////////
+
+		($this)
+		->SetGoto('reload')
+		->SetPayload($New);
+
+		return;
+	}
+
+	#[RouteHandler('/api/user/entity', Verb: 'REVOKE')]
+	#[RouteAccessTypeAdmin]
+	public function
+	EntityAccessRevoke():
+	void {
+
+		$AID = Common\Filters\Numbers::IntType($this->Data->Get('AccessID'));
+		$Access = User\EntityAccessType::GetByID($AID);
+
+		if(!$Access)
+		$this->Quit('1', 'Invalid AccessID');
+
+		////////
+
+		$Access->Drop();
+
+		////////
+
+		($this)
+		->SetGoto('reload')
+		->SetPayload([
+			'AccessID' => $Access->ID,
+			'UserID'   => $Access->EntityID,
+			'Key'      => $Access->Key,
+			'Value'    => $Access->Value
+		]);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[RouteHandler('/api/user/entity', Verb: 'POST')]
 	#[RouteAccessTypeAdmin]
@@ -131,6 +226,28 @@ extends Atlantis\ProtectedAPI {
 	public function
 	EntityDelete():
 	void {
+
+		$ID = Common\Filters\Numbers::IntNullable($this->Data->Get('ID'));
+
+		if(!$ID)
+		$this->Quit(1, 'no ID specified');
+
+		////////
+
+		$Who = User\Entity::GetByID($ID);
+
+		if(!$Who)
+		$this->Quit(2, 'user not found');
+
+		////////
+
+		if($Who->ID === $this->User->ID)
+		$this->Quit(3, 'DURRR DONT DELETE YOURSELF IDIOT');
+
+		////////
+
+		// before implementing the delete also implement the
+		// on delete plugin api.
 
 		$this->SetMessage('DELETE');
 
@@ -272,99 +389,28 @@ extends Atlantis\ProtectedAPI {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[RouteHandler('/api/user/entity', Verb: 'SETACCESS')]
-	#[RouteAccessTypeAdmin]
-	public function
-	EntitySetAccess():
-	void {
 
-		($this->Data)
-		->ID(Common\Filters\Numbers::IntType(...))
-		->Key(Common\Filters\Text::TrimmedNullable(...))
-		->Value(Common\Filters\Numbers::IntType(...))
-		->Overwrite(Common\Filters\Numbers::BoolType(...));
 
-		////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
-		$User = User\Entity::GetByID($this->Data->ID);
+	protected function
+	DemandEntityByID(?int $ID):
+	User\Entity {
 
-		if(!$User)
-		$this->Quit(1, 'User not found.');
-
-		if(!$this->Data->Key)
-		$this->Quit(2, 'No Key specified');
+		if(!$ID)
+		$this->Quit(1, 'no id specified');
 
 		////////
 
-		$Access = $User->GetAccessTypes();
-		$Key = NULL;
-		$Type = NULL;
-		$Updated = FALSE;
+		$Ent = User\Entity::GetByID($ID);
 
-		// do a case-insense check if the key already exists.
-
-		foreach($Access as $Key => $Type) {
-			/** @var User\EntityAccessType $Type */
-
-			if(strtolower($Key) === strtolower($this->Data->Key)) {
-				if(!$this->Data->Overwrite)
-				$this->Quit(3, "Key {$Key} already exists: {$Type->Value}");
-
-				$Updated = TRUE;
-				$Type->Update([
-					'TimeCreated' => time(),
-					'Value'       => $this->Data->Value
-				]);
-			}
-		}
-
-		// add the permission otherwise.
-
-		if(!$Updated) {
-			User\EntityAccessType::Insert([
-				'EntityID' => $User->ID,
-				'Key'      => $this->Data->Key,
-				'Value'    => $this->Data->Value
-			]);
-		}
-
-		// log access set
+		if(!$Ent)
+		$this->Quit(2, 'user not found');
 
 		////////
 
-		$this
-		->SetGoto('reload')
-		->SetPayload([
-			'Key'   => $this->Data->Key,
-			'Value' => $this->Data->Value
-		]);
-
-		return;
-	}
-
-	#[RouteHandler('/api/user/entity', Verb: 'DELACCESS')]
-	#[RouteAccessTypeAdmin]
-	public function
-	EntityDeleteAccess():
-	void {
-
-		($this->Data)
-		->AccessID(Common\Filters\Numbers::IntType(...));
-
-		////////
-
-		$Access = User\EntityAccessType::GetByID($this->Data->AccessID);
-
-		if(!$Access)
-		$this->Quit('1', 'Invalid AccessID');
-
-		$User = User\Entity::GetByID($Access->EntityID);
-		$Access->Drop();
-
-		// log access del
-
-		$this->SetGoto('reload');
-		return;
+		return $Ent;
 	}
 
 }

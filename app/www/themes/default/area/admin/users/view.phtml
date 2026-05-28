@@ -1,349 +1,261 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
 use Nether\Atlantis;
+use Nether\Avenue;
 use Nether\Common;
-use Nether\User;
 use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+use Nether\Atlantis\User\AccessTypeDef;
+use Nether\User\EntityAccessType;
 
 /**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
  * @var User\EntitySession $User - the currently logged in user
  * @var User\EntitySession $Who - the user being inspected.
- * @var Database\ResultSet $AccessTypes
+ * @var Database\ResultSet $Access - the Access Types for $Who
  * @var Atlantis\User\AccessTypeList $DefinedAccessTypes;
+ * @var Common\Datastore $AuthList;
  */
 
-$Surface->Area('admin/breadcrumbs', [ 'Trail' => [
-	'Users'               => '/ops/users/list',
-	"User ID: {$Who->ID}" => NULL
-]]);
+################################################################################
+################################################################################
 
-?>
+$Trail = [
+	'Users'     => '/ops/users',
+	$Who->Email => sprintf('/ops/users/%d', $Who->ID)
+];
 
-<div class="row mb-4">
+$Breadcrumbs = (fn()=> $Surface->GetArea('admin/breadcrumbs', [
+	'Trail' => $Trail
+]));
 
-	<!-- LEFT SIDEBAR -->
-	<div class="col-2">
+$GetAccessTypeIcon = (function(Atlantis\User\AccessTypeDef $D) {
 
-		<!-- USER PICTURE -->
-		<div class="ratiobox square mb-4">
-			<div class="position-absolutely bg-black rounded">
-				<span class="position-absolute position-v-center position-h-center text-decoration-none">
-					<i class="mdi mdi-fw mdi-account font-size-largerer text-white opacity-20"></i>
-				</span>
+	if(str_starts_with($D->Key, 'Atlantis.Priv'))
+	return 'mdi-key';
+
+	return 'mdi-plus o-25';
+});
+
+$DefinedAccessTypes->Sort(
+	fn(Atlantis\User\AccessTypeDef $A, Atlantis\User\AccessTypeDef $B)
+	=> ($A->Key <=> $B->Key)
+);
+
+################################################################################
+############################################################################# ?>
+
+<style type="text/css">
+.access-type-item:hover {
+	cursor: pointer;
+	background: color-mix(in srgb, var(--theme-primary) 50%, #00000000);
+}
+</style>
+
+<div class="container">
+
+	<?php echo $Breadcrumbs(); ?>
+
+	<div id="UserInfoForm">
+
+		<!-- USER HEADER -->
+		<div class="row align-items-center mb-4">
+			<div class="col-2">
+				<div class="ratiobox wallpapered sqwuare rounded">
+					<div class="pos-absolute pos-h-center pos-v-center fs-mostest-large o-25">
+						<i class="mdi mdi-account"></i>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="fs-largerer fw-bold">
+					<?php $Util->Print($Who->Email) ?>
+					(<?php $Util->Print($Who->GetAlias()) ?>)
+				</div>
+				<hr class="my-2" />
+				<div>
+					<div class="row align-items-center g-2 mb-2">
+						<div class="col-auto tt-upper fw-bold">Login via:</div>
+						<?php if($AuthList->Get('Apple')): ?>
+						<div class="col-auto"><i data-bs-toggle="tooltip" class="si si-apple" title="Apple"></i></div>
+						<?php endif; ?>
+						<?php if($AuthList->Get('Discord')): ?>
+						<div class="col-auto"><i data-bs-toggle="tooltip" class="si si-discord" title="Discord"></i></div>
+						<?php endif; ?>
+						<?php if($AuthList->Get('Github')): ?>
+						<div class="col-auto"><i data-bs-toggle="tooltip" class="si si-github" title="Github"></i></div>
+						<?php endif; ?>
+						<?php if($AuthList->Get('Google')): ?>
+						<div class="col-auto"><i data-bs-toggle="tooltip" class="si si-google" title="Google"></i></div>
+						<?php endif; ?>
+						<?php if($AuthList->Get('Password')): ?>
+						<div class="col-auto"><i data-bs-toggle="tooltip" class="mdi mdi-keyboard" title="Username/Password"></i></div>
+						<?php endif; ?>
+					</div>
+					<div class="ff-mono">
+						<i data-bs-toggle="tooltip" title="Date Created" class="mdi mdi-clock-plus"></i>
+						<?php $Util->Print($Who->DateCreated->Get()) ?>
+						(<?php $Util->Print($Who->GetSinceCreated()) ?>)
+					</div>
+					<div class="ff-mono">
+						<i data-bs-toggle="tooltip" title="Date Last Seen" class="mdi mdi-clock-check"></i>
+						<?php $Util->Print($Who->DateSeen->Get()) ?>
+						(<?php $Util->Print($Who->GetSinceSeen()) ?>)
+					</div>
+					<?php if($Who->IsBanned()): ?>
+					<div class="ff-mono">
+						<i data-bs-toggle="tooltip" title="Date Banned" class="mdi mdi-clock-remove"></i>
+						<?php $Util->Print($Who->DateBanned->Get()) ?>
+						(<?php $Util->Print($Who->GetSinceBanned()) ?>)
+					</div>
+					<?php endif; ?>
+				</div>
 			</div>
 		</div>
 
-		<!-- ACCOUNT CREATED -->
-		<div class="text-primary font-size-smaller fw-bold text-uppercase">Joined:</div>
-		<div class="mb-0"><?php $Printer($Who->DateCreated) ?></div>
-		<div class="mb-0"><?php $Printer(($Who->DateCreated)(Common\Values::DateFormatT12Z)) ?></div>
-		<div class="opacity-50 font-size-smaller mb-4"><?php $Printer($Who->GetSinceCreated()) ?></div>
+		<!-- ACCESS TYPES -->
+		<div class="glassbox rounded p-3">
 
-		<!-- ACCOUNT AUTH INFO -->
-		<div class="text-primary font-size-smaller fw-bold text-uppercase">Login Methods:</div>
-		<div class="row tight align-items-center font-size-larger mb-4">
-			<?php if($Who->PHash): ?>
-			<div class="col-auto">
-				<i class="mdi mdi-keyboard" title="Password"></i>
+			<div class="row align-items-center">
+				<div class="col-12">
+					<span class="fw-bold tt-upper">Access Types</span>
+				</div>
 			</div>
-			<?php endif; ?>
-			<?php if($Who->AuthAppleID): ?>
-			<div class="col-auto">
-				<i class="si si-apple" title="Apple"></i>
-			</div>
-			<?php endif; ?>
-			<?php if($Who->AuthDiscordID): ?>
-			<div class="col-auto">
-				<i class="si si-discord" title="Discord"></i>
-			</div>
-			<?php endif; ?>
-			<?php if($Who->AuthGitHubID): ?>
-			<div class="col-auto">
-				<i class="si si-github" title="GitHub"></i>
-			</div>
-			<?php endif; ?>
-			<?php if($Who->AuthGoogleID): ?>
-			<div class="col-auto">
-				<i class="si si-google" title="Google"></i>
-			</div>
-			<?php endif; ?>
-		</div>
+			<hr class="mb-4" />
 
-		<!-- ACCOUNT LAST SEEN -->
-		<div class="text-primary font-size-smaller fw-bold text-uppercase">Last Seen:</div>
-		<div class="mb-4"><?php $Printer($Who->GetSinceSeen()) ?></div>
+			<!-- USER PRIV TABLE -->
+			<div id="UserAccessTypes" class="row align-items-center">
+				<?php foreach($Access as $A): /** @var EntityAccessType $A */ ?>
+				<div class="col ff-mono">
+					<?php $Util->Print($A->Key) ?>
+				</div>
+				<div class="col ff-mono ta-center">
+					<?php $Util->Print($A->Value) ?>
+				</div>
+				<div class="col-auto">
+					<button type="button" class="btn btn-outline-light" data-user-priv-delete data-access-id="<?php $Util->Print($A->ID) ?>">
+						<i class="mdi mdi-delete mr-0"></i>
+					</button>
+				</div>
+				<div class="col-12">
+					<hr />
+				</div>
+				<?php endforeach; ?>
 
-		<?php if($Who->TimeBanned !== 0): ?>
-		<!-- ACCOUNT BAN STATUS -->
-		<div class="text-danger font-size-smaller fw-bold text-uppercase">Banned:</div>
-		<div class="mb-4"><?php $Printer($Who->GetSinceBanned()) ?></div>
-		<?php endif; ?>
-
-		<!-- ACCOUNT REMOTE ADDR -->
-		<div class="text-primary font-size-smaller fw-bold text-uppercase">Remote Addr:</div>
-		<div class="font-family-monotype mb-4"><?php $Printer($Who->RemoteAddr) ?></div>
-
-		<!-- COMMAND BUTTONS -->
-		<div class="mb-4">
-			<div class="mb-2">
-				<?php if($Who->TimeBanned === 0): ?><button class="btn btn-block btn-primary btn-left CmdUserBan" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-gavel"></i> Ban</button>
-				<?php else: ?><button class="btn btn-block btn-danger btn-left CmdUserUnban" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-gavel"></i> Unban</button>
+				<?php if($Access->Count() === 0): ?>
+				<div class="col-12 ta-center fst-italic o-50">
+					No items to display.
+					<hr class="my-4" />
+				</div>
 				<?php endif; ?>
 			</div>
-			<div class="mb-2">
-				<button class="btn btn-block btn-primary btn-left CmdUserOvershadow" data-user-id="<?php $Printer($Who->ID) ?>"><i class="mdi mdi-fw mdi-incognito-circle"></i> Overshadow</button>
+
+			<!-- ACCESS TYPE SHORTCUTS -->
+			<div class="mb-4">
+				<div class="atl-collapser">
+					<header>
+						<div>
+							Access Types
+						</div>
+						<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+					</header>
+					<section class="p-0 border-0">
+
+						<?php foreach($DefinedAccessTypes as $DAT): /** @var Atlantis\User\AccessTypeDef $DAT */ ?>
+						<div class="access-type-item p-3" data-form-fill-access-type>
+							<div class="row align-items-center g-2">
+								<div class="col-auto">
+									<div class="ratiobox square bg-grey-dk" style="width:48px;">
+										<div class="pos-absolute pos-h-center pos-v-center">
+											<i class="mdi <?php $Util->Print($GetAccessTypeIcon($DAT)) ?>"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<dl class="p-0 m-0">
+										<dt class="m-0 tt-normal ff-mono fw-bold fs-large">
+											<span data-access-type-key><?php $Util->Print($DAT->Key) ?></span>
+										</dt>
+										<dd class="m-0 tt-normal fw-light fs-small o-50">
+											<span data-access-type-info><?php $Util->Print($DAT->Info) ?></span>
+										</dd>
+									</dl>
+								</div>
+								<div class="col-auto ff-mono fw-bold fs-larger">
+									<span data-access-type-value><?php $Util->Print($DAT->Value) ?></span>
+								</div>
+							</div>
+						</div>
+						<hr class="my-0" />
+						<?php endforeach; ?>
+
+					</section>
+				</div>
 			</div>
+
+			<!-- ACCESS GRANT FORM -->
+			<form method="post" data-user-priv-grant-form <?php echo $Who->GetDataAttrForHTML() ?>>
+			<div id="UserAccessNew" class="row">
+				<div class="col">
+					<input name="PrivKey" type="text" class="form-control ff-mono" data-form-fill-access-type-key />
+				</div>
+				<div class="col">
+					<input name="PrivVal" type="text" class="form-control ff-mono" data-form-fill-access-type-value />
+				</div>
+				<div class="col-auto">
+					<button type="submit" class="btn btn-outline-light">
+						<i class="mdi mdi-plus-thick mr-0"></i>
+					</button>
+				</div>
+			</div>
+			</form>
+
 		</div>
 
 	</div>
 
-	<!-- RIGHT AREA -->
-	<div class="col">
-
-		<div class="font-size-smaller fw-bold text-uppercase">Email</div>
-		<form id="UserEmail" class="UserPatchForm" method="post">
-			<div class="row tight mb-4">
-				<div class="col">
-					<input type="hidden" name="ID" value="<?php $Printer($Who->ID) ?>" />
-					<input type="text" name="Email" value="<?php $Printer($Who->Email) ?>" class="form-control" />
-				</div>
-				<div class="col-auto">
-					<button type="submit" class="btn btn-primary FancyStateButton">
-						<i class="mdi mdi-fw mdi-content-save Idle"></i>
-						<span>Save</span>
-						<i class="mdi mdi-fw mdi-check Success"></i>
-						<i class="mdi mdi-fw mdi-close Error"></i>
-					</button>
-				</div>
-			</div>
-		</form>
-
-		<div class="font-size-smaller fw-bold text-uppercase">Alias</div>
-		<form id="UserAlias" class="UserPatchForm" method="post">
-			<div class="row tight mb-4">
-				<div class="col">
-					<input type="hidden" name="ID" value="<?php $Printer($Who->ID) ?>" />
-					<input type="text" name="Alias" value="<?php $Printer($Who->Alias) ?>" class="form-control" />
-				</div>
-				<div class="col-auto">
-					<button type="submit" class="btn btn-primary FancyStateButton"><i class="mdi mdi-content-save Idle"></i><span>Save</span><i class="mdi mdi-check Success"></i><i class="mdi mdi-close Error"></i></button>
-				</div>
-			</div>
-		</form>
-
+	<div class="mb-6">
 	</div>
 
 </div>
 
-<!-- USER ACCESS PANEL -->
-<dl class="PrettyModernBox">
-	<dt class="mb-4">
-		<span>User Access</span>
-		<hr class="opacity-10" />
-	</dt>
-	<dd class="mb-4">
-		<div class="mb-4">
-			<div class="row">
-				<div class="col-auto">
-					<div id="AccessTypeList" class="dropdown">
-						<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-							Access Types
-						</button>
-						<ul class="dropdown-menu dropdown-menu-scrolled">
-							<?php foreach($DefinedAccessTypes as $Type): ?>
-							<li>
-								<a class="dropdown-item" href="#" data-key="<?php $Printer($Type->Key) ?>" data-value="<?php $Printer($Type->Value) ?>">
-									<div class="font-size-small">
-										<?php $Printer($Type->Key) ?>
-										<span class="text-secondary"> =&gt; </span>
-										<?php $Printer($Type->Value) ?>
-									</div>
-									<div class="font-size-smaller text-muted fs-italic"><?php $Printer($Type->Info) ?></div>
-								</a>
-							</li>
-							<?php endforeach; unset($Type); ?>
-						</ul>
-					</div>
-				</div>
-			</div>
-
-		</div>
-		<hr class="opacity-10" />
-		<form id="AccessForm" method="post">
-			<div class="row tight">
-				<div class="col">
-					<div class="fw-bold">Key:</div>
-					<input type="text" name="Key" class="form-control" list="AccessTypeDatalist" />
-					<datalist id="AccessTypeDatalist">
-						<?php foreach($DefinedAccessTypes as $Type): ?>
-						<option value="<?php $Printer($Type->Key) ?>"><?php $Printer($Type->Key) ?></option>
-						<?php endforeach; unset($Type); ?>
-					</datalist>
-				</div>
-				<div class="col">
-					<div class="fw-bold">Value:</div>
-					<input type="text" name="Value" class="form-control" />
-				</div>
-				<div class="col-auto">
-					<div class="fw-bold">&nbsp;</div>
-					<input type="hidden" name="ID" value="<?php $Printer($Who->ID) ?>" />
-					<button type="submit" class="btn btn-primary"><i class="mdi mdi-fw mdi-plus"></i></button>
-				</div>
-			</div>
-		</form>
-	</dd>
-	<dd class="HideTheLastHR">
-		<?php foreach($AccessTypes as $Access): /** @var Nether\User\EntityAccessType $Access */ ?>
-		<div class="row align-items-center">
-			<div class="col"><code><?php $Printer($Access->Key) ?></code></div>
-			<div class="col-auto"><code><?php $Printer($Access->Value) ?></code></div>
-			<div class="col-auto">
-				<button class="btn btn-danger CmdAccessDelete" data-access-id="<?php $Printer($Access->ID) ?>"><i class="mdi mdi-fw mdi-close"></i></button>
-			</div>
-		</div>
-		<hr class="opacity-10" />
-		<?php endforeach; unset($Access); ?>
-		<?php if(!$AccessTypes->Count()): ?>
-		<div class="text-center fst-italic">This user currently has no extra access data.</div>
-		<?php endif; ?>
-	</dd>
-</dl>
-
 <script type="module">
-import NUI from '/share/nui/nui.js?v=<?php $Printer($CacheBuster) ?>';
+import UserEntityUtil from '/share/atlantis/js/util-user-entity.js';
 
-jQuery(function(){
+function BindAccessTypeShortcuts() {
 
-	jQuery('#AccessForm')
-	.on('submit', function(){
-
-		let form = new NUI.Form(this);
-		let req = new NUI.Request('SETACCESS', '/api/user/entity');
-
-		(req.send(form.read()))
-		.then(req.goto)
-		.catch(req.catch);
-
-		return false;
-	});
-
-	jQuery('#AccessTypeList')
-	.on('click', '.dropdown-item', function() {
+	jQuery('[data-form-fill-access-type]')
+	.on('click', function() {
 
 		let that = jQuery(this);
-		let form = jQuery('#AccessForm');
-		let key = that.attr('data-key');
-		let val = that.attr('data-value');
+		let key = that.find('[data-access-type-key]').text();
+		let val = that.find('[data-access-type-value]').text();
+		let nfo = that.find('[data-access-type-info]').text();
 
-		form.find('input[name=Key]').val(key);
-		form.find('input[name=Value]').val(val);
-
-		jQuery('.dropdown-toggle')
-		.dropdown('hide');
-
-		return false;
-	});
-
-	jQuery('.CmdAccessDelete')
-	.on('click', function(){
-
-		let req = new NUI.Request('DELACCESS', '/api/user/entity');
-		let data = NUI.Form.ObjectArrayToDataString({
-			'AccessID': jQuery(this).attr('data-access-id')
-		});
-
-		(req.send(data))
-		.then(req.goto)
-		.catch(req.catch);
-
-		return false;
-	});
-
-	jQuery('.CmdUserBan')
-	.on('click', function(){
-
-		let data = NUI.Form.ObjectArrayToDataString({
-			"ID": jQuery(this).attr('data-user-id'),
-			"Reason": ''
-		});
-
-		console.log(data);
-
-		let req = new NUI.Request('BAN', '/api/user/entity');
-
-		(req.send(data))
-		.then(req.goto)
-		.catch(req.catch);
+		jQuery('[data-form-fill-access-type-key]').val(key);
+		jQuery('[data-form-fill-access-type-value]').val(val).focus();
+		console.log(`${key} = ${val} // ${nfo}`);
 
 		return;
 	});
 
-	jQuery('.CmdUserUnban')
-	.on('click', function(){
+};
 
-		let data = NUI.Form.ObjectArrayToDataString({
-			"ID": jQuery(this).attr('data-user-id')
-		});
+jQuery(function() {
 
-		let req = new NUI.Request('UNBAN', '/api/user/entity');
+	BindAccessTypeShortcuts();
 
-		(req.send(data))
-		.then(req.goto)
-		.catch(req.catch);
-
-		return;
-	});
-
-	jQuery('.CmdUserOvershadow')
-	.on('click', function(){
-
-		let data = NUI.Form.ObjectArrayToDataString({
-			"ID": jQuery(this).attr('data-user-id')
-		});
-
-		let req = new NUI.Request('OVERSHADOW', '/api/user/entity');
-
-		(req.send(data))
-		.then(req.goto)
-		.catch(req.catch);
-
-		return;
-	});
-
-	jQuery('.UserPatchForm')
-	.on('submit', function(){
-
-		let form = new NUI.Form(this);
-		let req = new NUI.Request('PATCH', '/api/user/entity');
-		let btn = form.element.find('button[type=submit]');
-
-		(req.send(form.read()))
-		.then(function(result) {
-
-			btn
-			.removeClass('btn-primary')
-			.addClass('btn-success');
-
-			setTimeout(
-				function(){
-					btn
-					.removeClass('btn-success')
-					.addClass('btn-primary');
-
-					return;
-				},
-				1000
-			);
-
-			return;
-		})
-		.then(req.goto)
-		.catch(req.catch);
-
-		return false;
-	});
+	UserEntityUtil.WhenDocumentReady();
 
 	return;
 });
-
 </script>
