@@ -28,7 +28,7 @@ $ShowTags ??= TRUE;
 		<div class="fw-bold fs-large"><a href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>"><?php $Util->Print($Profile->Title) ?></a></div>
 	</div>
 	<div class="col-12 col-md-auto">
-		<a class="btn btn-primary fs-larger" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>">View Document</a>
+		<a class="btn btn-primary btn-block fs-larger" href="<?php $Util->Print($App->RewriteURL($Profile->GetPageURL($App))) ?>">View Document</a>
 	</div>
 </div>
 <?php if(!$Profiles->IsLastKey($PK)): ?>
