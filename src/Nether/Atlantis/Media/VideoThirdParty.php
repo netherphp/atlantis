@@ -177,11 +177,13 @@ extends Atlantis\Prototype {
 
 		$Input['ParentUUID'] ??= NULL;
 		$Input['Enabled'] ??= 1;
+		$Input['UseSiteTags'] ??= FALSE;
 
 		$Input['Search'] ??= NULL;
 		$Input['SearchTitle'] ??= FALSE;
 		$Input['SearchDetails'] ??= FALSE;
 		$Input['SearchURL'] ??= FALSE;
+		$Input['TagsAll'] ??= NULL;
 
 		$Input['Untagged'] ??= NULL;
 
@@ -216,6 +218,16 @@ extends Atlantis\Prototype {
 			$Input['Enabled'] = (int)$Input['Enabled'];
 
 			$SQL->Where('Main.Enabled=:Enabled');
+		}
+
+		if($Input['UseSiteTags']) {
+			$SiteTags = Atlantis\Util::FetchSiteTags();
+			$SiteTags->Remap(Atlantis\Prototype::MapToID(...));
+
+			if(!$Input['TagsAll'])
+			$Input['TagsAll'] = [];
+
+			$Input['TagsAll'] = array_merge($Input['TagsAll'], $SiteTags->Export());
 		}
 
 		static::FindExtendFilters_SearchBasicRel($SQL, $Input);
