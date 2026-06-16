@@ -17,8 +17,11 @@ use Nether\User;
  * @var Database\ResultSet $Videos
  */
 
+$ShowTags ??= FALSE;
+$ShowDateShared ??= TRUE;
+$ShowDateReleased ??= TRUE;
+
 $ParentUUID ??= NULL;
-$ShowTags ??= TRUE;
 
 ?>
 
@@ -38,19 +41,24 @@ $ShowTags ??= TRUE;
 		</div>
 		<div class="col-12 col-md mb-4">
 			<h3><a href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>"><?php $Util->Print($Video->Title) ?></a></h3>
+			<?php if($ShowDateShared): ?>
 			<div>
 				<b>Date Shared:</b>
 				<?php $Util->Print($Video->DateCreated->Get(Common\Values::DateFormatFancyDate)) ?>
 			</div>
+			<?php endif; ?>
+			<?php if($ShowDateReleased): ?>
 			<div>
 				<b>Date Released:</b>
 				<?php $Util->Print($Video->DatePosted->Get(Common\Values::DateFormatFancyDate)) ?>
 			</div>
+			<?php endif; ?>
 			<?php if($ShowTags): ?>
 			<div>
 				<?php $Surface->Area('widgets/tag-buttons', [ 'Tags'=> $Video->GetTags() ]) ?>
 			</div>
 			<?php endif; ?>
+
 			<div class="mt-2">
 				<a class="btn btn-primary" href="<?php $Util->Print($Video->GetPageURL(TRUE)) ?>">View Video</a>
 			</div>
