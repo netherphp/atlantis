@@ -111,6 +111,11 @@ in-page dialog windows.
 		return;
 	};
 
+	static New(config) {
+
+		return new DialogWindow(config);
+	};
+
 	////////////////
 	////////////////
 
@@ -256,7 +261,7 @@ a dialog window can be given an array of these to automatically build a form
 inside the dialog window.
 //*/
 
-	constructor(type, name, title, value, list) {
+	constructor(type, name, title, value, list, info) {
 
 		if(typeof type === 'object') {
 			name = type.name;
@@ -271,8 +276,14 @@ inside the dialog window.
 		this.title = title ? title : name;
 		this.value = value ? value : null;
 		this.list = list ? list : null;
+		this.info = info ? info : null;
 
 		return;
+	};
+
+	static New({ type, name, title, value, list, info }) {
+
+		return new DialogField(type, name, title, value, list, info);
 	};
 
 	////////////////
@@ -424,10 +435,17 @@ inside the dialog window.
 			.attr('data-fieldtype', this.type)
 		);
 
-		output.append(jQuery('<label>').text(`${this.title}...`));
+		output.append(jQuery('<label />').text(`${this.title}...`));
 
 		if(this.value)
 		field.val(this.value);
+
+		if(this.info)
+		output.append(
+			jQuery('<div />')
+			.addClass('o-50 fs-smaller')
+			.text(`> ${this.info}`)
+		);
 
 		return output;
 	};

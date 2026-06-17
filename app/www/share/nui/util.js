@@ -27,28 +27,40 @@ class Util {
 
 	static copyValueToClipboard(what, that=null) {
 
-		let textbox = null;
+		if(navigator.clipboard) {
+			navigator.clipboard.writeText(what);
+		}
 
-		// create a textbox that contains the content we want and add it to
-		// the dom. we couldn't display none it or else the selection would
-		// not work. we can however set it to 0x0.
+		else {
+			// create a textbox that contains the content we want and add it to
+			// the dom. we couldn't display none it or else the selection would
+			// not work. we can however set it to 0x0.
 
-		jQuery('body').append(
-			textbox = jQuery('<textarea />')
-			.css({'width':'0px','height':'0px','border':'0px;'})
-			.val(what)
-		);
+			let textbox = null;
 
-		console.log(`[Util.copyValueToClipboard] ${what}`);
+			jQuery('body').append(
+				textbox = jQuery('<textarea />')
+				.css({'width':'0px','height':'0px','border':'0px;'})
+				.val(what)
+			);
 
-		textbox.select();
-		document.execCommand('copy');
-		textbox.remove();
+			textbox.select();
+			document.execCommand('copy');
+			textbox.remove();
+		}
+
+		console.log(`[Util.copyValueToClipboard] ${what} ${that}`);
 
 		if(that) {
-			originalText = jQuery(that).html();
-			jQuery(that).text('Copied!');
-			setTimeout(function(){ jQuery(that).html(originalText); },1000);
+			let note = jQuery(that);
+			let og = note.html();
+
+			note.text('Copied!');
+
+			setTimeout(function(){
+				note.html(og); },
+				1000
+			);
 		}
 
 		return;
