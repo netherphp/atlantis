@@ -1,0 +1,48 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\UI\SlideDeck $Element
+ * ...
+ */
+
+$UUID = sprintf('fader-%s', Common\UUID::V7());
+
+################################################################################
+############################################################################# ?>
+
+<div id="<?php $Util->Print($UUID) ?>" class="ratiobox <?php $Util->Print($Element->Ratiobox) ?> bg-grey-dk">
+	<div class="Fader" style="display: none;">
+		<?php foreach($Element->Items as $I): /** @var Atlantis\UI\SlideDeckItem $I */ ?>
+		<div class="FaderItem w-100 h-100" data-fader-wallpaper="<?php $Util->Print($I->ImageURL) ?>" data-fader-wallpaper-pos="center center">
+			<?php if($I->ClickURL): ?>
+			<a class="position-absolutely" href="<?php $Util->Print($I->ClickURL) ?>" style="cursor: pointer !important;"></a>
+			<?php endif; ?>
+		</div>
+		<?php endforeach; ?>
+	</div>
+</div>
+
+<script type="module">
+import Fader from '/share/nui/modules/fader/fader.js';
+
+jQuery(function() {
+
+	let fader = new Fader('<?php $Util->Print($UUID) ?>');
+
+	return;
+});
+</script>
