@@ -1,6 +1,6 @@
 /*//
-@date 2026-05-28 21:49:21 UTC
-@files 49 [
+@date 2026-06-19 22:47:07 UTC
+@files 50 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -35,6 +35,7 @@
     "src\/elements\/collapser.css",
     "src\/elements\/dropsort.css",
     "src\/elements\/editor-html.css",
+    "src\/elements\/fader.css",
     "src\/elements\/field-tag-search.css",
     "src\/elements\/gallery.css",
     "src\/elements\/glassbox.css",
@@ -3502,6 +3503,69 @@ is being used and then prefixing all these with that theme name, if i recall. */
 	border-radius: 6px;
 	padding: 16px;
 	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+}
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/fader.css //////////////////////////////////////////////////*/
+
+.Fader {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.FaderItemContain {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 100;
+}
+
+.FaderItemOut {
+	opacity: 0.0;
+	transition: opacity 300ms;
+	pointer-events: none;
+}
+
+.FaderItemIn {
+	opacity: 1.0 !important;
+	transition: opacity 1000ms;
+}
+
+.FaderPager {
+	position: absolute;
+	bottom: 10px;
+	left: 0px;
+
+	display: flex;
+	justify-content: center;
+
+	width: 100%;
+}
+
+.FaderPagerBullet {
+	position: relative;
+
+	background: #000000;
+	box-shadow: 0px 0px 8px #000000;
+	border-radius: 300px;
+	cursor: alias;
+	height: 16px;
+	margin: 10px;
+	width: 16px;
+	z-index: 150;
+}
+
+.FaderPagerBullet.Active {
+	background: #ffffff;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////

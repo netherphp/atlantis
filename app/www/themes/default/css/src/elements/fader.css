@@ -1,0 +1,60 @@
+
+.Fader {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.FaderItemContain {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 100;
+}
+
+.FaderItemOut {
+	opacity: 0.0;
+	transition: opacity 300ms;
+	pointer-events: none;
+}
+
+.FaderItemIn {
+	opacity: 1.0 !important;
+	transition: opacity 1000ms;
+}
+
+.FaderPager {
+	position: absolute;
+	bottom: 10px;
+	left: 0px;
+
+	display: flex;
+	justify-content: center;
+
+	width: 100%;
+}
+
+.FaderPagerBullet {
+	position: relative;
+
+	background: #000000;
+	box-shadow: 0px 0px 8px #000000;
+	border-radius: 300px;
+	cursor: alias;
+	height: 16px;
+	margin: 10px;
+	width: 16px;
+	z-index: 150;
+}
+
+.FaderPagerBullet.Active {
+	background: #ffffff;
+}
