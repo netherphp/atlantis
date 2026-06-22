@@ -1,0 +1,186 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Email;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Email\Struct\LibraryConfigInfo $Config
+ */
+
+################################################################################
+################################################################################
+
+$Trail = [
+	'Email Config' => '/ops/email'
+];
+
+$Breadcrumbs = (fn()=> $Surface->GetArea('admin/breadcrumbs', [ 'Trail'=> $Trail ]));
+
+?>
+
+<div class="container">
+
+	<?php echo $Breadcrumbs(); ?>
+
+
+		<div class="row justify-content-center g-2">
+			<div class="col-12">
+				<div class="row align-items-start">
+					<div class="col-auto">
+						<div class="ratiobox wallpapered square rounded-less" style="width:48px;">
+							<div class="pos-abcentered">
+								<i class="mdi mdi-check"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="atl-collapser my-0 py-0">
+							<header class="my-0 py-0">
+								<div>
+									Global Settings
+								</div>
+								<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+							</header>
+							<section class="my-0 py-0">
+
+								<?php foreach($Config->ConfigKeys as $K=>$V): ?>
+								<div class="row">
+									<div class="col-auto">
+										<div class="ratiobox square" style="width:48px;">
+											<div class="pos-abcentered">
+												<i class="mdi mdi-check fs-largerer"></i>
+											</div>
+										</div>
+									</div>
+									<div class="col">
+										<div class="fs-larger fw-bold">
+											<code>
+												<?php $Util->Print($K) ?>
+											</code>
+										</div>
+										<div>
+											<code class="tc-white">
+												<?php $Util->Print($V) ?>
+											</code>
+										</div>
+									</div>
+								</div>
+								<?php endforeach; ?>
+
+							</section>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12">
+				<div class="row align-items-start">
+					<div class="col-auto">
+						<div class="ratiobox wallpapered square rounded-less" style="width:48px;">
+							<div class="pos-abcentered">
+								<i class="mdi mdi-check"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+
+
+						<?php foreach($Config->Services as $SK=>$SV): /** @var Email\Struct\ServiceConfigInfo $SV */ ?>
+						<div class="row">
+							<div class="col-auto">
+								<div class="ratiobox square" style="width:48px;">
+									<div class="pos-abcentered">
+										<i class="mdi mdi-check fs-largerer"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="atl-collapser my-0 py-0">
+									<header class="my-0 py-0">
+										<div>
+											<?php $Util->Print($SK) ?>
+										</div>
+										<span class="Indicator"><i class="mdi mdi-plus-thick"></i></span>
+									</header>
+									<section class="my-0 py-0">
+
+									</section>
+								</div>
+							</div>
+						</div>
+						<?php endforeach; ?>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	<div class="glassbox rounded p-4 mb-4">
+		<div class="row justify-content-center">
+			<div class="col-12">
+				<div class="row align-items-center g-4 mb-4">
+					<div class="col-auto">
+						<span class="fs-large fw-bold tt-upper ff-mono o-50">Email Test</span>
+					</div>
+					<div class="col">
+						<hr>
+					</div>
+				</div>
+			</div>
+			<div class="col-12">
+				<?php if($Surface->Get('TestEmailSent')): ?>
+				<div class="alert alert-success mb-4">
+					An attempt has been made.
+					If it does not arrive check the email log file.
+				</div>
+				<?php endif; ?>
+
+
+				<form method="post">
+					<div class="row g-2">
+						<div class="col-12">
+							<div class="form-floating">
+								<input type="text" class="form-control rounded-less" name="Email" value="<?php $Printer($User->Email) ?>" placeholder="..." />
+								<label>Send To...</label>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-floating">
+								<select name="Via" class="form-control form-select rounded-less" placeholder="...">
+									<?php foreach($Config->GetReadyServices() as $ServInfo): /** @var Nether\Email\Struct\ServiceConfigInfo $ServInfo */ ?>
+									<option value="<?php $Printer($ServInfo->Key) ?>" <?php echo($Selected($Config->IsDefaultKey($ServInfo->Key))) ?>>via <?php $Printer($ServInfo->Name) ?></option>
+									<?php endforeach; unset($ServName, $ServInfo); ?>
+								</select>
+								<label for="Via">Send Via...</label>
+							</div>
+						</div>
+						<div class="col"></div>
+						<div class="col-auto">
+							<button class="btn btn-outline-light btn-lg fs-large rounded-less">
+								<i class="mdi mdi-fw mdi-email mr-2"></i> Send
+							</button>
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+

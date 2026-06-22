@@ -10,46 +10,25 @@ use Nether\User;
 class EmailWeb
 extends Atlantis\ProtectedWeb {
 
-	#[Atlantis\Meta\RouteHandler('/ops/email/config')]
-	#[Atlantis\Meta\RouteAccessTypeAdmin]
-	#[Atlantis\Meta\TrafficReportSkip]
-	public function
-	HandleConfigGet():
-	void {
-
-		$LibInfo = new Email\Struct\LibraryConfigInfo;
-
-		$this->Surface
-		->Set('Page.Title', 'Email Config Info')
-		->Wrap('admin/email/config', [
-			'LibInfo' => $LibInfo
-		]);
-
-		return;
-	}
-
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
-
-	#[Atlantis\Meta\RouteHandler('/ops/email/test')]
+	#[Atlantis\Meta\RouteHandler('/ops/email')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	#[Atlantis\Meta\TrafficReportSkip]
 	public function
 	HandleTestGet():
 	void {
 
-		$LibInfo = new Email\Struct\LibraryConfigInfo;
+		$Config = new Email\Struct\LibraryConfigInfo;
 
-		$this->Surface
-		->Set('Page.Title', 'Email Sending Test')
-		->Wrap('admin/email/test', [
-			'LibInfo' => $LibInfo
+		($this)
+		->SetPageTitle('Email Config // Operations')
+		->Area('admin/email/index', [
+			'Config' => $Config
 		]);
 
 		return;
 	}
 
-	#[Atlantis\Meta\RouteHandler('/ops/email/test', Verb: 'POST')]
+	#[Atlantis\Meta\RouteHandler('/ops/email', Verb: 'POST')]
 	#[Atlantis\Meta\RouteAccessTypeAdmin]
 	public function
 	HandleTestPost():

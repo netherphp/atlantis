@@ -1,16 +1,20 @@
-<?php
+<?php ##########################################################################
+################################################################################
 
-////////////////////////////////////////////////////////////////////////////////
-namespace Nether\Atlantis\Struct; //////////////////////////////////////////////
+namespace Nether\Atlantis\Struct;
 
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Database;
 
-use Exception;
+################################################################################
+################################################################################
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+use Exception;
+use Nether\Atlantis\Struct\EntityRelationship;
+
+################################################################################
+################################################################################
 
 #[Database\Meta\TableClass('PrototypeIndex')]
 #[Database\Meta\InsertIgnore]
@@ -32,8 +36,50 @@ extends Database\Prototype {
 	public string
 	$Type;
 
+	////////////////
+	////////////////
+
+	protected mixed
+	$Object;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Info('Fetch the object referenced from the database..')]
+	public function
+	Fetch():
+	mixed {
+
+		$Class = EntityRelationship::TypeClass($this->Type);
+
+		if(!$Class)
+		throw new Common\Error\FormatInvalid('FQCN');
+
+		////////
+
+		$Object = $Class::GetByUUID($this->UUID);
+
+		if(!$Object)
+		throw new Common\Error\RequiredDataMissing('Valid Object');
+
+		////////
+
+		return $Object;
+	}
+
+	#[Common\Meta\Info('Ftch the object referenced, cached locally.')]
+	public function
+	Get():
+	mixed {
+
+		if(!isset($this->Object))
+		$this->Object = $this->Fetch();
+
+		return $this->Object;
+	}
+
+	////////////////////////////////////////////////////////////////
+	// STATIC API //////////////////////////////////////////////////
 
 	static public function
 	Insert(iterable $Input):
@@ -90,21 +136,58 @@ extends Database\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	DeleteByUUID(string $UUID):
+	FetchTypeForUUID(string $UUID):
+	?string {
+
+		$Row = static::GetByField('UUID', $UUID);
+
+		if(!$Row)
+		return NULL;
+
+		return $Row->Type;
+	}
+
+	static public function
+	FetchObjectForUUID(string $UUID, bool $ThrowIfBroken=FALSE):
+	?object {
+
+		$Row = NULL;
+		$Obj = NULL;
+		$Err = NULL;
+
+		////////
+
+		$Row = static::GetByField('UUID', $UUID);
+
+		if(!$Row)
+		return NULL;
+
+		try { $Obj = $Row->Fetch(); }
+		catch(Common\Error\RequiredDataMissing $Err) {
+			if(!$ThrowIfBroken)
+			return NULL;
+
+			throw $Err;
+		}
+
+		////////
+
+		return $Obj;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static public function
+	DeleteUUID(string $UUID):
 	void {
 
-		$DBM = new Database\Manager;
+		$Row = static::GetByField('UUID', $UUID);
 
-		$SQL = (
-			($DBM->NewVerse(static::$DBA))
-			->FromMetaDelete(static::class)
-			->Where('`UUID`=:UUID')
-		);
+		////////
 
-		$Result = $SQL->Query([ ':UUID'=> $UUID ]);
-
-		if(!$Result->IsOK())
-		throw new Exception($Result->GetError());
+		if($Row)
+		$Row->Drop();
 
 		return;
 	}
@@ -115,6 +198,8 @@ extends Database\Prototype {
 
 		$Row = static::GetByField('UUID', $Old);
 
+		////////
+
 		if($Row)
 		$Row->Update([ 'UUID'=> $New ]);
 
@@ -123,17 +208,16 @@ extends Database\Prototype {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Deprecated('2026-06-12', 'Use DeleteUUID')]
 	static public function
-	FetchTypeForUUID(string $UUID):
-	?string {
+	DeleteByUUID(string $UUID):
+	void {
 
-		$PIndex = static::GetByField('UUID', $UUID);
-
-		if(!$PIndex)
-		return NULL;
-
-		return $PIndex->Type;
+		static::DeleteUUID($UUID);
+		return;
 	}
 
 };

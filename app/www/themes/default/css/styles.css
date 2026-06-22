@@ -1,5 +1,5 @@
 /*//
-@date 2026-05-28 21:49:21 UTC
+@date 2026-05-29 06:29:46 UTC
 @files 49 [
     "src\/imports.css",
     "src\/main.css",
@@ -2494,6 +2494,7 @@ code.cli {
 .pos-absolutely { position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; }
 .pos-relative { position: relative; }
 .pos-sticky { position: sticky; }
+.pos-abcentered { position: absolute; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%); }
 
 .pos-top-left { top: 0px; left: 0px; }
 .pos-top-right { top: 0px; right: 0px; }
