@@ -20,14 +20,27 @@ class DeckManager {
 		jQuery('[data-deck-delete]')
 		.on('click', DeckManager.OnClickDelete);
 
+		////////
+
 		jQuery('[data-deck-editor-save]')
-		.on('click', DeckManager.OnClickEditorSave);
+		.on('click', ((jEv)=> this.OnClickEditorSave(jEv)));
 
 		jQuery('[data-deck-editor-row-add]')
-		.on('click', DeckManager.OnClickEditorRowAdd);
+		.on('click', ((jEv)=> this.OnClickEditorRowAdd(jEv)));
 
-		jQuery('[data-deck-editor-row-delete]')
-		.on('click', DeckManager.OnClickEditorRowDelete);
+		jQuery('[data-deck-editor]')
+		.on(
+			'click', '[data-deck-editor-row-move-up]',
+			((jEv)=> this.OnClickEditorRowMoveUp(jEv))
+		)
+		.on(
+			'click', '[data-deck-editor-row-move-down]',
+			((jEv)=> this.OnClickEditorRowMoveDown(jEv))
+		)
+		.on(
+			'click', '[data-deck-editor-row-delete]',
+			((jEv)=> this.OnClickEditorRowDelete(jEv))
+		);
 
 		return;
 	};
@@ -115,28 +128,128 @@ class DeckManager {
 
 	static OnClickEditorRowAdd(jEv) {
 
-		alert('todo: add row');
+		let box = this.FetchDeckEditor();
+		let tpl = this.FetchDeckEditorTemplate();
+		let num = this.NewRowIterator();
+
+		////////
+
+		(tpl.find('div'))
+		.attr('id', `row-new-${num}`);
+
+		(tpl.find('hr'))
+		.attr('id', `hr-new-${num}`);
+
+		(tpl.find('[data-deck-editor-row-delete]'))
+		.attr('data-deck-editor-row-delete', `new-${num}`);
+
+		////////
+
+		box.prepend(tpl.html());
 
 		return false;
 	};
 
 	static OnClickEditorRowDelete(jEv) {
 
-		let that = jQuery(this);
-		let uuid = that.attr('data-deck-editor-row-delete');
+		let that = jQuery(jEv.currentTarget);
+		let rid = that.attr('data-deck-editor-row-delete');
+
+		////////
 
 		if(confirm('Delete Row?'))
-		jQuery(`#row-${uuid}, #hr-${uuid}`).remove();
+		jQuery(`#row-${rid}, #hr-${rid}`).remove();
+
+		return false;
+	};
+
+	static OnClickEditorRowMoveUp(jEv) {
+
+		let that = jQuery(jEv.currentTarget);
+		let rid = that.attr('data-deck-editor-row-move-up');
+
+		let box = this.FetchDeckEditor();
+		let row = box.find(`#row-${rid}`);
+		let pin = row.prev();
+
+		if(pin)
+		pin.before(row);
+
+		return false;
+	};
+
+
+	static OnClickEditorRowMoveDown(jEv) {
+
+		let that = jQuery(jEv.currentTarget);
+		let rid = that.attr('data-deck-editor-row-move-down');
+
+		let box = this.FetchDeckEditor();
+		let row = box.find(`#row-${rid}`);
+		let pin = row.next();
+
+		if(pin)
+		pin.after(row);
 
 		return false;
 	};
 
 	static OnClickEditorSave(jEv) {
 
-		alert('todo: save');
+		let api = new API.Request('PATCH', '/ops/deckmgr/api');
+		let name = jQuery('[data-deck-name]').val();
+		let alias = jQuery('[data-deck-alias]').val();
+
+		let box = this.FetchDeckEditor();
+		let rows = box.find('[data-deck-editor-row]');
+
+		let data = {
+			"Name": name,
+			"Alias": alias,
+			"Items": []
+		};
+
+		////////
+
+		rows.each(function(idx, r) {
+
+			let that = jQuery(r);
+			let uuid = that.attr('data-deck-editor-row');
+			let img = that.find('[name="ImageURL"]').val();
+			let link = that.find('[name="LinkURL"]').val();
+
+			////////
+
+			if(uuid === 'template')
+			uuid = '';
+
+			(data.Items)
+			.push({ "UUID": uuid, "ImageURL": img, "LinkURL": link });
+
+			return;
+		});
+
+		////////
+
+		data.Items = JSON.stringify(data.Items);
+
+		(api.send(data))
+		.then(function(r){
+			console.log(r);
+			return;
+		});
 
 		return false;
 	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static #NewRowIterator = 0;
+	static NewRowIterator() { return (++DeckManager.#NewRowIterator); };
+
+	static FetchDeckEditor() { return jQuery('[data-deck-editor]'); };
+	static FetchDeckEditorTemplate() { return jQuery('[data-deck-editor-template]').clone(); };
 
 };
 

@@ -40,20 +40,20 @@ $Breadcrumbs = (fn()
 		<div class="row g-4">
 			<div class="col-12">
 				<div class="form-floating">
-					<input class="form-control" type="text" name="Name" title="Alias" placeholder="..." value="<?php $Util->Print($Deck->GetName()) ?>" />
+					<input class="form-control" type="text" name="Name" placeholder="..." value="<?php $Util->Print($Deck->GetName()) ?>" data-deck-name />
 					<label>Deck Name...</label>
 				</div>
 			</div>
 			<div class="col-12">
 				<div class="form-floating">
-					<input class="form-control" type="text" name="Name" title="Alias" placeholder="..." value="<?php $Util->Print($Deck->GetAlias()) ?>" />
+					<input class="form-control" type="text" name="Alias" placeholder="..." value="<?php $Util->Print($Deck->GetAlias()) ?>" data-deck-alias />
 					<label>Alias / Filename...</label>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="glassbox rounded p-3 mb-6 hr-hide-last">
+	<div class="glassbox rounded p-3 mb-6">
 		<div class="row">
 			<div class="col"></div>
 			<div class="col-auto">
@@ -72,29 +72,30 @@ $Breadcrumbs = (fn()
 
 		<hr />
 
-		<?php foreach($Deck->GetItems() as $Item): /** @var SlideDeckItem $Item */ ?>
-		<div id="row-<?php $Util->Print($Item->UUID) ?>" class="row align-items-center g-2" data-deck-editor-row>
-			<div class="col-auto">
-				<i class="mdi mdi-menu mr-0"></i>
-			</div>
-			<div class="col">
-				<div class="form-floating mb-2">
-					<input class="form-control" type="text" name="ImageURL" placeholder="..." value="<?php $Util->Print($Item->ImageURL) ?>" />
-					<label>Image URL</label>
-				</div>
-				<div class="form-floating">
-					<input class="form-control" type="text" name="ClickURL" placeholder="..." value="<?php $Util->Print($Item->ClickURL) ?>" />
-					<label>Click URL</label>
-				</div>
-			</div>
-			<div class="col-auto">
-				<button class="btn btn-outline-danger btn-sm py-1" data-deck-editor-row-delete="<?php $Util->Print($Item->UUID) ?>">
-					<i class="mdi mdi-delete mr-0"></i>
-				</button>
-			</div>
+		<div class="hr-hide-last" data-deck-editor>
+			<?php
+
+			foreach($Deck->GetItems() as $Item)
+			$Surface->Area('admin/slidedecks/edit-row', [
+				'Deck' => $Deck,
+				'Item' => $Item
+			]);
+
+			?>
+
 		</div>
-		<hr id="hr-<?php $Util->Print($Item->UUID) ?>" />
-		<?php endforeach; ?>
+
+		<div class="d-none" data-deck-editor-template>
+			<?php
+
+			$Surface->Area('admin/slidedecks/edit-row', [
+				'Deck' => $Deck,
+				'Item' => new Atlantis\UI\SlideDeckItem([ 'UUID'=> 'template' ])
+			]);
+
+			?>
+		</div>
+
 	</div>
 
 	<div class="ta-center mb-6">
@@ -108,5 +109,5 @@ $Breadcrumbs = (fn()
 
 <script type="module">
 import DeckMgr from '/share/atlantis/admin/deckmgr.js';
-jQuery(DeckMgr.WhenDocumentReady);
+jQuery(()=> DeckMgr.WhenDocumentReady());
 </script>

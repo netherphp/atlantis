@@ -6,6 +6,9 @@ namespace Nether\Atlantis\Routes\Admin;
 use Nether\Atlantis;
 use Nether\Common;
 
+use Nether\Atlantis\UI\SlideDeck;
+use Nether\Atlantis\UI\SlideDeckConfig;
+use Nether\Atlantis\UI\SlideDeckItem;
 use Throwable;
 
 ################################################################################
@@ -22,7 +25,8 @@ extends Atlantis\ProtectedAPI {
 
 		($this->Input)
 		->SetFilters('Name', Common\Filters\Text::TrimmedNullable(...))
-		->SetFilters('Alias', Common\Filters\Text::TrimmedNullable(...));
+		->SetFilters('Alias', Common\Filters\Text::TrimmedNullable(...))
+		->SetFilters('Items', Common\Filters\Text::DatastoreFromJSON(...));
 
 		return;
 	}
@@ -76,10 +80,45 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		$Alias = $this->Input->Get('Alias');
-		$Deck = Atlantis\UI\SlideDeck::Load($this->App, $Alias);
+		$Deck = SlideDeck::Load($this->App, $Alias);
 
 		if($Deck)
 		unlink($Deck->Filename);
+
+		return;
+	}
+
+	#[Atlantis\Meta\RouteHandler('/ops/deckmgr/api', Verb: 'PATCH')]
+	#[Atlantis\Meta\RouteAccessTypeAdmin]
+	public function
+	EntityPatch():
+	void {
+
+		$Name = $this->Input->Get('Name');
+		$Alias = $this->Input->Get('Alias');
+		$Items = $this->Input->Get('Items');
+
+		////////
+
+		if(!$Name)
+		$this->Quit(1, 'no Name specified');
+
+		if(!$Alias)
+		$this->Quit(2, 'no Alias specified');
+
+		////////
+
+		$Deck = SlideDeck::Load($this->App, $Alias);
+
+		if(!$Deck)
+		$this->Quit(3, sprintf('deck %s not found', $Alias));
+
+		////////
+
+		$Items->Remap(fn(array $I)=> new SlideDeckItem($I));
+
+		$Deck->Config->Items = $Items;
+		$Deck->Config->Write();
 
 		return;
 	}

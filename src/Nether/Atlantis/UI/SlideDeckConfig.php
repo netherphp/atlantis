@@ -44,13 +44,15 @@ extends Common\Prototype {
 	Write():
 	void {
 
-		$Data = json_encode([
+		$Data = [
 			'Name'     => $this->Name,
 			'Ratiobox' => $this->Ratiobox,
 			'Items'    => $this->Items->Export()
-		]);
+		];
 
-		Common\Filesystem\Util::TryToWriteFile($this->Filename, $Data);
+		$JSON = Common\Filters\Text::ReadableJSON($Data);
+
+		Common\Filesystem\Util::TryToWriteFile($this->Filename, $JSON);
 
 		return;
 	}

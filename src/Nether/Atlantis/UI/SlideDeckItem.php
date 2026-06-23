@@ -13,17 +13,17 @@ use Nether\Surface;
 class SlideDeckItem
 extends Common\Prototype {
 
-	public string
-	$UUID;
+	public ?string
+	$UUID = NULL;
 
 	public ?string
-	$ImageURL;
+	$ImageURL = NULL;
 
 	public ?string
-	$ClickURL;
+	$LinkURL = NULL;
 
 	public ?string
-	$Text;
+	$Text = NULL;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ extends Common\Prototype {
 	OnReady(Common\Prototype\ConstructArgs $Args):
 	void {
 
-		if(!isset($this->UUID))
+		if(!isset($this->UUID) || !$this->UUID)
 		$this->UUID = Common\UUID::V7();
 
 		return;

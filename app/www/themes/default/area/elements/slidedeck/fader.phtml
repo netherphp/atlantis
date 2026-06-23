@@ -28,8 +28,8 @@ $UUID = sprintf('fader-%s', Common\UUID::V7());
 	<div class="Fader" style="display: none;">
 		<?php foreach($Element->GetItems() as $I): /** @var Atlantis\UI\SlideDeckItem $I */ ?>
 		<div class="FaderItem w-100 h-100" data-fader-wallpaper="<?php $Util->Print($I->ImageURL) ?>" data-fader-wallpaper-pos="center center">
-			<?php if($I->ClickURL): ?>
-			<a class="position-absolutely" href="<?php $Util->Print($I->ClickURL) ?>" style="cursor: pointer !important;"></a>
+			<?php if($I->LinkURL): ?>
+			<a class="position-absolutely" href="<?php $Util->Print($I->LinkURL) ?>" style="cursor: pointer !important;"></a>
 			<?php endif; ?>
 		</div>
 		<?php endforeach; ?>

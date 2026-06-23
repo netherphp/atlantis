@@ -1,0 +1,58 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\UI\SlideDeck $Deck
+ * @var Atlantis\UI\SlideDeckItem $Item
+ *
+ */
+
+################################################################################
+############################################################################# ?>
+
+<div id="row-<?php $Util->Print($Item->UUID) ?>" class="row align-items-center g-4" data-deck-editor-row="<?php $Util->Print($Item->UUID) ?>">
+
+	<div class="col-auto">
+		<button class="btn btn-block btn-outline-light o-25 mb-2" data-deck-editor-row-move-up="<?php $Util->Print($Item->UUID) ?>">
+			<i class="mdi mdi-chevron-up mr-0 fs-most-large"></i>
+		</button>
+		<button class="btn btn-block btn-outline-light o-25" data-deck-editor-row-move-down="<?php $Util->Print($Item->UUID) ?>">
+			<i class="mdi mdi-chevron-down mr-0 fs-most-large"></i>
+		</button>
+	</div>
+
+	<div class="col">
+		<div class="form-floating mb-2">
+			<input class="form-control" type="text" name="ImageURL" placeholder="..." value="<?php $Util->Print($Item->ImageURL) ?>" />
+			<label>Image URL</label>
+		</div>
+		<div class="form-floating">
+			<input class="form-control" type="text" name="LinkURL" placeholder="..." value="<?php $Util->Print($Item->LinkURL) ?>" />
+			<label>Link URL</label>
+		</div>
+	</div>
+
+	<div class="col-auto">
+		<button class="btn btn-outline-danger btn-sm py-1" data-deck-editor-row-delete="<?php $Util->Print($Item->UUID) ?>">
+			<i class="mdi mdi-delete mr-0"></i>
+		</button>
+	</div>
+
+	<div class="col-12">
+		<hr class="mt-0 mb-4" />
+	</div>
+
+</div>
