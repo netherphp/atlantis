@@ -14,9 +14,6 @@ use Nether\Common\Prototype\PropertyInfo;
 class UserEntityAPI
 extends Atlantis\ProtectedAPI {
 
-	protected Common\Databox
-	$Input;
-
 	public function
 	OnReady(?Common\Datastore $Input):
 	void {

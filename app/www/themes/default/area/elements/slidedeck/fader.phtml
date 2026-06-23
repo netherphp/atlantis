@@ -24,9 +24,9 @@ $UUID = sprintf('fader-%s', Common\UUID::V7());
 ################################################################################
 ############################################################################# ?>
 
-<div id="<?php $Util->Print($UUID) ?>" class="ratiobox <?php $Util->Print($Element->Ratiobox) ?> bg-grey-dk">
+<div id="<?php $Util->Print($UUID) ?>" class="ratiobox <?php $Util->Print($Element->GetRatiobox()) ?> bg-grey-dk">
 	<div class="Fader" style="display: none;">
-		<?php foreach($Element->Items as $I): /** @var Atlantis\UI\SlideDeckItem $I */ ?>
+		<?php foreach($Element->GetItems() as $I): /** @var Atlantis\UI\SlideDeckItem $I */ ?>
 		<div class="FaderItem w-100 h-100" data-fader-wallpaper="<?php $Util->Print($I->ImageURL) ?>" data-fader-wallpaper-pos="center center">
 			<?php if($I->ClickURL): ?>
 			<a class="position-absolutely" href="<?php $Util->Print($I->ClickURL) ?>" style="cursor: pointer !important;"></a>

@@ -1,0 +1,95 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Common\Datastore $List
+ */
+
+$Trail = [ 'Slide Decks' => '/ops/deckmgr' ];
+
+$Breadcrumbs = (fn()
+	=> $Surface->GetArea('admin/breadcrumbs', [ 'Trail' => $Trail ])
+);
+
+$GetEditURL = function(Atlantis\UI\SlideDeck $Item) {
+
+	return sprintf('/ops/deckmgr/%s', $Item->GetAlias());
+};
+
+################################################################################
+############################################################################# ?>
+
+<div class="container">
+
+	<?php echo $Breadcrumbs(); ?>
+
+	<div class="glassbox rounded p-3 mb-6">
+		<div class="row align-items-center g-2">
+			<div class="col-12 col-md">
+				<div class="o-50 fs-smaller tt-upper fw-bold">Example Usage:</div>
+				<div class="ff-mono o-50">echo Atlantis\UI\SlideDeck::Load($Alias)</div>
+			</div>
+			<div class="col-12 col-md-auto">
+				<button class="btn btn-outline-light btn-lg btn-block fs-large" data-deck-new>
+					<i class="mdi mdi-plus-thick"></i>
+					New
+				</button>
+			</div>
+		</div>
+		<hr />
+
+		<div class="row align-items-center g-2">
+			<?php foreach($List as $Item): ?>
+			<div class="col">
+				<div>
+					<div class="fs-large fw-bold">
+						<a href="<?php $Util->Print($GetEditURL($Item)) ?>"><?php $Util->Print($Item->GetName()) ?></a>
+					</div>
+					<div class="fs-small o-50"><?php $Util->Print($Item->GetAlias()) ?></div>
+				</div>
+			</div>
+			<div class="col-auto">
+				<a href="<?php $Util->Print($GetEditURL($Item)) ?>" class="btn btn-outline-light btn-sm py-1">
+					Edit
+				</a>
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-outline-light btn-sm py-1" data-deck-copy-alias="<?php $Util->Print($Item->GetAlias()) ?>">
+					Copy Alias
+				</button>
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-outline-danger btn-sm py-1" data-deck-delete="<?php $Util->Print($Item->GetAlias()) ?>">
+					<i class="mdi mdi-delete mr-0"></i>
+				</button>
+			</div>
+			<div class="col-12">
+				<hr />
+			</div>
+			<?php endforeach; ?>
+		</div>
+
+		<?php echo Atlantis\UI\Pager::FromSurface($Surface); ?>
+	</div>
+
+</div>
+
+<script type="module">
+import DeckMgr from '/share/atlantis/admin/deckmgr.js';
+jQuery(DeckMgr.WhenDocumentReady);
+</script>
+

@@ -13,6 +13,9 @@ use Nether\Surface;
 class SlideDeckItem
 extends Common\Prototype {
 
+	public string
+	$UUID;
+
 	public ?string
 	$ImageURL;
 
@@ -25,6 +28,14 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	protected function
+	OnReady(Common\Prototype\ConstructArgs $Args):
+	void {
 
+		if(!isset($this->UUID))
+		$this->UUID = Common\UUID::V7();
+
+		return;
+	}
 
 };

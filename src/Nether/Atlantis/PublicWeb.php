@@ -46,6 +46,14 @@ as html pages. //*/
 	protected ?User\EntitySession
 	$User;
 
+	////////
+
+	public Common\Databox
+	$Input;
+
+	public Common\Databox
+	$Upload;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -70,6 +78,9 @@ as html pages. //*/
 
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
+
+		$this->Input = clone($this->Request->Input);
+		$this->Upload = clone($this->Request->Upload);
 
 		////////
 

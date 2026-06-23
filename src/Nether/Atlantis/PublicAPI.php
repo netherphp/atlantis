@@ -44,6 +44,17 @@ does not do any additional access checking.
 	protected ?Nether\User\EntitySession
 	$User;
 
+	////////
+
+	public Common\Databox
+	$Input;
+
+	public Common\Databox
+	$Upload;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	public function
 	OnWillConfirmReady(?Avenue\Struct\ExtraData $ExtraData):
 	int {
@@ -53,6 +64,9 @@ does not do any additional access checking.
 		$this->Config = $this->App->Config;
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
+
+		$this->Input = clone($this->Request->Input);
+		$this->Upload = clone($this->Request->Upload);
 
 		return Avenue\Response::CodeOK;
 	}
