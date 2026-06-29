@@ -20,6 +20,9 @@ use Nether\User;
  * @var Blog\Post $Post
  */
 
+$ShowDateShared ??= TRUE;
+$ShowDateOrigin ??= TRUE;
+
 $GetPreTags = function(Blog\Post $Post): Common\Datastore {
 
 	$Output = new Common\Datastore;
@@ -71,14 +74,20 @@ $Profiles = $Post->FetchRelatedProfiles();
 	</h4>
 	<?php endif; ?>
 
+	<?php if($ShowDateShared): ?>
 	<div class="mb-0">
 		<span class="fw-bold text-uppercase">Date Shared:</span>
 		<?php $Util->Print(Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate)) ?>
 	</div>
+	<?php endif; ?>
+
+	<?php if($ShowDateOrigin): ?>
 	<div class="mb-0">
 		<span class="fw-bold text-uppercase">Date Released:</span>
 		<?php $Util->Print(Common\Date::FromDateString($Link->Date)->Get(Common\Values::DateFormatFancyDate)) ?>
 	</div>
+	<?php endif; ?>
+
 	<div class="mb-3">
 		<span class="fw-bold text-uppercase">Source:</span>
 		<a href="<?php $Util->Print($OutboundURL) ?>" <?php $Util->Print($OutboundTab) ?>><?php $Util->Print($OutboundDomain) ?></a>
