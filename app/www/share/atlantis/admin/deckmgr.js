@@ -172,8 +172,18 @@ class DeckManager {
 		let row = box.find(`#row-${rid}`);
 		let pin = row.prev();
 
-		if(pin)
-		pin.before(row);
+
+
+		if(pin) {
+			row.addClass('squish');
+			row.addClass('squash');
+
+			row.animate({'opacity':1.0}, 250, function() {
+				(pin)
+				.before(row)
+				.ready(()=> row.removeClass('squash'));
+			});
+		}
 
 		return false;
 	};
@@ -188,8 +198,18 @@ class DeckManager {
 		let row = box.find(`#row-${rid}`);
 		let pin = row.next();
 
-		if(pin)
-		pin.after(row);
+
+
+		if(pin) {
+			row.addClass('squish');
+			row.addClass('squash');
+
+			row.animate({'opacity':1.0}, 250, function() {
+				(pin)
+				.after(row)
+				.ready(()=> row.removeClass('squash'));
+			});
+		}
 
 		return false;
 	};
