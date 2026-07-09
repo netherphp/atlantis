@@ -1,4 +1,4 @@
--:root {
+:root {
 	--DropdownMaxHeight: 300px;
 }
 
@@ -163,6 +163,7 @@ grouped are to be considered depreciated. */
 	z-index: 9011;
 	backdrop-filter: blur(6px);
 	max-height: 50vh;
+	overflow-y: scroll;
 }
 
 .dropdown-menu-gapped {

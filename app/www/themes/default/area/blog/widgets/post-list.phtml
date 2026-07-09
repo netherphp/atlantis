@@ -42,7 +42,7 @@ $ShowDefaultImage ??= $Surface->Get('Blog.PostList.ShowDefaultImage') ?? TRUE;
 <?php foreach($Posts as $Post): /** @var Blog\Post $Post */ ?>
 <div class="atl-blog-post-row">
 	<div class="row">
-		<?php if($Post->HasCoverImage() || $ShowDefaultImage): ?>
+		<?php if($Post->HasCoverImage()): ?>
 		<div class="col-12 col-md-4 col-lg-3 mb-4">
 			<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL()) ?>" alt="" />
 		</div>

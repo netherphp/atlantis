@@ -1,5 +1,5 @@
 /*//
-@date 2026-06-19 22:47:07 UTC
+@date 2026-07-09 20:08:11 UTC
 @files 50 [
     "src\/imports.css",
     "src\/main.css",
@@ -575,7 +575,7 @@ table td {
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/ext-bootstrap.css ///////////////////////////////////////////////////*/
 
--:root {
+:root {
 	--DropdownMaxHeight: 300px;
 }
 
@@ -740,6 +740,7 @@ grouped are to be considered depreciated. */
 	z-index: 9011;
 	backdrop-filter: blur(6px);
 	max-height: 50vh;
+	overflow-y: scroll;
 }
 
 .dropdown-menu-gapped {
@@ -3272,6 +3273,10 @@ is being used and then prefixing all these with that theme name, if i recall. */
 
 .atl-blog-post-row .ratiobox a {
 	border: 0px !important;
+}
+
+.atl-blog-post-code {
+	margin-bottom: 1.5rem !important;
 }
 
 /* utility */

@@ -31,6 +31,7 @@ $PostURL = $App->RewriteURL($Post->GetURL(), $PostTags);
 $PostDateFancy = Common\Date::FromDateString($Post->DateCreated)->Get(Common\Values::DateFormatFancyDate);
 
 $ShowTags ??= TRUE;
+$ShowPostImage ??= $Post->GetExtraData('ShowPostImage') ?? TRUE;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +129,7 @@ $CSSVars->RemapKeyValue(fn(string $K, string $V)=> "{$K}: {$V};");
 		</div>
 		<?php endif; ?>
 
-		<?php if($Post->HasPostImage()): ?>
+		<?php if($Post->HasPostImage() && $ShowPostImage): ?>
 		<div class="row justify-content-center mb-4">
 			<div class="col-12">
 				<img class="rounded" src="<?php $Util->Print($Post->GetPostImageURL('lg')) ?>" alt="<?php $Util->Print($Post->Title) ?>" style="width:100%;" />
