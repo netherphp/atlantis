@@ -117,6 +117,16 @@ import Tool from '/share/atlantis/admin/apitool.js?v=<?php $Printer($CacheBuster
 
 jQuery(function() {
 	new Tool;
+
+	// cause the browser to second guess the user when they hit refresh
+	// because i keep doing that on accident.
+
+	window.addEventListener('beforeunload', (event) => {
+		event.preventDefault();
+		event.returnValue = '';
+		return false;
+	});
+
 	return;
 });
 </script>

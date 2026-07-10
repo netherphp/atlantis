@@ -158,6 +158,12 @@ extends Surface\Element {
 	Common\Datastore {
 
 		$Path = $App->FromProjectRoot('data/slidedecks');
+
+		if(!file_exists($Path))
+		Common\Filesystem\Util::MkDir($Path);
+
+		////////
+
 		$Index = Common\Filesystem\Indexer::DatastoreFromPath($Path);
 
 		$Index->Remap(
