@@ -57,6 +57,7 @@ return;
 						<?php $Util->Print($Title) ?>
 					</a>
 				</div>
+
 				<?php if($Tagline): ?>
 				<div class="col-12 col-md-auto">
 					<a class="atl-blog-header-titlebar-tagline" href="<?php $Util->Print($BlogURL) ?>">
@@ -65,6 +66,7 @@ return;
 					</a>
 				</div>
 				<?php endif; ?>
+
 			</div>
 		</div>
 	</div>
@@ -75,6 +77,10 @@ return;
 		<div class="container gx-0 gx-sm-4">
 			<div class="wallpapered p-4 atl-blog-header-artwork-graphic pos-relative" style="background-image:url(<?php $Printer($HeaderImageURL) ?>);">
 				<a href="<?php $Util->Print($BlogURL) ?>" class="pos-absolutely border-0"></a>
+				<a class="btn btn-orange pos-absolute pos-bottom pos-right m-2" style="text-shadow:none;" href="<?php $Util->Print($Blog->GetPageURL()) ?>?format=rss" title="RSS Feed" data-bs-toggle="tooltip">
+					<i class="mdi mdi-rss mr"></i>
+					RSS
+				</a>
 			</div>
 		</div>
 	</section>
@@ -92,6 +98,10 @@ return;
 				<div class="col <?php $Util->Print($ThemeSettings->HeaderType === 3 ? 'order-1' : '') ?>">
 					<div class="wallpapered rounded atl-blog-header-artsplit-graphic" style="background-image:url(<?php $Util->Print($HeaderImageURL) ?>);">
 						<a href="<?php $Util->Print($BlogURL) ?>" class="pos-absolutely border-0"></a>
+						<a class="btn btn-orange pos-absolute pos-bottom pos-right m-2" style="text-shadow:none;" href="<?php $Util->Print($Blog->GetPageURL()) ?>?format=rss" title="RSS Feed" data-bs-toggle="tooltip">
+							<i class="mdi mdi-rss mr"></i>
+							RSS
+						</a>
 					</div>
 				</div>
 			</div>
