@@ -194,6 +194,39 @@ implements Atlantis\Plugin\Interfaces\ProfileView\AdminMenuSectionInterface {
 
 		////////
 
+		// 2026-07-13 me thinks this is the more modern way this type of thing
+		// should be written to interface with the scripting easier. he thinks
+		// that this is a less is more situation, and trying too hard to not
+		// replicate data in the html is starting to become stupid. rather now
+		// each js control should just know what it needs to know. it pairs
+		// with the like 4th version of scripting style which can be found in:
+		// /share/atlantis/admin/profile-util.js
+
+		// this will reduce the need to perform an api get to prefill the
+		// dialog values on most of the simple admin commands.
+
+		$Output->Shove('EditProfileType', Atlantis\Struct\DropdownItem::New(
+			Title: 'Change Profile Type...',
+			Icon: 'mdi-wrench',
+			Attr: [
+				'data-profile-cmd'   => 'ptype',
+				'data-profile-id'    => $Profile->ID,
+				'data-profile-ptype' => $Profile->PType
+			]
+		));
+
+		$Output->Shove('EditProfileAliasPrefix', Atlantis\Struct\DropdownItem::New(
+			Title: 'Change Profile Prefix...',
+			Icon: 'mdi-wrench',
+			Attr: [
+				'data-profile-cmd'    => 'aliasprefix',
+				'data-profile-id'     => $Profile->ID,
+				'data-profile-prefix' => $Profile->AliasPrefix
+			]
+		));
+
+		////////
+
 		($Output)
 		->Shove('ProfileStateDelete', Atlantis\Struct\DropdownItem::New(
 			Title: 'Delete',

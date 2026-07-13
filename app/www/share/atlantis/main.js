@@ -2,6 +2,7 @@ import AtlBlobEntity from './js/ents/blob.js';
 import AtlBlobGroup  from './js/ents/blob-group.js';
 import AtlToggleBtn  from './js/ui/togglebtn.js';
 import AtlCollapser  from '../nui/util/collapser.js';
+import AtlProfileUtil from './admin/profile-util.js';
 
 import Photo   from './photo.js';
 import Profile from './profile.js';
@@ -16,6 +17,7 @@ jQuery(function() {
 	AtlBlobGroup.WhenDocumentReady();
 	AtlToggleBtn.WhenDocumentReady();
 	AtlCollapser.WhenDocumentReady();
+	AtlProfileUtil.WhenDocumentReady();
 
 	Photo.WhenDocumentReady();
 	Profile.WhenDocumentReady();

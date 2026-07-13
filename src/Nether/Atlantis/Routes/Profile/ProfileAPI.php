@@ -59,7 +59,6 @@ extends Atlantis\ProtectedAPI {
 	void {
 
 		($this->Data)
-		//->Title(Common\Filters\Text::TrimmedNullable(...))
 		->AliasPrefix([
 			Common\Filters\Text::SlottableKey(...),
 			Common\Filters\Text::TrimmedNullable(...)
@@ -140,6 +139,10 @@ extends Atlantis\ProtectedAPI {
 			}
 
 			if(is_array($this->Data->ExtraData)) {
+				// in addition to this just being for this, this is
+				// also what is triggering the title and alias to
+				// get changed when a profile of type person is patched.
+
 				$Ent->Update($Ent->Patch([
 					'ExtraData' => $this->Data->ExtraData
 				]));
@@ -172,7 +175,15 @@ extends Atlantis\ProtectedAPI {
 
 		$Ent = $this->DemandEntityByID($this->Data->Get('ID'));
 		$Goto = $this->Data->Get('Goto');
+
+		static::PluginEntityPost($this->App, $this->Data);
 		$Patchset = new Common\Datastore($Ent->Patch($this->Data));
+
+		if($Patchset['Alias'] && $Ent->AliasPrefix) {
+			$Patchset['Alias'] = sprintf(
+				'%s-%s', $Ent->AliasPrefix, $Patchset['Alias']
+			);
+		}
 
 		////////
 

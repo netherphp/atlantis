@@ -35,6 +35,13 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	Enabled  = 1,
 	Hidden   = 2;
 
+	const
+	PTypeDefault = 0,
+	PTypePerson  = 1;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	use
 	Atlantis\Packages\ExtraData;
 
@@ -53,6 +60,13 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	public string
 	$CUID;
 
+	#[Database\Meta\TypeIntSmall(Unsigned: TRUE, Default: 0)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntType' ])]
+	public int
+	$PType = 0;
+
 	#[Database\Meta\TypeIntBig(Unsigned: TRUE)]
 	public int
 	$TimeCreated;
@@ -69,6 +83,14 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 	#[Common\Meta\PropertyFilter([ Common\Filters\Numbers::class, 'IntNullable' ])]
 	public ?int
 	$CoverImageID;
+
+
+	#[Database\Meta\TypeVarChar(Size: 100)]
+	#[Common\Meta\PropertyListable]
+	#[Common\Meta\PropertyPatchable]
+	#[Common\Meta\PropertyFilter([ Common\Filters\Text::class, 'TrimmedNullable' ])]
+	public ?string
+	$AliasPrefix = NULL;
 
 	#[Database\Meta\TypeVarChar(Size: 100)]
 	#[Common\Meta\PropertyListable]
@@ -193,7 +215,8 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 
 		$Output = array_merge(parent::DescribeForPublicAPI(), [
 			'TitleFull' => $this->GetTitle(),
-			'PageURL'   => $this->GetPageURL()
+			'PageURL'   => $this->GetPageURL(),
+			'ExtraData' => $this->ExtraData->Export()
 		]);
 
 		return $Output;
@@ -586,6 +609,26 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		//$this->CoverImage = Atlantis\Media\File::GetByID($this->CoverImageID);
 
 		return isset($this->CoverImage);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	IsTypeDefault():
+	bool {
+
+		return ($this->PType === static::PTypeDefault);
+	}
+
+	public function
+	IsTypePerson():
+	bool {
+
+		return Common\Values::HasBitSet(
+			$this->PType,
+			static::PTypePerson
+		);
 	}
 
 	////////////////////////////////////////////////////////////////
