@@ -1203,7 +1203,8 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		$Input = Common\Datastore::NewBlended($Input, [
 			'TimeCreated' => $Now->GetUnixtime(),
 			'Title'       => NULL,
-			'Alias'       => NULL
+			'Alias'       => NULL,
+			'AliasPrefix' => NULL
 		]);
 
 		////////
@@ -1211,8 +1212,14 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		if(!$Input['Title'])
 		throw new Common\Error\RequiredDataMissing('Title', 'string');
 
-		if(!$Input['Alias'])
-		$Input['Alias'] = Common\Filters\Text::PathableKey($Input['Title']);
+		if(!$Input['Alias']) {
+			$Input['Alias'] = Common\Filters\Text::PathableKey($Input['Title']);
+
+			if($Input['AliasPrefix'] && !str_starts_with($Input['Alias'], $Input['AliasPrefix']))
+			$Input['Alias'] = sprintf('%s-%s', $Input['AliasPrefix'], $Input['Alias']);
+
+			$Input['Alias'] = static::MakeAliasUnique($Input['Alias']);
+		}
 
 		if(!$Input['Alias'])
 		throw new Common\Error\RequiredDataMissing('Alias', 'string');
@@ -1259,6 +1266,37 @@ implements Atlantis\Interfaces\ExtraDataInterface {
 		////////
 
 		return $Profile;
+	}
+
+	#[Common\Meta\Date('2026-07-21')]
+	static public function
+	MakeAliasUnique(string $Alias):
+	string {
+
+		$Old = static::GetByAlias($Alias);
+		$Try = NULL;
+		$Num = 2;
+
+		////////
+
+		if(!$Old)
+		return $Alias;
+
+		////////
+
+		$Old = NULL;
+
+		do {
+			$Try = sprintf('%s-%d', $Alias, $Num);
+			$Old = static::GetByAlias($Try);
+			$Num += 1;
+		}
+
+		while($Old !== NULL);
+
+		////////
+
+		return $Try;
 	}
 
 	////////////////////////////////////////////////////////////////
