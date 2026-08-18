@@ -335,6 +335,15 @@ implements
 	}
 
 	public function
+	FlushTags():
+	static {
+
+		unset($this->TagLinks);
+
+		return $this;
+	}
+
+	public function
 	GetTagsIndexedByID():
 	Common\Datastore {
 

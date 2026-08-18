@@ -158,12 +158,35 @@ extends Atlantis\ProtectedAPI {
 
 		////////
 
+		//$Add->Write('/opt/ss-dev/temp/test-add.txt');
+		//$Remove->Write('/opt/ss-dev/temp/test-rem.txt');
+		$this->PluginTagPatchEvent($Entity, $Add, $Remove);
+
 		$this->SetPayload([
 			'Desire'   => $TagsToHave->GetData(),
 			'Existing' => $Existing,
 			'Add'      => $Add,
 			'Remove'   => $Remove
 		]);
+
+		return;
+	}
+
+	protected function
+	PluginTagPatchEvent(Atlantis\Prototype $Ent, Common\Datastore $Added, Common\Datastore $Removed):
+	void {
+
+		$Plugins = $this->App->Plugins->GetInstanced(
+			Atlantis\Plugin\Interfaces\Prototype\TagPatchEvent::class
+		);
+
+		$Plugins->Each(
+			function(Atlantis\Plugin\Interfaces\Prototype\TagPatchEvent $P)
+			use($Ent, $Added, $Removed) {
+				$P->OnPatch($Ent, $Added, $Removed);
+				return;
+			}
+		);
 
 		return;
 	}
