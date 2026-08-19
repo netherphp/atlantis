@@ -27,10 +27,10 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('get')]
-	#[Console\Meta\Value('--tz', TRUE, 'Default: UTC')]
-	#[Console\Meta\Value('--date', TRUE, 'Format: YYYY-MM-DD')]
-	#[Console\Meta\Value('--dstart', TRUE, 'Format: YYYY-MM-DD')]
-	#[Console\Meta\Value('--dstop', TRUE, 'Format: YYYY-MM-DD')]
+	#[Console\Meta\Value('--tz', 'Default: UTC')]
+	#[Console\Meta\Value('--date', 'Format: YYYY-MM-DD')]
+	#[Console\Meta\Value('--dstart', 'Format: YYYY-MM-DD')]
+	#[Console\Meta\Value('--dstop', 'Format: YYYY-MM-DD')]
 	public function
 	HandleGetStats():
 	int {
@@ -80,17 +80,28 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('trim')]
+	#[Console\Meta\Toggle('--commit', 'Without this nothing bad can happen.')]
+	#[Console\Meta\Value('--limit', 'Delete the rows in chunks of <limit> rows to be nice to the server.')]
+	#[Console\Meta\Toggle('--1m', 'Delete rows older than 1 month.')]
+	#[Console\Meta\Toggle('--2m', 'Delete rows older than 2 months.')]
+	#[Console\Meta\Toggle('--3m', 'Delete rows older than 3 months (and the default).')]
+	#[Console\Meta\Toggle('--6m', 'Delete rows older than 6 months.')]
 	public function
 	HandleTrim():
 	int {
 
 		$OptCommit = $this->GetOption('commit') ?? FALSE;
+		$OptLimit = (int)$this->GetOption('limit');
+
 		$OptTimeThen = match(TRUE) {
 			($this->GetOption('1m'))
 			=> '-30 days',
 
 			($this->GetOption('2m'))
 			=> '-60 days',
+
+			($this->GetOption('3m'))
+			=> '-90 days',
 
 			($this->GetOption('6m'))
 			=> '-180 days',
@@ -123,6 +134,11 @@ extends Atlantis\TerminalApp {
 			'TimeCreated <= :ThenTime'
 		));
 
+		if($OptLimit > 0) {
+			//$QueryFind->Limit($OptLimit);
+			$QueryTrim->Limit($OptLimit);
+		}
+
 		$Args = [
 			':ThenTime' => $Then->GetUnixtime()
 		];
@@ -136,25 +152,34 @@ extends Atlantis\TerminalApp {
 			'QueryTrim' => (string)$QueryTrim
 		]);
 
+		$Timer->Reset()->Start();
 		$Found = $QueryFind->Query($Args);
+		$Timer->Stop();
 
 		$this->PrintStatus(sprintf(
-			'Found %d rows...',
-			$Found->GetCount()
+			'Found %s rows in %s...',
+			number_format($Found->GetCount()),
+			(new Common\Units\Timeframe(
+				Start: 0, Stop: $Timer->Get() + 1
+			))->Get(Common\Units\Timeframe::FormatLong)
 		));
 
 		if($OptCommit) {
-			$Timer->Start();
+			HitIt:
+			$Timer->Reset()->Start();
 			$Trimmed = $QueryTrim->Query($Args);
 			$Timer->Stop();
 
 			$this->PrintStatus(sprintf(
-				'Trimmed %d rows in %s...',
-				$Trimmed->GetCount(),
+				'Trimmed %s rows in %s...',
+				number_format($Trimmed->GetCount()),
 				(new Common\Units\Timeframe(
 					Start: 0, Stop: $Timer->Get() + 1
-				))->Get()
+				))->Get(Common\Units\Timeframe::FormatLong)
 			));
+
+			if($Trimmed->GetCount() === $OptLimit)
+			goto HitIt;
 		}
 
 		return 0;
