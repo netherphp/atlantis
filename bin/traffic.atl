@@ -27,13 +27,17 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 
 	#[Console\Meta\Command('get')]
+	#[Console\Meta\Value('--tz', TRUE, 'Default: UTC')]
+	#[Console\Meta\Value('--date', TRUE, 'Format: YYYY-MM-DD')]
+	#[Console\Meta\Value('--dstart', TRUE, 'Format: YYYY-MM-DD')]
+	#[Console\Meta\Value('--dstop', TRUE, 'Format: YYYY-MM-DD')]
 	public function
 	HandleGetStats():
 	int {
 
-		$Query = $this->GetOption('query');
-		$DateZone = $this->GetOption('tz') ?? 'GMT';
-		$DateSingle = $this->GetOption('date');
+		$QString = $this->GetOption('qstring');
+		$DateZone = $this->GetOption('tz') ?? 'UTC';
+		$DateSingle = $this->GetOption('date') ?? date('Y-m-d');
 		$DateStart = $this->GetOption('dstart');
 		$DateStop = $this->GetOption('dstop');
 
@@ -59,13 +63,13 @@ extends Atlantis\TerminalApp {
 
 		$Results = Atlantis\Struct\TrafficRow::Find([
 			'Timeframe' => $Timeframe,
-			'Query'     => $Query
+			'QString'     => $QString
 		]);
 
 		$this->PrintBulletList([
 			'Date Start'    => $Timeframe->GetStartFormat(Common\Values::DateFormatYMDT24VO),
 			'Date Stop'     => $Timeframe->GetStopFormat(Common\Values::DateFormatYMDT24VO),
-			'Query'         => $Query,
+			'QString'       => $QString ?? '',
 			'Total Traffic' => (int)$Results->Count()
 		]);
 
@@ -75,75 +79,87 @@ extends Atlantis\TerminalApp {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Console\Meta\Command('report')]
-	#[Console\Meta\Info('Generate reports.')]
+	#[Console\Meta\Command('trim')]
 	public function
-	HandleReportGen():
+	HandleTrim():
 	int {
 
-		$Until = Common\Date::FromDateString('today', NULL, TRUE);
-		$Until->SetTimezone('UTC');
-		$Starting = $Until->Modify('-100 day');
+		$OptCommit = $this->GetOption('commit') ?? FALSE;
+		$OptTimeThen = match(TRUE) {
+			($this->GetOption('1m'))
+			=> '-30 days',
 
-		$this->PrintLn(sprintf(
-			'%s %s',
-			$this->Format('Starting:', Preset: static::FmtPrime),
-			$Starting->Get(Common\Values::DateFormatYMDT24VO)
+			($this->GetOption('2m'))
+			=> '-60 days',
+
+			($this->GetOption('6m'))
+			=> '-180 days',
+
+			default
+			=> '-90 days'
+		};
+
+		$Timer = new Common\Timer;
+		$Now = new Common\Date(Immutable: TRUE);
+		$Then = $Now->Modify($OptTimeThen);
+		$QueryFind = $this->App->Database->NewVerse(Atlantis\Struct\TrafficRow::$DBA);
+		$QueryTrim = $this->App->Database->NewVerse(Atlantis\Struct\TrafficRow::$DBA);
+		$Table = Atlantis\Struct\TrafficRow::GetTableInfo();
+		$Args = NULL;
+		$Found = NULL;
+		$Trimmed = NULL;
+
+		////////
+
+		$QueryFind->Select($Table->GetAliasedTable());
+		$QueryFind->Fields('*');
+		$QueryFind->Where(sprintf(
+			'%s <= :ThenTime',
+			$Table->GetAliasedField('TimeCreated')
 		));
 
-		$this->PrintLn(sprintf(
-			'%s %s',
-			$this->Format('Until:', Preset: static::FmtPrime),
-			$Until->Get(Common\Values::DateFormatYMDT24VO)
+		$QueryTrim->Delete($Table->Name);
+		$QueryTrim->Where(sprintf(
+			'TimeCreated <= :ThenTime'
 		));
 
-		while($Until->IsBefore($Starting)) {
-			$TimeStart = $Starting->GetUnixtime();
-			$TimeStop = $TimeStart + Common\Values::SecPerDay;
-			$Filters = [
-				'Since'  => $TimeStart,
-				'Before' => $TimeStop
-			];
+		$Args = [
+			':ThenTime' => $Then->GetUnixtime()
+		];
 
-			$this->PrintLn(sprintf(
-				'%s %s (%s => %s)',
-				$this->Format('Date:', static::FmtAccent),
-				$Starting->Get(Common\Values::DateFormatYMDT24VO),
-				$TimeStart,
-				$TimeStop
+		////////
+
+		$this->PrintBulletList([
+			'Now'       => $Now->Get(),
+			'Then'      => $Then->Get(),
+			'QueryFind' => (string)$QueryFind,
+			'QueryTrim' => (string)$QueryTrim
+		]);
+
+		$Found = $QueryFind->Query($Args);
+
+		$this->PrintStatus(sprintf(
+			'Found %d rows...',
+			$Found->GetCount()
+		));
+
+		if($OptCommit) {
+			$Timer->Start();
+			$Trimmed = $QueryTrim->Query($Args);
+			$Timer->Stop();
+
+			$this->PrintStatus(sprintf(
+				'Trimmed %d rows in %s...',
+				$Trimmed->GetCount(),
+				(new Common\Units\Timeframe(
+					Start: 0, Stop: $Timer->Get() + 1
+				))->Get()
 			));
-
-			$Result = Atlantis\Struct\TrafficRow::Find($Filters);
-			$Hits = $Result->Total;
-			$Visitors = Atlantis\Struct\TrafficRow::FindCount(array_merge($Filters, [ 'Group'=> 'visitor' ]));
-			$Pages = Atlantis\Struct\TrafficRow::FindCount(array_merge($Filters, [ 'Group'=> 'path' ]));
-
-			$this
-			->PrintLn(sprintf(
-				'      %s',
-				$this->Format(
-					sprintf(
-						'Hits: %d, Visitors: %d, Pages: %d',
-						$Hits, $Visitors, $Pages
-					),
-					static::FmtMuted
-				)
-			))
-			->PrintLn();
-
-			$Report = Atlantis\Struct\TrafficReport::Insert([
-				'ReportDate'   => $Starting->Get(Common\Values::DateFormatYMD),
-				'HitCount'     => $Hits,
-				'VisitorCount' => $Visitors,
-				'PageCount'    => $Pages,
-				'ExtraJSON'    => json_encode([ 'TimeStart'=> $TimeStart, 'TimeStop'=> $TimeStop ])
-			]);
-
-			$Starting = $Starting->Modify('+1 day');
 		}
 
 		return 0;
 	}
+
 
 }
 
