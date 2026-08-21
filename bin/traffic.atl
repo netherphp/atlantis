@@ -40,8 +40,28 @@ extends Common\Prototype {
 	array {
 
 		$Data = [
-			$this->ReportStart, $this->ReportStop, $this->Domain,
-			$this->TrafficTotal, $this->VisitorUnique, $this->VisitorAveragePageView
+			$this->ReportStart,
+			$this->ReportStop,
+			$this->Domain,
+			$this->TrafficTotal,
+			$this->VisitorUnique,
+			$this->VisitorAveragePageView
+		];
+
+		return $Data;
+	}
+
+	public function
+	ToArrayHuman():
+	array {
+
+		$Data = [
+			$this->ReportStart,
+			$this->ReportStop,
+			$this->Domain,
+			number_format($this->TrafficTotal),
+			number_format($this->VisitorUnique),
+			number_format($this->VisitorAveragePageView)
 		];
 
 		return $Data;
@@ -358,7 +378,7 @@ extends Atlantis\TerminalApp {
 		Console\Elements\Table::New(
 			Client: $this,
 			Headers: $Data[0]->ToHeaders(),
-			Rows: $Data->Map(fn($D)=> $D->ToArray()),
+			Rows: $Data->Map(fn($D)=> $D->ToArrayHuman()),
 			Print: 2
 		);
 
