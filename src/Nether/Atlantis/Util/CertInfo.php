@@ -200,6 +200,8 @@ extends Common\Prototype {
 			$Context
 		);
 
+		stream_set_timeout($Client, 12);
+
 		if(!$Client)
 		throw new Atlantis\Error\CertLookupFailure("OPENSSL_CLIENT({$Domain})");
 
@@ -253,6 +255,8 @@ extends Common\Prototype {
 		curl_setopt($Curl, CURLOPT_SSL_VERIFYPEER, FALSE);
 		curl_setopt($Curl, CURLOPT_CERTINFO, TRUE);
 		curl_setopt($Curl, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($Curl, CURLOPT_CONNECTTIMEOUT, 6);
+		curl_setopt($Curl, CURLOPT_TIMEOUT, 12);
 
 		if(!curl_exec($Curl))
 		throw new Atlantis\Error\CertLookupFailure("CURL({$Domain})");
