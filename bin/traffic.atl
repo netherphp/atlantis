@@ -61,7 +61,7 @@ extends Common\Prototype {
 			$this->Domain,
 			number_format($this->TrafficTotal),
 			number_format($this->VisitorUnique),
-			number_format($this->VisitorAveragePageView)
+			number_format($this->VisitorAveragePageView, 1)
 		];
 
 		return $Data;
