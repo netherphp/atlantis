@@ -276,50 +276,40 @@ extends Atlantis\TerminalApp {
 	HandleReportV1():
 	int {
 
-		// very rough draft implementation of the query i been manually running
-		// in my sql client for years.
+		$Format = match(TRUE) {
+			($this->GetOption('csv')) => 'csv',
+			default => 'human'
+		};
 
-		$Format = 'human';
+		$MonthOf = $this->GetOption('month') ?? date('Y-m');
 
-		if($this->GetOption('csv'))
-		$Format = 'csv';
+		if(!preg_match('/^\d{4}-\d{2}$/', $MonthOf))
+		throw new Common\Error\FormatInvalid('--month=YYYY-MM');
 
 		////////
 
-		if($this->GetOption('month')) {
-			if(!preg_match('/^\d{4}-\d{2}$/', $this->GetOption('month')))
-			throw new Common\Error\FormatInvalid('--month=YYYY-MM');
+		$Today = Common\Date::FromDateString(sprintf('%s-01', $MonthOf));
+		$CurrentYR = $Today->Get('Y');
+		$CurrentMO = $Today->Get('m');
+		$CurrentME = $Today->Get('t');
 
-			$Today = Common\Date::FromDateString(sprintf('%s-01', $this->GetOption('month')));
-		} else {
-			$Today = Common\Date::FromDateString('now');
-		}
-
-		$CurrentYear = $Today->Get('Y');
-		$CurrentMonth = $Today->Get('m');
-		$CurrentMonthEnd = $Today->Get('t');
-
-		$DateStart = sprintf(
-			'%s-%s-01 00:00:00',
-			$CurrentYear,
-			$CurrentMonth
-		);
-
-		$DateStop = sprintf(
-			'%s-%s-%s 23:59:59',
-			$CurrentYear,
-			$CurrentMonth,
-			$CurrentMonthEnd
-		);
+		$DateStart = sprintf('%s-%s-01 00:00:00', $CurrentYR, $CurrentMO);
+		$DateStop = sprintf('%s-%s-%s 23:59:59', $CurrentYR, $CurrentMO, $CurrentME);
 
 		$DB = $this->App->Database->Get('Default');
+		$Data = new Common\Datastore;
+		$Timer = new Common\Timer;
+		$TimeTaken = new Common\Units\Timeframe;
 		$Result = NULL;
 		$Query = NULL;
 		$Row = NULL;
-		$Data = new Common\Datastore;
 
 		////////
 
+		// very rough draft implementation of the query i been manually running
+		// in my sql client for years.
+
+		$Timer->Start();
 		$DB->Query("BEGIN TRANSACTION;");
 		$DB->Query("SET @TimeStart = UNIX_TIMESTAMP('{$DateStart}');");
 		$DB->Query("SET @TimeStop  = UNIX_TIMESTAMP('{$DateStop}');");
@@ -355,6 +345,9 @@ extends Atlantis\TerminalApp {
 		$DB->Query('COMMIT TRANSACTION');
 
 		$Result = $DB->Query($Query);
+		$Timer->Stop();
+
+		////////
 
 		while($Row = $Result->Next()) {
 			$Data->Push(new TrafficReport1($Row));
@@ -374,13 +367,17 @@ extends Atlantis\TerminalApp {
 			);
 		}
 
-		else
-		Console\Elements\Table::New(
-			Client: $this,
-			Headers: $Data[0]->ToHeaders(),
-			Rows: $Data->Map(fn($D)=> $D->ToArrayHuman()),
-			Print: 2
-		);
+		else {
+			Console\Elements\Table::New(
+				Client: $this,
+				Headers: $Data[0]->ToHeaders(),
+				Rows: $Data->Map(fn($D)=> $D->ToArrayHuman()),
+				Print: 1
+			);
+
+			$TimeTaken->SetStart(0)->SetStop($Timer->Get() + 1);
+			$this->PrintStatusMuted(sprintf('Generation Time: %s', $TimeTaken->Get($TimeTaken::FormatLong)));
+		}
 
 		return 0;
 	}
