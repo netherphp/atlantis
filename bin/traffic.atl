@@ -14,6 +14,72 @@ use Nether\User;
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+class TrafficReport1
+extends Common\Prototype {
+
+	public string
+	$ReportStart;
+
+	public string
+	$ReportStop;
+
+	public string
+	$Domain;
+
+	public int
+	$TrafficTotal;
+
+	public int
+	$VisitorUnique;
+
+	public float
+	$VisitorAveragePageView;
+
+	public function
+	ToArray():
+	array {
+
+		$Data = [
+			$this->ReportStart, $this->ReportStop, $this->Domain,
+			$this->TrafficTotal, $this->VisitorUnique, $this->VisitorAveragePageView
+		];
+
+		return $Data;
+	}
+
+	public function
+	ToHeaders():
+	array {
+
+		$Data = [
+			'ReportStart', 'ReportStop', 'Domain',
+			'TrafficTotal', 'VisitorUnique', 'VisitorAveragePageView'
+		];
+
+		return $Data;
+	}
+
+	public function
+	ToData():
+	array {
+
+		return array_combine($this->ToHeaders(), $this->ToArray());
+	}
+
+	public function
+	ToCSV():
+	string {
+
+		$Data = $this->ToArray();
+
+		return join(',', $Data);
+	}
+
+};
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
 class TrafficTool
 extends Atlantis\TerminalApp {
 
@@ -185,6 +251,119 @@ extends Atlantis\TerminalApp {
 		return 0;
 	}
 
+	#[Console\Meta\Command('report1')]
+	public function
+	HandleReportV1():
+	int {
+
+		// very rough draft implementation of the query i been manually running
+		// in my sql client for years.
+
+		$Format = 'human';
+
+		if($this->GetOption('csv'))
+		$Format = 'csv';
+
+		////////
+
+		if($this->GetOption('month')) {
+			if(!preg_match('/^\d{4}-\d{2}$/', $this->GetOption('month')))
+			throw new Common\Error\FormatInvalid('--month=YYYY-MM');
+
+			$Today = Common\Date::FromDateString(sprintf('%s-01', $this->GetOption('month')));
+		} else {
+			$Today = Common\Date::FromDateString('now');
+		}
+
+		$CurrentYear = $Today->Get('Y');
+		$CurrentMonth = $Today->Get('m');
+		$CurrentMonthEnd = $Today->Get('t');
+
+		$DateStart = sprintf(
+			'%s-%s-01 00:00:00',
+			$CurrentYear,
+			$CurrentMonth
+		);
+
+		$DateStop = sprintf(
+			'%s-%s-%s 23:59:59',
+			$CurrentYear,
+			$CurrentMonth,
+			$CurrentMonthEnd
+		);
+
+		$DB = $this->App->Database->Get('Default');
+		$Result = NULL;
+		$Query = NULL;
+		$Row = NULL;
+		$Data = new Common\Datastore;
+
+		////////
+
+		$DB->Query("BEGIN TRANSACTION;");
+		$DB->Query("SET @TimeStart = UNIX_TIMESTAMP('{$DateStart}');");
+		$DB->Query("SET @TimeStop  = UNIX_TIMESTAMP('{$DateStop}');");
+
+		$Query = "
+			SELECT
+				FROM_UNIXTIME(@TimeStart) AS ReportStart,
+				FROM_UNIXTIME(@TimeStop) AS ReportStop,
+				TrafficTotal.Domain AS Domain,
+				TrafficTotal.Hits AS TrafficTotal,
+				UniqueVisitors.Hits AS VisitorUnique,
+				(TrafficTotal.Hits / UniqueVisitors.Hits) AS VisitorAveragePageView
+
+			FROM
+				(SELECT Domain, COUNT(*) AS Hits
+				FROM TrafficRows WHERE (TimeCreated >= @TimeStart AND TimeCreated < @TimeStop)
+				GROUP BY Domain) TrafficTotal
+
+			LEFT JOIN
+				(SELECT Domain, COUNT(*) AS Hits FROM (
+					SELECT Visitor, Domain, COUNT(*) AS Visits
+					FROM TrafficRows
+					WHERE (TimeCreated >= @TimeStart AND TimeCreated < @TimeStop)
+					GROUP BY Visitor, Domain
+				) Q1 GROUP BY Q1.Domain) UniqueVisitors
+			ON
+				TrafficTotal.Domain=UniqueVisitors.Domain
+
+			ORDER BY Domain;
+		";
+
+		$DB->Query($Query);
+		$DB->Query('COMMIT TRANSACTION');
+
+		$Result = $DB->Query($Query);
+
+		while($Row = $Result->Next()) {
+			$Data->Push(new TrafficReport1($Row));
+			continue;
+		}
+
+		if(!$Data->Count()) {
+			$this->PrintStatusWarning(sprintf('No data for %s to %s', $DateStart, $DateStop));
+			return 0;
+		}
+
+		if($Format === 'csv') {
+			echo join(',', $Data[0]->ToHeaders()), PHP_EOL;
+			
+			$Data->Each(
+				fn($D)=> printf('%s%s', $D->ToCSV(), PHP_EOL)
+			);
+		}
+
+		else
+		Console\Elements\Table::New(
+			Client: $this,
+			Headers: $Data[0]->ToHeaders(),
+			Rows: $Data->Map(fn($D)=> $D->ToArray()),
+			Print: 2
+		);
+
+		return 0;
+	}
 
 }
 
