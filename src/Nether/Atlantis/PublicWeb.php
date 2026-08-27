@@ -604,7 +604,7 @@ as html pages. //*/
 	// Surface Interaction API /////////////////////////////////////
 
 	public function
-	Area(string $Area, iterable $Data, ?string $Masquerade=NULL, array|string|NULL $Themes=NULL):
+	Area(string $Area, iterable $Data=[], ?string $Masquerade=NULL, array|string|NULL $Themes=NULL):
 	static {
 
 		$this->Surface->Area($Area, $Data, $Masquerade, $Themes);

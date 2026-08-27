@@ -84,6 +84,67 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Common\Meta\Date('2026-08-27')]
+	#[Common\Meta\PropertyListable]
+	public ?string
+	$Type = NULL;
+
+	public function
+	HasType():
+	bool {
+
+		return ($this->Type !== NULL);
+	}
+
+	public function
+	GetType():
+	?string {
+
+		return $this->Type;
+	}
+
+	public function
+	SetType(?string $Type):
+	static {
+
+		$this->Type = $Type;
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Common\Meta\Date('2026-08-27')]
+	#[Common\Meta\PropertyListable]
+	public ?string
+	$Name = NULL;
+
+	public function
+	HasName():
+	bool {
+
+		return ($this->Name !== NULL);
+	}
+
+	public function
+	GetName():
+	?string {
+
+		return $this->Name;
+	}
+
+	public function
+	SetName(?string $Name):
+	static {
+
+		$this->Name = $Name;
+		return $this;
+	}
+
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Common\Meta\Date('2023-11-22')]
 	#[Common\Meta\PropertyListable]
 	public ?string
@@ -343,7 +404,7 @@ extends Common\Prototype {
 	////////////////////////////////////////////////////////////////
 
 	static public function
-	New(?string $ID=NULL, string|bool|NULL $UUID=TRUE, ?string $Title=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $ImageURL=NULL, ?string $Info=NULL, ?array $Classes=NULL, ?array $ExtraData=NULL):
+	New(?string $ID=NULL, string|bool|NULL $UUID=TRUE, ?string $Type=null, ?string $Title=NULL, ?string $Name=NULL, ?string $URL=NULL, ?string $Icon=NULL, ?string $ImageURL=NULL, ?string $Info=NULL, ?array $Classes=NULL, ?array $ExtraData=NULL):
 	static {
 
 		$Output = new static([
@@ -355,7 +416,9 @@ extends Common\Prototype {
 				default
 				=> $UUID
 			}),
+			'Type'      => $Type,
 			'Title'     => $Title,
+			'Name'      => $Name,
 			'URL'       => $URL,
 			'Icon'      => $Icon,
 			'ImageURL'  => $ImageURL,
