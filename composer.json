@@ -18,7 +18,8 @@
 		},
 		"allow-plugins": {
 			"netherphp/composer-plugin": true,
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"php-http/discovery": false
 		}
 	},
 	"minimum-stability": "dev",
@@ -36,7 +37,7 @@
 		"netherphp/storage": "dev-master",
 		"netherphp/browser": "dev-master",
 		"google/recaptcha": "^1.2.4",
-		"gravitypdf/querypath": "^3.2",
+		"gravitypdf/querypath": "^3",
 		"bacon/bacon-qr-code": "^2.0"
 	},
 	"require-dev": {
