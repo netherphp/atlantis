@@ -82,8 +82,8 @@ extends Atlantis\ProtectedAPI {
 
 		if(!$this->Data->ParentChild)
 		$Old = EntityRelationship::Find([
-			'ParentUUID' => $this->Data->ParentUUID,
-			'ChildType'  => $this->Data->ChildType
+			'EntityUUID' => $this->Data->ParentUUID,
+			'EntityType'  => $this->Data->ChildType
 		]);
 
 		else
