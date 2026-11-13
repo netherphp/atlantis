@@ -6,6 +6,8 @@ use Nether;
 use Nether\Avenue;
 use Nether\Common;
 
+use Nether\Datastore;
+
 class PublicAPI
 extends Nether\Avenue\Route {
 /*//
@@ -15,7 +17,6 @@ as json apis. all output is wrapped in a standardised json message. this version
 does not do any additional access checking.
 //*/
 
-	#[Common\Meta\PropertyFactory('FromArray')]
 	const
 	QuitMsg = [
 		403 => 'Forbidden',
@@ -52,6 +53,12 @@ does not do any additional access checking.
 	public Common\Databox
 	$Upload;
 
+	public Datastore
+	$Inputs;
+
+	public Datastore
+	$Uploads;
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -62,11 +69,15 @@ does not do any additional access checking.
 		$this->App = $ExtraData['App'];
 		$this->User = $this->App->User;
 		$this->Config = $this->App->Config;
+		
 		$this->Query = clone($this->Request->Query);
 		$this->Data = clone($this->Request->Data);
 
 		$this->Input = clone($this->Request->Input);
 		$this->Upload = clone($this->Request->Upload);
+
+		$this->Inputs = $this->Request->Inputs->Copy();
+		$this->Uploads = $this->Request->Uploads->Copy();
 
 		return Avenue\Response::CodeOK;
 	}

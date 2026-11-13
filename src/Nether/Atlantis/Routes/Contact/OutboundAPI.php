@@ -5,6 +5,7 @@ namespace Nether\Atlantis\Routes\Contact;
 use Nether\Atlantis;
 use Nether\Common;
 use Nether\Email;
+use Nether\Captcha;
 
 use Exception;
 
@@ -25,8 +26,8 @@ extends Atlantis\PublicAPI {
 		// 1 - email required
 		// 2 - message required
 		// 3 - name required
-		// 4 - recaptcha invalid
-		// 5 - recaptcha api error
+		// 4 - captcha invalid
+		// 5 - captcha api error
 		// 6 - phone required
 		// 7 - email api error
 
@@ -56,14 +57,9 @@ extends Atlantis\PublicAPI {
 
 		////////
 
-		try {
-			if(!Atlantis\Util::IsReCaptchaValid($this->App))
-			$this->Quit(4, 'Did not pass ReCaptcha.');
-		}
 
-		catch(Exception $Error) {
-			$this->Quit(5, $Error->GetMessage());
-		}
+		if(!$this->IsCaptchaValid())
+		$this->Quit(4, 'Invalid Captcha');
 
 		////////
 
@@ -121,6 +117,42 @@ extends Atlantis\PublicAPI {
 		]);
 
 		return;
+	}
+
+	protected function
+	IsCaptchaValid():
+	bool {
+
+		if($this->App->Config->Get('Nether.Captcha.Enabled'))
+		return $this->IsNetherCaptchaValid();
+
+		if($this->App->Config->Get('Google.ReCaptcha.Enabled'))
+		return $this->IsGoogleCaptchaValid();
+
+		////////
+
+		return TRUE;
+	}
+
+	protected function
+	IsNetherCaptchaValid():
+	bool {
+
+		$Valid = Captcha::ValidateFromInput($_POST);
+
+		return $Valid;
+	}
+
+	protected function
+	IsGoogleCaptchaValid():
+	bool {
+
+		$Valid = NULL;
+
+		try { $Valid = Atlantis\Util::IsReCaptchaValid($this->App); }
+		catch(Exception $Error) { $Valid = FALSE; }
+
+		return $Valid;
 	}
 
 	////////////////////////////////////////////////////////////////

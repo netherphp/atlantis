@@ -1,6 +1,31 @@
-<?php
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Common;
+use Nether\Database;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * ...
+ */
+
+################################################################################
+################################################################################
 
 $SubjectNum ??= 0;
+
+$UseGoogleReCaptcha = $App->Config->Get('Google.ReCaptcha.Enabled');
+$UseNetherCaptcha = $App->Config->Get('Nether.Captcha.Enabled');
 
 ?>
 
@@ -24,9 +49,19 @@ $SubjectNum ??= 0;
 		<div class="mb-2"><span class="fw-bold">Message</span></div>
 		<textarea name="Message" class="form-control" rows="6"></textarea>
 	</div>
+
+	<?php if($UseGoogleReCaptcha): ?>
 	<div class="col-12 mb-4">
 		<?php $Surface->Area('widgets/recaptcha') ?>
 	</div>
+	<?php endif; ?>
+
+	<?php if($UseNetherCaptcha): ?>
+	<div class="col-12 mb-4">
+		<?php echo Nether\Atlantis\UI\FormCaptcha::FromSurface($Surface) ?>
+	</div>
+	<?php endif; ?>
+
 	<div class="col-12">
 		<input type="hidden" name="Subject" value="<?php $Util->Print($SubjectNum) ?>" />
 		<button type="submit" class="btn btn-primary fs-larger fw-bold">Send Message</button>
@@ -35,7 +70,7 @@ $SubjectNum ??= 0;
 </form>
 
 <script type="module">
-import JsonAPI from '/share/nui/api/json.js?v=<?php $Printer($CacheBuster) ?>';
+import JsonAPI from '/share/nui/api/json.js?v=<?php $Util->Print($CacheBuster) ?>';
 
 jQuery(function() {
 
@@ -87,7 +122,7 @@ jQuery(function() {
 			.prop('disabled', false)
 			.text('Send Message');
 
-			grecaptcha.reset();
+			//grecaptcha.reset();
 
 			return;
 		})
@@ -97,7 +132,7 @@ jQuery(function() {
 			.prop('disabled', false)
 			.text('Send Message');
 
-			grecaptcha.reset();
+			//grecaptcha.reset();
 
 			req.catch(d);
 

@@ -1,0 +1,297 @@
+<?php ##########################################################################
+################################################################################
+
+use Nether\Atlantis;
+use Nether\Avenue;
+use Nether\Surface;
+use Nether\User;
+
+/**
+ * @var Atlantis\Engine $App
+ * @var Atlantis\Struct\TemplateHelper $Util
+ * @var Avenue\Router $Router
+ * @var Surface\Engine $Surface
+ * @var User\EntitySession $User
+ *
+ * @var Atlantis\PublicWeb $Route
+ * @var Atlantis\UI\FormCaptcha $Element
+ */
+
+
+$ElementID = $Element->GetNodeUUID();
+$ImageBlobEncoded = $Element->Captcha->GetImageEncoded();
+
+$TokenFieldName = $Element->Captcha->GetTokenFieldName();
+$TokenEncoded = $Element->Captcha->GetTokenForForm();
+
+$CodeFieldName = $Element->Captcha->GetCodeFieldName();
+$CodeFieldStyle = $Element->Captcha->GetCodeFieldStyleCSS();
+
+################################################################################
+############################################################################# ?>
+
+<style type="text/css">
+.atl-captcha { display: inline-block; }
+
+.atl-captcha .atl-catpcha-status-icon-empty { display: none; }
+.atl-captcha .atl-catpcha-status-icon-pending { display: none; color: #FFFFFF22; }
+.atl-captcha .atl-catpcha-status-icon-valid { display: none; color: #00AA00; }
+.atl-captcha .atl-catpcha-status-icon-invalid { display: none; color: #AA0000; }
+.atl-captcha .atl-catpcha-status-icon-loading { display: none; color: #FFFFFFAA; }
+
+.atl-captcha:not([data-captcha-status]) .atl-catpcha-status-icon-empty { display: inline; }
+.atl-captcha[data-captcha-status="pending"] .atl-catpcha-status-icon-pending { display: inline; }
+.atl-captcha[data-captcha-status="valid"] .atl-catpcha-status-icon-valid { display: inline; }
+.atl-captcha[data-captcha-status="invalid"] .atl-catpcha-status-icon-invalid { display: inline; }
+.atl-captcha[data-captcha-status="loading"] .atl-catpcha-status-icon-loading { display: inline; }
+
+.atl-captcha-invert .atl-captcha-image { filter: invert(); }
+</style>
+
+<script type="module">
+import API from '/share/nui/api/json.js';
+
+class Captcha {
+
+	id = null;
+
+	element = null;
+	img =  null;
+	token = null;
+	code = null;
+	btnContrast = null;	
+
+	codeTryTimer = null;
+	rateLimitTimer = null;
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	constructor(elem) {
+		
+		this.element = jQuery(elem);
+		this.id = this.element.attr('id');
+		this.img = this.element.find('[data-captcha-image]');
+		this.token = this.element.find('[data-captcha-token]');
+		this.code = this.element.find('[data-captcha-code]');
+		this.btnContrast = this.element.find('[data-captcha-toggle-contrast]');
+		this.btnFresh = this.element.find('[data-captcha-fresh]');
+
+		(this.code)
+		.on('keyup', this.onCodeKeyUp.bind(this));
+
+		(this.btnContrast)
+		.on('click', this.onToggleContrast.bind(this));
+
+		(this.btnFresh)
+		.on('click', this.onFresh.bind(this));
+
+		this.updateStatusPending();
+
+		return;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	updateStatusValid() {
+		this.element.attr('data-captcha-status', 'valid');
+		return;
+	};
+
+	updateStatusInvalid() {
+		this.element.attr('data-captcha-status', 'invalid');
+		return;
+	};
+
+	updateStatusPending() {
+		this.element.attr('data-captcha-status', 'pending');
+		return;
+	};
+
+	updateStatusLoading() {
+		this.element.attr('data-captcha-status', 'loading');
+		return;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	onCodeKeyUp(ev) {
+
+		if(this.rateLimitTimer !== null)
+		return;
+
+		////////
+
+		this.updateStatusLoading();
+
+		if(this.codeTryTimer !== null)
+		clearTimeout(this.codeTryTimer);
+
+		this.codeTryTimer = setTimeout(
+			this.onCodeTry.bind(this, [ ev ]),
+			750
+		);
+
+		return false;
+	};
+
+	onCodeTry(ev) {
+
+		let that = this;
+		let api = new API.Request('CHECK', '/api/captcha');
+		let data = { Type: 'nether' };
+
+		data['nether-captcha-token'] = this.token.val();
+		data['nether-captcha-code'] = this.code.val();
+
+		(api.send(data))
+		.then(function(r) {
+			
+			if(r.payload.Valid)
+			that.updateStatusValid();
+			else
+			that.updateStatusInvalid();
+
+			return;
+		})
+		.catch(function(r) {
+			if(r.error === 2) {
+				that.onRateLimited(ev);
+				console.log(`[onCodeTry] ${r.message}`);
+				return;
+			}
+
+			api.catch(r);
+			return;
+		});
+
+		return false;
+	}
+
+	onRateLimited(ev) {
+
+		this.rateLimitTimer = setTimeout(
+			this.onCodeTry.bind(this, [ ev ]),
+			2000
+		);
+
+		return false;
+	};
+
+	onToggleContrast(ev) {
+
+		(this.element)
+		.toggleClass('atl-captcha-invert');
+
+		return false;
+	};
+
+	onFresh(ev) {
+	
+		let that = this;
+		let api = new API.Request('FRESH', '/api/captcha');
+		let data = { 'Type': 'nether' };
+
+		that.code.val('');
+		that.updateStatusLoading();
+
+		(api.send(data))
+		.then(function(r) {
+
+			that.updateStatusPending();
+			that.token.val(r.payload.Token);
+			that.img.attr('src', r.payload.Image);
+
+			return;
+		})
+		.catch(function(r) {
+			if(r.error === 2) {
+				that.updateStatusPending();
+				console.log(`[onFresh] ${r.message}`);
+				alert(r.message);
+				return;
+			}
+
+			api.catch(r);
+			return;
+		});
+
+		return false;
+	};
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	static WhenDocumentReady() {
+		// this<document>
+
+		jQuery('.atl-captcha')
+		.each(function() {
+
+			if(typeof this.dataset.captchaStatus === 'undefined')
+			new Captcha(this);
+
+			return;
+		});
+
+		return;
+	};
+
+};
+
+jQuery(Captcha.WhenDocumentReady);
+
+</script>
+
+<div id="<?php $Util->Print($ElementID) ?>" class="border border-1 border-secondary rounded-less p-2 atl-captcha">
+	<div class="mb-2">
+		<img
+			src="<?php $Util->Print($ImageBlobEncoded) ?>"
+			style="<?php $Util->Print($CodeFieldStyle) ?>"
+			alt="Solve this mysterious puzzle."
+			class="rounded-less border border-1 border-secondary m-0 p-0 atl-captcha-image"
+			data-captcha-image
+		/>
+	</div>
+	<div class="d-flex w-100 gap-2 mb-2">
+		<div class="flex-shrink-1 flex-grow-1">
+			<button type="button" class="btn btn-sm btn-secondary btn-block rounded-less py-0" data-captcha-toggle-contrast>
+				<i class="mdi mdi-contrast-box"></i>
+			</button>
+		</div>
+		<div class="flex-shrink-1 flex-grow-1">
+			<button type="button" class="btn btn-sm btn-secondary btn-block rounded-less py-0" data-captcha-fresh>
+				<i class="mdi mdi-refresh"></i>
+			</button>
+		</div>
+	</div>
+	<div class="w-100">
+		<div>
+			<input
+				type="hidden"
+				name="<?php $Util->Print($TokenFieldName) ?>"
+				value="<?php $Util->Print($TokenEncoded) ?>"
+				data-captcha-token
+			/>
+		</div>
+		<div class="input-group" style="<?php $Util->Print($CodeFieldStyle) ?>">
+			<input
+				type="text"
+				name="<?php $Util->Print($CodeFieldName) ?>"
+				class="form-control rounded-less"
+				placeholder="Type Above Code..."
+				data-captcha-code
+			/>
+			<span class="input-group-text rounded-less">
+				<i class="atl-catpcha-status-icon-empty mdi mdi-empty"></i>
+				<i class="atl-catpcha-status-icon-pending mdi mdi-dots-horizontal-circle"></i>
+				<i class="atl-catpcha-status-icon-valid mdi mdi-check-bold"></i>
+				<i class="atl-catpcha-status-icon-invalid mdi mdi-close-thick"></i>
+				<i class="atl-catpcha-status-icon-loading mdi mdi-dots-circle mdi-spin"></i>
+			</span>
+		</div>
+
+	</div>
+</div>
