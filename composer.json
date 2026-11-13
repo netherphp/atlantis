@@ -36,6 +36,7 @@
 		"netherphp/email": "dev-master",
 		"netherphp/storage": "dev-master",
 		"netherphp/browser": "dev-master",
+		"netherphp/captcha": "dev-master as 0.0.0",
 		"google/recaptcha": "^1.2.4",
 		"gravitypdf/querypath": "^3",
 		"bacon/bacon-qr-code": "^2.0"
