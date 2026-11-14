@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ebcbd871f9118381d30c7b27dd92837",
+    "content-hash": "6ab60ef6a43c8a7ca1a697595a0cff91",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1484,17 +1484,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/avenue.git",
-                "reference": "45ae24e65e3efad292ae74dde6b3adcf23b7fdab"
+                "reference": "b8f8f220100c1086ff275725757d96c4e9297ddb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/avenue/zipball/45ae24e65e3efad292ae74dde6b3adcf23b7fdab",
-                "reference": "45ae24e65e3efad292ae74dde6b3adcf23b7fdab",
+                "url": "https://api.github.com/repos/netherphp/avenue/zipball/b8f8f220100c1086ff275725757d96c4e9297ddb",
+                "reference": "b8f8f220100c1086ff275725757d96c4e9297ddb",
                 "shasum": ""
             },
             "require": {
                 "netherphp/common": "dev-master",
                 "netherphp/console": "dev-redux",
+                "netherphp/datastore": "^0",
                 "php": "^8.1"
             },
             "require-dev": {
@@ -1537,8 +1538,8 @@
                 "issues": "https://github.com/netherphp/avenue/issues",
                 "source": "https://github.com/netherphp/avenue/tree/redux"
             },
-            "time": "2026-06-23T00:59:52+00:00",
-            "published-time": "2026-06-23T01:00:00+00:00"
+            "time": "2026-11-13T23:31:33+00:00",
+            "published-time": "2026-11-13T23:31:38+00:00"
         },
         {
             "name": "netherphp/browser",
@@ -1598,16 +1599,16 @@
         },
         {
             "name": "netherphp/captcha",
-            "version": "dev-master",
+            "version": "v0.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/captcha.git",
-                "reference": "4cfe69f6426143299356fb5a1055602b35c66204"
+                "reference": "e8eefe8581ac188e3dc4a6595d641f97209438ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/captcha/zipball/4cfe69f6426143299356fb5a1055602b35c66204",
-                "reference": "4cfe69f6426143299356fb5a1055602b35c66204",
+                "url": "https://api.github.com/repos/netherphp/captcha/zipball/e8eefe8581ac188e3dc4a6595d641f97209438ae",
+                "reference": "e8eefe8581ac188e3dc4a6595d641f97209438ae",
                 "shasum": ""
             },
             "require": {
@@ -1619,7 +1620,6 @@
             "require-dev": {
                 "phpunit/phpunit": "^13"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -1645,10 +1645,10 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/captcha/issues",
-                "source": "https://github.com/netherphp/captcha/tree/master"
+                "source": "https://github.com/netherphp/captcha/tree/v0.0.1"
             },
-            "time": "2026-11-10T00:17:12+00:00",
-            "published-time": "2026-11-10T00:17:19+00:00"
+            "time": "2026-11-13T23:20:13+00:00",
+            "published-time": "2026-11-13T23:34:03+00:00"
         },
         {
             "name": "netherphp/common",
@@ -2242,12 +2242,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/surface.git",
-                "reference": "80d8444dfcead3169b6c5ae50b2a152410b51198"
+                "reference": "f0f6490d730c1ae9f6133dc448dbaa98f2db94f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/surface/zipball/80d8444dfcead3169b6c5ae50b2a152410b51198",
-                "reference": "80d8444dfcead3169b6c5ae50b2a152410b51198",
+                "url": "https://api.github.com/repos/netherphp/surface/zipball/f0f6490d730c1ae9f6133dc448dbaa98f2db94f9",
+                "reference": "f0f6490d730c1ae9f6133dc448dbaa98f2db94f9",
                 "shasum": ""
             },
             "require": {
@@ -2288,8 +2288,8 @@
                 "issues": "https://github.com/netherphp/surface/issues",
                 "source": "https://github.com/netherphp/surface/tree/redux"
             },
-            "time": "2025-10-31T00:36:23+00:00",
-            "published-time": "2025-10-31T00:36:30+00:00"
+            "time": "2026-11-13T23:18:03+00:00",
+            "published-time": "2026-11-13T23:18:09+00:00"
         },
         {
             "name": "netherphp/user",
@@ -6107,19 +6107,11 @@
             "published-time": "2025-11-17T20:04:52+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "netherphp/captcha",
-            "version": "9999999-dev",
-            "alias": "0.0.0",
-            "alias_normalized": "0.0.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
         "netherphp/avenue": 20,
         "netherphp/browser": 20,
-        "netherphp/captcha": 20,
         "netherphp/common": 20,
         "netherphp/console": 20,
         "netherphp/email": 20,
