@@ -8,6 +8,8 @@ use Nether\Captcha;
 use Nether\Datastore;
 use Nether\Filter;
 
+use Exception;
+
 ################################################################################
 ################################################################################
 
@@ -49,13 +51,37 @@ extends Atlantis\PublicAPI {
 	HandleCheckNether():
 	void {
 
-		$Valid = Captcha::ValidateFromInput(
-			$this->Inputs->Export()
-		);
+		$Valid = NULL;
+		$Expired = NULL;
+
+		////////
+
+		try {
+			Captcha::ValidateFromInput(
+				Input: $this->Inputs->Export(),
+				ThrowFail: TRUE
+			);
+
+			$Expired = FALSE;
+			$Valid = TRUE;
+		}
+
+		catch(Captcha\Error\TokenCodeIncorrect) {
+			$Expired = FALSE;
+			$Valid = FALSE;
+		}
+
+		catch(Captcha\Error\TokenExpired) {
+			$Expired = TRUE;
+			$Valid = FALSE;
+		}
+
+		////////
 
 		$this->SetPayload([
-			'Type'  => 'nether',
-			'Valid' => $Valid
+			'Type'    => 'nether',
+			'Expired' => $Expired,
+			'Valid'   => $Valid
 		]);
 
 		////////
@@ -116,7 +142,8 @@ extends Atlantis\PublicAPI {
 		$Captcha = Captcha::Fresh();
 
 		$this->SetPayload([
-			'Type'  => 'nether',			
+			'Type'  => 'nether',
+			'TTL'   => $Captcha->Config->TimeToExpire,		
 			'Token' => $Captcha->GetTokenForForm(),
 			'Image' => $Captcha->GetImageEncoded()
 		]);

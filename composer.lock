@@ -1599,16 +1599,16 @@
         },
         {
             "name": "netherphp/captcha",
-            "version": "v0.0.2",
+            "version": "v0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/captcha.git",
-                "reference": "75b75a3a777a412096b0afa2539d992044506815"
+                "reference": "dfbba0146a11d19efa57301a2e0fa1a413070d08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/captcha/zipball/75b75a3a777a412096b0afa2539d992044506815",
-                "reference": "75b75a3a777a412096b0afa2539d992044506815",
+                "url": "https://api.github.com/repos/netherphp/captcha/zipball/dfbba0146a11d19efa57301a2e0fa1a413070d08",
+                "reference": "dfbba0146a11d19efa57301a2e0fa1a413070d08",
                 "shasum": ""
             },
             "require": {
@@ -1645,10 +1645,10 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/captcha/issues",
-                "source": "https://github.com/netherphp/captcha/tree/v0.0.2"
+                "source": "https://github.com/netherphp/captcha/tree/v0.0.3"
             },
-            "time": "2026-11-15T01:30:06+00:00",
-            "published-time": "2026-11-15T01:31:28+00:00"
+            "time": "2026-11-15T05:50:32+00:00",
+            "published-time": "2026-11-15T05:56:37+00:00"
         },
         {
             "name": "netherphp/common",

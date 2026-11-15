@@ -34,7 +34,7 @@ extends Surface\Element {
 
 		parent::OnReady($Args);
 
-		$this->Captcha = Captcha::Fresh();
+		$this->Captcha = Captcha::New();
 
 		return;
 	}
