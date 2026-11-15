@@ -1,0 +1,51 @@
+.nether-captcha {
+	--color-success: #00CC00FF;
+	--color-invalid: #CC0000FF;
+	--color-warning: #CC6600FF;
+	--color-pending: #FFFFFF22;
+	--color-loading: #FFFFFFAA;
+
+	--border-radius: 3px;
+	--timer-height: 4px;
+	--btn-normal-border: 1px solid #FFFFFF22;
+	--btn-normal-bg: #FFFFFF11;
+	--btn-active-border: 1px solid #FFFFFF66;
+	--btn-active-bg: #FFFFFF22;
+}
+
+.nether-captcha               { border-radius: var(--border-radius); display: inline-block; }
+.nether-captcha button        { background: var(--btn-normal-bg); border: var(--btn-normal-border); border-radius: var(--border-radius); display: block; width: 100%; }
+.nether-captcha button.active { background: var(--btn-active-bg); border: var(--btn-active-border); }
+.nether-captcha img           { background: var(--btn-active-bg); border: var(--btn-active-border); border-radius: var(--border-radius); display: block; width: 100%; }
+.nether-captcha .progress     { height: var(--timer-height); justify-content: end; }
+.nether-captcha .progress-bar { width: var(--progress-value); }
+
+.nether-captcha i[data-status]           { display: none; }
+.nether-captcha i[data-status="pending"] { color: var(--color-pending); }
+.nether-captcha i[data-status="valid"]   { color: var(--color-success); }
+.nether-captcha i[data-status="invalid"] { color: var(--color-invalid); }
+.nether-captcha i[data-status="loading"] { color: var(--color-loading); }
+
+.nether-captcha[data-image-filter="invert"]
+img { filter: invert(); }
+
+.nether-captcha[data-status-ttl="ok"]
+.progress-bar { background-color: var(--color-success) !important; }
+
+.nether-captcha[data-status-ttl="warning"]
+.progress-bar { background-color: var(--color-warning) !important; }
+
+.nether-captcha:not([data-captcha-status])    
+i[data-status="empty"] { display: inline; }
+
+.nether-captcha[data-captcha-status="pending"]
+i[data-status="pending"] { display: inline; }
+
+.nether-captcha[data-captcha-status="valid"]  
+i[data-status="valid"] { display: inline; }
+
+.nether-captcha[data-captcha-status="invalid"]
+i[data-status="invalid"] { display: inline; }
+
+.nether-captcha[data-captcha-status="loading"]
+i[data-status="loading"] { display: inline; }

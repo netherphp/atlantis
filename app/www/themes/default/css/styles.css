@@ -1,6 +1,6 @@
 /*//
-@date 2026-07-09 20:08:11 UTC
-@files 50 [
+@date 2026-11-15 21:28:34 UTC
+@files 51 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
@@ -32,6 +32,7 @@
     "src\/elements\/ace-editor.css",
     "src\/elements\/article.css",
     "src\/elements\/blog.css",
+    "src\/elements\/captcha.css",
     "src\/elements\/collapser.css",
     "src\/elements\/dropsort.css",
     "src\/elements\/editor-html.css",
@@ -739,7 +740,7 @@ grouped are to be considered depreciated. */
 .dropdown-menu {
 	z-index: 9011;
 	backdrop-filter: blur(6px);
-	max-height: 50vh;
+	--max-height: 75vh;
 	overflow-y: scroll;
 }
 
@@ -3288,6 +3289,61 @@ is being used and then prefixing all these with that theme name, if i recall. */
 .atl-blog-bg-grad2 {
 	background-image: linear-gradient(90deg, var(--atl-blog-bg3), var(--atl-blog-bg4) );
 }
+
+/*//////////////////////////////////////////////////////////////////////////////
+//// src/elements/captcha.css ////////////////////////////////////////////////*/
+
+.nether-captcha {
+	--color-success: #00CC00FF;
+	--color-invalid: #CC0000FF;
+	--color-warning: #CC6600FF;
+	--color-pending: #FFFFFF22;
+	--color-loading: #FFFFFFAA;
+
+	--border-radius: 3px;
+	--timer-height: 4px;
+	--btn-normal-border: 1px solid #FFFFFF22;
+	--btn-normal-bg: #FFFFFF11;
+	--btn-active-border: 1px solid #FFFFFF66;
+	--btn-active-bg: #FFFFFF22;
+}
+
+.nether-captcha               { border-radius: var(--border-radius); display: inline-block; }
+.nether-captcha button        { background: var(--btn-normal-bg); border: var(--btn-normal-border); border-radius: var(--border-radius); display: block; width: 100%; }
+.nether-captcha button.active { background: var(--btn-active-bg); border: var(--btn-active-border); }
+.nether-captcha img           { background: var(--btn-active-bg); border: var(--btn-active-border); border-radius: var(--border-radius); display: block; width: 100%; }
+.nether-captcha .progress     { height: var(--timer-height); justify-content: end; }
+.nether-captcha .progress-bar { width: var(--progress-value); }
+
+.nether-captcha i[data-status]           { display: none; }
+.nether-captcha i[data-status="pending"] { color: var(--color-pending); }
+.nether-captcha i[data-status="valid"]   { color: var(--color-success); }
+.nether-captcha i[data-status="invalid"] { color: var(--color-invalid); }
+.nether-captcha i[data-status="loading"] { color: var(--color-loading); }
+
+.nether-captcha[data-image-filter="invert"]
+img { filter: invert(); }
+
+.nether-captcha[data-status-ttl="ok"]
+.progress-bar { background-color: var(--color-success) !important; }
+
+.nether-captcha[data-status-ttl="warning"]
+.progress-bar { background-color: var(--color-warning) !important; }
+
+.nether-captcha:not([data-captcha-status])    
+i[data-status="empty"] { display: inline; }
+
+.nether-captcha[data-captcha-status="pending"]
+i[data-status="pending"] { display: inline; }
+
+.nether-captcha[data-captcha-status="valid"]  
+i[data-status="valid"] { display: inline; }
+
+.nether-captcha[data-captcha-status="invalid"]
+i[data-status="invalid"] { display: inline; }
+
+.nether-captcha[data-captcha-status="loading"]
+i[data-status="loading"] { display: inline; }
 
 /*//////////////////////////////////////////////////////////////////////////////
 //// src/elements/collapser.css //////////////////////////////////////////////*/
