@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ab60ef6a43c8a7ca1a697595a0cff91",
+    "content-hash": "750a2df343485ada3c6e30270ad7c106",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1599,16 +1599,16 @@
         },
         {
             "name": "netherphp/captcha",
-            "version": "v0.0.1",
+            "version": "v0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/captcha.git",
-                "reference": "e8eefe8581ac188e3dc4a6595d641f97209438ae"
+                "reference": "75b75a3a777a412096b0afa2539d992044506815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/captcha/zipball/e8eefe8581ac188e3dc4a6595d641f97209438ae",
-                "reference": "e8eefe8581ac188e3dc4a6595d641f97209438ae",
+                "url": "https://api.github.com/repos/netherphp/captcha/zipball/75b75a3a777a412096b0afa2539d992044506815",
+                "reference": "75b75a3a777a412096b0afa2539d992044506815",
                 "shasum": ""
             },
             "require": {
@@ -1645,10 +1645,10 @@
             ],
             "support": {
                 "issues": "https://github.com/netherphp/captcha/issues",
-                "source": "https://github.com/netherphp/captcha/tree/v0.0.1"
+                "source": "https://github.com/netherphp/captcha/tree/v0.0.2"
             },
-            "time": "2026-11-13T23:20:13+00:00",
-            "published-time": "2026-11-13T23:34:03+00:00"
+            "time": "2026-11-15T01:30:06+00:00",
+            "published-time": "2026-11-15T01:31:28+00:00"
         },
         {
             "name": "netherphp/common",
@@ -2971,16 +2971,16 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "4.9.4",
+            "version": "4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2"
+                "reference": "f9aa3efc8015fcbc013d84d699583b268ccb593a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/75d73f48d02797c2c285a7e9f348fadc0102ffe2",
-                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/f9aa3efc8015fcbc013d84d699583b268ccb593a",
+                "reference": "f9aa3efc8015fcbc013d84d699583b268ccb593a",
                 "shasum": ""
             },
             "require": {
@@ -2992,23 +2992,22 @@
                 "rhumsaa/uuid": "self.version"
             },
             "require-dev": {
-                "captainhook/captainhook": "^5.25",
-                "captainhook/plugin-composer": "^5.3",
-                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-                "ergebnis/composer-normalize": "^2.47",
-                "mockery/mockery": "^1.6",
-                "paragonie/random-lib": "^2",
-                "php-mock/php-mock": "^2.6",
-                "php-mock/php-mock-mockery": "^1.5",
+                "captainhook/captainhook": "^5.29.3",
+                "captainhook/plugin-composer": "^5.3.3",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.2.1",
+                "mockery/mockery": "^1.6.15",
+                "paragonie/random-lib": "^2.0.3",
+                "php-mock/php-mock": "^2.7.0",
+                "php-mock/php-mock-mockery": "^1.5.0",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
                 "phpbench/phpbench": "^1.2.14",
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan": "^2.1",
-                "phpstan/phpstan-mockery": "^2.0",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^9.6",
-                "slevomat/coding-standard": "^8.18",
-                "squizlabs/php_codesniffer": "^3.13"
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan": "^2.3.5",
+                "phpstan/phpstan-mockery": "^2.0.0",
+                "phpstan/phpstan-phpunit": "^2.1.2",
+                "phpunit/phpunit": "^9.6.39",
+                "slevomat/coding-standard": "^8.31.3",
+                "squizlabs/php_codesniffer": "^4.0.4"
             },
             "suggest": {
                 "ext-bcmath": "Enables faster math with arbitrary-precision integers using BCMath.",
@@ -3043,10 +3042,10 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.9.4"
+                "source": "https://github.com/ramsey/uuid/tree/4.10.0"
             },
-            "time": "2026-09-16T11:39:30+00:00",
-            "published-time": "2026-09-16T11:41:15+00:00"
+            "time": "2026-11-14T23:23:20+00:00",
+            "published-time": "2026-11-14T23:35:39+00:00"
         },
         {
             "name": "sendgrid/php-http-client",
@@ -6124,7 +6123,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1"
+        "php": ">=8.5"
     },
     "platform-dev": {},
     "plugin-api-version": "2.11.0"

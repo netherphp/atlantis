@@ -26,26 +26,29 @@ $TokenEncoded = $Element->Captcha->GetTokenForForm();
 
 $CodeFieldName = $Element->Captcha->GetCodeFieldName();
 $CodeFieldStyle = $Element->Captcha->GetCodeFieldStyleCSS();
+$CodeFieldTitle = 'Solve this mysterious puzzle.';
 
 ################################################################################
 ############################################################################# ?>
 
 <style type="text/css">
-.atl-captcha { display: inline-block; }
+.ntr-captcha { display: inline-block; }
+.ntr-captcha *[data-vmode="invert"] { filter: invert(); }
 
-.atl-captcha .atl-catpcha-status-icon-empty { display: none; }
-.atl-captcha .atl-catpcha-status-icon-pending { display: none; color: #FFFFFF22; }
-.atl-captcha .atl-catpcha-status-icon-valid { display: none; color: #00AA00; }
-.atl-captcha .atl-catpcha-status-icon-invalid { display: none; color: #AA0000; }
-.atl-captcha .atl-catpcha-status-icon-loading { display: none; color: #FFFFFFAA; }
+.ntr-captcha button { background: #FFFFFF11; border: 1px solid #FFFFFF22; display: block; width: 100%; }
+.ntr-captcha button.active { background: #FFFFFF44; border: 1px solid #FFFFFF66; }
 
-.atl-captcha:not([data-captcha-status]) .atl-catpcha-status-icon-empty { display: inline; }
-.atl-captcha[data-captcha-status="pending"] .atl-catpcha-status-icon-pending { display: inline; }
-.atl-captcha[data-captcha-status="valid"] .atl-catpcha-status-icon-valid { display: inline; }
-.atl-captcha[data-captcha-status="invalid"] .atl-catpcha-status-icon-invalid { display: inline; }
-.atl-captcha[data-captcha-status="loading"] .atl-catpcha-status-icon-loading { display: inline; }
+.ntr-captcha i[data-status="empty"]   { display: none; }
+.ntr-captcha i[data-status="pending"] { display: none; color: #FFFFFF22; }
+.ntr-captcha i[data-status="valid"]   { display: none; color: #00AA00; }
+.ntr-captcha i[data-status="invalid"] { display: none; color: #AA0000; }
+.ntr-captcha i[data-status="loading"] { display: none; color: #FFFFFFAA; }
 
-.atl-captcha-invert .atl-captcha-image { filter: invert(); }
+.ntr-captcha:not([data-captcha-status])     i[data-status="empty"]   { display: inline; }
+.ntr-captcha[data-captcha-status="pending"] i[data-status="pending"] { display: inline; }
+.ntr-captcha[data-captcha-status="valid"]   i[data-status="valid"]   { display: inline; }
+.ntr-captcha[data-captcha-status="invalid"] i[data-status="invalid"] { display: inline; }
+.ntr-captcha[data-captcha-status="loading"] i[data-status="loading"] { display: inline; }
 </style>
 
 <script type="module">
@@ -182,8 +185,16 @@ class Captcha {
 
 	onToggleContrast(ev) {
 
-		(this.element)
-		.toggleClass('atl-captcha-invert');
+		let current = this.img.attr('data-vmode');
+
+		if(current) {
+			this.img.attr('data-vmode', '');
+			this.btnContrast.removeClass('active');
+		}
+		else {
+			this.img.attr('data-vmode', 'invert');
+			this.btnContrast.addClass('active');
+		}
 
 		return false;
 	};
@@ -227,7 +238,7 @@ class Captcha {
 	static WhenDocumentReady() {
 		// this<document>
 
-		jQuery('.atl-captcha')
+		jQuery('.ntr-captcha')
 		.each(function() {
 
 			if(typeof this.dataset.captchaStatus === 'undefined')
@@ -245,24 +256,24 @@ jQuery(Captcha.WhenDocumentReady);
 
 </script>
 
-<div id="<?php $Util->Print($ElementID) ?>" class="border border-1 border-secondary rounded-less p-2 atl-captcha">
+<div id="<?php $Util->Print($ElementID) ?>" class="border border-1 border-secondary rounded-less p-2 ntr-captcha">
 	<div class="mb-2">
 		<img
 			src="<?php $Util->Print($ImageBlobEncoded) ?>"
 			style="<?php $Util->Print($CodeFieldStyle) ?>"
-			alt="Solve this mysterious puzzle."
-			class="rounded-less border border-1 border-secondary m-0 p-0 atl-captcha-image"
+			title="<?php $Util->Print($CodeFieldTitle) ?>"
+			class="rounded-less border border-1 border-secondary m-0 p-0 ntr-captcha-image"
 			data-captcha-image
 		/>
 	</div>
 	<div class="d-flex w-100 gap-2 mb-2">
 		<div class="flex-shrink-1 flex-grow-1">
-			<button type="button" class="btn btn-sm btn-secondary btn-block rounded-less py-0" data-captcha-toggle-contrast>
+			<button type="button" title="Toggle Contrast Mode" data-captcha-toggle-contrast>
 				<i class="mdi mdi-contrast-box"></i>
 			</button>
 		</div>
 		<div class="flex-shrink-1 flex-grow-1">
-			<button type="button" class="btn btn-sm btn-secondary btn-block rounded-less py-0" data-captcha-fresh>
+			<button type="button" title="Try Another Image" data-captcha-fresh>
 				<i class="mdi mdi-refresh"></i>
 			</button>
 		</div>
@@ -284,12 +295,12 @@ jQuery(Captcha.WhenDocumentReady);
 				placeholder="Type Above Code..."
 				data-captcha-code
 			/>
-			<span class="input-group-text rounded-less">
-				<i class="atl-catpcha-status-icon-empty mdi mdi-empty"></i>
-				<i class="atl-catpcha-status-icon-pending mdi mdi-dots-horizontal-circle"></i>
-				<i class="atl-catpcha-status-icon-valid mdi mdi-check-bold"></i>
-				<i class="atl-catpcha-status-icon-invalid mdi mdi-close-thick"></i>
-				<i class="atl-catpcha-status-icon-loading mdi mdi-dots-circle mdi-spin"></i>
+			<span class="input-group-text rounded-less" title="Solved?">
+				<i data-status="empty"   class="mdi mdi-empty"></i>
+				<i data-status="pending" class="mdi mdi-dots-horizontal-circle"></i>
+				<i data-status="valid"   class="mdi mdi-check-bold"></i>
+				<i data-status="invalid" class="mdi mdi-close-thick"></i>
+				<i data-status="loading" class="mdi mdi-dots-circle mdi-spin"></i>
 			</span>
 		</div>
 
