@@ -87,9 +87,9 @@ class Captcha {
 
 		(api.send(data))
 		.then(function(r) {
-			that.startCountdown(r.payload.TTL - 2);
 			that.updateStatusPending();
-			that.updateToken(r.payload.Token);
+			that.startCountdown(r.payload.TokenTTL - 2);
+			that.updateToken(r.payload.TokenID);
 			that.updateImage(r.payload.Image);
 			return;
 		})

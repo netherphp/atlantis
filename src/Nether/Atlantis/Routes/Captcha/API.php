@@ -66,13 +66,18 @@ extends Atlantis\PublicAPI {
 			$Valid = TRUE;
 		}
 
-		catch(Captcha\Error\TokenCodeIncorrect) {
+		catch(Captcha\Error\TokenCodeIncorrect $Err) {
 			$Expired = FALSE;
 			$Valid = FALSE;
 		}
 
-		catch(Captcha\Error\TokenExpired) {
+		catch(Captcha\Error\TokenExpired $Err) {
 			$Expired = TRUE;
+			$Valid = FALSE;
+		}
+
+		catch(Exception $Err) {
+			$Expired = FALSE;
 			$Valid = FALSE;
 		}
 
@@ -142,10 +147,12 @@ extends Atlantis\PublicAPI {
 		$Captcha = Captcha::Fresh();
 
 		$this->SetPayload([
-			'Type'  => 'nether',
-			'TTL'   => $Captcha->Config->TimeToExpire,		
-			'Token' => $Captcha->GetTokenForForm(),
-			'Image' => $Captcha->GetImageEncoded()
+			'Type'           => 'nether',
+			'FieldNameCode'  => $Captcha->GetCodeFieldName(),
+			'FieldNameToken' => $Captcha->GetTokenFieldName(),
+			'TokenID'        => $Captcha->GetTokenFieldValue(),
+			'TokenTTL'       => $Captcha->GetTimeToExpire(),
+			'Image'          => $Captcha->GetImageEncoded()
 		]);
 
 		////////
