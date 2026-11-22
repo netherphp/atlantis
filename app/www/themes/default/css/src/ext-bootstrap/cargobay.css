@@ -6,6 +6,11 @@
 	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
 	--atl-cargobay-s3-bg-colour: var(--theme-body-bg-alt2);
 	--atl-cargobay-s4-bg-colour: var(--theme-body-bg-alt3);
+
+	--atl-cargobay-s1-fg-colour: var(--theme-body-fg-alt0);
+	--atl-cargobay-s2-fg-colour: var(--theme-body-fg-alt1);
+	--atl-cargobay-s3-fg-colour: var(--theme-body-fg-alt2);
+	--atl-cargobay-s4-fg-colour: var(--theme-body-fg-alt3);
 }
 
 /* container directly added */
@@ -30,18 +35,22 @@
 
 .cargobay > section:nth-of-type(4n+1) {
 	background-color: var(--atl-cargobay-s1-bg-colour);
+	color: var(--atl-cargobay-s1-fg-colour);
 }
 
 .cargobay > section:nth-of-type(4n+2) {
-	background-color: var(--atl-cargobay-s2-bg-colour);;
+	background-color: var(--atl-cargobay-s2-bg-colour);
+	color: var(--atl-cargobay-s2-fg-colour);
 }
 
 .cargobay > section:nth-of-type(4n+3) {
 	background-color: var(--atl-cargobay-s3-bg-colour);
+	color: var(--atl-cargobay-s3-fg-colour);
 }
 
 .cargobay > section:nth-of-type(4n+4) {
 	background-color: var(--atl-cargobay-s4-bg-colour);
+	color: var(--atl-cargobay-s4-fg-colour);
 }
 
 /***/

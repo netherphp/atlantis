@@ -55,14 +55,20 @@
 	/* these should be generically neutral colours as they will be used for
 	various page elements for division and such. */
 
-	--theme-body-fg:      #FAFAFA;
+	--theme-body-bg:     #141414;
+	--theme-body-bg-alt: #0c0c0c;
+	--theme-body-fg:     #FAFAFA;
+	--theme-body-fg-alt: #FAFAFA;
 
-	--theme-body-bg:      #141414;
-	--theme-body-bg-alt:  #0c0c0c;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt1: #17181f;
 	--theme-body-bg-alt3: #1d1e29;
+
+	--theme-body-fg-alt0: var(--theme-body-fg);
+	--theme-body-fg-alt2: var(--theme-body-fg-alt);
+	--theme-body-fg-alt1: var(--theme-body-fg);
+	--theme-body-fg-alt3: var(--theme-body-fg-alt);
 
 	--theme-menu-bg: #111111AA;
 	--theme-menu-border: #141414;

@@ -1,57 +1,57 @@
 /*//
-@date 2026-11-15 21:28:34 UTC
+@date 2026-11-22 19:56:02 UTC
 @files 51 [
     "src\/imports.css",
     "src\/main.css",
     "src\/ext-bootstrap.css",
-    "src\/ext-bootstrap\/anim.css",
-    "src\/ext-bootstrap\/buttons.css",
-    "src\/ext-bootstrap\/cargobay.css",
-    "src\/ext-bootstrap\/code.css",
-    "src\/ext-bootstrap\/dyes.css",
-    "src\/ext-bootstrap\/filters.css",
-    "src\/ext-bootstrap\/font-text-stuff.css",
-    "src\/ext-bootstrap\/forms.css",
-    "src\/ext-bootstrap\/hr.css",
-    "src\/ext-bootstrap\/jumbotron.css",
-    "src\/ext-bootstrap\/modal.css",
-    "src\/ext-bootstrap\/opacity.css",
-    "src\/ext-bootstrap\/overflow.css",
-    "src\/ext-bootstrap\/position.css",
-    "src\/ext-bootstrap\/responsive-container.css",
-    "src\/ext-bootstrap\/tags.css",
+    "src\/ext-bootstrap\\anim.css",
+    "src\/ext-bootstrap\\buttons.css",
+    "src\/ext-bootstrap\\cargobay.css",
+    "src\/ext-bootstrap\\code.css",
+    "src\/ext-bootstrap\\dyes.css",
+    "src\/ext-bootstrap\\filters.css",
+    "src\/ext-bootstrap\\font-text-stuff.css",
+    "src\/ext-bootstrap\\forms.css",
+    "src\/ext-bootstrap\\hr.css",
+    "src\/ext-bootstrap\\jumbotron.css",
+    "src\/ext-bootstrap\\modal.css",
+    "src\/ext-bootstrap\\opacity.css",
+    "src\/ext-bootstrap\\overflow.css",
+    "src\/ext-bootstrap\\position.css",
+    "src\/ext-bootstrap\\responsive-container.css",
+    "src\/ext-bootstrap\\tags.css",
     "src\/ext-materialdesignicons.css",
     "src\/ext-simpleicons.css",
     "src\/ext-litepicker.css",
     "src\/ext-grecaptcha.css",
     "src\/ext-editorjs.css",
     "src\/fx-text.css",
-    "src\/design\/footer.css",
-    "src\/design\/header.css",
-    "src\/design\/page-note-dev.css",
-    "src\/elements\/ace-editor.css",
-    "src\/elements\/article.css",
-    "src\/elements\/blog.css",
-    "src\/elements\/captcha.css",
-    "src\/elements\/collapser.css",
-    "src\/elements\/dropsort.css",
-    "src\/elements\/editor-html.css",
-    "src\/elements\/fader.css",
-    "src\/elements\/field-tag-search.css",
-    "src\/elements\/gallery.css",
-    "src\/elements\/glassbox.css",
-    "src\/elements\/misc.css",
-    "src\/elements\/nether-sensei.css",
-    "src\/elements\/pager.css",
-    "src\/elements\/pathbar.css",
-    "src\/elements\/pillbox.css",
-    "src\/elements\/pretty-modern-box.css",
-    "src\/elements\/pretty-modern-navbar.css",
-    "src\/elements\/sitemenu.css",
-    "src\/elements\/statebtn.css",
-    "src\/elements\/swiper.css",
-    "src\/elements\/timeline.css",
-    "src\/elements\/togglebtn.css"
+    "src\/design\\footer.css",
+    "src\/design\\header.css",
+    "src\/design\\page-note-dev.css",
+    "src\/elements\\ace-editor.css",
+    "src\/elements\\article.css",
+    "src\/elements\\blog.css",
+    "src\/elements\\captcha.css",
+    "src\/elements\\collapser.css",
+    "src\/elements\\dropsort.css",
+    "src\/elements\\editor-html.css",
+    "src\/elements\\fader.css",
+    "src\/elements\\field-tag-search.css",
+    "src\/elements\\gallery.css",
+    "src\/elements\\glassbox.css",
+    "src\/elements\\misc.css",
+    "src\/elements\\nether-sensei.css",
+    "src\/elements\\pager.css",
+    "src\/elements\\pathbar.css",
+    "src\/elements\\pillbox.css",
+    "src\/elements\\pretty-modern-box.css",
+    "src\/elements\\pretty-modern-navbar.css",
+    "src\/elements\\sitemenu.css",
+    "src\/elements\\statebtn.css",
+    "src\/elements\\swiper.css",
+    "src\/elements\\timeline.css",
+    "src\/elements\\togglebtn.css"
 ]
 //*/
 
@@ -120,14 +120,20 @@
 	/* these should be generically neutral colours as they will be used for
 	various page elements for division and such. */
 
-	--theme-body-fg:      #FAFAFA;
+	--theme-body-bg:     #141414;
+	--theme-body-bg-alt: #0c0c0c;
+	--theme-body-fg:     #FAFAFA;
+	--theme-body-fg-alt: #FAFAFA;
 
-	--theme-body-bg:      #141414;
-	--theme-body-bg-alt:  #0c0c0c;
 	--theme-body-bg-alt0: var(--theme-body-bg);
 	--theme-body-bg-alt2: var(--theme-body-bg-alt);
 	--theme-body-bg-alt1: #17181f;
 	--theme-body-bg-alt3: #1d1e29;
+
+	--theme-body-fg-alt0: var(--theme-body-fg);
+	--theme-body-fg-alt2: var(--theme-body-fg-alt);
+	--theme-body-fg-alt1: var(--theme-body-fg);
+	--theme-body-fg-alt3: var(--theme-body-fg-alt);
 
 	--theme-menu-bg: #111111AA;
 	--theme-menu-border: #141414;
@@ -1254,7 +1260,7 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/anim.css //////////////////////////////////////////////*/
+//// src/ext-bootstrap\anim.css //////////////////////////////////////////////*/
 
 @keyframes oPulseWorking {
 
@@ -1277,7 +1283,7 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/buttons.css ///////////////////////////////////////////*/
+//// src/ext-bootstrap\buttons.css ///////////////////////////////////////////*/
 
 .btn-block {
 	display: block;
@@ -1378,7 +1384,7 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/cargobay.css //////////////////////////////////////////*/
+//// src/ext-bootstrap\cargobay.css //////////////////////////////////////////*/
 
 :root {
 	--atl-cargobay-container-spacing: 1.5rem;
@@ -1388,6 +1394,11 @@ grouped are to be considered depreciated. */
 	--atl-cargobay-s2-bg-colour: var(--theme-body-bg-alt1);
 	--atl-cargobay-s3-bg-colour: var(--theme-body-bg-alt2);
 	--atl-cargobay-s4-bg-colour: var(--theme-body-bg-alt3);
+
+	--atl-cargobay-s1-fg-colour: var(--theme-body-fg-alt0);
+	--atl-cargobay-s2-fg-colour: var(--theme-body-fg-alt1);
+	--atl-cargobay-s3-fg-colour: var(--theme-body-fg-alt2);
+	--atl-cargobay-s4-fg-colour: var(--theme-body-fg-alt3);
 }
 
 /* container directly added */
@@ -1412,18 +1423,22 @@ grouped are to be considered depreciated. */
 
 .cargobay > section:nth-of-type(4n+1) {
 	background-color: var(--atl-cargobay-s1-bg-colour);
+	color: var(--atl-cargobay-s1-fg-colour);
 }
 
 .cargobay > section:nth-of-type(4n+2) {
-	background-color: var(--atl-cargobay-s2-bg-colour);;
+	background-color: var(--atl-cargobay-s2-bg-colour);
+	color: var(--atl-cargobay-s2-fg-colour);
 }
 
 .cargobay > section:nth-of-type(4n+3) {
 	background-color: var(--atl-cargobay-s3-bg-colour);
+	color: var(--atl-cargobay-s3-fg-colour);
 }
 
 .cargobay > section:nth-of-type(4n+4) {
 	background-color: var(--atl-cargobay-s4-bg-colour);
+	color: var(--atl-cargobay-s4-fg-colour);
 }
 
 /***/
@@ -1433,7 +1448,7 @@ grouped are to be considered depreciated. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/code.css //////////////////////////////////////////////*/
+//// src/ext-bootstrap\code.css //////////////////////////////////////////////*/
 
 code.cli {
 	background-color: var(--theme-black);
@@ -1448,7 +1463,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/dyes.css //////////////////////////////////////////////*/
+//// src/ext-bootstrap\dyes.css //////////////////////////////////////////////*/
 
 :root {
 	--theme-black: #141414FF;
@@ -2205,7 +2220,7 @@ code.cli {
 .bc-grey-dk { --bs-border-color: var(--theme-grey-dk); }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/filters.css ///////////////////////////////////////////*/
+//// src/ext-bootstrap\filters.css ///////////////////////////////////////////*/
 
 .filter-desaturate,
 .filter-desaturate-0  { filter: saturate(0.00); }
@@ -2219,7 +2234,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/font-text-stuff.css ///////////////////////////////////*/
+//// src/ext-bootstrap\font-text-stuff.css ///////////////////////////////////*/
 
 /*******************************************************************************
 ** font family ****************************************************************/
@@ -2388,12 +2403,12 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/forms.css /////////////////////////////////////////////*/
+//// src/ext-bootstrap\forms.css /////////////////////////////////////////////*/
 
 
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/hr.css ////////////////////////////////////////////////*/
+//// src/ext-bootstrap\hr.css ////////////////////////////////////////////////*/
 
 .atl-hr-fancy {
 	background: linear-gradient(90deg, var(--theme-primary) 0%, var(--theme-grey-lt) 100%) !important;
@@ -2404,7 +2419,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/jumbotron.css /////////////////////////////////////////*/
+//// src/ext-bootstrap\jumbotron.css /////////////////////////////////////////*/
 
 :root {
 	--atl-jumbotron-bg: #0007;
@@ -2428,7 +2443,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/modal.css /////////////////////////////////////////////*/
+//// src/ext-bootstrap\modal.css /////////////////////////////////////////////*/
 
 .modal-header,
 .modal-header .btn,
@@ -2437,7 +2452,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/opacity.css ///////////////////////////////////////////*/
+//// src/ext-bootstrap\opacity.css ///////////////////////////////////////////*/
 
 .o-0   { opacity: 0.0; }
 .o-10  { opacity: 0.10; }
@@ -2470,7 +2485,7 @@ code.cli {
 .o-anim-fast { transition: opacity 250ms; }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/overflow.css //////////////////////////////////////////*/
+//// src/ext-bootstrap\overflow.css //////////////////////////////////////////*/
 
 .scroll-y {
 	overflow: hidden;
@@ -2491,7 +2506,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/position.css //////////////////////////////////////////*/
+//// src/ext-bootstrap\position.css //////////////////////////////////////////*/
 
 .pos-absolute { position: absolute; }
 .pos-absolutely { position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; }
@@ -2519,14 +2534,14 @@ code.cli {
 .gridbox > * { position: relative; }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/responsive-container.css //////////////////////////////*/
+//// src/ext-bootstrap\responsive-container.css //////////////////////////////*/
 
 .container-viewport {
 
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/ext-bootstrap/tags.css //////////////////////////////////////////////*/
+//// src/ext-bootstrap\tags.css //////////////////////////////////////////////*/
 
 .tag a:link,
 .tag a:visited,
@@ -2756,7 +2771,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design/footer.css ///////////////////////////////////////////////////*/
+//// src/design\footer.css ///////////////////////////////////////////////////*/
 
 /* header element stuff *******************************************************/
 
@@ -2826,7 +2841,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design/header.css ///////////////////////////////////////////////////*/
+//// src/design\header.css ///////////////////////////////////////////////////*/
 
 /* header element stuff *******************************************************/
 
@@ -2895,7 +2910,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/design/page-note-dev.css ////////////////////////////////////////////*/
+//// src/design\page-note-dev.css ////////////////////////////////////////////*/
 
 .atl-page-note-dev {
 	position: fixed;
@@ -2950,7 +2965,7 @@ code.cli {
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/ace-editor.css /////////////////////////////////////////////*/
+//// src/elements\ace-editor.css /////////////////////////////////////////////*/
 
 .atl-code-viewer section {
 	border-radius: 4px;
@@ -3027,7 +3042,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/article.css ////////////////////////////////////////////////*/
+//// src/elements\article.css ////////////////////////////////////////////////*/
 
 .atl-ui-article-section {
 	color: var(--theme-primary);
@@ -3064,7 +3079,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/blog.css ///////////////////////////////////////////////////*/
+//// src/elements\blog.css ///////////////////////////////////////////////////*/
 
 :root {
 
@@ -3291,7 +3306,7 @@ is being used and then prefixing all these with that theme name, if i recall. */
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/captcha.css ////////////////////////////////////////////////*/
+//// src/elements\captcha.css ////////////////////////////////////////////////*/
 
 .nether-captcha {
 	--color-success: #00CC00FF;
@@ -3346,7 +3361,7 @@ i[data-status="invalid"] { display: inline; }
 i[data-status="loading"] { display: inline; }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/collapser.css //////////////////////////////////////////////*/
+//// src/elements\collapser.css //////////////////////////////////////////////*/
 
 .atl-collapser,
 .Collapser {
@@ -3430,7 +3445,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/dropsort.css ///////////////////////////////////////////////*/
+//// src/elements\dropsort.css ///////////////////////////////////////////////*/
 
 .atl-dropsort {
 
@@ -3460,7 +3475,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/editor-html.css ////////////////////////////////////////////*/
+//// src/elements\editor-html.css ////////////////////////////////////////////*/
 
 .Editor {
 	background-color: var(--theme-body-bg-alt);
@@ -3568,7 +3583,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/fader.css //////////////////////////////////////////////////*/
+//// src/elements\fader.css //////////////////////////////////////////////////*/
 
 .Fader {
 	position: absolute;
@@ -3631,7 +3646,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/field-tag-search.css ///////////////////////////////////////*/
+//// src/elements\field-tag-search.css ///////////////////////////////////////*/
 
 .atl-field-tag-search-results > div.position-absolute {
 	background: var(--theme-menu-bg);
@@ -3658,7 +3673,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/gallery.css ////////////////////////////////////////////////*/
+//// src/elements\gallery.css ////////////////////////////////////////////////*/
 
 .GalleryItem .GalleryHoverTools {
 	background: var(--theme-dark-glass);
@@ -3697,7 +3712,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/glassbox.css ///////////////////////////////////////////////*/
+//// src/elements\glassbox.css ///////////////////////////////////////////////*/
 
 .glassbox {
 	border: 0.2rem solid var(--theme-grey-dk);
@@ -3707,7 +3722,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/misc.css ///////////////////////////////////////////////////*/
+//// src/elements\misc.css ///////////////////////////////////////////////////*/
 
 .PrettyBrandText {
 	display: inline-block;
@@ -3802,7 +3817,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/nether-sensei.css //////////////////////////////////////////*/
+//// src/elements\nether-sensei.css //////////////////////////////////////////*/
 
 :root {
 	--SenseiGreen: #9ddd4f;
@@ -3921,7 +3936,7 @@ i[data-status="loading"] { display: inline; }
 .Block.Attribute { background-color: var(--SenseiAttribute); }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pager.css //////////////////////////////////////////////////*/
+//// src/elements\pager.css //////////////////////////////////////////////////*/
 
 .atl-ui-pager .btn.disabled {
 	opacity: 0.15;
@@ -3932,7 +3947,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pathbar.css ////////////////////////////////////////////////*/
+//// src/elements\pathbar.css ////////////////////////////////////////////////*/
 
 .atl-ui-pathbar {
 	display: flex;
@@ -3944,7 +3959,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pillbox.css ////////////////////////////////////////////////*/
+//// src/elements\pillbox.css ////////////////////////////////////////////////*/
 
 .atl-ui-pillbox-item a:link,
 .atl-ui-pillbox-item a:visited {
@@ -3988,7 +4003,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pretty-modern-box.css //////////////////////////////////////*/
+//// src/elements\pretty-modern-box.css //////////////////////////////////////*/
 
 .PrettyModernBox {
 	background-color: var(--theme-dark-glass);
@@ -4061,7 +4076,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/pretty-modern-navbar.css ///////////////////////////////////*/
+//// src/elements\pretty-modern-navbar.css ///////////////////////////////////*/
 
 .PrettyModernNavbar {
 	font-weight: 600;
@@ -4080,7 +4095,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/sitemenu.css ///////////////////////////////////////////////*/
+//// src/elements\sitemenu.css ///////////////////////////////////////////////*/
 
 :root {
 	--theme-sitemenu-bg: #000000AA;
@@ -4175,7 +4190,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/statebtn.css ///////////////////////////////////////////////*/
+//// src/elements\statebtn.css ///////////////////////////////////////////////*/
 
 .atl-statebtn {
 	display: grid;
@@ -4220,7 +4235,7 @@ i[data-status="loading"] { display: inline; }
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/swiper.css /////////////////////////////////////////////////*/
+//// src/elements\swiper.css /////////////////////////////////////////////////*/
 
 /*******************************************************************************
 ********************************************************************************
@@ -4412,7 +4427,7 @@ makes the pager bullets be square instead of circle.
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/timeline.css ///////////////////////////////////////////////*/
+//// src/elements\timeline.css ///////////////////////////////////////////////*/
 
 :root {
 	--atl-timeline-item-bg: #dadada;
@@ -4474,7 +4489,7 @@ makes the pager bullets be square instead of circle.
 }
 
 /*//////////////////////////////////////////////////////////////////////////////
-//// src/elements/togglebtn.css //////////////////////////////////////////////*/
+//// src/elements\togglebtn.css //////////////////////////////////////////////*/
 
 .atl-togglebtn {
 	padding: 0.15rem 0.50rem;
